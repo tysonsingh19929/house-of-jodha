@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(null);
+  const isMobile = window.innerWidth <= 768;
 
   const faqs = [
     {
@@ -32,12 +33,12 @@ export default function FAQSection() {
 
   return (
     <div style={{
-      padding: "60px 30px",
+      padding: isMobile ? "40px 15px" : "60px 30px",
       background: "#fff",
       borderTop: "1px solid #e5e4e7",
       borderBottom: "1px solid #e5e4e7"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "36px", color: "#08060d" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#08060d" }}>
         Frequently Asked Questions
       </h2>
 
@@ -47,7 +48,7 @@ export default function FAQSection() {
       }}>
         {faqs.map((faq, idx) => (
           <div key={idx} style={{
-            marginBottom: "15px",
+            marginBottom: isMobile ? "10px" : "15px",
             border: "1px solid #e5e4e7",
             borderRadius: "8px",
             overflow: "hidden"
@@ -56,12 +57,12 @@ export default function FAQSection() {
               onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
               style={{
                 width: "100%",
-                padding: "15px 20px",
+                padding: isMobile ? "12px 15px" : "15px 20px",
                 background: openIndex === idx ? "rgba(184, 68, 141, 0.1)" : "#f8f8f8",
                 border: "none",
                 textAlign: "left",
                 cursor: "pointer",
-                fontSize: "16px",
+                fontSize: isMobile ? "14px" : "16px",
                 fontWeight: "600",
                 color: "#08060d",
                 display: "flex",
@@ -70,15 +71,16 @@ export default function FAQSection() {
               }}
             >
               {faq.q}
-              <span style={{ fontSize: "20px" }}>{openIndex === idx ? "−" : "+"}</span>
+              <span style={{ fontSize: isMobile ? "16px" : "20px" }}>{openIndex === idx ? "−" : "+"}</span>
             </button>
             {openIndex === idx && (
               <div style={{
-                padding: "15px 20px",
+                padding: isMobile ? "12px 15px" : "15px 20px",
                 background: "#fff",
                 color: "#333",
                 borderTop: "1px solid #e5e4e7",
-                lineHeight: "1.6"
+                lineHeight: "1.6",
+                fontSize: isMobile ? "13px" : "14px"
               }}>
                 {faq.a}
               </div>

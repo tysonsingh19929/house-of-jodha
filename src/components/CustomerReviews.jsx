@@ -1,4 +1,6 @@
 export default function CustomerReviews() {
+  const isMobile = window.innerWidth <= 768;
+
   const reviews = [
     {
       name: "Sandra Whitworth",
@@ -32,45 +34,45 @@ export default function CustomerReviews() {
 
   return (
     <div id="reviews" style={{
-      padding: "60px 30px",
+      padding: isMobile ? "40px 15px" : "60px 30px",
       background: "var(--accent-bg)",
       borderBottom: "1px solid var(--accent-border)"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "36px" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px" }}>
         Customer Reviews
       </h2>
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-        gap: "30px",
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(280px, 1fr))",
+        gap: isMobile ? "15px" : "30px",
         maxWidth: "1126px",
         margin: "0 auto"
       }}>
         {reviews.map((review, idx) => (
           <div key={idx} style={{
             background: "#fff",
-            padding: "25px",
+            padding: isMobile ? "18px" : "25px",
             borderRadius: "8px",
             border: "1px solid var(--accent-border)",
             boxShadow: "0 2px 5px rgba(0,0,0,0.05)"
           }}>
             <div style={{ display: "flex", marginBottom: "10px" }}>
               {[...Array(review.rating)].map((_, i) => (
-                <span key={i} style={{ fontSize: "18px", color: "#ffc107" }}>⭐</span>
+                <span key={i} style={{ fontSize: isMobile ? "14px" : "18px", color: "#ffc107" }}>⭐</span>
               ))}
             </div>
-            <p style={{ color: "var(--text)", marginBottom: "15px", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text)", marginBottom: "15px", lineHeight: "1.6", fontSize: isMobile ? "13px" : "14px" }}>
               "{review.text}"
             </p>
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "15px" }}>
-              <p style={{ margin: "0 0 5px 0", fontWeight: "600", color: "#08060d" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px" }}>
+              <p style={{ margin: "0 0 4px 0", fontWeight: "600", color: "#08060d", fontSize: isMobile ? "13px" : "14px" }}>
                 {review.name}
               </p>
-              <p style={{ margin: "0 0 5px 0", fontSize: "14px", color: "#666" }}>
+              <p style={{ margin: "0 0 4px 0", fontSize: isMobile ? "12px" : "13px", color: "#666" }}>
                 {review.location}
               </p>
-              <p style={{ margin: "0", fontSize: "12px", color: "var(--text)" }}>
+              <p style={{ margin: "0", fontSize: isMobile ? "11px" : "12px", color: "var(--text)" }}>
                 {review.date}
               </p>
             </div>

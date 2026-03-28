@@ -1,16 +1,18 @@
 export default function About() {
+  const isMobile = window.innerWidth <= 768;
+
   return (
     <div id="about" style={{
-      padding: "60px 30px",
+      padding: isMobile ? "40px 15px" : "60px 30px",
       background: "#fff",
       borderBottom: "1px solid var(--border)"
     }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "40px", fontSize: "36px" }}>
+        <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px" }}>
           About House of Jodha
         </h2>
 
-        <div style={{ fontSize: "16px", lineHeight: "1.8", color: "#333", marginBottom: "30px" }}>
+        <div style={{ fontSize: isMobile ? "14px" : "16px", lineHeight: "1.8", color: "#333", marginBottom: isMobile ? "20px" : "30px" }}>
           <p>
             <strong>House of Jodha</strong> is an honest attempt to make every woman across the globe shine the brightest inside and out. We intend to dress up the fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses.
           </p>
@@ -19,10 +21,10 @@ export default function About() {
             From traditional Saris, Anarkali Suits, Salwar Kameez, Lehengas, Shararas to modern Indo-Western fusion wear, we have it all available for our lovely ladies. Our beautiful Indian ethnic wear is sourced from skilled artisans across India and delivered to your doorstep.
           </p>
 
-          <h3 style={{ marginTop: "30px", marginBottom: "15px", color: "#08060d" }}>
+          <h3 style={{ marginTop: isMobile ? "20px" : "30px", marginBottom: isMobile ? "12px" : "15px", color: "#08060d", fontSize: isMobile ? "16px" : "18px" }}>
             Our Commitment
           </h3>
-          <ul style={{ lineHeight: "1.8" }}>
+          <ul style={{ lineHeight: "1.8", fontSize: isMobile ? "13px" : "15px", paddingLeft: isMobile ? "20px" : "25px" }}>
             <li>Varied choices ranging from minimal embellishments to elaborate, gorgeous designs</li>
             <li>Bespoke, made-to-measure, boutique-style stitching tailored to your body</li>
             <li>Premium quality fabrics and exquisite craftsmanship</li>
@@ -30,7 +32,7 @@ export default function About() {
             <li>Exceptional customer service and support</li>
           </ul>
 
-          <h3 style={{ marginTop: "30px", marginBottom: "15px", color: "#08060d" }}>
+          <h3 style={{ marginTop: isMobile ? "20px" : "30px", marginBottom: isMobile ? "12px" : "15px", color: "#08060d", fontSize: isMobile ? "16px" : "18px" }}>
             The Art of Indian Ethnic Wear
           </h3>
           <p>

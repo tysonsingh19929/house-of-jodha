@@ -1,4 +1,6 @@
 export default function ShopByOccasion() {
+  const isMobile = window.innerWidth <= 768;
+
   const occasions = [
     { name: "Mehendi", icon: "💚", color: "#22C55E" },
     { name: "Sangeet", icon: "🎵", color: "#F59E0B" },
@@ -10,18 +12,18 @@ export default function ShopByOccasion() {
 
   return (
     <div style={{
-      padding: "60px 30px",
+      padding: isMobile ? "40px 15px" : "60px 30px",
       background: "#f8f8f8",
       borderBottom: "1px solid #e5e4e7"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "36px", color: "#08060d" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#08060d" }}>
         Shop by Occasion
       </h2>
       
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-        gap: "20px",
+        gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(auto-fit, minmax(150px, 1fr))",
+        gap: isMobile ? "12px" : "20px",
         maxWidth: "1126px",
         margin: "0 auto"
       }}>
@@ -30,7 +32,7 @@ export default function ShopByOccasion() {
             key={idx}
             style={{
               textAlign: "center",
-              padding: "30px 20px",
+              padding: isMobile ? "20px 15px" : "30px 20px",
               background: "#fff",
               borderRadius: "8px",
               border: `2px solid ${occ.color}`,
@@ -46,8 +48,8 @@ export default function ShopByOccasion() {
               e.currentTarget.style.boxShadow = "none";
             }}
           >
-            <div style={{ fontSize: "40px", marginBottom: "10px" }}>{occ.icon}</div>
-            <p style={{ fontWeight: "600", color: occ.color, fontSize: "16px", margin: "0" }}>{occ.name}</p>
+            <div style={{ fontSize: isMobile ? "32px" : "40px", marginBottom: "10px" }}>{occ.icon}</div>
+            <p style={{ fontWeight: "600", color: occ.color, fontSize: isMobile ? "14px" : "16px", margin: "0" }}>{occ.name}</p>
           </div>
         ))}
       </div>

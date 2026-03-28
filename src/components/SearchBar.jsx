@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
+  const isMobile = window.innerWidth <= 768;
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -10,11 +11,12 @@ export default function SearchBar() {
 
   return (
     <form onSubmit={handleSearch} style={{
-      padding: "15px 30px"
+      padding: isMobile ? "12px 15px" : "15px 30px"
     }}>
       <div style={{
         display: "flex",
-        gap: "10px",
+        flexDirection: isMobile ? "column" : "row",
+        gap: isMobile ? "8px" : "10px",
         maxWidth: "500px",
         margin: "0 auto"
       }}>
@@ -25,10 +27,10 @@ export default function SearchBar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
             flex: "1",
-            padding: "10px 15px",
+            padding: isMobile ? "8px 12px" : "10px 15px",
             border: "1px solid #B8448D",
             borderRadius: "4px",
-            fontSize: "14px",
+            fontSize: isMobile ? "13px" : "14px",
             outline: "none"
           }}
         />
@@ -38,10 +40,11 @@ export default function SearchBar() {
             background: "#B8448D",
             color: "#fff",
             border: "none",
-            padding: "10px 20px",
+            padding: isMobile ? "8px 16px" : "10px 20px",
             borderRadius: "4px",
             cursor: "pointer",
-            fontWeight: "600"
+            fontWeight: "600",
+            fontSize: isMobile ? "14px" : "16px"
           }}
         >
           🔍

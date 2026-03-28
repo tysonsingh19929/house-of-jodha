@@ -53,6 +53,7 @@ const products = [
 
 export default function ProductCatalog({ onAddToCart }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const isMobile = window.innerWidth <= 768;
   
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
   
@@ -61,16 +62,16 @@ export default function ProductCatalog({ onAddToCart }) {
     : products.filter(p => p.category === selectedCategory);
 
   return (
-    <div id="products" style={{ padding: "60px 30px", maxWidth: "1126px", margin: "0 auto" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "40px", fontSize: "36px" }}>
+    <div id="products" style={{ padding: isMobile ? "40px 15px" : "60px 30px", maxWidth: "1126px", margin: "0 auto" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px" }}>
         Shop Our Collection
       </h2>
 
       {/* Category Filter */}
       <div style={{
         display: "flex",
-        gap: "10px",
-        marginBottom: "40px",
+        gap: isMobile ? "6px" : "10px",
+        marginBottom: isMobile ? "25px" : "40px",
         justifyContent: "center",
         flexWrap: "wrap"
       }}>
@@ -79,7 +80,8 @@ export default function ProductCatalog({ onAddToCart }) {
             key={cat}
             onClick={() => setSelectedCategory(cat)}
             style={{
-              padding: "8px 16px",
+              padding: isMobile ? "6px 12px" : "8px 16px",
+              fontSize: isMobile ? "12px" : "14px",
               background: selectedCategory === cat ? "var(--accent)" : "var(--border)",
               color: selectedCategory === cat ? "#fff" : "var(--text-h)",
               border: "none",
@@ -97,8 +99,8 @@ export default function ProductCatalog({ onAddToCart }) {
       {/* Product Grid */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: "30px"
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
+        gap: isMobile ? "15px" : "30px"
       }}>
         {filteredProducts.map(product => (
           <div
@@ -121,22 +123,22 @@ export default function ProductCatalog({ onAddToCart }) {
             }}
           >
             <div style={{
-              fontSize: "60px",
+              fontSize: isMobile ? "50px" : "60px",
               textAlign: "center",
-              padding: "40px",
+              padding: isMobile ? "30px" : "40px",
               background: "var(--accent-bg)"
             }}>
               {product.image}
             </div>
-            <div style={{ padding: "20px" }}>
-              <h3 style={{ fontSize: "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
+            <div style={{ padding: isMobile ? "15px" : "20px" }}>
+              <h3 style={{ fontSize: isMobile ? "14px" : "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
                 {product.name}
               </h3>
               <div style={{ marginBottom: "15px" }}>
-                <span style={{ fontSize: "14px", color: "var(--text)", textDecoration: "line-through" }}>
+                <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
                   ₹{product.originalPrice}
                 </span>
-                <span style={{ fontSize: "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
+                <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
                   ₹{product.price}
                 </span>
               </div>
@@ -144,7 +146,8 @@ export default function ProductCatalog({ onAddToCart }) {
                 onClick={() => onAddToCart(product)}
                 style={{
                   width: "100%",
-                  padding: "10px",
+                  padding: isMobile ? "8px" : "10px",
+                  fontSize: isMobile ? "13px" : "14px",
                   background: "var(--accent)",
                   color: "#fff",
                   border: "none",
