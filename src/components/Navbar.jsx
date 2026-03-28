@@ -23,19 +23,16 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       top: 0,
       zIndex: 100
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <img src="/house-of-jodha-logo.png" alt="House of Jodha" style={{ height: isMobile ? "40px" : "50px", width: "auto" }} />
-        <h2 style={{ margin: 0, color: "#D4AF37", fontSize: isMobile ? "16px" : "20px", fontWeight: "600" }}>
-          House of Jodha
-        </h2>
+      <div style={{ flex: 1 }}></div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <img src="/house-of-jodha-logo.png" alt="House of Jodha" style={{ height: isMobile ? "70px" : "90px", width: "auto" }} />
       </div>
-
       <div style={{ 
         display: "flex", 
         gap: isMobile ? "8px" : "30px", 
         alignItems: "center",
         fontSize: isMobile ? "12px" : "14px",
-        width: isMobile ? "100%" : "auto",
+        flex: 1,
         justifyContent: isMobile ? "space-around" : "flex-end"
       }}>
         <a href="#" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Home</a>
