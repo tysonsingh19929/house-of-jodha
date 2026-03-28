@@ -16,7 +16,7 @@ export default function ShopByOccasion() {
       background: "#f8f8f8",
       borderBottom: "1px solid #e5e4e7"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#08060d" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
         Shop by Occasion
       </h2>
       

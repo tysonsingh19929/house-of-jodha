@@ -37,7 +37,7 @@ export default function Newsletter() {
             flex: isMobile ? "1" : "1",
             minWidth: isMobile ? "100%" : "200px",
             padding: isMobile ? "10px 15px" : "12px 20px",
-            border: "1px solid #B8448D",
+            border: "1px solid #D4AF37",
             borderRadius: "4px",
             fontSize: isMobile ? "13px" : "14px",
             outline: "none"
@@ -46,7 +46,7 @@ export default function Newsletter() {
         <button
           type="submit"
           style={{
-            background: "#B8448D",
+            background: "#D4AF37",
             color: "#fff",
             border: "none",
             padding: isMobile ? "10px 20px" : "12px 30px",
@@ -61,7 +61,7 @@ export default function Newsletter() {
             e.target.style.transform = "scale(1.05)";
           }}
           onMouseLeave={e => {
-            e.target.style.background = "#B8448D";
+            e.target.style.background = "#D4AF37";
             e.target.style.transform = "scale(1)";
           }}
         >

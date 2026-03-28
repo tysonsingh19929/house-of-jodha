@@ -3,7 +3,7 @@ export default function PromoSection() {
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #B8448D 0%, rgba(184, 68, 141, 0.8) 100%)",
+      background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
       color: "#fff",
       padding: isMobile ? "25px 15px" : "40px 30px",
       textAlign: "center",
@@ -25,7 +25,7 @@ export default function PromoSection() {
       </p>
       <button style={{
         background: "#fff",
-        color: "#B8448D",
+        color: "#D4AF37",
         border: "none",
         padding: isMobile ? "10px 25px" : "12px 30px",
         fontSize: isMobile ? "14px" : "16px",

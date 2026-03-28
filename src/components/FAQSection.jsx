@@ -38,7 +38,7 @@ export default function FAQSection() {
       borderTop: "1px solid #e5e4e7",
       borderBottom: "1px solid #e5e4e7"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#08060d" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
         Frequently Asked Questions
       </h2>
 

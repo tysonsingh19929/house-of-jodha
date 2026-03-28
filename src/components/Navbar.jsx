@@ -23,7 +23,12 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       top: 0,
       zIndex: 100
     }}>
-      <h2 style={{ margin: 0, color: "#B8448D", fontSize: isMobile ? "18px" : "24px" }}>House of Jodha</h2>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <img src="/house-of-jodha-logo.png" alt="House of Jodha" style={{ height: isMobile ? "40px" : "50px", width: "auto" }} />
+        <h2 style={{ margin: 0, color: "#D4AF37", fontSize: isMobile ? "16px" : "20px", fontWeight: "600" }}>
+          House of Jodha
+        </h2>
+      </div>
 
       <div style={{ 
         display: "flex", 

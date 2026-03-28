@@ -38,7 +38,7 @@ export default function CustomerReviews() {
       background: "var(--accent-bg)",
       borderBottom: "1px solid var(--accent-border)"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
         Customer Reviews
       </h2>
 

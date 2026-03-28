@@ -8,7 +8,7 @@ export default function About() {
       borderBottom: "1px solid var(--border)"
     }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px" }}>
+        <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
           About House of Jodha
         </h2>
 

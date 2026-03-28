@@ -28,7 +28,7 @@ export default function SearchBar() {
           style={{
             flex: "1",
             padding: isMobile ? "8px 12px" : "10px 15px",
-            border: "1px solid #B8448D",
+            border: "1px solid #D4AF37",
             borderRadius: "4px",
             fontSize: isMobile ? "13px" : "14px",
             outline: "none"
@@ -37,7 +37,7 @@ export default function SearchBar() {
         <button
           type="submit"
           style={{
-            background: "#B8448D",
+            background: "#D4AF37",
             color: "#fff",
             border: "none",
             padding: isMobile ? "8px 16px" : "10px 20px",

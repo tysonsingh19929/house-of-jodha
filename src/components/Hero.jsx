@@ -11,7 +11,7 @@ export default function Hero() {
       <h1 style={{ 
         fontSize: isMobile ? "32px" : "56px",
         marginBottom: "20px",
-        color: "#B8448D",
+        color: "#D4AF37",
         margin: "0 0 20px 0"
       }}>
         House of Jodha

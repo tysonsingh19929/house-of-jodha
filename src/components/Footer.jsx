@@ -16,7 +16,7 @@ export default function Footer() {
         marginBottom: isMobile ? "25px" : "40px"
       }}>
         <div>
-          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "#B8448D" }}>
+          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "#D4AF37" }}>
             House of Jodha
           </h4>
           <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: "1.6", opacity: "0.9", margin: "0" }}>
@@ -61,9 +61,9 @@ export default function Footer() {
             <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📞 +1 (555) 123-4567</li>
             <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "10px" : "15px" }}>Follow us:</li>
             <li style={{ marginTop: "8px", fontSize: isMobile ? "14px" : "18px" }}>
-              <a href="#" style={{ color: "#B8448D", marginRight: isMobile ? "10px" : "15px", textDecoration: "none" }}>f</a>
-              <a href="#" style={{ color: "#B8448D", marginRight: isMobile ? "10px" : "15px", textDecoration: "none" }}>📷</a>
-              <a href="#" style={{ color: "#B8448D", textDecoration: "none" }}>𝕏</a>
+              <a href="#" style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none" }}>f</a>
+              <a href="#" style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none" }}>📷</a>
+              <a href="#" style={{ color: "#D4AF37", textDecoration: "none" }}>𝕏</a>
             </li>
           </ul>
         </div>

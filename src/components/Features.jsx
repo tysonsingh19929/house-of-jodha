@@ -31,7 +31,7 @@ export default function Features() {
       borderTop: "1px solid #e5e4e7",
       borderBottom: "1px solid #e5e4e7"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#08060d" }}>
+      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
         Why Choose House of Jodha?
       </h2>
       
@@ -46,9 +46,9 @@ export default function Features() {
           <div key={idx} style={{
             textAlign: "center",
             padding: isMobile ? "20px" : "30px",
-            background: "rgba(184, 68, 141, 0.08)",
+            background: "rgba(212, 175, 55, 0.08)",
             borderRadius: "8px",
-            border: "1px solid rgba(184, 68, 141, 0.3)"
+            border: "1px solid rgba(212, 175, 55, 0.3)"
           }}>
             <div style={{ fontSize: isMobile ? "32px" : "40px", marginBottom: "15px" }}>{feature.icon}</div>
             <h3 style={{ marginBottom: "10px", color: "#08060d", fontWeight: "600", fontSize: isMobile ? "16px" : "18px" }}>{feature.title}</h3>
