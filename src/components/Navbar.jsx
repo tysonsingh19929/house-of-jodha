@@ -25,7 +25,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
     }}>
       <div style={{ flex: 1 }}></div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <img src="/house-of-jodha-logo.png" alt="House of Jodha" style={{ height: isMobile ? "100px" : "120px", width: "auto" }} />
+        <img src="/house-of-jodha-logo.png" alt="House of Jodha" style={{ height: isMobile ? "120px" : "150px", width: "auto" }} />
       </div>
       <div style={{ 
         display: "flex", 
