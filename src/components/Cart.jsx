@@ -108,7 +108,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         flex: "1",
         overflowY: "auto",
         padding: "20px",
-        paddingBottom: "200px"
+        paddingBottom: "20px"
       }}>
         {groupedItems.length === 0 ? (
           <div style={{ padding: "40px 20px", textAlign: "center" }}>
@@ -212,16 +212,14 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         )}
       </div>
 
-      {/* Footer - Fixed */}
+      {/* Footer - Always Visible */}
       {groupedItems.length > 0 && (
         <div style={{
-          position: "absolute",
-          bottom: "0",
-          width: "100%",
           background: "#fff",
           borderTop: "2px solid #f0f0f0",
           padding: "20px",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          flexShrink: 0
         }}>
           <div style={{
             background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
@@ -244,7 +242,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           <button
             style={{
               width: "100%",
-              padding: "14px",
+              padding: "16px",
               background: "linear-gradient(135deg, #D4AF37 0%, #c49a27 100%)",
               color: "#fff",
               border: "none",
@@ -266,7 +264,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
             onClick={onClose}
             style={{
               width: "100%",
-              padding: "12px",
+              padding: "15px",
               background: "#2C4F3E",
               color: "#fff",
               border: "none",
