@@ -26,37 +26,39 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   return (
     <div style={{
       display: "flex",
-      justifyContent: "center",
+      justifyContent: "space-between",
       alignItems: "center",
-      padding: isMobile ? "12px 15px" : "15px 30px",
-      gap: isMobile ? "10px" : "30px",
+      padding: isMobile ? "10px 15px" : "10px 30px",
+      gap: "0",
       background: "#fff",
       boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
       position: "sticky",
       top: 0,
       zIndex: 100
     }}>
-      {/* Mobile Menu Button - Left */}
-      {isMobile && (
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            background: "none",
-            border: "none",
-            fontSize: "28px",
-            cursor: "pointer",
-            padding: "0",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#08060d"
-          }}
-        >
-          ☰
-        </button>
-      )}
+      {/* Left Section - Menu Button */}
+      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: "28px",
+              cursor: "pointer",
+              padding: "0",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#08060d"
+            }}
+          >
+            ☰
+          </button>
+        )}
+      </div>
 
       {/* Desktop Navigation - Left */}
       {!isMobile && (
@@ -125,36 +127,39 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         </div>
       )}
 
-      {/* Logo - Center */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {/* Center - Logo */}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <img 
           src="/house-of-jodha-logo.png" 
           alt="House of Jodha" 
           onClick={() => navigate("/")}
           style={{ 
-            height: isMobile ? "140px" : "180px", 
+            height: isMobile ? "120px" : "150px", 
             width: "auto", 
             cursor: "pointer" 
           }} 
         />
       </div>
 
-      {/* Cart Button - Right */}
-      <button 
-        onClick={onCartClick}
-        style={{
-          background: "var(--accent)",
-          color: "#fff",
-          border: "none",
-          padding: isMobile ? "6px 12px" : "8px 16px",
-          fontSize: isMobile ? "12px" : "14px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontWeight: "500"
-        }}
-      >
-        🛍️ Cart ({cartCount})
-      </button>
+      {/* Right Section - Cart Button */}
+      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <button 
+          onClick={onCartClick}
+          style={{
+            background: "var(--accent)",
+            color: "#fff",
+            border: "none",
+            padding: isMobile ? "8px 12px" : "8px 14px",
+            fontSize: isMobile ? "13px" : "13px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "600",
+            whiteSpace: "nowrap"
+          }}
+        >
+          🛍️ Cart ({cartCount})
+        </button>
+      </div>
 
       {/* Mobile Menu */}
       {isMobile && menuOpen && (

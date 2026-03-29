@@ -7,24 +7,24 @@ export default function Hero() {
   return (
     <div id="home" style={{
       background: "linear-gradient(135deg, var(--accent-bg) 0%, rgba(170, 59, 255, 0.05) 100%)",
-      padding: isMobile ? "40px 20px" : "80px 30px",
+      padding: isMobile ? "20px 20px" : "40px 30px",
       textAlign: "center",
       borderBottom: "1px solid var(--border)"
     }}>
       <h1 style={{ 
-        fontSize: isMobile ? "32px" : "56px",
-        marginBottom: "20px",
+        fontSize: isMobile ? "28px" : "48px",
+        marginBottom: "10px",
         color: "#D4AF37",
-        margin: "0 0 20px 0"
+        margin: "0 0 10px 0"
       }}>
         House of Jodha
       </h1>
       <p style={{ 
-        fontSize: isMobile ? "16px" : "20px",
+        fontSize: isMobile ? "14px" : "16px",
         color: "var(--text)", 
-        marginBottom: "30px", 
+        marginBottom: "0", 
         maxWidth: "600px", 
-        margin: "0 auto 30px" 
+        margin: "0 auto" 
       }}>
         Exquisite Indian ethnic wear designed for the modern diva. Handpicked, carefully curated, and tailored to perfection.
       </p>
