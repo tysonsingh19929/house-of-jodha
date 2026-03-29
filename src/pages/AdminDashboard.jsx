@@ -192,10 +192,10 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
+    <div style={{ padding: "40px 20px", maxWidth: "1400px", margin: "0 auto" }}>
       {/* Header with Logout */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
-        <h1 style={{ textAlign: "center", color: "#2C4F3E", marginBottom: "0", flex: 1 }}>
+        <h1 style={{ color: "#2C4F3E", marginBottom: "0" }}>
           🛍️ Product Management Dashboard
         </h1>
         <button
@@ -221,9 +221,17 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* Add Product Form */}
-      <div style={{ background: "#fff", borderRadius: "8px", padding: "30px", marginBottom: "40px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-        <h2 style={{ color: "#2C4F3E", marginBottom: "25px" }}>Add New Product</h2>
+      {/* 2-Column Layout - Responsive */}
+      <div style={{ 
+        display: "grid", 
+        gridTemplateColumns: window.innerWidth <= 1024 ? "1fr" : "1fr 1fr", 
+        gap: "30px", 
+        marginBottom: "40px" 
+      }}>
+        
+        {/* LEFT: Add Product Form */}
+        <div style={{ background: "#fff", borderRadius: "12px", padding: "30px", boxShadow: "0 2px 12px rgba(0,0,0,0.1)" }}>
+          <h2 style={{ color: "#2C4F3E", marginBottom: "25px", fontSize: "20px" }}>➕ Add New Product</h2>
         
         <form onSubmit={handleSubmit}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
@@ -426,48 +434,59 @@ export default function AdminDashboard() {
             ✅ Add Product to Catalog
           </button>
         </form>
-      </div>
+        </div>
 
-      {/* Custom Products List */}
-      {customProducts.length > 0 ? (
-        <div style={{ background: "#fff", borderRadius: "8px", padding: "30px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+        {/* RIGHT: Existing Products List */}
+        <div style={{ background: "#fff", borderRadius: "12px", padding: "30px", boxShadow: "0 2px 12px rgba(0,0,0,0.1)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "25px" }}>
-            <h2 style={{ color: "#2C4F3E", marginBottom: "0" }}>
-              Your Custom Products ({customProducts.length})
+            <h2 style={{ color: "#2C4F3E", marginBottom: "0", fontSize: "20px" }}>
+              📦 Your Products ({customProducts.length})
             </h2>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                padding: "10px 16px",
-                fontSize: "13px",
-                background: "#4CAF50",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontWeight: "600"
-              }}
-              onMouseEnter={e => e.target.style.background = "#45a049"}
-              onMouseLeave={e => e.target.style.background = "#4CAF50"}
-            >
-              🔄 Refresh
-            </button>
+            {customProducts.length > 0 && (
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  padding: "8px 14px",
+                  fontSize: "12px",
+                  background: "#4CAF50",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "600"
+                }}
+                onMouseEnter={e => e.target.style.background = "#45a049"}
+                onMouseLeave={e => e.target.style.background = "#4CAF50"}
+              >
+                🔄 Refresh
+              </button>
+            )}
           </div>
-          
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+
+          {/* Products List */}
+          {customProducts.length > 0 ? (
+            <div style={{ overflowX: "auto", maxHeight: "600px", overflowY: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
-                <tr style={{ background: "#f5f5f5", borderBottom: "2px solid #ddd" }}>
-                  <th style={{ padding: "12px", textAlign: "left", fontWeight: "600" }}>Product</th>
-                  <th style={{ padding: "12px", textAlign: "left", fontWeight: "600" }}>Category</th>
-                  <th style={{ padding: "12px", textAlign: "left", fontWeight: "600" }}>Sale Price</th>
-                  <th style={{ padding: "12px", textAlign: "left", fontWeight: "600" }}>Original Price</th>
-                  <th style={{ padding: "12px", textAlign: "center", fontWeight: "600" }}>Action</th>
+                <tr style={{ background: "#2C4F3E", borderBottom: "2px solid #1a2f28", color: "#fff" }}>
+                  <th style={{ padding: "14px", textAlign: "left", fontWeight: "700", fontSize: "13px" }}>Product</th>
+                  <th style={{ padding: "14px", textAlign: "left", fontWeight: "700", fontSize: "13px" }}>Category</th>
+                  <th style={{ padding: "14px", textAlign: "left", fontWeight: "700", fontSize: "13px" }}>Sale Price</th>
+                  <th style={{ padding: "14px", textAlign: "left", fontWeight: "700", fontSize: "13px" }}>Original Price</th>
+                  <th style={{ padding: "14px", textAlign: "center", fontWeight: "700", fontSize: "13px" }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {customProducts.map(product => (
-                  <tr key={product.id} style={{ borderBottom: "1px solid #eee" }}>
+                  <tr 
+                    key={product.id} 
+                    style={{ 
+                      borderBottom: "1px solid #eee",
+                      transition: "background-color 0.2s"
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = "#f9f9f9"}
+                    onMouseLeave={e => e.currentTarget.style.background = "#fff"}
+                  >
                     <td style={{ padding: "12px" }}>
                       <img 
                         src={product.image} 
@@ -491,52 +510,67 @@ export default function AdminDashboard() {
                       <button
                         onClick={() => startEdit(product)}
                         style={{
-                          padding: "6px 10px",
+                          padding: "8px 12px",
                           fontSize: "12px",
                           background: "#4CAF50",
                           color: "#fff",
                           border: "none",
                           borderRadius: "4px",
                           cursor: "pointer",
-                          fontWeight: "600",
-                          marginRight: "6px"
+                          fontWeight: "700",
+                          marginRight: "6px",
+                          transition: "all 0.2s"
                         }}
-                        onMouseEnter={e => e.target.style.background = "#45a049"}
-                        onMouseLeave={e => e.target.style.background = "#4CAF50"}
+                        onMouseEnter={e => {
+                          e.target.style.background = "#45a049";
+                          e.target.style.transform = "scale(1.05)";
+                        }}
+                        onMouseLeave={e => {
+                          e.target.style.background = "#4CAF50";
+                          e.target.style.transform = "scale(1)";
+                        }}
                       >
-                        Edit
+                        ✏️ Edit
                       </button>
                       <button
                         onClick={() => deleteProduct(product.id)}
                         style={{
-                          padding: "6px 10px",
+                          padding: "8px 12px",
                           fontSize: "12px",
                           background: "#ff6b6b",
                           color: "#fff",
                           border: "none",
                           borderRadius: "4px",
                           cursor: "pointer",
-                          fontWeight: "600"
+                          fontWeight: "700",
+                          transition: "all 0.2s"
                         }}
-                        onMouseEnter={e => e.target.style.background = "#ff5252"}
-                        onMouseLeave={e => e.target.style.background = "#ff6b6b"}
+                        onMouseEnter={e => {
+                          e.target.style.background = "#ff5252";
+                          e.target.style.transform = "scale(1.05)";
+                        }}
+                        onMouseLeave={e => {
+                          e.target.style.background = "#ff6b6b";
+                          e.target.style.transform = "scale(1)";
+                        }}
                       >
-                        Delete
+                        🗑️ Delete
                       </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "40px 20px" }}>
+              <p style={{ fontSize: "16px", color: "#999", margin: "0" }}>
+                📭 No products yet. Add one from the left side!
+              </p>
+            </div>
+          )}
         </div>
-      ) : (
-        <div style={{ background: "#fff", borderRadius: "8px", padding: "40px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-          <p style={{ fontSize: "16px", color: "#666", margin: "0" }}>
-            📭 No products yet. Add your first product above!
-          </p>
-        </div>
-      )}
+      </div>
 
       {/* Back to Home */}
       <div style={{ textAlign: "center", marginTop: "40px" }}>
