@@ -1,13 +1,27 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ cartCount = 0, onCartClick }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleNavClick = (sectionId) => {
+    setMenuOpen(false);
+    navigate("/");
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  };
 
   return (
     <div style={{
@@ -23,9 +37,34 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       top: 0,
       zIndex: 100
     }}>
+      {/* Mobile Menu Button */}
+      {isMobile && (
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            background: "none",
+            border: "none",
+            fontSize: "24px",
+            cursor: "pointer",
+            padding: "0"
+          }}
+        >
+          ☰
+        </button>
+      )}
+
       <div style={{ flex: 1 }}></div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <img src="/house-of-jodha-logo.png" alt="House of Jodha" style={{ height: isMobile ? "120px" : "150px", width: "auto" }} />
+        <img 
+          src="/house-of-jodha-logo.png" 
+          alt="House of Jodha" 
+          onClick={() => navigate("/")}
+          style={{ 
+            height: isMobile ? "120px" : "150px", 
+            width: "auto", 
+            cursor: "pointer" 
+          }} 
+        />
       </div>
       <div style={{ 
         display: "flex", 
@@ -35,10 +74,66 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         flex: 1,
         justifyContent: isMobile ? "space-around" : "flex-end"
       }}>
-        <a href="#home" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Home</a>
-        <a href="#products" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Shop</a>
-        <a href="#reviews" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Reviews</a>
-        <a href="#about" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>About</a>
+        <button 
+          onClick={() => handleNavClick("home")}
+          style={{ 
+            textDecoration: "none", 
+            color: "#08060d", 
+            fontWeight: "600", 
+            display: isMobile ? "none" : "inline",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "inherit"
+          }}
+        >
+          Home
+        </button>
+        <button 
+          onClick={() => handleNavClick("products")}
+          style={{ 
+            textDecoration: "none", 
+            color: "#08060d", 
+            fontWeight: "600", 
+            display: isMobile ? "none" : "inline",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "inherit"
+          }}
+        >
+          Shop
+        </button>
+        <button 
+          onClick={() => handleNavClick("reviews")}
+          style={{ 
+            textDecoration: "none", 
+            color: "#08060d", 
+            fontWeight: "600", 
+            display: isMobile ? "none" : "inline",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "inherit"
+          }}
+        >
+          Reviews
+        </button>
+        <button 
+          onClick={() => handleNavClick("about")}
+          style={{ 
+            textDecoration: "none", 
+            color: "#08060d", 
+            fontWeight: "600", 
+            display: isMobile ? "none" : "inline",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "inherit"
+          }}
+        >
+          About
+        </button>
         <button 
           onClick={onCartClick}
           style={{
@@ -55,6 +150,85 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           🛍️ Cart ({cartCount})
         </button>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobile && menuOpen && (
+        <div style={{
+          position: "absolute",
+          top: "100%",
+          left: "0",
+          right: "0",
+          background: "#fff",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 99
+        }}>
+          <button 
+            onClick={() => handleNavClick("home")}
+            style={{
+              padding: "12px 15px",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #e5e4e7",
+              cursor: "pointer",
+              color: "#08060d",
+              fontWeight: "600",
+              fontSize: "14px"
+            }}
+          >
+            🏠 Home
+          </button>
+          <button 
+            onClick={() => handleNavClick("products")}
+            style={{
+              padding: "12px 15px",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #e5e4e7",
+              cursor: "pointer",
+              color: "#08060d",
+              fontWeight: "600",
+              fontSize: "14px"
+            }}
+          >
+            🛍️ Shop
+          </button>
+          <button 
+            onClick={() => handleNavClick("reviews")}
+            style={{
+              padding: "12px 15px",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #e5e4e7",
+              cursor: "pointer",
+              color: "#08060d",
+              fontWeight: "600",
+              fontSize: "14px"
+            }}
+          >
+            ⭐ Reviews
+          </button>
+          <button 
+            onClick={() => handleNavClick("about")}
+            style={{
+              padding: "12px 15px",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "#08060d",
+              fontWeight: "600",
+              fontSize: "14px"
+            }}
+          >
+            ℹ️ About
+          </button>
+        </div>
+      )}
     </div>
   );
 }
