@@ -177,30 +177,30 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       )}
 
       {/* Center - Logo */}
-      <div style={{ flex: isMobile ? "0 1 auto" : "1", display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0" }}>
+      <div style={{ flex: isMobile ? "0 1 auto" : "1", display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0", maxWidth: window.innerWidth <= 320 ? "80px" : "120px" }}>
         <img 
           src="/house-of-jodha-logo.png" 
           alt="House of Jodha" 
           onClick={() => navigate("/")}
           style={{ 
-            height: isMobile ? "80px" : "150px", 
+            height: window.innerWidth <= 320 ? "60px" : isMobile ? "80px" : "150px", 
             width: "auto", 
             cursor: "pointer",
-            maxWidth: isMobile ? "120px" : "100%"
+            maxWidth: window.innerWidth <= 320 ? "70px" : isMobile ? "120px" : "100%"
           }} 
         />
       </div>
 
       {/* Right Section - Cart Button */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: isMobile ? "120px" : "150px", flexShrink: 0, position: "relative", zIndex: 1002 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: window.innerWidth <= 320 ? "90px" : isMobile ? "120px" : "150px", flexShrink: 0, position: "relative", zIndex: 1002, marginLeft: "auto" }}>
         <button 
           onClick={onCartClick}
           style={{
             background: "var(--accent)",
             color: "#fff",
             border: "none",
-            padding: isMobile ? "12px 12px" : "8px 14px",
-            fontSize: isMobile ? "12px" : "13px",
+            padding: window.innerWidth <= 320 ? "10px 8px" : isMobile ? "12px 12px" : "8px 14px",
+            fontSize: window.innerWidth <= 320 ? "11px" : isMobile ? "12px" : "13px",
             borderRadius: "4px",
             cursor: "pointer",
             fontWeight: "600",
@@ -208,7 +208,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             overflow: "hidden",
             textOverflow: "ellipsis",
             flex: "1",
-            minHeight: isMobile ? "44px" : "auto",
+            minHeight: window.innerWidth <= 320 ? "40px" : isMobile ? "44px" : "auto",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
