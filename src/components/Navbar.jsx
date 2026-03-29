@@ -59,7 +59,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: isMobile ? "10px 15px" : "10px 30px",
+      padding: isMobile ? "8px 10px" : "10px 30px",
       gap: "0",
       background: "#fff",
       boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
@@ -72,7 +72,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       boxSizing: "border-box"
     }}>
       {/* Left Section - Menu Button */}
-      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {isMobile && (
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -177,38 +177,36 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       )}
 
       {/* Center - Logo */}
-      <div style={{ flex: isMobile ? "0 1 auto" : "1", display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0", maxWidth: window.innerWidth <= 320 ? "80px" : "120px" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0" }}>
         <img 
           src="/house-of-jodha-logo.png" 
           alt="House of Jodha" 
           onClick={() => navigate("/")}
           style={{ 
-            height: window.innerWidth <= 320 ? "60px" : isMobile ? "80px" : "150px", 
+            height: isMobile ? "100px" : "150px", 
             width: "auto", 
             cursor: "pointer",
-            maxWidth: window.innerWidth <= 320 ? "70px" : isMobile ? "120px" : "100%"
+            maxWidth: isMobile ? "140px" : "100%"
           }} 
         />
       </div>
 
       {/* Right Section - Cart Button */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: window.innerWidth <= 320 ? "90px" : isMobile ? "120px" : "150px", flexShrink: 0, position: "relative", zIndex: 1002, marginLeft: "auto" }}>
+      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", zIndex: 1002 }}>
         <button 
           onClick={onCartClick}
           style={{
             background: "var(--accent)",
             color: "#fff",
             border: "none",
-            padding: window.innerWidth <= 320 ? "10px 8px" : isMobile ? "12px 12px" : "8px 14px",
-            fontSize: window.innerWidth <= 320 ? "11px" : isMobile ? "12px" : "13px",
+            padding: "8px 10px",
+            fontSize: isMobile ? "11px" : "12px",
             borderRadius: "4px",
             cursor: "pointer",
             fontWeight: "600",
             whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            flex: "1",
-            minHeight: window.innerWidth <= 320 ? "40px" : isMobile ? "44px" : "auto",
+            width: "100%",
+            height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -231,9 +229,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
           display: "flex",
           flexDirection: "column",
-          zIndex: 998,
-          maxHeight: "calc(100vh - 60px)",
-          overflowY: "auto"
+          zIndex: 998
         }}>
           <button 
             onClick={() => handleNavClick("home")}
