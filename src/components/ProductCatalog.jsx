@@ -63,10 +63,6 @@ export default function ProductCatalog({ onAddToCart }) {
 
   return (
     <div id="products" style={{ padding: isMobile ? "40px 15px" : "60px 30px", maxWidth: "1126px", margin: "0 auto" }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
-        Shop Our Collection
-      </h2>
-
       {/* Category Filter */}
       <div style={{
         display: "flex",

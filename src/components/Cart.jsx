@@ -1,20 +1,66 @@
-export default function Cart({ items, onRemove, onClose }) {
-  const total = items.reduce((sum, item) => sum + item.price, 0);
+import { useEffect, useRef } from "react";
+
+export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
+  const cartRef = useRef(null);
+  
+  // Group items by id and calculate quantities
+  const groupedItems = items.reduce((acc, item) => {
+    const existing = acc.find(i => i.id === item.id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      acc.push({ ...item, quantity: 1 });
+    }
+    return acc;
+  }, []);
+
+  const total = groupedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  // Close cart when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (cartRef.current && !cartRef.current.contains(e.target)) {
+        onClose();
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    if (newQuantity <= 0) {
+      // Remove item
+      const firstIndex = items.findIndex(i => i.id === itemId);
+      if (firstIndex !== -1) onRemove(firstIndex);
+    } else if (newQuantity > groupedItems.find(i => i.id === itemId)?.quantity) {
+      // Increase quantity - add item
+      // This is handled by the parent component
+    } else {
+      // Decrease quantity
+      const firstIndex = items.findIndex(i => i.id === itemId);
+      if (firstIndex !== -1) onRemove(firstIndex);
+    }
+  };
 
   return (
-    <div style={{
-      position: "fixed",
-      top: "60px",
-      right: "0",
-      width: "100%",
-      maxWidth: "400px",
-      height: "calc(100vh - 60px)",
-      background: "#fff",
-      boxShadow: "-2px 0 10px rgba(0,0,0,0.2)",
-      zIndex: "99",
-      overflow: "auto",
-      animation: "slideIn 0.3s ease-out"
-    }}>
+    <div
+      ref={cartRef}
+      style={{
+        position: "fixed",
+        top: "60px",
+        right: "0",
+        width: "100%",
+        maxWidth: "450px",
+        height: "calc(100vh - 60px)",
+        background: "#fff",
+        boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
+        zIndex: "99",
+        display: "flex",
+        flexDirection: "column",
+        animation: "slideIn 0.3s ease-out"
+      }}
+    >
       <style>{`
         @keyframes slideIn {
           from { transform: translateX(100%); }
@@ -22,119 +68,215 @@ export default function Cart({ items, onRemove, onClose }) {
         }
       `}</style>
 
-      <div style={{ padding: "20px", borderBottom: "1px solid var(--border)" }}>
+      {/* Header */}
+      <div style={{ 
+        padding: "20px", 
+        borderBottom: "2px solid #f0f0f0",
+        background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)"
+      }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ margin: "0" }}>Shopping Cart</h3>
+          <h3 style={{ margin: "0", color: "#fff", fontSize: "20px", fontWeight: "700" }}>
+            🛍️ My Cart ({groupedItems.length} items)
+          </h3>
           <button
             onClick={onClose}
             style={{
-              background: "none",
+              background: "rgba(255,255,255,0.3)",
               border: "none",
               fontSize: "24px",
-              cursor: "pointer"
+              cursor: "pointer",
+              padding: "4px 8px",
+              borderRadius: "4px",
+              color: "#fff",
+              transition: "all 0.2s"
             }}
+            onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.5)"}
+            onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.3)"}
           >
             ✕
           </button>
         </div>
       </div>
 
-      {items.length === 0 ? (
-        <div style={{ padding: "40px 20px", textAlign: "center" }}>
-          <p style={{ fontSize: "18px", color: "var(--text)" }}>Your cart is empty</p>
-          <p style={{ fontSize: "14px", color: "var(--text)" }}>Add items to start shopping! 🛍️</p>
-        </div>
-      ) : (
-        <>
-          <div style={{ padding: "20px" }}>
-            {items.map((item, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: "15px",
-                  marginBottom: "15px",
-                  borderBottom: "1px solid var(--border)"
-                }}
-              >
-                <div style={{ flex: "1" }}>
-                  <p style={{ margin: "0 0 5px 0", fontWeight: "600", fontSize: "14px" }}>
-                    {item.name}
-                  </p>
-                  <p style={{ margin: "0", color: "var(--accent)", fontWeight: "600" }}>
-                    ₹{item.price}
-                  </p>
-                </div>
+      {/* Items List */}
+      <div style={{
+        flex: "1",
+        overflowY: "auto",
+        padding: "20px",
+        paddingBottom: "200px"
+      }}>
+        {groupedItems.length === 0 ? (
+          <div style={{ padding: "40px 20px", textAlign: "center" }}>
+            <p style={{ fontSize: "18px", color: "#666", margin: "0 0 10px 0" }}>Your cart is empty</p>
+            <p style={{ fontSize: "14px", color: "#999", margin: "0" }}>Add items to start shopping! 🛍️</p>
+          </div>
+        ) : (
+          groupedItems.map((item, idx) => (
+            <div
+              key={idx}
+              style={{
+                background: "#f9f9f9",
+                borderRadius: "8px",
+                padding: "15px",
+                marginBottom: "15px",
+                border: "1px solid #e0e0e0",
+                transition: "all 0.2s"
+              }}
+            >
+              <div style={{ marginBottom: "12px" }}>
+                <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: "15px", color: "#08060d" }}>
+                  {item.name}
+                </p>
+                <p style={{ margin: "0", color: "#D4AF37", fontWeight: "700", fontSize: "16px" }}>
+                  ₹{item.price}
+                </p>
+              </div>
+
+              {/* Quantity Controls */}
+              <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
                 <button
-                  onClick={() => onRemove(idx)}
-                  style={{
-                    background: "#ff6b6b",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "5px 10px",
-                    cursor: "pointer",
-                    fontSize: "12px"
+                  onClick={() => {
+                    // Decrease quantity
+                    const itemIndex = items.findIndex(i => i.id === item.id);
+                    if (itemIndex !== -1) onRemove(itemIndex);
                   }}
+                  style={{
+                    background: "#f0f0f0",
+                    border: "1px solid #ddd",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#333",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => e.target.style.background = "#e0e0e0"}
+                  onMouseLeave={e => e.target.style.background = "#f0f0f0"}
                 >
-                  Remove
+                  −
+                </button>
+                <span style={{
+                  flex: "1",
+                  textAlign: "center",
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  color: "#333"
+                }}>
+                  {item.quantity}
+                </span>
+                <button
+                  onClick={() => {
+                    // Increase will be handled by parent adding item again
+                    // We'll need to modify this approach
+                  }}
+                  style={{
+                    background: "#D4AF37",
+                    border: "none",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#fff",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => e.target.style.background = "#c49a27"}
+                  onMouseLeave={e => e.target.style.background = "#D4AF37"}
+                >
+                  +
                 </button>
               </div>
-            ))}
-          </div>
 
+              {/* Subtotal */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "13px",
+                color: "#666",
+                borderTop: "1px solid #e0e0e0",
+                paddingTop: "10px"
+              }}>
+                <span>Subtotal:</span>
+                <span style={{ fontWeight: "700", color: "#333" }}>₹{item.price * item.quantity}</span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Footer - Fixed */}
+      {groupedItems.length > 0 && (
+        <div style={{
+          position: "absolute",
+          bottom: "0",
+          width: "100%",
+          background: "#fff",
+          borderTop: "2px solid #f0f0f0",
+          padding: "20px",
+          boxSizing: "border-box"
+        }}>
           <div style={{
-            position: "absolute",
-            bottom: "0",
-            width: "100%",
-            background: "#fff",
-            borderTop: "1px solid var(--border)",
-            padding: "20px"
+            background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
+            padding: "15px",
+            borderRadius: "8px",
+            marginBottom: "15px"
           }}>
             <div style={{
               display: "flex",
               justifyContent: "space-between",
-              marginBottom: "15px",
               fontSize: "18px",
-              fontWeight: "600"
+              fontWeight: "700",
+              color: "#08060d"
             }}>
-              <span>Total:</span>
-              <span style={{ color: "var(--accent)" }}>₹{total}</span>
+              <span>Total Amount:</span>
+              <span style={{ color: "#D4AF37", fontSize: "24px" }}>₹{total}</span>
             </div>
-            <button
-              style={{
-                width: "100%",
-                padding: "12px",
-                background: "var(--accent)",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontWeight: "600",
-                marginBottom: "10px"
-              }}
-            >
-              Checkout
-            </button>
-            <button
-              onClick={onClose}
-              style={{
-                width: "100%",
-                padding: "10px",
-                background: "var(--border)",
-                color: "var(--text-h)",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontWeight: "500"
-              }}
-            >
-              Continue Shopping
-            </button>
           </div>
-        </>
+
+          <button
+            style={{
+              width: "100%",
+              padding: "14px",
+              background: "linear-gradient(135deg, #D4AF37 0%, #c49a27 100%)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "700",
+              fontSize: "15px",
+              marginBottom: "10px",
+              transition: "all 0.3s",
+              boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)"
+            }}
+            onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
+            onMouseLeave={e => e.target.style.transform = "translateY(0)"}
+          >
+            Proceed to Checkout
+          </button>
+
+          <button
+            onClick={onClose}
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "#2C4F3E",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "14px",
+              transition: "all 0.3s"
+            }}
+            onMouseEnter={e => e.target.style.background = "#1f3a2c"}
+            onMouseLeave={e => e.target.style.background = "#2C4F3E"}
+          >
+            Continue Shopping
+          </button>
+        </div>
       )}
     </div>
   );
