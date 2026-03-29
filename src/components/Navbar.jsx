@@ -35,7 +35,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         flex: 1,
         justifyContent: isMobile ? "space-around" : "flex-end"
       }}>
-        <a href="#" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Home</a>
+        <a href="#home" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Home</a>
         <a href="#products" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Shop</a>
         <a href="#reviews" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>Reviews</a>
         <a href="#about" style={{ textDecoration: "none", color: "#08060d", fontWeight: "600", display: isMobile ? "none" : "inline" }}>About</a>

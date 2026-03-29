@@ -2,7 +2,7 @@ export default function Hero() {
   const isMobile = window.innerWidth <= 768;
 
   return (
-    <div style={{
+    <div id="home" style={{
       background: "linear-gradient(135deg, var(--accent-bg) 0%, rgba(170, 59, 255, 0.05) 100%)",
       padding: isMobile ? "40px 20px" : "80px 30px",
       textAlign: "center",
