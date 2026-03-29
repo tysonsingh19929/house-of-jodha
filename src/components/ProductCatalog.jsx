@@ -194,12 +194,12 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
   }
 
   return (
-    <div style={{ padding: "40px 20px", width: "100%" }}>
+    <div style={{ padding: "30px 20px", width: "100%", background: "#f5f5f5" }}>
       {/* Category Filter */}
       <div style={{
         display: "flex",
         gap: "10px",
-        marginBottom: "40px",
+        marginBottom: "30px",
         justifyContent: "center",
         flexWrap: "wrap"
       }}>
@@ -208,14 +208,15 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
             key={cat}
             onClick={() => setSelectedCategory(cat)}
             style={{
-              padding: "8px 16px",
+              padding: "10px 20px",
               fontSize: "14px",
-              background: selectedCategory === cat ? "var(--accent)" : "var(--border)",
-              color: selectedCategory === cat ? "#fff" : "var(--text-h)",
-              border: "none",
-              borderRadius: "20px",
+              background: selectedCategory === cat ? "var(--accent)" : "#fff",
+              color: selectedCategory === cat ? "#fff" : "#666",
+              border: selectedCategory === cat ? "none" : "1px solid #ddd",
+              borderRadius: "4px",
               cursor: "pointer",
-              fontWeight: "500"
+              fontWeight: selectedCategory === cat ? "600" : "500",
+              transition: "all 0.2s"
             }}
           >
             {cat}
@@ -223,55 +224,182 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
         ))}
       </div>
 
-      <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: "30px", fontSize: "16px", fontWeight: "600", textAlign: "center" }}>
+      <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: "30px", fontSize: "14px", fontWeight: "600", textAlign: "center" }}>
         ✨ {filteredProducts.length} {selectedCategory} products
       </div>
 
-      {/* Product Grid - SUPER SIMPLE */}
-      <div style={{ width: "100%" }}>
-        {filteredProducts.map((product) => (
-          <div
-            key={product.id}
-            style={{
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              padding: "20px",
-              marginBottom: "20px",
-              background: "#fff"
-            }}
-          >
-            <div style={{ fontSize: "50px", textAlign: "center", marginBottom: "15px" }}>
-              {product.image}
-            </div>
-            <h3 style={{ fontSize: "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
-              {product.name}
-            </h3>
-            <div style={{ marginBottom: "15px" }}>
-              <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
-                ₹{product.originalPrice}
-              </span>
-              <span style={{ fontSize: "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
-                ₹{product.price}
-              </span>
-            </div>
-            <button
-              onClick={() => handleAddProduct(product)}
+      {/* Product Grid - Myntra Style */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+        gap: "16px",
+        width: "100%"
+      }}>
+        {filteredProducts.map((product) => {
+          const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+          return (
+            <div
+              key={product.id}
               style={{
-                width: "100%",
-                padding: "10px",
-                fontSize: "14px",
-                background: "var(--accent)",
-                color: "#fff",
-                border: "none",
+                background: "#fff",
                 borderRadius: "4px",
+                overflow: "hidden",
                 cursor: "pointer",
-                fontWeight: "500"
+                transition: "all 0.3s",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+                position: "relative"
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.1)";
               }}
             >
-              Add to Cart
-            </button>
-          </div>
-        ))}
+              {/* Image Container */}
+              <div style={{
+                background: "linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)",
+                aspectRatio: "1 / 1",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "60px",
+                position: "relative",
+                overflow: "hidden"
+              }}>
+                {product.image}
+                {/* Wishlist Icon */}
+                <button
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    background: "#fff",
+                    border: "none",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                  }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  ♡
+                </button>
+              </div>
+
+              {/* Product Info */}
+              <div style={{ padding: "12px" }}>
+                {/* Brand/Category Badge */}
+                <div style={{ fontSize: "11px", color: "#999", marginBottom: "4px", textTransform: "uppercase", fontWeight: "600" }}>
+                  {product.category}
+                </div>
+
+                {/* Product Name */}
+                <h3 style={{
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#333",
+                  marginBottom: "8px",
+                  lineHeight: "1.4",
+                  height: "32px",
+                  overflow: "hidden"
+                }}>
+                  {product.name}
+                </h3>
+
+                {/* Rating */}
+                <div style={{ fontSize: "12px", marginBottom: "8px", color: "#ff6b6b" }}>
+                  ⭐ 4.3 ★ <span style={{ color: "#999" }}>(2.2k)</span>
+                </div>
+
+                {/* Pricing */}
+                <div style={{ marginBottom: "10px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "16px", fontWeight: "700", color: "#333" }}>
+                      ₹{product.price}
+                    </span>
+                    <span style={{ fontSize: "13px", color: "#999", textDecoration: "line-through" }}>
+                      ₹{product.originalPrice}
+                    </span>
+                    <span style={{ fontSize: "12px", fontWeight: "600", color: "#ff6b6b" }}>
+                      ({discount}% OFF)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Add to Cart Button */}
+                {addedProducts[product.id] ? (
+                  <div style={{
+                    display: "flex",
+                    gap: "6px",
+                    alignItems: "center"
+                  }}>
+                    <button
+                      onClick={() => handleDecreaseQuantity(product)}
+                      style={{
+                        flex: 1,
+                        padding: "6px",
+                        fontSize: "14px",
+                        background: "var(--accent)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                        fontWeight: "600"
+                      }}
+                    >
+                      −
+                    </button>
+                    <span style={{ flex: 1, textAlign: "center", fontSize: "13px", fontWeight: "600", color: "var(--accent)" }}>
+                      {addedProducts[product.id]}
+                    </span>
+                    <button
+                      onClick={() => handleIncreaseQuantity(product)}
+                      style={{
+                        flex: 1,
+                        padding: "6px",
+                        fontSize: "14px",
+                        background: "var(--accent)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                        fontWeight: "600"
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleAddProduct(product)}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      fontSize: "13px",
+                      background: "var(--accent)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "3px",
+                      cursor: "pointer",
+                      fontWeight: "600",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => e.target.style.background = "#c9860f"}
+                    onMouseLeave={e => e.target.style.background = "var(--accent)"}
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
