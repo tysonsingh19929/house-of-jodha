@@ -4,9 +4,22 @@ import { useNavigate } from "react-router-dom";
 export default function Navbar({ cartCount = 0, onCartClick }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [isSeller, setIsSeller] = React.useState(false);
   const navigate = useNavigate();
   const navbarRef = React.useRef(null);
-  const isSeller = localStorage.getItem("sellerLoggedIn") === "true";
+
+  // Check seller status on mount and when navbar updates
+  React.useEffect(() => {
+    setIsSeller(localStorage.getItem("sellerLoggedIn") === "true");
+    
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      setIsSeller(localStorage.getItem("sellerLoggedIn") === "true");
+    };
+    
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);

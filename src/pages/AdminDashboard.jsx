@@ -429,11 +429,30 @@ export default function AdminDashboard() {
       </div>
 
       {/* Custom Products List */}
-      {customProducts.length > 0 && (
+      {customProducts.length > 0 ? (
         <div style={{ background: "#fff", borderRadius: "8px", padding: "30px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-          <h2 style={{ color: "#2C4F3E", marginBottom: "25px" }}>
-            Your Custom Products ({customProducts.length})
-          </h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "25px" }}>
+            <h2 style={{ color: "#2C4F3E", marginBottom: "0" }}>
+              Your Custom Products ({customProducts.length})
+            </h2>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: "10px 16px",
+                fontSize: "13px",
+                background: "#4CAF50",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "600"
+              }}
+              onMouseEnter={e => e.target.style.background = "#45a049"}
+              onMouseLeave={e => e.target.style.background = "#4CAF50"}
+            >
+              🔄 Refresh
+            </button>
+          </div>
           
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -510,6 +529,12 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
+        </div>
+      ) : (
+        <div style={{ background: "#fff", borderRadius: "8px", padding: "40px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+          <p style={{ fontSize: "16px", color: "#666", margin: "0" }}>
+            📭 No products yet. Add your first product above!
+          </p>
         </div>
       )}
 
