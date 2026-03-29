@@ -1,5 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Hero() {
+  const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
+
+  const handleShopClick = () => {
+    const productsSection = document.getElementById("products");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div id="home" style={{
@@ -16,6 +26,8 @@ export default function Hero() {
       }}>
         House of Jodha
       </h1>
+        onClick={handleShopClick}
+        
       <p style={{ 
         fontSize: isMobile ? "16px" : "20px",
         color: "var(--text)", 

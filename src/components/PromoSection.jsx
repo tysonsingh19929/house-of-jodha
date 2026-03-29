@@ -1,5 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 export default function PromoSection() {
+  const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
+
+  const handleShopClick = () => {
+    const productsSection = document.getElementById("products");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div style={{
@@ -23,7 +33,9 @@ export default function PromoSection() {
       }}>
         SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <strong>JODHA5</strong>
       </p>
-      <button style={{
+      <button 
+        onClick={handleShopClick}
+        style={{
         background: "#fff",
         color: "#D4AF37",
         border: "none",
