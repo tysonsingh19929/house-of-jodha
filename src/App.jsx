@@ -88,6 +88,7 @@ function App() {
             <OccasionPage 
               cartCount={cartCount} 
               onCartClick={() => setCartOpen(!cartOpen)}
+              onAddToCart={addToCart}
             />
           } 
         />

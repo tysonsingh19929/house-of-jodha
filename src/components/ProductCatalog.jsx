@@ -53,7 +53,36 @@ const products = [
 
 export default function ProductCatalog({ onAddToCart }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [addedProducts, setAddedProducts] = useState({});
   const isMobile = window.innerWidth <= 768;
+
+  const handleAddProduct = (product) => {
+    setAddedProducts(prev => ({
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1
+    }));
+    onAddToCart(product);
+  };
+
+  const handleIncreaseQuantity = (product) => {
+    setAddedProducts(prev => ({
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1
+    }));
+    onAddToCart(product);
+  };
+
+  const handleDecreaseQuantity = (product) => {
+    setAddedProducts(prev => {
+      const newQty = Math.max(0, (prev[product.id] || 0) - 1);
+      if (newQty === 0) {
+        const updated = {...prev};
+        delete updated[product.id];
+        return updated;
+      }
+      return { ...prev, [product.id]: newQty };
+    });
+  };
   
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
   
@@ -138,22 +167,78 @@ export default function ProductCatalog({ onAddToCart }) {
                   ₹{product.price}
                 </span>
               </div>
-              <button
-                onClick={() => onAddToCart(product)}
-                style={{
-                  width: "100%",
-                  padding: isMobile ? "8px" : "10px",
-                  fontSize: isMobile ? "13px" : "14px",
-                  background: "var(--accent)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontWeight: "500"
-                }}
-              >
-                Add to Cart
-              </button>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                {addedProducts[product.id] ? (
+                  <>
+                    <button
+                      onClick={() => handleDecreaseQuantity(product)}
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        padding: "0",
+                        fontSize: "18px",
+                        background: "var(--accent)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      −
+                    </button>
+                    <span style={{
+                      flex: 1,
+                      textAlign: "center",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "var(--accent)"
+                    }}>
+                      ✓ Added ({addedProducts[product.id]})
+                    </span>
+                    <button
+                      onClick={() => handleIncreaseQuantity(product)}
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        padding: "0",
+                        fontSize: "18px",
+                        background: "var(--accent)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      +
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => handleAddProduct(product)}
+                    style={{
+                      width: "100%",
+                      padding: isMobile ? "8px" : "10px",
+                      fontSize: isMobile ? "13px" : "14px",
+                      background: "var(--accent)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "500"
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}
