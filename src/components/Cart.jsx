@@ -19,13 +19,18 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
   // Close cart when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
+      // Exclude clicks on the cart button itself
+      if (e.target.closest("button")?.textContent?.includes("Cart")) {
+        return;
+      }
       if (cartRef.current && !cartRef.current.contains(e.target)) {
         onClose();
       }
     };
     
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    // Use capture phase to detect clicks
+    document.addEventListener("mousedown", handleClickOutside, true);
+    return () => document.removeEventListener("mousedown", handleClickOutside, true);
   }, [onClose]);
 
   const handleQuantityChange = (itemId, newQuantity) => {

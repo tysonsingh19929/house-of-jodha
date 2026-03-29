@@ -28,8 +28,8 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
       <PromoSection />
       <SearchBar />
       <Hero />
-      <ShopByOccasion />
       <ProductCatalog onAddToCart={addToCart} />
+      <ShopByOccasion />
       <Features />
       <Newsletter />
       <CustomerReviews />

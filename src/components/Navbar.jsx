@@ -44,9 +44,15 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           style={{
             background: "none",
             border: "none",
-            fontSize: "24px",
+            fontSize: "28px",
             cursor: "pointer",
-            padding: "0"
+            padding: "0",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#08060d"
           }}
         >
           ☰
