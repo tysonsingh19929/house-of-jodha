@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import { initializeProductsInStorage } from "./utils/initializeProducts";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import PromoSection from "./components/PromoSection";
@@ -46,6 +47,11 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+
+  // Initialize products in localStorage on app load
+  useEffect(() => {
+    initializeProductsInStorage();
+  }, []);
 
   const addToCart = (product) => {
     setCartItems([...cartItems, product]);
