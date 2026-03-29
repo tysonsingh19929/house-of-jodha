@@ -177,35 +177,41 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       )}
 
       {/* Center - Logo */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ flex: isMobile ? "0 1 auto" : "1", display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0" }}>
         <img 
           src="/house-of-jodha-logo.png" 
           alt="House of Jodha" 
           onClick={() => navigate("/")}
           style={{ 
-            height: isMobile ? "120px" : "150px", 
+            height: isMobile ? "80px" : "150px", 
             width: "auto", 
-            cursor: "pointer" 
+            cursor: "pointer",
+            maxWidth: isMobile ? "120px" : "100%"
           }} 
         />
       </div>
 
       {/* Right Section - Cart Button */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: isMobile ? "auto" : "50px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: isMobile ? "120px" : "150px", flexShrink: 0 }}>
         <button 
           onClick={onCartClick}
           style={{
             background: "var(--accent)",
             color: "#fff",
             border: "none",
-            padding: isMobile ? "10px 14px" : "8px 14px",
+            padding: isMobile ? "12px 12px" : "8px 14px",
             fontSize: isMobile ? "12px" : "13px",
             borderRadius: "4px",
             cursor: "pointer",
             fontWeight: "600",
             whiteSpace: "nowrap",
             overflow: "hidden",
-            textOverflow: "ellipsis"
+            textOverflow: "ellipsis",
+            flex: "1",
+            minHeight: isMobile ? "44px" : "auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
           }}
         >
           🛍️ Cart ({cartCount})
@@ -216,14 +222,16 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       {isMobile && menuOpen && (
         <div style={{
           position: "absolute",
-          top: "100%",
+          top: "60px",
           left: "0",
           right: "0",
           background: "#fff",
           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
           display: "flex",
           flexDirection: "column",
-          zIndex: 99
+          zIndex: 998,
+          maxHeight: "calc(100vh - 60px)",
+          overflowY: "auto"
         }}>
           <button 
             onClick={() => handleNavClick("home")}
