@@ -184,10 +184,10 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           alt="House of Jodha" 
           onClick={() => navigate("/")}
           style={{ 
-            height: isMobile ? "100px" : "150px", 
+            height: isMobile ? "120px" : "160px", 
             width: "auto", 
             cursor: "pointer",
-            maxWidth: isMobile ? "140px" : "100%"
+            maxWidth: isMobile ? "160px" : "280px"
           }} 
         />
       </div>
