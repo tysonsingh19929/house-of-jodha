@@ -62,17 +62,18 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       padding: isMobile ? "8px 10px" : "10px 30px",
       gap: "0",
       background: "#fff",
-      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
       position: "fixed",
       top: 0,
       left: 0,
       right: 0,
-      zIndex: 1000,
+      zIndex: 9999,
       height: "60px",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+      borderBottom: "1px solid #f0f0f0"
     }}>
       {/* Left Section - Menu Button */}
-      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", zIndex: 10001 }}>
         {isMobile && (
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -177,7 +178,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       )}
 
       {/* Center - Logo */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0", position: "relative", zIndex: 10000 }}>
         <img 
           src="/house-of-jodha-logo.png" 
           alt="House of Jodha" 
@@ -192,7 +193,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       </div>
 
       {/* Right Section - Cart Button */}
-      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", zIndex: 1002 }}>
+      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", zIndex: 10001 }}>
         <button 
           onClick={onCartClick}
           style={{
@@ -211,7 +212,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             alignItems: "center",
             justifyContent: "center",
             position: "relative",
-            zIndex: 1002
+            zIndex: 10001
           }}
         >
           🛍️ Cart ({cartCount})
@@ -229,7 +230,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
           display: "flex",
           flexDirection: "column",
-          zIndex: 998
+          zIndex: 9998
         }}>
           <button 
             onClick={() => handleNavClick("home")}
