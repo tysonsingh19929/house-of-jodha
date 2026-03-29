@@ -308,8 +308,12 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                   color: "#333",
                   marginBottom: "6px",
                   lineHeight: "1.3",
-                  height: isMobile ? "24px" : "32px",
-                  overflow: "hidden"
+                  minHeight: "auto",
+                  maxHeight: isMobile ? "48px" : "60px",
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical"
                 }}>
                   {product.name}
                 </h3>
