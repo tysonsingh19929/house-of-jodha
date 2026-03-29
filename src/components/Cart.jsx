@@ -55,17 +55,16 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         position: "fixed",
         top: "60px",
         right: window.innerWidth <= 768 ? "0" : "0",
+        bottom: "0",
         left: window.innerWidth <= 768 ? "0" : "auto",
         width: window.innerWidth <= 768 ? "100%" : "450px",
-        height: window.innerWidth <= 768 ? "calc(100vh - 120px)" : "calc(100vh - 80px)",
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
-        zIndex: "99",
+        zIndex: "999",
         display: "flex",
         flexDirection: "column",
         animation: "slideIn 0.3s ease-out",
-        overflowY: "hidden",
-        paddingBottom: window.innerWidth <= 768 ? "10px" : "0"
+        overflowY: "hidden"
       }}
     >
       <style>{`

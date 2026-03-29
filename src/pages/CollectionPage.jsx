@@ -51,7 +51,7 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart, on
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: "60px" }}>
         <Navbar cartCount={cartCount} onCartClick={onCartClick} />
         {cartOpen && (
           <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />

@@ -63,9 +63,13 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       gap: "0",
       background: "#fff",
       boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-      position: "sticky",
+      position: "fixed",
       top: 0,
-      zIndex: 100
+      left: 0,
+      right: 0,
+      zIndex: 1000,
+      height: "60px",
+      boxSizing: "border-box"
     }}>
       {/* Left Section - Menu Button */}
       <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
