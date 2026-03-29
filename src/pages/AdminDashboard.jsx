@@ -12,6 +12,9 @@ export default function AdminDashboard() {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editFormData, setEditFormData] = useState(null);
+  const [editImagePreview, setEditImagePreview] = useState(null);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
   // Check if user is seller
@@ -113,6 +116,69 @@ export default function AdminDashboard() {
     setImagePreview(null);
 
     alert("Product added successfully! Refresh the page to see it in the catalog.");
+  };
+
+  // Handle edit image upload
+  const handleEditImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditImagePreview(reader.result);
+        setEditFormData(prev => ({
+          ...prev,
+          image: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle edit form changes
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Start editing a product
+  const startEdit = (product) => {
+    setEditingId(product.id);
+    setEditFormData({ ...product });
+    setEditImagePreview(product.image);
+  };
+
+  // Cancel edit
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditFormData(null);
+    setEditImagePreview(null);
+  };
+
+  // Save edited product
+  const saveEdit = () => {
+    if (!editFormData.name || !editFormData.price || !editFormData.originalPrice || !editFormData.image) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    const existingProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
+    const updated = existingProducts.map(p => 
+      p.id === editingId 
+        ? {
+            ...editFormData,
+            price: parseInt(editFormData.price),
+            originalPrice: parseInt(editFormData.originalPrice)
+          }
+        : p
+    );
+
+    localStorage.setItem("customProducts", JSON.stringify(updated));
+    alert("Product updated successfully!");
+    cancelEdit();
+    window.location.reload();
   };
 
   // Get custom products from localStorage
@@ -404,9 +470,27 @@ export default function AdminDashboard() {
                     <td style={{ padding: "12px", color: "#999", textDecoration: "line-through" }}>₹{product.originalPrice}</td>
                     <td style={{ padding: "12px", textAlign: "center" }}>
                       <button
+                        onClick={() => startEdit(product)}
+                        style={{
+                          padding: "6px 10px",
+                          fontSize: "12px",
+                          background: "#4CAF50",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          marginRight: "6px"
+                        }}
+                        onMouseEnter={e => e.target.style.background = "#45a049"}
+                        onMouseLeave={e => e.target.style.background = "#4CAF50"}
+                      >
+                        Edit
+                      </button>
+                      <button
                         onClick={() => deleteProduct(product.id)}
                         style={{
-                          padding: "6px 12px",
+                          padding: "6px 10px",
                           fontSize: "12px",
                           background: "#ff6b6b",
                           color: "#fff",
@@ -447,6 +531,252 @@ export default function AdminDashboard() {
           ← Back to Home
         </a>
       </div>
+
+      {/* Edit Product Modal */}
+      {editingId && editFormData && (
+        <div style={{
+          position: "fixed",
+          top: "0",
+          left: "0",
+          right: "0",
+          bottom: "0",
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: "1000",
+          padding: "20px"
+        }}>
+          <div style={{
+            background: "#fff",
+            borderRadius: "12px",
+            padding: "40px",
+            maxWidth: "600px",
+            width: "100%",
+            maxHeight: "90vh",
+            overflowY: "auto",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.2)"
+          }}>
+            <h2 style={{ color: "#2C4F3E", marginBottom: "25px" }}>✏️ Edit Product</h2>
+
+            {/* Form Fields */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+              {/* Product Name */}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={{ display: "block", fontWeight: "600", marginBottom: "8px", color: "#333" }}>
+                  Product Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={editFormData.name}
+                  onChange={handleEditChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "14px",
+                    boxSizing: "border-box"
+                  }}
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label style={{ display: "block", fontWeight: "600", marginBottom: "8px", color: "#333" }}>
+                  Category *
+                </label>
+                <select
+                  name="category"
+                  value={editFormData.category}
+                  onChange={handleEditChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "14px",
+                    boxSizing: "border-box"
+                  }}
+                >
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Sale Price */}
+              <div>
+                <label style={{ display: "block", fontWeight: "600", marginBottom: "8px", color: "#333" }}>
+                  Sale Price (₹) *
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  value={editFormData.price}
+                  onChange={handleEditChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "14px",
+                    boxSizing: "border-box"
+                  }}
+                />
+              </div>
+
+              {/* Original Price */}
+              <div>
+                <label style={{ display: "block", fontWeight: "600", marginBottom: "8px", color: "#333" }}>
+                  Original Price (₹) *
+                </label>
+                <input
+                  type="number"
+                  name="originalPrice"
+                  value={editFormData.originalPrice}
+                  onChange={handleEditChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "14px",
+                    boxSizing: "border-box"
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Image Section */}
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", fontWeight: "600", marginBottom: "12px", color: "#333" }}>
+                Product Image * (Required)
+              </label>
+
+              {/* Current Image Preview */}
+              {editImagePreview && (
+                <div style={{ marginBottom: "15px", textAlign: "center" }}>
+                  <img 
+                    src={editImagePreview} 
+                    alt="Preview" 
+                    style={{ 
+                      maxWidth: "150px", 
+                      height: "150px", 
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                      border: "2px solid var(--accent)"
+                    }} 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditImagePreview(null);
+                      setEditFormData(prev => ({ ...prev, image: "" }));
+                    }}
+                    style={{
+                      display: "block",
+                      marginTop: "8px",
+                      padding: "6px 12px",
+                      fontSize: "12px",
+                      background: "#ff6b6b",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "600",
+                      margin: "8px auto 0 auto"
+                    }}
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              )}
+
+              {/* File Upload */}
+              {!editImagePreview && (
+                <label
+                  style={{
+                    display: "block",
+                    padding: "30px",
+                    border: "2px dashed var(--accent)",
+                    borderRadius: "8px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: "#fafafa",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = "#fff3cd";
+                    e.currentTarget.style.borderColor = "#c9860f";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = "#fafafa";
+                    e.currentTarget.style.borderColor = "var(--accent)";
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditImageUpload}
+                    style={{ display: "none" }}
+                  />
+                  <div style={{ fontSize: "40px", marginBottom: "12px" }}>📸</div>
+                  <p style={{ fontSize: "14px", fontWeight: "600", color: "#333", margin: "0 0 6px 0" }}>
+                    Click to Upload New Image
+                  </p>
+                  <p style={{ fontSize: "12px", color: "#999", margin: "0" }}>
+                    Supports JPG, PNG, GIF, WebP
+                  </p>
+                </label>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                onClick={saveEdit}
+                style={{
+                  flex: 1,
+                  padding: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  background: "var(--accent)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.target.style.background = "#c9860f"}
+                onMouseLeave={e => e.target.style.background = "var(--accent)"}
+              >
+                ✅ Save Changes
+              </button>
+              <button
+                onClick={cancelEdit}
+                style={{
+                  flex: 1,
+                  padding: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  background: "#ddd",
+                  color: "#333",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.target.style.background = "#ccc"}
+                onMouseLeave={e => e.target.style.background = "#ddd"}
+              >
+                ❌ Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
