@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const products = [
-  // LEHENGA (12 products)
+  // LEHENGA (25+ products)
   { id: 1, name: "Beige Gold Tissue Silk Embroidered Lehenga Set", price: 25600, originalPrice: 30800, image: "👗", category: "Lehenga" },
   { id: 11, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 32000, originalPrice: 40000, image: "👗", category: "Lehenga" },
   { id: 12, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga", price: 27000, originalPrice: 32900, image: "👗", category: "Lehenga" },
@@ -14,8 +14,21 @@ const products = [
   { id: 19, name: "Orange Tissue Silk Embroidered Lehenga Set", price: 16200, originalPrice: 19400, image: "👗", category: "Lehenga" },
   { id: 20, name: "Pink Georgette Embroidered Lehenga Set", price: 6100, originalPrice: 8000, image: "👗", category: "Lehenga" },
   { id: 21, name: "Mustard Georgette Embroidered Kurti Lehenga Set", price: 6800, originalPrice: 11000, image: "👗", category: "Lehenga" },
+  { id: 101, name: "Ivory Silk Embroidered Bridal Lehenga", price: 35000, originalPrice: 44000, image: "👗", category: "Lehenga" },
+  { id: 102, name: "Navy Blue Georgette Printed Lehenga Suit", price: 9200, originalPrice: 12500, image: "👗", category: "Lehenga" },
+  { id: 103, name: "Royal Purple Silk Embroidered Lehenga Set", price: 24500, originalPrice: 30000, image: "👗", category: "Lehenga" },
+  { id: 104, name: "Coral Pink Tissue Silk Embroidered Lehenga", price: 18700, originalPrice: 23000, image: "👗", category: "Lehenga" },
+  { id: 105, name: "Dark Green Silk Hand Embroidered Lehenga", price: 26000, originalPrice: 32000, image: "👗", category: "Lehenga" },
+  { id: 106, name: "Gold Georgette Embroidered Lehenga Set", price: 15500, originalPrice: 19000, image: "👗", category: "Lehenga" },
+  { id: 107, name: "Peach Chinon Silk Embroidered Lehenga", price: 22000, originalPrice: 27000, image: "👗", category: "Lehenga" },
+  { id: 108, name: "Lavender Georgette Embroidered Bridal Lehenga", price: 28000, originalPrice: 35000, image: "👗", category: "Lehenga" },
+  { id: 109, name: "Teal Green Tissue Silk Embroidered Lehenga", price: 19500, originalPrice: 24000, image: "👗", category: "Lehenga" },
+  { id: 110, name: "Wine Red Silk Embroidered Bridal Lehenga Set", price: 31000, originalPrice: 38000, image: "👗", category: "Lehenga" },
+  { id: 111, name: "Cream & Gold Silk Embroidered Lehenga", price: 26500, originalPrice: 32500, image: "👗", category: "Lehenga" },
+  { id: 112, name: "Forest Green Georgette Embroidered Lehenga", price: 14800, originalPrice: 18500, image: "👗", category: "Lehenga" },
+  { id: 113, name: "Rose Pink Silk Hand Embroidered Lehenga Set", price: 23000, originalPrice: 28000, image: "👗", category: "Lehenga" },
 
-  // SAREE (10 products)
+  // SAREE (25+ products)
   { id: 3, name: "Pre-draped Royal Purple Satin Saree", price: 8900, originalPrice: 10500, image: "🧥", category: "Saree" },
   { id: 22, name: "Gold Sequined Silk Bridal Saree", price: 21000, originalPrice: 27000, image: "🧥", category: "Saree" },
   { id: 23, name: "Ivory & Gold Embroidered Bridal Saree", price: 18000, originalPrice: 23000, image: "🧥", category: "Saree" },
@@ -26,8 +39,22 @@ const products = [
   { id: 28, name: "Magenta Pink Silk Embroidered Saree", price: 6100, originalPrice: 7700, image: "🧥", category: "Saree" },
   { id: 29, name: "Dark Green Embroidered Silk Saree", price: 4800, originalPrice: 6000, image: "🧥", category: "Saree" },
   { id: 30, name: "Navy Blue Crepe Silk Printed Saree", price: 11000, originalPrice: 14000, image: "🧥", category: "Saree" },
+  { id: 201, name: "Red Silk Hand Embroidered Bridal Saree", price: 24000, originalPrice: 30000, image: "🧥", category: "Saree" },
+  { id: 202, name: "Blush Pink Georgette Embroidered Saree", price: 14200, originalPrice: 17500, image: "🧥", category: "Saree" },
+  { id: 203, name: "Cream Silk Embroidered Wedding Saree", price: 22500, originalPrice: 28000, image: "🧥", category: "Saree" },
+  { id: 204, name: "Teal Blue Tissue Silk Embroidered Saree", price: 12800, originalPrice: 15900, image: "🧥", category: "Saree" },
+  { id: 205, name: "Peach Silk Hand Embroidered Saree", price: 19200, originalPrice: 24000, image: "🧥", category: "Saree" },
+  { id: 206, name: "Lavender Georgette Embroidered Saree", price: 10500, originalPrice: 13000, image: "🧥", category: "Saree" },
+  { id: 207, name: "Forest Green Silk Embroidered Saree", price: 15700, originalPrice: 19500, image: "🧥", category: "Saree" },
+  { id: 208, name: "Wine Red Silk Embroidered Bridal Saree", price: 23000, originalPrice: 29000, image: "🧥", category: "Saree" },
+  { id: 209, name: "Champagne Gold Tissue Silk Saree", price: 20500, originalPrice: 25500, image: "🧥", category: "Saree" },
+  { id: 210, name: "Maroon Chinon Silk Embroidered Saree", price: 17800, originalPrice: 22000, image: "🧥", category: "Saree" },
+  { id: 211, name: "Sky Blue Georgette Embroidered Saree", price: 11200, originalPrice: 14000, image: "🧥", category: "Saree" },
+  { id: 212, name: "Coral Pink Silk Embroidered Saree", price: 13900, originalPrice: 17200, image: "🧥", category: "Saree" },
+  { id: 213, name: "Royal Blue Tissue Silk Embroidered Saree", price: 18500, originalPrice: 23000, image: "🧥", category: "Saree" },
+  { id: 214, name: "Magenta Silk Hand Embroidered Saree", price: 14500, originalPrice: 18000, image: "🧥", category: "Saree" },
 
-  // ANARKALI (10 products)
+  // ANARKALI (25+ products)
   { id: 4, name: "Designer Anarkali Suit - Midnight Blue", price: 16800, originalPrice: 19800, image: "👗", category: "Anarkali" },
   { id: 31, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 14000, originalPrice: 16900, image: "👗", category: "Anarkali" },
   { id: 32, name: "Ivory Georgette Embroidered Anarkali Dress With Dupatta", price: 14000, originalPrice: 16900, image: "👗", category: "Anarkali" },
@@ -38,8 +65,21 @@ const products = [
   { id: 37, name: "Ivory Georgette Embroidered Anarkali Suit", price: 16000, originalPrice: 20000, image: "👗", category: "Anarkali" },
   { id: 38, name: "Ruby Red Tissue Silk Anarkali", price: 15000, originalPrice: 19500, image: "👗", category: "Anarkali" },
   { id: 39, name: "Midnight Blue Georgette Anarkali Dress", price: 9500, originalPrice: 13000, image: "👗", category: "Anarkali" },
+  { id: 301, name: "Red Silk Hand Embroidered Anarkali", price: 18500, originalPrice: 23000, image: "👗", category: "Anarkali" },
+  { id: 302, name: "Blush Pink Georgette Embroidered Anarkali", price: 12300, originalPrice: 15500, image: "👗", category: "Anarkali" },
+  { id: 303, name: "Forest Green Silk Embroidered Anarkali Suit", price: 17200, originalPrice: 21500, image: "👗", category: "Anarkali" },
+  { id: 304, name: "Peach Tissue Silk Embroidered Anarkali", price: 13800, originalPrice: 17000, image: "👗", category: "Anarkali" },
+  { id: 305, name: "Navy Blue Georgette Embroidered Anarkali Dress", price: 11500, originalPrice: 14200, image: "👗", category: "Anarkali" },
+  { id: 306, name: "Gold Silk Embroidered Bridal Anarkali", price: 24000, originalPrice: 30000, image: "👗", category: "Anarkali" },
+  { id: 307, name: "Teal Chinon Silk Embroidered Anarkali", price: 14200, originalPrice: 17500, image: "👗", category: "Anarkali" },
+  { id: 308, name: "Wine Red Silk Embroidered Anarkali Suit", price: 19200, originalPrice: 24000, image: "👗", category: "Anarkali" },
+  { id: 309, name: "Cream & Gold Embroidered Anarkali", price: 16500, originalPrice: 20500, image: "👗", category: "Anarkali" },
+  { id: 310, name: "Maroon Georgette Embroidered Anarkali Dress", price: 12800, originalPrice: 15900, image: "👗", category: "Anarkali" },
+  { id: 311, name: "Lavender Silk Embroidered Bridal Anarkali", price: 22000, originalPrice: 27500, image: "👗", category: "Anarkali" },
+  { id: 312, name: "Coral Pink Tissue Silk Anarkali", price: 13500, originalPrice: 16800, image: "👗", category: "Anarkali" },
+  { id: 313, name: "Royal Blue Silk Hand Embroidered Anarkali", price: 18000, originalPrice: 22500, image: "👗", category: "Anarkali" },
 
-  // SALWAR KAMEEZ (10 products)
+  // SALWAR KAMEEZ (25+ products)
   { id: 5, name: "Salwar Kameez - Emerald Green", price: 7500, originalPrice: 9000, image: "👚", category: "Salwar Kameez" },
   { id: 40, name: "Navy Blue Crepe Silk Printed & Embroidered Indowestern Top & Palazzo Set", price: 9000, originalPrice: 11100, image: "👚", category: "Salwar Kameez" },
   { id: 41, name: "Ivory & Pink Ombre Sparkling Crystal Detailed Georgette Top & Palazzo", price: 10000, originalPrice: 12300, image: "👚", category: "Salwar Kameez" },
@@ -50,8 +90,20 @@ const products = [
   { id: 46, name: "Champagne Gold Silk Embroidered Saree-Style Kurta Set", price: 9000, originalPrice: 12000, image: "👚", category: "Salwar Kameez" },
   { id: 47, name: "Emerald Green Kota Silk Sharara Set", price: 9800, originalPrice: 12800, image: "👚", category: "Salwar Kameez" },
   { id: 48, name: "Teal Georgette Embroidered Salwar Kameez Set", price: 8500, originalPrice: 11200, image: "👚", category: "Salwar Kameez" },
+  { id: 401, name: "Red Silk Embroidered Salwar Kameez", price: 8200, originalPrice: 10500, image: "👚", category: "Salwar Kameez" },
+  { id: 402, name: "Blush Pink Georgette Embroidered Kurta Set", price: 7800, originalPrice: 9800, image: "👚", category: "Salwar Kameez" },
+  { id: 403, name: "Forest Green Cotton Silk Embroidered Salwar Kameez", price: 6500, originalPrice: 8300, image: "👚", category: "Salwar Kameez" },
+  { id: 404, name: "Peach Kota Doriya Embroidered Kurta Suit", price: 5900, originalPrice: 7500, image: "👚", category: "Salwar Kameez" },
+  { id: 405, name: "Navy Blue Georgette Embroidered Salwar Kameez Set", price: 8800, originalPrice: 11000, image: "👚", category: "Salwar Kameez" },
+  { id: 406, name: "Gold Silk Embroidered Indowestern Top & Palazzo", price: 10200, originalPrice: 12800, image: "👚", category: "Salwar Kameez" },
+  { id: 407, name: "Teal Chinon Silk Embroidered Kurta Set", price: 9500, originalPrice: 12000, image: "👚", category: "Salwar Kameez" },
+  { id: 408, name: "Wine Red Silk Embroidered Salwar Kameez", price: 9300, originalPrice: 11500, image: "👚", category: "Salwar Kameez" },
+  { id: 409, name: "Cream Cotton Silk Embroidered Kurta Set", price: 7200, originalPrice: 9000, image: "👚", category: "Salwar Kameez" },
+  { id: 410, name: "Maroon Georgette Embroidered Salwar Kameez", price: 8600, originalPrice: 10800, image: "👚", category: "Salwar Kameez" },
+  { id: 411, name: "Lavender Kota Silk Embroidered Kurta Set", price: 6800, originalPrice: 8500, image: "👚", category: "Salwar Kameez" },
+  { id: 412, name: "Coral Pink Tissue Silk Embroidered Salwar Kameez", price: 8900, originalPrice: 11200, image: "👚", category: "Salwar Kameez" },
 
-  // GHARARA (8 products)
+  // GHARARA (20+ products)
   { id: 2, name: "Ivory Chinon Silk Gharara Set", price: 11500, originalPrice: 13500, image: "👚", category: "Gharara" },
   { id: 49, name: "Pink Purple Georgette Embroidered Gharara Set", price: 9500, originalPrice: 12000, image: "👚", category: "Gharara" },
   { id: 50, name: "Blush Pink Georgette Embroidered Gharara Suit", price: 11000, originalPrice: 14000, image: "👚", category: "Gharara" },
@@ -60,8 +112,15 @@ const products = [
   { id: 53, name: "Lavender Georgette Embroidered Gharara Suit", price: 9800, originalPrice: 12500, image: "👚", category: "Gharara" },
   { id: 54, name: "Cream & Gold Silk Gharara Set", price: 14500, originalPrice: 18000, image: "👚", category: "Gharara" },
   { id: 55, name: "Navy Blue Chinon Silk Gharara Suit", price: 12300, originalPrice: 15500, image: "👚", category: "Gharara" },
+  { id: 501, name: "Red Silk Embroidered Bridal Gharara", price: 15200, originalPrice: 19000, image: "👚", category: "Gharara" },
+  { id: 502, name: "Forest Green Georgette Embroidered Gharara", price: 10500, originalPrice: 13200, image: "👚", category: "Gharara" },
+  { id: 503, name: "Teal Silk Embroidered Gharara Set", price: 12000, originalPrice: 15000, image: "👚", category: "Gharara" },
+  { id: 504, name: "Wine Red Chinon Silk Gharara Suit", price: 13200, originalPrice: 16500, image: "👚", category: "Gharara" },
+  { id: 505, name: "Gold Silk Embroidered Gharara Set", price: 14800, originalPrice: 18500, image: "👚", category: "Gharara" },
+  { id: 506, name: "Coral Pink Georgette Embroidered Gharara", price: 10800, originalPrice: 13500, image: "👚", category: "Gharara" },
+  { id: 507, name: "Royal Blue Silk Embroidered Gharara Suit", price: 12700, originalPrice: 15900, image: "👚", category: "Gharara" },
 
-  // SHARARA (10 products)
+  // SHARARA (25+ products)
   { id: 6, name: "Sharara Suit - Wine Red", price: 12500, originalPrice: 15000, image: "👗", category: "Sharara" },
   { id: 56, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 6100, originalPrice: 10000, image: "👚", category: "Sharara" },
   { id: 57, name: "Light Green Chanderi Silk Hand Embroidered Sharara Set With Shrug", price: 14500, originalPrice: 16300, image: "👗", category: "Sharara" },
@@ -71,8 +130,19 @@ const products = [
   { id: 61, name: "Maroon Silk Embroidered Sharara Set", price: 13500, originalPrice: 17000, image: "👗", category: "Sharara" },
   { id: 62, name: "Mint Green Georgette Sharara Suit", price: 10500, originalPrice: 13200, image: "👚", category: "Sharara" },
   { id: 63, name: "Coral Pink Shararaa with Mirror Work", price: 12800, originalPrice: 16000, image: "👗", category: "Sharara" },
-  { id: 64, name: "Indigo Blue Sharara Suit Set", price: 11000, originalPrice: 14000, image: "👗", category: "Sharara" }
-];
+  { id: 64, name: "Indigo Blue Sharara Suit Set", price: 11000, originalPrice: 14000, image: "👗", category: "Sharara" },
+  { id: 601, name: "Red Silk Hand Embroidered Sharara", price: 13200, originalPrice: 16500, image: "👗", category: "Sharara" },
+  { id: 602, name: "Blush Pink Georgette Embroidered Sharara Set", price: 9300, originalPrice: 11800, image: "👚", category: "Sharara" },
+  { id: 603, name: "Navy Blue Silk Embroidered Sharara Suit", price: 11800, originalPrice: 14800, image: "👗", category: "Sharara" },
+  { id: 604, name: "Peach Chinon Silk Embroidered Sharara", price: 10200, originalPrice: 12800, image: "👚", category: "Sharara" },
+  { id: 605, name: "Lavender Georgette Sharara Suit with Dupatta", price: 9700, originalPrice: 12200, image: "👚", category: "Sharara" },
+  { id: 606, name: "Gold Silk Embroidered Bridal Sharara Set", price: 15000, originalPrice: 18500, image: "👗", category: "Sharara" },
+  { id: 607, name: "Teal Green Tissue Silk Sharara Suit", price: 12200, originalPrice: 15300, image: "👗", category: "Sharara" },
+  { id: 608, name: "Wine Red Silk Embroidered Sharara", price: 13800, originalPrice: 17200, image: "👗", category: "Sharara" },
+  { id: 609, name: "Cream Chinon Silk Embroidered Sharara Set", price: 11500, originalPrice: 14300, image: "👚", category: "Sharara" },
+  { id: 610, name: "Forest Green Georgette Embroidered Sharara", price: 10000, originalPrice: 12500, image: "👚", category: "Sharara" },
+  { id: 611, name: "Magenta Silk Embroidered Sharara Suit", price: 12300, originalPrice: 15500, image: "👗", category: "Sharara" },
+  { id: 612, name: "Royal Blue Tissue Silk Sharara Set", price: 11600, originalPrice: 14500, image: "👗", category: "Sharara" }
 ];
 
 export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
@@ -115,13 +185,21 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
     ? products 
     : products.filter(p => p.category === selectedCategory);
 
+  // Debug
+  if (typeof window !== 'undefined') {
+    console.log(`🔍 Category: ${selectedCategory}, Filtered Count: ${filteredProducts.length}, Total: ${products.length}`);
+    if (filteredProducts.length === 0) {
+      console.warn("⚠️ No products found! Check category names");
+    }
+  }
+
   return (
-    <div id="products" style={{ padding: isMobile ? "40px 15px" : "60px 30px", maxWidth: "1126px", margin: "0 auto" }}>
+    <div style={{ padding: "40px 20px", width: "100%" }}>
       {/* Category Filter */}
       <div style={{
         display: "flex",
-        gap: isMobile ? "6px" : "10px",
-        marginBottom: isMobile ? "25px" : "40px",
+        gap: "10px",
+        marginBottom: "40px",
         justifyContent: "center",
         flexWrap: "wrap"
       }}>
@@ -130,15 +208,14 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
             key={cat}
             onClick={() => setSelectedCategory(cat)}
             style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
-              fontSize: isMobile ? "12px" : "14px",
+              padding: "8px 16px",
+              fontSize: "14px",
               background: selectedCategory === cat ? "var(--accent)" : "var(--border)",
               color: selectedCategory === cat ? "#fff" : "var(--text-h)",
               border: "none",
               borderRadius: "20px",
               cursor: "pointer",
-              fontWeight: "500",
-              transition: "all 0.3s"
+              fontWeight: "500"
             }}
           >
             {cat}
@@ -146,125 +223,53 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
         ))}
       </div>
 
-      {/* Product Grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: isMobile ? "15px" : "30px"
-      }}>
-        {filteredProducts.map(product => (
+      <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: "30px", fontSize: "16px", fontWeight: "600", textAlign: "center" }}>
+        ✨ {filteredProducts.length} {selectedCategory} products
+      </div>
+
+      {/* Product Grid - SUPER SIMPLE */}
+      <div style={{ width: "100%" }}>
+        {filteredProducts.map((product) => (
           <div
             key={product.id}
             style={{
               border: "1px solid var(--border)",
               borderRadius: "8px",
-              overflow: "hidden",
-              transition: "all 0.3s",
-              cursor: "pointer",
+              padding: "20px",
+              marginBottom: "20px",
               background: "#fff"
             }}
-            onMouseEnter={e => {
-              e.currentTarget.style.boxShadow = "var(--shadow)";
-              e.currentTarget.style.transform = "translateY(-5px)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
           >
-            <div style={{
-              fontSize: isMobile ? "50px" : "60px",
-              textAlign: "center",
-              padding: isMobile ? "30px" : "40px",
-              background: "var(--accent-bg)"
-            }}>
+            <div style={{ fontSize: "50px", textAlign: "center", marginBottom: "15px" }}>
               {product.image}
             </div>
-            <div style={{ padding: isMobile ? "15px" : "20px" }}>
-              <h3 style={{ fontSize: isMobile ? "14px" : "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
-                {product.name}
-              </h3>
-              <div style={{ marginBottom: "15px" }}>
-                <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
-                  ₹{product.originalPrice}
-                </span>
-                <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
-                  ₹{product.price}
-                </span>
-              </div>
-              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                {addedProducts[product.id] ? (
-                  <>
-                    <button
-                      onClick={() => handleDecreaseQuantity(product)}
-                      style={{
-                        width: "35px",
-                        height: "35px",
-                        padding: "0",
-                        fontSize: "18px",
-                        background: "var(--accent)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontWeight: "600",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                    >
-                      −
-                    </button>
-                    <span style={{
-                      flex: 1,
-                      textAlign: "center",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "var(--accent)"
-                    }}>
-                      ✓ Added ({addedProducts[product.id]})
-                    </span>
-                    <button
-                      onClick={() => handleIncreaseQuantity(product)}
-                      style={{
-                        width: "35px",
-                        height: "35px",
-                        padding: "0",
-                        fontSize: "18px",
-                        background: "var(--accent)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontWeight: "600",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                    >
-                      +
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => handleAddProduct(product)}
-                    style={{
-                      width: "100%",
-                      padding: isMobile ? "8px" : "10px",
-                      fontSize: isMobile ? "13px" : "14px",
-                      background: "var(--accent)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontWeight: "500"
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                )}
-              </div>
+            <h3 style={{ fontSize: "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
+              {product.name}
+            </h3>
+            <div style={{ marginBottom: "15px" }}>
+              <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
+                ₹{product.originalPrice}
+              </span>
+              <span style={{ fontSize: "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
+                ₹{product.price}
+              </span>
             </div>
+            <button
+              onClick={() => handleAddProduct(product)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                fontSize: "14px",
+                background: "var(--accent)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "500"
+              }}
+            >
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>
