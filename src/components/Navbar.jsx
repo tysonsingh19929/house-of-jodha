@@ -178,16 +178,17 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       )}
 
       {/* Center - Logo */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minWidth: "0", height: "100%" }}>
         <img 
           src="/house-of-jodha-logo.png" 
           alt="House of Jodha" 
           onClick={() => navigate("/")}
           style={{ 
-            height: isMobile ? "140px" : "180px", 
+            maxHeight: "100%", 
             width: "auto", 
             cursor: "pointer",
-            maxWidth: isMobile ? "90%" : "85%"
+            maxWidth: "100%",
+            objectFit: "contain"
           }} 
         />
       </div>
