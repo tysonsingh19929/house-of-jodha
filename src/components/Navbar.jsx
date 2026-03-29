@@ -187,19 +187,21 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       </div>
 
       {/* Right Section - Cart Button */}
-      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: isMobile ? "auto" : "50px" }}>
         <button 
           onClick={onCartClick}
           style={{
             background: "var(--accent)",
             color: "#fff",
             border: "none",
-            padding: isMobile ? "8px 12px" : "8px 14px",
-            fontSize: isMobile ? "13px" : "13px",
+            padding: isMobile ? "10px 14px" : "8px 14px",
+            fontSize: isMobile ? "12px" : "13px",
             borderRadius: "4px",
             cursor: "pointer",
             fontWeight: "600",
-            whiteSpace: "nowrap"
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
           }}
         >
           🛍️ Cart ({cartCount})

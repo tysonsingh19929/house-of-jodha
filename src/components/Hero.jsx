@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <div id="home" style={{
       background: "linear-gradient(135deg, var(--accent-bg) 0%, rgba(170, 59, 255, 0.05) 100%)",
-      padding: isMobile ? "20px 20px" : "40px 30px",
+      padding: isMobile ? "40px 15px" : "60px 30px",
       textAlign: "center",
       borderBottom: "1px solid var(--border)"
     }}>

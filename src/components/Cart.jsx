@@ -54,10 +54,9 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       style={{
         position: "fixed",
         top: "60px",
-        right: "0",
+        right: window.innerWidth <= 768 ? "0" : "0",
         left: window.innerWidth <= 768 ? "0" : "auto",
-        width: window.innerWidth <= 768 ? "100%" : "100%",
-        maxWidth: window.innerWidth <= 768 ? "100%" : "450px",
+        width: window.innerWidth <= 768 ? "100%" : "450px",
         height: "calc(100vh - 60px)",
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
@@ -243,46 +242,49 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
             </div>
           </div>
 
-          <button
-            style={{
-              width: "100%",
-              padding: window.innerWidth <= 768 ? "12px" : "16px",
-              background: "linear-gradient(135deg, #D4AF37 0%, #c49a27 100%)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "700",
-              fontSize: window.innerWidth <= 768 ? "13px" : "15px",
-              marginBottom: "8px",
-              transition: "all 0.3s",
-              boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)"
-            }}
-            onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
-            onMouseLeave={e => e.target.style.transform = "translateY(0)"}
-          >
-            Proceed to Checkout
-          </button>
+          <div style={{ display: "flex", gap: window.innerWidth <= 768 ? "10px" : "12px", flexDirection: "column" }}>
+            <button
+              style={{
+                width: "100%",
+                padding: window.innerWidth <= 768 ? "14px 12px" : "16px",
+                background: "linear-gradient(135deg, #D4AF37 0%, #c49a27 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontWeight: "700",
+                fontSize: window.innerWidth <= 768 ? "14px" : "15px",
+                transition: "all 0.3s",
+                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)",
+                minHeight: window.innerWidth <= 768 ? "44px" : "auto"
+              }}
+              onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.target.style.transform = "translateY(0)"}
+            >
+              Proceed to Checkout
+            </button>
 
-          <button
-            onClick={onClose}
-            style={{
-              width: "100%",
-              padding: window.innerWidth <= 768 ? "11px" : "15px",
-              background: "#2C4F3E",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: window.innerWidth <= 768 ? "13px" : "14px",
-              transition: "all 0.3s"
-            }}
-            onMouseEnter={e => e.target.style.background = "#1f3a2c"}
-            onMouseLeave={e => e.target.style.background = "#2C4F3E"}
-          >
-            Continue Shopping
-          </button>
+            <button
+              onClick={onClose}
+              style={{
+                width: "100%",
+                padding: window.innerWidth <= 768 ? "14px 12px" : "15px",
+                background: "#2C4F3E",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: window.innerWidth <= 768 ? "14px" : "14px",
+                transition: "all 0.3s",
+                minHeight: window.innerWidth <= 768 ? "44px" : "auto"
+              }}
+              onMouseEnter={e => e.target.style.background = "#1f3a2c"}
+              onMouseLeave={e => e.target.style.background = "#2C4F3E"}
+            >
+              Continue Shopping
+            </button>
+          </div>
         </div>
       )}
     </div>

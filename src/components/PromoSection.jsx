@@ -15,7 +15,7 @@ export default function PromoSection() {
     <div style={{
       background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
       color: "#fff",
-      padding: isMobile ? "15px 15px 20px" : "20px 30px",
+      padding: isMobile ? "20px 15px" : "30px 30px",
       textAlign: "center",
       borderBottom: "1px solid rgba(184, 68, 141, 0.3)"
     }}>
