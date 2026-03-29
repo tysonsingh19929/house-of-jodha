@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Cart from "../components/Cart";
 
-export default function PoliciesPage({ cartCount, onCartClick }) {
+export default function PoliciesPage({ cartCount, onCartClick, cartOpen, cartItems, removeFromCart }) {
   const { policy } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -115,8 +116,9 @@ These terms and conditions are governed by and construed in accordance with the 
 
   return (
     <>
-      <Navbar cartCount={cartCount} onCartClick={onCartClick} />
-      <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "900px", margin: "0 auto" }}>
+      <Navbar cartCount={cartCount} onCartClick={onCartClick} />      {cartOpen && (
+        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
+      )}      <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "900px", margin: "0 auto" }}>
         <button 
           onClick={() => navigate("/")}
           style={{ padding: "8px 16px", background: "#D4AF37", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "20px" }}

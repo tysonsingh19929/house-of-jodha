@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Cart from "../components/Cart";
 
-export default function CollectionPage({ cartCount, onCartClick, onAddToCart }) {
+export default function CollectionPage({ cartCount, onCartClick, onAddToCart, cartOpen, cartItems, removeFromCart }) {
   const { type } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -51,6 +52,9 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart }) 
   return (
     <>
       <Navbar cartCount={cartCount} onCartClick={onCartClick} />
+      {cartOpen && (
+        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
+      )}
       <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto" }}>
         <button 
           onClick={() => navigate("/")}

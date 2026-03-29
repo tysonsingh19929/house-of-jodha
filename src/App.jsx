@@ -79,6 +79,9 @@ function App() {
               cartCount={cartCount} 
               onCartClick={() => setCartOpen(!cartOpen)} 
               onAddToCart={addToCart}
+              cartOpen={cartOpen}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
             />
           } 
         />
@@ -89,6 +92,9 @@ function App() {
               cartCount={cartCount} 
               onCartClick={() => setCartOpen(!cartOpen)}
               onAddToCart={addToCart}
+              cartOpen={cartOpen}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
             />
           } 
         />
@@ -98,6 +104,9 @@ function App() {
             <PoliciesPage 
               cartCount={cartCount} 
               onCartClick={() => setCartOpen(!cartOpen)}
+              cartOpen={cartOpen}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
             />
           } 
         />
