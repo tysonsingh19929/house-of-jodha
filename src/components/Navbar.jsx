@@ -192,7 +192,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       </div>
 
       {/* Right Section - Cart Button */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: isMobile ? "120px" : "150px", flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: isMobile ? "120px" : "150px", flexShrink: 0, position: "relative", zIndex: 1002 }}>
         <button 
           onClick={onCartClick}
           style={{
@@ -211,7 +211,9 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             minHeight: isMobile ? "44px" : "auto",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+            position: "relative",
+            zIndex: 1002
           }}
         >
           🛍️ Cart ({cartCount})
