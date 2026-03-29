@@ -1,28 +1,48 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Footer() {
+  const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
 
   const handleShoppingClick = (item) => {
-    const productsSection = document.getElementById("products");
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: "smooth" });
-    }
-    alert(`Viewing ${item}`);
+    navigate("/");
+    setTimeout(() => {
+      const productsSection = document.getElementById("products");
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
-  const handlePolicyClick = (policy) => {
-    alert(`${policy} page coming soon! For now, contact us at support@houseofjodha.com`);
+  const handlePolicyClick = (policyName) => {
+    const policyMap = {
+      "Privacy Policy": "privacy",
+      "Shipping Info": "shipping",
+      "Returns": "returns",
+      "Terms & Conditions": "terms"
+    };
+    navigate(`/policy/${policyMap[policyName]}`);
   };
 
   const handleCollectionClick = (collection) => {
-    const productsSection = document.getElementById("products");
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: "smooth" });
-    }
-    alert(`Showing ${collection} collection`);
+    const collectionMap = {
+      "Lehenga": "lehenga",
+      "Saree": "saree",
+      "Anarkali": "anarkali",
+      "Salwar Kameez": "salwarkameez"
+    };
+    navigate(`/collection/${collectionMap[collection]}`);
   };
 
   const handleSocialClick = (platform) => {
-    alert(`Redirecting to ${platform} - Coming soon!`);
+    const urls = {
+      "Facebook": "https://facebook.com/houseofjodha",
+      "Instagram": "https://instagram.com/houseofjodha",
+      "Twitter": "https://twitter.com/houseofjodha"
+    };
+    if (urls[platform]) {
+      window.open(urls[platform], "_blank");
+    }
   };
 
   return (

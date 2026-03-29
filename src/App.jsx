@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import PromoSection from "./components/PromoSection";
@@ -12,22 +13,14 @@ import FAQSection from "./components/FAQSection";
 import About from "./components/About";
 import Footer from "./components/Footer";
 import Cart from "./components/Cart";
+import CollectionPage from "./pages/CollectionPage";
+import OccasionPage from "./pages/OccasionPage";
+import PoliciesPage from "./pages/PoliciesPage";
 
-function App() {
-  const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-
-  const addToCart = (product) => {
-    setCartItems([...cartItems, product]);
-  };
-
-  const removeFromCart = (index) => {
-    setCartItems(cartItems.filter((_, i) => i !== index));
-  };
-
+function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, cartCount }) {
   return (
     <div style={{ background: "#fff" }}>
-      <Navbar cartCount={cartItems.length} onCartClick={() => setCartOpen(!cartOpen)} />
+      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
       )}
@@ -43,6 +36,70 @@ function App() {
       <About />
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
+  const addToCart = (product) => {
+    setCartItems([...cartItems, product]);
+  };
+
+  const removeFromCart = (index) => {
+    setCartItems(cartItems.filter((_, i) => i !== index));
+  };
+
+  const cartCount = cartItems.length;
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <HomePage 
+              cartOpen={cartOpen} 
+              setCartOpen={setCartOpen} 
+              cartItems={cartItems} 
+              setCartItems={setCartItems} 
+              addToCart={addToCart} 
+              removeFromCart={removeFromCart}
+              cartCount={cartCount}
+            />
+          } 
+        />
+        <Route 
+          path="/collection/:type" 
+          element={
+            <CollectionPage 
+              cartCount={cartCount} 
+              onCartClick={() => setCartOpen(!cartOpen)} 
+              onAddToCart={addToCart}
+            />
+          } 
+        />
+        <Route 
+          path="/occasion/:occasion" 
+          element={
+            <OccasionPage 
+              cartCount={cartCount} 
+              onCartClick={() => setCartOpen(!cartOpen)}
+            />
+          } 
+        />
+        <Route 
+          path="/policy/:policy" 
+          element={
+            <PoliciesPage 
+              cartCount={cartCount} 
+              onCartClick={() => setCartOpen(!cartOpen)}
+            />
+          } 
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

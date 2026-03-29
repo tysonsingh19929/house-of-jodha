@@ -1,23 +1,20 @@
+import { useNavigate } from "react-router-dom";
+
 export default function ShopByOccasion() {
+  const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
 
   const occasions = [
-    { name: "Mehendi", icon: "💚", color: "#22C55E" },
-    { name: "Sangeet", icon: "🎵", color: "#F59E0B" },
-    { name: "Wedding", icon: "💍", color: "#EC4899" },
-    { name: "Engagement", icon: "✨", color: "#8B5CF6" },
-    { name: "Reception", icon: "🎉", color: "#06B6D4" },
-    { name: "Cocktail", icon: "🍾", color: "#EF4444" }
+    { name: "Mehendi", icon: "💚", color: "#22C55E", path: "mehendi" },
+    { name: "Sangeet", icon: "🎵", color: "#F59E0B", path: "sangeet" },
+    { name: "Wedding", icon: "💍", color: "#EC4899", path: "wedding" },
+    { name: "Engagement", icon: "✨", color: "#8B5CF6", path: "engagement" },
+    { name: "Reception", icon: "🎉", color: "#06B6D4", path: "reception" },
+    { name: "Cocktail", icon: "🍾", color: "#EF4444", path: "cocktail" }
   ];
 
   const handleOccasionClick = (occasion) => {
-    // Scroll to products section
-    const productsSection = document.getElementById("products");
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: "smooth" });
-    }
-    // Alert user about the occasion
-    alert(`Showing outfits for ${occasion.name} 🎉`);
+    navigate(`/occasion/${occasion.path}`);
   };
 
   return (
