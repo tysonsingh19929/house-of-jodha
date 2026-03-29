@@ -1,18 +1,63 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     originalPrice: "",
     category: "Lehenga",
-    image: "👗",
-    imageType: "emoji" // 'emoji' or 'upload'
+    image: ""
   });
 
   const [imagePreview, setImagePreview] = useState(null);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
-  const imageEmojis = ["👗", "👚", "🧥", "💃"];
+
+  // Check if user is seller
+  const isSeller = localStorage.getItem("sellerLoggedIn") === "true";
+  
+  if (!isSeller) {
+    return (
+      <div style={{ padding: "40px 20px", maxWidth: "600px", margin: "0 auto", textAlign: "center" }}>
+        <h1 style={{ color: "#2C4F3E", marginBottom: "20px" }}>Access Denied</h1>
+        <p style={{ fontSize: "16px", color: "#666", marginBottom: "30px" }}>
+          This dashboard is only available for sellers. Please log in as a seller to continue.
+        </p>
+        <button
+          onClick={() => navigate("/seller-login")}
+          style={{
+            padding: "12px 24px",
+            fontSize: "16px",
+            background: "var(--accent)",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "600",
+            marginRight: "10px"
+          }}
+        >
+          Seller Login
+        </button>
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            padding: "12px 24px",
+            fontSize: "16px",
+            background: "#ddd",
+            color: "#333",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "600"
+          }}
+        >
+          Back to Home
+        </button>
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,8 +108,7 @@ export default function AdminDashboard() {
       price: "",
       originalPrice: "",
       category: "Lehenga",
-      image: "👗",
-      imageType: "emoji"
+      image: ""
     });
     setImagePreview(null);
 
@@ -83,9 +127,33 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1 style={{ textAlign: "center", color: "#2C4F3E", marginBottom: "40px" }}>
-        🛍️ Product Management Dashboard
-      </h1>
+      {/* Header with Logout */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
+        <h1 style={{ textAlign: "center", color: "#2C4F3E", marginBottom: "0", flex: 1 }}>
+          🛍️ Product Management Dashboard
+        </h1>
+        <button
+          onClick={() => {
+            localStorage.removeItem("sellerLoggedIn");
+            navigate("/");
+          }}
+          style={{
+            padding: "10px 16px",
+            fontSize: "14px",
+            background: "#ff6b6b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "600",
+            whiteSpace: "nowrap"
+          }}
+          onMouseEnter={e => e.target.style.background = "#ff5252"}
+          onMouseLeave={e => e.target.style.background = "#ff6b6b"}
+        >
+          🚪 Logout
+        </button>
+      </div>
 
       {/* Add Product Form */}
       <div style={{ background: "#fff", borderRadius: "8px", padding: "30px", marginBottom: "40px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
@@ -187,10 +255,10 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Image Selection - Emoji or Upload */}
+          {/* Image Upload - Required */}
           <div style={{ marginBottom: "20px" }}>
             <label style={{ display: "block", fontWeight: "600", marginBottom: "12px", color: "#333" }}>
-              Product Image *
+              Product Image * (Required)
             </label>
 
             {/* Image Preview */}
@@ -211,7 +279,7 @@ export default function AdminDashboard() {
                   type="button"
                   onClick={() => {
                     setImagePreview(null);
-                    setFormData(prev => ({ ...prev, image: "👗", imageType: "emoji" }));
+                    setFormData(prev => ({ ...prev, image: "" }));
                   }}
                   style={{
                     display: "block",
@@ -231,41 +299,12 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* Emoji Selection */}
-            <div style={{ marginBottom: "15px" }}>
-              <p style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}>Choose Emoji:</p>
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                {imageEmojis.map(emoji => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    onClick={() => {
-                      setFormData(prev => ({ ...prev, image: emoji, imageType: "emoji" }));
-                      setImagePreview(null);
-                    }}
-                    style={{
-                      fontSize: "32px",
-                      padding: "10px 14px",
-                      border: (formData.imageType === "emoji" && formData.image === emoji) ? "3px solid var(--accent)" : "2px solid #ddd",
-                      borderRadius: "8px",
-                      background: (formData.imageType === "emoji" && formData.image === emoji) ? "#fff3cd" : "#fff",
-                      cursor: "pointer",
-                      transition: "all 0.2s"
-                    }}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* File Upload */}
-            <div>
-              <p style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}>Or Upload Image:</p>
+            {/* File Upload - Required */}
+            {!imagePreview && (
               <label
                 style={{
                   display: "block",
-                  padding: "20px",
+                  padding: "30px",
                   border: "2px dashed var(--accent)",
                   borderRadius: "8px",
                   textAlign: "center",
@@ -286,17 +325,18 @@ export default function AdminDashboard() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
+                  required
                   style={{ display: "none" }}
                 />
-                <div style={{ fontSize: "20px", marginBottom: "8px" }}>📸</div>
-                <p style={{ fontSize: "13px", fontWeight: "600", color: "#333", margin: "0 0 4px 0" }}>
-                  Click to Upload Image
+                <div style={{ fontSize: "40px", marginBottom: "12px" }}>📸</div>
+                <p style={{ fontSize: "14px", fontWeight: "600", color: "#333", margin: "0 0 6px 0" }}>
+                  Click to Upload Product Image
                 </p>
-                <p style={{ fontSize: "11px", color: "#999", margin: "0" }}>
+                <p style={{ fontSize: "12px", color: "#999", margin: "0" }}>
                   Supports JPG, PNG, GIF, WebP
                 </p>
               </label>
-            </div>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -344,23 +384,19 @@ export default function AdminDashboard() {
                 {customProducts.map(product => (
                   <tr key={product.id} style={{ borderBottom: "1px solid #eee" }}>
                     <td style={{ padding: "12px" }}>
-                      {product.imageType === "upload" ? (
-                        <img 
-                          src={product.image} 
-                          alt={product.name}
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            objectFit: "cover",
-                            borderRadius: "4px",
-                            marginRight: "8px",
-                            display: "inline-block",
-                            verticalAlign: "middle"
-                          }}
-                        />
-                      ) : (
-                        <span style={{ fontSize: "20px", marginRight: "8px", display: "inline-block" }}>{product.image}</span>
-                      )}
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          objectFit: "cover",
+                          borderRadius: "4px",
+                          marginRight: "8px",
+                          display: "inline-block",
+                          verticalAlign: "middle"
+                        }}
+                      />
                       <span style={{ verticalAlign: "middle" }}>{product.name}</span>
                     </td>
                     <td style={{ padding: "12px" }}>{product.category}</td>

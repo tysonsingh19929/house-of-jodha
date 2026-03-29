@@ -6,6 +6,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const navbarRef = React.useRef(null);
+  const isSeller = localStorage.getItem("sellerLoggedIn") === "true";
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -139,7 +140,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             About
           </button>
           <button 
-            onClick={() => navigate("/admin-dashboard")}
+            onClick={() => navigate(isSeller ? "/admin-dashboard" : "/seller-login")}
             style={{ 
               textDecoration: "none", 
               color: "#D4AF37", 
@@ -150,7 +151,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
               fontSize: "inherit"
             }}
           >
-            📊 Admin
+            📊 {isSeller ? "Dashboard" : "Seller"}
           </button>
         </div>
       )}
@@ -268,7 +269,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           <button 
             onClick={() => {
               setMenuOpen(false);
-              navigate("/admin-dashboard");
+              navigate(isSeller ? "/admin-dashboard" : "/seller-login");
             }}
             style={{
               padding: "12px 15px",
@@ -282,7 +283,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
               fontSize: "14px"
             }}
           >
-            📊 Admin Dashboard
+            📊 {isSeller ? "Dashboard" : "Seller Login"}
           </button>
         </div>
       )}

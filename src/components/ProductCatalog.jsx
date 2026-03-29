@@ -276,7 +276,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                 position: "relative",
                 overflow: "hidden"
               }}>
-                {product.imageType === "upload" ? (
+                {typeof product.image === "string" && product.image.startsWith("data:") ? (
                   <img 
                     src={product.image} 
                     alt={product.name}

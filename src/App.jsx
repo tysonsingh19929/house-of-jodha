@@ -18,6 +18,7 @@ import CollectionPage from "./pages/CollectionPage";
 import OccasionPage from "./pages/OccasionPage";
 import PoliciesPage from "./pages/PoliciesPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import SellerLogin from "./pages/SellerLogin";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -121,6 +122,10 @@ function App() {
         <Route 
           path="/admin-dashboard" 
           element={<AdminDashboard />}
+        />
+        <Route 
+          path="/seller-login" 
+          element={<SellerLogin />}
         />
       </Routes>
     </BrowserRouter>
