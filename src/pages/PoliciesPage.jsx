@@ -116,7 +116,7 @@ These terms and conditions are governed by and construed in accordance with the 
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: "60px" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: window.innerWidth <= 768 ? "100px" : "120px" }}>
         <Navbar cartCount={cartCount} onCartClick={onCartClick} />
         {cartOpen && (
           <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />

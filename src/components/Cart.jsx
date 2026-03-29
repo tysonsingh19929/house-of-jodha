@@ -53,7 +53,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       ref={cartRef}
       style={{
         position: "fixed",
-        top: "60px",
+        top: window.innerWidth <= 768 ? "100px" : "120px",
         right: window.innerWidth <= 768 ? "0" : "0",
         bottom: "0",
         left: window.innerWidth <= 768 ? "0" : "auto",

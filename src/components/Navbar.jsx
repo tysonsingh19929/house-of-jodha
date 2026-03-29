@@ -68,7 +68,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       left: 0,
       right: 0,
       zIndex: 9999,
-      height: "60px",
+      height: isMobile ? "100px" : "120px",
       boxSizing: "border-box",
       borderBottom: "1px solid #f0f0f0"
     }}>
@@ -222,7 +222,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       {isMobile && menuOpen && (
         <div style={{
           position: "absolute",
-          top: "60px",
+          top: isMobile ? "100px" : "120px",
           left: "0",
           right: "0",
           background: "#fff",

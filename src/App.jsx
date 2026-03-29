@@ -22,7 +22,7 @@ import SellerLogin from "./pages/SellerLogin";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
-    <div style={{ background: "#fff", paddingTop: "60px" }}>
+    <div style={{ background: "#fff", paddingTop: window.innerWidth <= 768 ? "100px" : "120px" }}>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
