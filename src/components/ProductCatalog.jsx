@@ -148,6 +148,13 @@ const products = [
 export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [addedProducts, setAddedProducts] = useState({});
+  
+  // Load custom products from localStorage
+  const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
+  
+  // Combine hardcoded and custom products
+  const allProducts = [...products, ...customProducts];
+  
   const isMobile = window.innerWidth <= 768;
 
   const handleAddProduct = (product) => {
@@ -182,8 +189,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
   
   const filteredProducts = selectedCategory === "All" 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+    ? allProducts 
+    : allProducts.filter(p => p.category === selectedCategory);
 
   // Debug
   if (typeof window !== 'undefined') {

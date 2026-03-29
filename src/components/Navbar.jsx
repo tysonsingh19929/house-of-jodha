@@ -138,6 +138,20 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           >
             About
           </button>
+          <button 
+            onClick={() => navigate("/admin-dashboard")}
+            style={{ 
+              textDecoration: "none", 
+              color: "#D4AF37", 
+              fontWeight: "600", 
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "inherit"
+            }}
+          >
+            📊 Admin
+          </button>
         </div>
       )}
 
@@ -250,6 +264,25 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             }}
           >
             ℹ️ About
+          </button>
+          <button 
+            onClick={() => {
+              setMenuOpen(false);
+              navigate("/admin-dashboard");
+            }}
+            style={{
+              padding: "12px 15px",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #e5e4e7",
+              cursor: "pointer",
+              color: "#D4AF37",
+              fontWeight: "600",
+              fontSize: "14px"
+            }}
+          >
+            📊 Admin Dashboard
           </button>
         </div>
       )}

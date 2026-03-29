@@ -17,6 +17,7 @@ import Cart from "./components/Cart";
 import CollectionPage from "./pages/CollectionPage";
 import OccasionPage from "./pages/OccasionPage";
 import PoliciesPage from "./pages/PoliciesPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -116,6 +117,10 @@ function App() {
               removeFromCart={removeFromCart}
             />
           } 
+        />
+        <Route 
+          path="/admin-dashboard" 
+          element={<AdminDashboard />}
         />
       </Routes>
     </BrowserRouter>
