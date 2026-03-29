@@ -303,23 +303,24 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
 
                 {/* Product Name */}
                 <h3 style={{
-                  fontSize: isMobile ? "12px" : "13px",
+                  fontSize: isMobile ? "11px" : "13px",
                   fontWeight: "600",
                   color: "#333",
-                  marginBottom: "6px",
-                  lineHeight: "1.3",
+                  marginBottom: "4px",
+                  lineHeight: "1.4",
                   minHeight: "auto",
-                  maxHeight: isMobile ? "48px" : "60px",
-                  overflow: "hidden",
+                  maxHeight: isMobile ? "auto" : "auto",
+                  overflow: "visible",
                   display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical"
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  wordBreak: "break-word"
                 }}>
                   {product.name}
                 </h3>
 
                 {/* Rating */}
-                <div style={{ fontSize: isMobile ? "11px" : "12px", marginBottom: "6px", color: "#ff6b6b" }}>
+                <div style={{ fontSize: isMobile ? "11px" : "12px", marginBottom: "4px", color: "#ff6b6b" }}>
                   ⭐ 4.3 ★ <span style={{ color: "#999", fontSize: "10px" }}>(2.2k)</span>
                 </div>
 
