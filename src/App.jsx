@@ -19,6 +19,7 @@ import OccasionPage from "./pages/OccasionPage";
 import PoliciesPage from "./pages/PoliciesPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import SellerLogin from "./pages/SellerLogin";
+import QuickEdit from "./pages/QuickEdit";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -126,6 +127,10 @@ function App() {
         <Route 
           path="/seller-login" 
           element={<SellerLogin />}
+        />
+        <Route 
+          path="/quick-edit" 
+          element={<QuickEdit />}
         />
       </Routes>
     </BrowserRouter>
