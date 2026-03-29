@@ -57,14 +57,15 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         right: window.innerWidth <= 768 ? "0" : "0",
         left: window.innerWidth <= 768 ? "0" : "auto",
         width: window.innerWidth <= 768 ? "100%" : "450px",
-        height: "calc(100vh - 60px)",
+        height: window.innerWidth <= 768 ? "calc(100vh - 120px)" : "calc(100vh - 80px)",
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
         zIndex: "99",
         display: "flex",
         flexDirection: "column",
         animation: "slideIn 0.3s ease-out",
-        overflowY: "hidden"
+        overflowY: "hidden",
+        paddingBottom: window.innerWidth <= 768 ? "10px" : "0"
       }}
     >
       <style>{`
@@ -107,11 +108,13 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
 
       {/* Items List */}
       <div style={{
-        flex: "1",
+        flex: "1 1 auto",
+        maxHeight: window.innerWidth <= 768 ? "calc(100% - 200px)" : "calc(100% - 180px)",
         overflowY: "auto",
         padding: "15px",
-        paddingBottom: "15px",
-        minHeight: "0"
+        paddingBottom: "10px",
+        minHeight: "0",
+        WebkitOverflowScrolling: "touch"
       }}>
         {groupedItems.length === 0 ? (
           <div style={{ padding: "40px 20px", textAlign: "center" }}>
@@ -222,7 +225,9 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           borderTop: "2px solid #f0f0f0",
           padding: window.innerWidth <= 768 ? "12px 15px" : "20px",
           boxSizing: "border-box",
-          flexShrink: 0
+          flexShrink: 0,
+          minHeight: "auto",
+          marginTop: "auto"
         }}>
           <div style={{
             background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",

@@ -51,11 +51,12 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart, on
 
   return (
     <>
-      <Navbar cartCount={cartCount} onCartClick={onCartClick} />
-      {cartOpen && (
-        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
-      )}
-      <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <Navbar cartCount={cartCount} onCartClick={onCartClick} />
+        {cartOpen && (
+          <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
+        )}
+        <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto", width: "100%", flex: "1" }}>
         <button 
           onClick={() => navigate("/")}
           style={{ padding: "8px 16px", background: "#D4AF37", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "20px" }}
@@ -125,8 +126,8 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart, on
             </div>
           ))}
         </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }

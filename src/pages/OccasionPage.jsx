@@ -149,11 +149,12 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
 
   return (
     <>
-      <Navbar cartCount={cartCount} onCartClick={onCartClick} />
-      {cartOpen && (
-        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
-      )}
-      <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <Navbar cartCount={cartCount} onCartClick={onCartClick} />
+        {cartOpen && (
+          <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
+        )}
+        <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto", width: "100%", flex: "1" }}>
         <button 
           onClick={() => navigate("/")}
           style={{ padding: "8px 16px", background: details.bgColor, color: details.textColor, border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "20px", fontWeight: "600" }}
@@ -306,8 +307,8 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
             </div>
           ))}
         </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }
