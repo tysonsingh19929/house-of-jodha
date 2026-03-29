@@ -6,57 +6,57 @@ import Cart from "../components/Cart";
 
 const occasionProducts = {
   mehendi: [
-    { id: 101, name: "Multicolor Organza Silk Printed & Hand Embroidered Lehenga Set", price: 1230000, originalPrice: 1470000, image: "👗", category: "Lehenga" },
-    { id: 102, name: "Green Luxe Fabric Embroidered Saree", price: 980000, originalPrice: 1290000, image: "🧥", category: "Saree" },
-    { id: 103, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 610000, originalPrice: 1000000, image: "👚", category: "Sharara" },
-    { id: 104, name: "Light Green Chanderi Silk Hand Embroidered Sharara Set With Shrug", price: 1450000, originalPrice: 1630000, image: "👗", category: "Sharara" },
-    { id: 105, name: "Parrot Green Floral Printed Lehenga Set", price: 770000, originalPrice: 1050000, image: "👗", category: "Lehenga" },
-    { id: 106, name: "Forest Green Georgette Embroidered Sharara Suit Set", price: 500000, originalPrice: 860000, image: "👚", category: "Sharara" },
-    { id: 107, name: "Bronze Maroon Silk Embroidered Designer Saree", price: 610000, originalPrice: 820000, image: "🧥", category: "Saree" },
-    { id: 108, name: "Yellow Silk Hand Worked & Printed Lehenga Set", price: 1800000, originalPrice: 2160000, image: "👗", category: "Lehenga" }
+    { id: 101, name: "Multicolor Organza Silk Printed & Hand Embroidered Lehenga Set", price: 12300, originalPrice: 14700, image: "👗", category: "Lehenga" },
+    { id: 102, name: "Green Luxe Fabric Embroidered Saree", price: 9800, originalPrice: 12900, image: "🧥", category: "Saree" },
+    { id: 103, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 6100, originalPrice: 10000, image: "👚", category: "Sharara" },
+    { id: 104, name: "Light Green Chanderi Silk Hand Embroidered Sharara Set With Shrug", price: 14500, originalPrice: 16300, image: "👗", category: "Sharara" },
+    { id: 105, name: "Parrot Green Floral Printed Lehenga Set", price: 7700, originalPrice: 10500, image: "👗", category: "Lehenga" },
+    { id: 106, name: "Forest Green Georgette Embroidered Sharara Suit Set", price: 5000, originalPrice: 8600, image: "👚", category: "Sharara" },
+    { id: 107, name: "Bronze Maroon Silk Embroidered Designer Saree", price: 6100, originalPrice: 8200, image: "🧥", category: "Saree" },
+    { id: 108, name: "Yellow Silk Hand Worked & Printed Lehenga Set", price: 18000, originalPrice: 21600, image: "👗", category: "Lehenga" }
   ],
   sangeet: [
-    { id: 201, name: "Gold Tissue Silk Embroidered Lehenga Set", price: 2400000, originalPrice: 3100000, image: "👗", category: "Lehenga" },
-    { id: 202, name: "Ivory Georgette Embroidered Anarkali Suit", price: 1600000, originalPrice: 2000000, image: "👗", category: "Anarkali" },
-    { id: 203, name: "Navy Blue Crepe Silk Printed Saree", price: 1100000, originalPrice: 1400000, image: "🧥", category: "Saree" },
-    { id: 204, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 1400000, originalPrice: 1690000, image: "👗", category: "Anarkali" },
-    { id: 205, name: "Maroon Silk Embroidered Lehenga Choli", price: 1900000, originalPrice: 2400000, image: "👗", category: "Lehenga" },
-    { id: 206, name: "Emerald Green Kota Silk Sharara Set", price: 980000, originalPrice: 1280000, image: "👚", category: "Sharara" },
-    { id: 207, name: "Plum Tissue Silk Embroidered Saree", price: 1350000, originalPrice: 1590000, image: "🧥", category: "Saree" },
-    { id: 208, name: "Champagne Tone Georgette Embroidered Lehenga", price: 1700000, originalPrice: 2100000, image: "👗", category: "Lehenga" }
+    { id: 201, name: "Gold Tissue Silk Embroidered Lehenga Set", price: 24000, originalPrice: 31000, image: "👗", category: "Lehenga" },
+    { id: 202, name: "Ivory Georgette Embroidered Anarkali Suit", price: 16000, originalPrice: 20000, image: "👗", category: "Anarkali" },
+    { id: 203, name: "Navy Blue Crepe Silk Printed Saree", price: 11000, originalPrice: 14000, image: "🧥", category: "Saree" },
+    { id: 204, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 14000, originalPrice: 16900, image: "👗", category: "Anarkali" },
+    { id: 205, name: "Maroon Silk Embroidered Lehenga Choli", price: 19000, originalPrice: 24000, image: "👗", category: "Lehenga" },
+    { id: 206, name: "Emerald Green Kota Silk Sharara Set", price: 9800, originalPrice: 12800, image: "👚", category: "Sharara" },
+    { id: 207, name: "Plum Tissue Silk Embroidered Saree", price: 13500, originalPrice: 15900, image: "🧥", category: "Saree" },
+    { id: 208, name: "Champagne Tone Georgette Embroidered Lehenga", price: 17000, originalPrice: 21000, image: "👗", category: "Lehenga" }
   ],
   wedding: [
-    { id: 301, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga Set", price: 2700000, originalPrice: 3290000, image: "👗", category: "Lehenga" },
-    { id: 302, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 3200000, originalPrice: 4000000, image: "👗", category: "Lehenga" },
-    { id: 303, name: "Gold Sequined Silk Bridal Saree", price: 2100000, originalPrice: 2700000, image: "🧥", category: "Saree" },
-    { id: 304, name: "Maroon Tissue Silk Bridal Lehenga Choli Set", price: 2900000, originalPrice: 3600000, image: "👗", category: "Lehenga" },
-    { id: 305, name: "Ivory & Gold Embroidered Bridal Saree", price: 1800000, originalPrice: 2300000, image: "🧥", category: "Saree" },
-    { id: 306, name: "Deep Red Silk Embroidered Bridal Anarkali", price: 2500000, originalPrice: 3100000, image: "👗", category: "Anarkali" },
-    { id: 307, name: "Pink Gold Tissue Silk Bridal Set", price: 2300000, originalPrice: 2900000, image: "👗", category: "Lehenga" }
+    { id: 301, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga Set", price: 27000, originalPrice: 32900, image: "👗", category: "Lehenga" },
+    { id: 302, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 32000, originalPrice: 40000, image: "👗", category: "Lehenga" },
+    { id: 303, name: "Gold Sequined Silk Bridal Saree", price: 21000, originalPrice: 27000, image: "🧥", category: "Saree" },
+    { id: 304, name: "Maroon Tissue Silk Bridal Lehenga Choli Set", price: 29000, originalPrice: 36000, image: "👗", category: "Lehenga" },
+    { id: 305, name: "Ivory & Gold Embroidered Bridal Saree", price: 18000, originalPrice: 23000, image: "🧥", category: "Saree" },
+    { id: 306, name: "Deep Red Silk Embroidered Bridal Anarkali", price: 25000, originalPrice: 31000, image: "👗", category: "Anarkali" },
+    { id: 307, name: "Pink Gold Tissue Silk Bridal Set", price: 23000, originalPrice: 29000, image: "👗", category: "Lehenga" }
   ],
   engagement: [
-    { id: 401, name: "Blush Pink Georgette Embroidered Lehenga Set", price: 1400000, originalPrice: 1800000, image: "👗", category: "Lehenga" },
-    { id: 402, name: "Ivory & Blush Ombre Georgette Lehenga Choli", price: 1200000, originalPrice: 1600000, image: "👗", category: "Lehenga" },
-    { id: 403, name: "Lavender Silk Embroidered Anarkali Dress", price: 1100000, originalPrice: 1450000, image: "👗", category: "Anarkali" },
-    { id: 404, name: "Champagne Gold Silk Embroidered Saree", price: 900000, originalPrice: 1200000, image: "🧥", category: "Saree" },
-    { id: 405, name: "Pale Pink Tissue Silk Lehenga Set", price: 1350000, originalPrice: 1750000, image: "👗", category: "Lehenga" },
-    { id: 406, name: "Dusty Rose Georgette Sharara Suit", price: 980000, originalPrice: 1280000, image: "👚", category: "Sharara" }
+    { id: 401, name: "Blush Pink Georgette Embroidered Lehenga Set", price: 14000, originalPrice: 18000, image: "👗", category: "Lehenga" },
+    { id: 402, name: "Ivory & Blush Ombre Georgette Lehenga Choli", price: 12000, originalPrice: 16000, image: "👗", category: "Lehenga" },
+    { id: 403, name: "Lavender Silk Embroidered Anarkali Dress", price: 11000, originalPrice: 14500, image: "👗", category: "Anarkali" },
+    { id: 404, name: "Champagne Gold Silk Embroidered Saree", price: 9000, originalPrice: 12000, image: "🧥", category: "Saree" },
+    { id: 405, name: "Pale Pink Tissue Silk Lehenga Set", price: 13500, originalPrice: 17500, image: "👗", category: "Lehenga" },
+    { id: 406, name: "Dusty Rose Georgette Sharara Suit", price: 9800, originalPrice: 12800, image: "👚", category: "Sharara" }
   ],
   reception: [
-    { id: 501, name: "Red & Gold Silk Embroidered Lehenga", price: 2100000, originalPrice: 2700000, image: "👗", category: "Lehenga" },
-    { id: 502, name: "Magenta Silk Printed Lehenga Set", price: 1600000, originalPrice: 2100000, image: "👗", category: "Lehenga" },
-    { id: 503, name: "Gold Sequined Chiffon Saree", price: 1400000, originalPrice: 1900000, image: "🧥", category: "Saree" },
-    { id: 504, name: "Deep Red Crepe Silk Lehenga Choli", price: 1800000, originalPrice: 2300000, image: "👗", category: "Lehenga" },
-    { id: 505, name: "Burgundy & Gold Silk Embroidered Saree", price: 1200000, originalPrice: 1600000, image: "🧥", category: "Saree" },
-    { id: 506, name: "Ruby Red Tissue Silk Anarkali", price: 1500000, originalPrice: 1950000, image: "👗", category: "Anarkali" }
+    { id: 501, name: "Red & Gold Silk Embroidered Lehenga", price: 21000, originalPrice: 27000, image: "👗", category: "Lehenga" },
+    { id: 502, name: "Magenta Silk Printed Lehenga Set", price: 16000, originalPrice: 21000, image: "👗", category: "Lehenga" },
+    { id: 503, name: "Gold Sequined Chiffon Saree", price: 14000, originalPrice: 19000, image: "🧥", category: "Saree" },
+    { id: 504, name: "Deep Red Crepe Silk Lehenga Choli", price: 18000, originalPrice: 23000, image: "👗", category: "Lehenga" },
+    { id: 505, name: "Burgundy & Gold Silk Embroidered Saree", price: 12000, originalPrice: 16000, image: "🧥", category: "Saree" },
+    { id: 506, name: "Ruby Red Tissue Silk Anarkali", price: 15000, originalPrice: 19500, image: "👗", category: "Anarkali" }
   ],
   cocktail: [
-    { id: 601, name: "Black & Gold Crepe Silk Indowestern Top & Palazzo", price: 900000, originalPrice: 1200000, image: "👚", category: "Salwar Kameez" },
-    { id: 602, name: "Navy Blue Georgette Modern Lehenga", price: 1100000, originalPrice: 1450000, image: "👗", category: "Lehenga" },
-    { id: 603, name: "Deep Teal Silk Embroidered Saree", price: 800000, originalPrice: 1100000, image: "🧥", category: "Saree" },
-    { id: 604, name: "Black & Silver Crepe Silk Lehenga Set", price: 1200000, originalPrice: 1600000, image: "👗", category: "Lehenga" },
-    { id: 605, name: "Midnight Blue Georgette Anarkali Dress", price: 950000, originalPrice: 1300000, image: "👗", category: "Anarkali" },
-    { id: 606, name: "Charcoal Grey Silk Printed Saree", price: 700000, originalPrice: 1000000, image: "🧥", category: "Saree" }
+    { id: 601, name: "Black & Gold Crepe Silk Indowestern Top & Palazzo", price: 9000, originalPrice: 12000, image: "👚", category: "Salwar Kameez" },
+    { id: 602, name: "Navy Blue Georgette Modern Lehenga", price: 11000, originalPrice: 14500, image: "👗", category: "Lehenga" },
+    { id: 603, name: "Deep Teal Silk Embroidered Saree", price: 8000, originalPrice: 11000, image: "🧥", category: "Saree" },
+    { id: 604, name: "Black & Silver Crepe Silk Lehenga Set", price: 12000, originalPrice: 16000, image: "👗", category: "Lehenga" },
+    { id: 605, name: "Midnight Blue Georgette Anarkali Dress", price: 9500, originalPrice: 13000, image: "👗", category: "Anarkali" },
+    { id: 606, name: "Charcoal Grey Silk Printed Saree", price: 7000, originalPrice: 10000, image: "🧥", category: "Saree" }
   ]
 };
 
@@ -224,10 +224,10 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
                 </h3>
                 <div style={{ marginBottom: "15px" }}>
                   <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
-                    ₹{(product.originalPrice / 100).toFixed(0)}
+                    ₹{product.originalPrice}
                   </span>
                   <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
-                    ₹{(product.price / 100).toFixed(0)}
+                    ₹{product.price}
                   </span>
                 </div>
                 <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
