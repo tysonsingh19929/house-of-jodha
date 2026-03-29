@@ -26,18 +26,17 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   return (
     <div style={{
       display: "flex",
-      justifyContent: "space-between",
+      justifyContent: "center",
       alignItems: "center",
       padding: isMobile ? "12px 15px" : "15px 30px",
-      flexWrap: isMobile ? "wrap" : "nowrap",
-      gap: isMobile ? "10px" : "0",
+      gap: isMobile ? "10px" : "30px",
       background: "#fff",
       boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
       position: "sticky",
       top: 0,
       zIndex: 100
     }}>
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu Button - Left */}
       {isMobile && (
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -59,7 +58,74 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         </button>
       )}
 
-      <div style={{ flex: 1 }}></div>
+      {/* Desktop Navigation - Left */}
+      {!isMobile && (
+        <div style={{
+          display: "flex",
+          gap: "30px",
+          alignItems: "center",
+          fontSize: "14px"
+        }}>
+          <button 
+            onClick={() => handleNavClick("home")}
+            style={{ 
+              textDecoration: "none", 
+              color: "#08060d", 
+              fontWeight: "600", 
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "inherit"
+            }}
+          >
+            Home
+          </button>
+          <button 
+            onClick={() => handleNavClick("products")}
+            style={{ 
+              textDecoration: "none", 
+              color: "#08060d", 
+              fontWeight: "600", 
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "inherit"
+            }}
+          >
+            Shop
+          </button>
+          <button 
+            onClick={() => handleNavClick("reviews")}
+            style={{ 
+              textDecoration: "none", 
+              color: "#08060d", 
+              fontWeight: "600", 
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "inherit"
+            }}
+          >
+            Reviews
+          </button>
+          <button 
+            onClick={() => handleNavClick("about")}
+            style={{ 
+              textDecoration: "none", 
+              color: "#08060d", 
+              fontWeight: "600", 
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "inherit"
+            }}
+          >
+            About
+          </button>
+        </div>
+      )}
+
+      {/* Logo - Center */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <img 
           src="/house-of-jodha-logo.png" 
@@ -72,90 +138,23 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           }} 
         />
       </div>
-      <div style={{ 
-        display: "flex", 
-        gap: isMobile ? "8px" : "30px", 
-        alignItems: "center",
-        fontSize: isMobile ? "12px" : "14px",
-        flex: 1,
-        justifyContent: isMobile ? "space-around" : "flex-end"
-      }}>
-        <button 
-          onClick={() => handleNavClick("home")}
-          style={{ 
-            textDecoration: "none", 
-            color: "#08060d", 
-            fontWeight: "600", 
-            display: isMobile ? "none" : "inline",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "inherit"
-          }}
-        >
-          Home
-        </button>
-        <button 
-          onClick={() => handleNavClick("products")}
-          style={{ 
-            textDecoration: "none", 
-            color: "#08060d", 
-            fontWeight: "600", 
-            display: isMobile ? "none" : "inline",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "inherit"
-          }}
-        >
-          Shop
-        </button>
-        <button 
-          onClick={() => handleNavClick("reviews")}
-          style={{ 
-            textDecoration: "none", 
-            color: "#08060d", 
-            fontWeight: "600", 
-            display: isMobile ? "none" : "inline",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "inherit"
-          }}
-        >
-          Reviews
-        </button>
-        <button 
-          onClick={() => handleNavClick("about")}
-          style={{ 
-            textDecoration: "none", 
-            color: "#08060d", 
-            fontWeight: "600", 
-            display: isMobile ? "none" : "inline",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "inherit"
-          }}
-        >
-          About
-        </button>
-        <button 
-          onClick={onCartClick}
-          style={{
-            background: "var(--accent)",
-            color: "#fff",
-            border: "none",
-            padding: isMobile ? "6px 12px" : "8px 16px",
-            fontSize: isMobile ? "12px" : "14px",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "500"
-          }}
-        >
-          🛍️ Cart ({cartCount})
-        </button>
-      </div>
+
+      {/* Cart Button - Right */}
+      <button 
+        onClick={onCartClick}
+        style={{
+          background: "var(--accent)",
+          color: "#fff",
+          border: "none",
+          padding: isMobile ? "6px 12px" : "8px 16px",
+          fontSize: isMobile ? "12px" : "14px",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontWeight: "500"
+        }}
+      >
+        🛍️ Cart ({cartCount})
+      </button>
 
       {/* Mobile Menu */}
       {isMobile && menuOpen && (
