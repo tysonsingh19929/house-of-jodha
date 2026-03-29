@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
 
-export default function CollectionPage({ cartCount, onCartClick, onAddToCart, cartOpen, cartItems, removeFromCart }) {
+export default function CollectionPage({ cartCount, onCartClick, onAddToCart, onRemoveProduct, cartOpen, cartItems, removeFromCart }) {
   const { type } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;

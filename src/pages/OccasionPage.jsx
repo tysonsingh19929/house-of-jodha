@@ -60,7 +60,7 @@ const occasionProducts = {
   ]
 };
 
-export default function OccasionPage({ cartCount, onCartClick, onAddToCart, cartOpen, cartItems, removeFromCart }) {
+export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRemoveProduct, cartOpen, cartItems, removeFromCart }) {
   const { occasion } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -136,6 +136,7 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, cart
       if (newQty === 0) {
         const updated = {...prev};
         delete updated[product.id];
+        onRemoveProduct?.(product.id);
         return updated;
       }
       return { ...prev, [product.id]: newQty };

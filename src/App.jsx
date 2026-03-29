@@ -18,7 +18,7 @@ import CollectionPage from "./pages/CollectionPage";
 import OccasionPage from "./pages/OccasionPage";
 import PoliciesPage from "./pages/PoliciesPage";
 
-function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, cartCount }) {
+function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
     <div style={{ background: "#fff" }}>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
@@ -28,7 +28,7 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
       <PromoSection />
       <SearchBar />
       <Hero />
-      <ProductCatalog onAddToCart={addToCart} />
+      <ProductCatalog onAddToCart={addToCart} onRemoveProduct={removeProductFromCart} />
       <ShopByOccasion />
       <Features />
       <Newsletter />
@@ -52,6 +52,10 @@ function App() {
     setCartItems(cartItems.filter((_, i) => i !== index));
   };
 
+  const removeProductFromCart = (productId) => {
+    setCartItems(cartItems.filter(item => item.id !== productId));
+  };
+
   const cartCount = cartItems.length;
 
   return (
@@ -68,6 +72,7 @@ function App() {
               setCartItems={setCartItems} 
               addToCart={addToCart} 
               removeFromCart={removeFromCart}
+              removeProductFromCart={removeProductFromCart}
               cartCount={cartCount}
             />
           } 
@@ -79,6 +84,7 @@ function App() {
               cartCount={cartCount} 
               onCartClick={() => setCartOpen(!cartOpen)} 
               onAddToCart={addToCart}
+              onRemoveProduct={removeProductFromCart}
               cartOpen={cartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}
@@ -92,6 +98,7 @@ function App() {
               cartCount={cartCount} 
               onCartClick={() => setCartOpen(!cartOpen)}
               onAddToCart={addToCart}
+              onRemoveProduct={removeProductFromCart}
               cartOpen={cartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}

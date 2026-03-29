@@ -51,7 +51,7 @@ const products = [
   }
 ];
 
-export default function ProductCatalog({ onAddToCart }) {
+export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [addedProducts, setAddedProducts] = useState({});
   const isMobile = window.innerWidth <= 768;
@@ -78,6 +78,7 @@ export default function ProductCatalog({ onAddToCart }) {
       if (newQty === 0) {
         const updated = {...prev};
         delete updated[product.id];
+        onRemoveProduct?.(product.id);
         return updated;
       }
       return { ...prev, [product.id]: newQty };
