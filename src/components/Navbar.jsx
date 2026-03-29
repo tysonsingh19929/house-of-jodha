@@ -5,12 +5,26 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
+  const navbarRef = React.useRef(null);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  React.useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (navbarRef.current && !navbarRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [menuOpen]);
 
   const handleNavClick = (sectionId) => {
     setMenuOpen(false);
@@ -24,7 +38,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   };
 
   return (
-    <div style={{
+    <div ref={navbarRef} style={{
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
