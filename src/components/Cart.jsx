@@ -55,15 +55,17 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         position: "fixed",
         top: "60px",
         right: "0",
-        width: "100%",
-        maxWidth: "450px",
+        left: window.innerWidth <= 768 ? "0" : "auto",
+        width: window.innerWidth <= 768 ? "100%" : "100%",
+        maxWidth: window.innerWidth <= 768 ? "100%" : "450px",
         height: "calc(100vh - 60px)",
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
         zIndex: "99",
         display: "flex",
         flexDirection: "column",
-        animation: "slideIn 0.3s ease-out"
+        animation: "slideIn 0.3s ease-out",
+        overflowY: "hidden"
       }}
     >
       <style>{`
@@ -75,12 +77,13 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
 
       {/* Header */}
       <div style={{ 
-        padding: "20px", 
+        padding: window.innerWidth <= 768 ? "12px 15px" : "20px", 
         borderBottom: "2px solid #f0f0f0",
-        background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)"
+        background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
+        flexShrink: 0
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ margin: "0", color: "#fff", fontSize: "20px", fontWeight: "700" }}>
+          <h3 style={{ margin: "0", color: "#fff", fontSize: window.innerWidth <= 768 ? "16px" : "20px", fontWeight: "700" }}>
             🛍️ My Cart ({groupedItems.length} items)
           </h3>
           <button
@@ -107,8 +110,9 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       <div style={{
         flex: "1",
         overflowY: "auto",
-        padding: "20px",
-        paddingBottom: "20px"
+        padding: "15px",
+        paddingBottom: "15px",
+        minHeight: "0"
       }}>
         {groupedItems.length === 0 ? (
           <div style={{ padding: "40px 20px", textAlign: "center" }}>
@@ -122,17 +126,17 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
               style={{
                 background: "#f9f9f9",
                 borderRadius: "8px",
-                padding: "15px",
-                marginBottom: "15px",
+                padding: window.innerWidth <= 768 ? "12px" : "15px",
+                marginBottom: "12px",
                 border: "1px solid #e0e0e0",
                 transition: "all 0.2s"
               }}
             >
               <div style={{ marginBottom: "12px" }}>
-                <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: "15px", color: "#08060d" }}>
+                <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "13px" : "15px", color: "#08060d" }}>
                   {item.name}
                 </p>
-                <p style={{ margin: "0", color: "#D4AF37", fontWeight: "700", fontSize: "16px" }}>
+                <p style={{ margin: "0", color: "#D4AF37", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "14px" : "16px" }}>
                   ₹{item.price}
                 </p>
               </div>
@@ -199,10 +203,10 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                fontSize: "13px",
+                fontSize: window.innerWidth <= 768 ? "12px" : "13px",
                 color: "#666",
                 borderTop: "1px solid #e0e0e0",
-                paddingTop: "10px"
+                paddingTop: "8px"
               }}>
                 <span>Subtotal:</span>
                 <span style={{ fontWeight: "700", color: "#333" }}>₹{item.price * item.quantity}</span>
@@ -217,40 +221,40 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         <div style={{
           background: "#fff",
           borderTop: "2px solid #f0f0f0",
-          padding: "20px",
+          padding: window.innerWidth <= 768 ? "12px 15px" : "20px",
           boxSizing: "border-box",
           flexShrink: 0
         }}>
           <div style={{
             background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
-            padding: "15px",
+            padding: window.innerWidth <= 768 ? "10px" : "15px",
             borderRadius: "8px",
-            marginBottom: "15px"
+            marginBottom: "12px"
           }}>
             <div style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: "18px",
+              fontSize: window.innerWidth <= 768 ? "15px" : "18px",
               fontWeight: "700",
               color: "#08060d"
             }}>
-              <span>Total Amount:</span>
-              <span style={{ color: "#D4AF37", fontSize: "24px" }}>₹{total}</span>
+              <span>Total:</span>
+              <span style={{ color: "#D4AF37", fontSize: window.innerWidth <= 768 ? "18px" : "24px" }}>₹{total}</span>
             </div>
           </div>
 
           <button
             style={{
               width: "100%",
-              padding: "16px",
+              padding: window.innerWidth <= 768 ? "12px" : "16px",
               background: "linear-gradient(135deg, #D4AF37 0%, #c49a27 100%)",
               color: "#fff",
               border: "none",
               borderRadius: "6px",
               cursor: "pointer",
               fontWeight: "700",
-              fontSize: "15px",
-              marginBottom: "10px",
+              fontSize: window.innerWidth <= 768 ? "13px" : "15px",
+              marginBottom: "8px",
               transition: "all 0.3s",
               boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)"
             }}
@@ -264,14 +268,14 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
             onClick={onClose}
             style={{
               width: "100%",
-              padding: "15px",
+              padding: window.innerWidth <= 768 ? "11px" : "15px",
               background: "#2C4F3E",
               color: "#fff",
               border: "none",
               borderRadius: "6px",
               cursor: "pointer",
               fontWeight: "600",
-              fontSize: "14px",
+              fontSize: window.innerWidth <= 768 ? "13px" : "14px",
               transition: "all 0.3s"
             }}
             onMouseEnter={e => e.target.style.background = "#1f3a2c"}
