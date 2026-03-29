@@ -26,8 +26,6 @@ export default function Hero() {
       }}>
         House of Jodha
       </h1>
-        onClick={handleShopClick}
-        
       <p style={{ 
         fontSize: isMobile ? "16px" : "20px",
         color: "var(--text)", 
@@ -37,16 +35,18 @@ export default function Hero() {
       }}>
         Exquisite Indian ethnic wear designed for the modern diva. Handpicked, carefully curated, and tailored to perfection.
       </p>
-      <button style={{
-        background: "var(--accent)",
-        color: "#fff",
-        border: "none",
-        padding: isMobile ? "10px 30px" : "12px 40px",
-        fontSize: isMobile ? "14px" : "16px",
-        borderRadius: "4px",
-        cursor: "pointer",
-        fontWeight: "600"
-      }}>
+      <button 
+        onClick={handleShopClick}
+        style={{
+          background: "var(--accent)",
+          color: "#fff",
+          border: "none",
+          padding: isMobile ? "10px 30px" : "12px 40px",
+          fontSize: isMobile ? "14px" : "16px",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontWeight: "600"
+        }}>
         Shop Now ✨
       </button>
     </div>
