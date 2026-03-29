@@ -18,7 +18,7 @@ export default function AdminDashboard() {
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
   // Check if user is seller
-  const isSeller = localStorage.getItem("sellerLoggedIn") === "true";
+  const isSeller = localStorage.getItem("seller_authenticated") === "true";
   
   if (!isSeller) {
     return (
@@ -200,7 +200,7 @@ export default function AdminDashboard() {
         </h1>
         <button
           onClick={() => {
-            localStorage.removeItem("sellerLoggedIn");
+            localStorage.removeItem("seller_authenticated");
             navigate("/");
           }}
           style={{

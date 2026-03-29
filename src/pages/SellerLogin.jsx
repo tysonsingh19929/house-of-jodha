@@ -12,7 +12,9 @@ export default function SellerLogin() {
     e.preventDefault();
     
     if (password === SELLER_PASSWORD) {
-      localStorage.setItem("sellerLoggedIn", "true");
+      // Clear all old keys and set new one
+      localStorage.clear();
+      localStorage.setItem("seller_authenticated", "true");
       setPassword("");
       setError("");
       navigate("/admin-dashboard");

@@ -11,12 +11,12 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   // Check seller status on mount and when navbar updates
   React.useEffect(() => {
     // Initial check
-    const sellerStatus = localStorage.getItem("sellerLoggedIn") === "true";
+    const sellerStatus = localStorage.getItem("seller_authenticated") === "true";
     setIsSeller(sellerStatus);
     
     // Listen for storage changes
     const handleStorageChange = () => {
-      const status = localStorage.getItem("sellerLoggedIn") === "true";
+      const status = localStorage.getItem("seller_authenticated") === "true";
       setIsSeller(status);
     };
     
