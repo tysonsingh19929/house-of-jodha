@@ -174,6 +174,20 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           >
             📊 {isSeller ? "Dashboard" : "Seller"}
           </button>
+          <button 
+            onClick={() => navigate("/quick-edit")}
+            style={{ 
+              textDecoration: "none", 
+              color: "#D4AF37", 
+              fontWeight: "600", 
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "inherit"
+            }}
+          >
+            ✏️ Edit Products
+          </button>
         </div>
       )}
 
@@ -312,6 +326,24 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             }}
           >
             📊 {isSeller ? "Dashboard" : "Seller Login"}
+          </button>
+          <button 
+            onClick={() => {
+              setMenuOpen(false);
+              navigate("/quick-edit");
+            }}
+            style={{
+              padding: "12px 15px",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "#D4AF37",
+              fontWeight: "600",
+              fontSize: "14px"
+            }}
+          >
+            ✏️ Edit Products
           </button>
         </div>
       )}
