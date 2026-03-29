@@ -276,7 +276,19 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                 position: "relative",
                 overflow: "hidden"
               }}>
-                {product.image}
+                {product.imageType === "upload" ? (
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover"
+                    }}
+                  />
+                ) : (
+                  product.image
+                )}
                 {/* Wishlist Icon */}
                 <button
                   style={{

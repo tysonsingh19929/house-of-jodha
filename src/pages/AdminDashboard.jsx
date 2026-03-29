@@ -6,9 +6,11 @@ export default function AdminDashboard() {
     price: "",
     originalPrice: "",
     category: "Lehenga",
-    image: "👗"
+    image: "👗",
+    imageType: "emoji" // 'emoji' or 'upload'
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
   const imageEmojis = ["👗", "👚", "🧥", "💃"];
 
@@ -18,6 +20,23 @@ export default function AdminDashboard() {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Handle image upload
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setFormData(prev => ({
+          ...prev,
+          image: reader.result,
+          imageType: "upload"
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -44,8 +63,10 @@ export default function AdminDashboard() {
       price: "",
       originalPrice: "",
       category: "Lehenga",
-      image: "👗"
+      image: "👗",
+      imageType: "emoji"
     });
+    setImagePreview(null);
 
     alert("Product added successfully! Refresh the page to see it in the catalog.");
   };
@@ -166,30 +187,115 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Image Emoji Selection */}
+          {/* Image Selection - Emoji or Upload */}
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "8px", color: "#333" }}>
-              Product Image (Emoji) *
+            <label style={{ display: "block", fontWeight: "600", marginBottom: "12px", color: "#333" }}>
+              Product Image *
             </label>
-            <div style={{ display: "flex", gap: "10px" }}>
-              {imageEmojis.map(emoji => (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, image: emoji }))}
-                  style={{
-                    fontSize: "32px",
-                    padding: "12px 16px",
-                    border: formData.image === emoji ? "3px solid var(--accent)" : "2px solid #ddd",
+
+            {/* Image Preview */}
+            {imagePreview && (
+              <div style={{ marginBottom: "15px", textAlign: "center" }}>
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
+                  style={{ 
+                    maxWidth: "150px", 
+                    height: "150px", 
+                    objectFit: "cover",
                     borderRadius: "8px",
-                    background: formData.image === emoji ? "#fff3cd" : "#fff",
+                    border: "2px solid var(--accent)"
+                  }} 
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImagePreview(null);
+                    setFormData(prev => ({ ...prev, image: "👗", imageType: "emoji" }));
+                  }}
+                  style={{
+                    display: "block",
+                    marginTop: "8px",
+                    padding: "6px 12px",
+                    fontSize: "12px",
+                    background: "#ff6b6b",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
                     cursor: "pointer",
-                    transition: "all 0.2s"
+                    fontWeight: "600"
                   }}
                 >
-                  {emoji}
+                  Remove Image
                 </button>
-              ))}
+              </div>
+            )}
+
+            {/* Emoji Selection */}
+            <div style={{ marginBottom: "15px" }}>
+              <p style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}>Choose Emoji:</p>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                {imageEmojis.map(emoji => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, image: emoji, imageType: "emoji" }));
+                      setImagePreview(null);
+                    }}
+                    style={{
+                      fontSize: "32px",
+                      padding: "10px 14px",
+                      border: (formData.imageType === "emoji" && formData.image === emoji) ? "3px solid var(--accent)" : "2px solid #ddd",
+                      borderRadius: "8px",
+                      background: (formData.imageType === "emoji" && formData.image === emoji) ? "#fff3cd" : "#fff",
+                      cursor: "pointer",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* File Upload */}
+            <div>
+              <p style={{ fontSize: "12px", color: "#666", marginBottom: "8px" }}>Or Upload Image:</p>
+              <label
+                style={{
+                  display: "block",
+                  padding: "20px",
+                  border: "2px dashed var(--accent)",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  background: "#fafafa",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = "#fff3cd";
+                  e.currentTarget.style.borderColor = "#c9860f";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = "#fafafa";
+                  e.currentTarget.style.borderColor = "var(--accent)";
+                }}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: "none" }}
+                />
+                <div style={{ fontSize: "20px", marginBottom: "8px" }}>📸</div>
+                <p style={{ fontSize: "13px", fontWeight: "600", color: "#333", margin: "0 0 4px 0" }}>
+                  Click to Upload Image
+                </p>
+                <p style={{ fontSize: "11px", color: "#999", margin: "0" }}>
+                  Supports JPG, PNG, GIF, WebP
+                </p>
+              </label>
             </div>
           </div>
 
@@ -238,8 +344,24 @@ export default function AdminDashboard() {
                 {customProducts.map(product => (
                   <tr key={product.id} style={{ borderBottom: "1px solid #eee" }}>
                     <td style={{ padding: "12px" }}>
-                      <span style={{ fontSize: "20px", marginRight: "8px" }}>{product.image}</span>
-                      {product.name}
+                      {product.imageType === "upload" ? (
+                        <img 
+                          src={product.image} 
+                          alt={product.name}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            objectFit: "cover",
+                            borderRadius: "4px",
+                            marginRight: "8px",
+                            display: "inline-block",
+                            verticalAlign: "middle"
+                          }}
+                        />
+                      ) : (
+                        <span style={{ fontSize: "20px", marginRight: "8px", display: "inline-block" }}>{product.image}</span>
+                      )}
+                      <span style={{ verticalAlign: "middle" }}>{product.name}</span>
                     </td>
                     <td style={{ padding: "12px" }}>{product.category}</td>
                     <td style={{ padding: "12px", fontWeight: "600", color: "var(--accent)" }}>₹{product.price}</td>
