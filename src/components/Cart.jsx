@@ -60,7 +60,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         width: window.innerWidth <= 768 ? "100%" : "450px",
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
-        zIndex: "9997",
+        zIndex: "99996",
         display: "flex",
         flexDirection: "column",
         animation: "slideIn 0.3s ease-out",
