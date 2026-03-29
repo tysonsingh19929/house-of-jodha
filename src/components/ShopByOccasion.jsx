@@ -10,6 +10,16 @@ export default function ShopByOccasion() {
     { name: "Cocktail", icon: "🍾", color: "#EF4444" }
   ];
 
+  const handleOccasionClick = (occasion) => {
+    // Scroll to products section
+    const productsSection = document.getElementById("products");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth" });
+    }
+    // Alert user about the occasion
+    alert(`Showing outfits for ${occasion.name} 🎉`);
+  };
+
   return (
     <div style={{
       padding: isMobile ? "40px 15px" : "60px 30px",
@@ -30,6 +40,7 @@ export default function ShopByOccasion() {
         {occasions.map((occ, idx) => (
           <div
             key={idx}
+            onClick={() => handleOccasionClick(occ)}
             style={{
               textAlign: "center",
               padding: isMobile ? "20px 15px" : "30px 20px",
@@ -42,10 +53,14 @@ export default function ShopByOccasion() {
             onMouseEnter={e => {
               e.currentTarget.style.transform = "translateY(-5px)";
               e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.1)";
+              e.currentTarget.style.background = occ.color;
+              e.currentTarget.style.borderColor = occ.color;
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.background = "#fff";
+              e.currentTarget.style.borderColor = occ.color;
             }}
           >
             <div style={{ fontSize: isMobile ? "32px" : "40px", marginBottom: "10px" }}>{occ.icon}</div>

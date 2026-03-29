@@ -1,6 +1,30 @@
 export default function Footer() {
   const isMobile = window.innerWidth <= 768;
 
+  const handleShoppingClick = (item) => {
+    const productsSection = document.getElementById("products");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth" });
+    }
+    alert(`Viewing ${item}`);
+  };
+
+  const handlePolicyClick = (policy) => {
+    alert(`${policy} page coming soon! For now, contact us at support@houseofjodha.com`);
+  };
+
+  const handleCollectionClick = (collection) => {
+    const productsSection = document.getElementById("products");
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: "smooth" });
+    }
+    alert(`Showing ${collection} collection`);
+  };
+
+  const handleSocialClick = (platform) => {
+    alert(`Redirecting to ${platform} - Coming soon!`);
+  };
+
   return (
     <div style={{
       background: "#08060d",
@@ -27,30 +51,30 @@ export default function Footer() {
         <div>
           <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Shopping</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>New Arrivals</a></li>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Best Sellers</a></li>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>View All</a></li>
-            <li><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Sale</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleShoppingClick("New Arrivals")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>New Arrivals</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleShoppingClick("Best Sellers")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Best Sellers</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleShoppingClick("View All")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>View All</a></li>
+            <li style={{ cursor: "pointer" }}><a onClick={() => handleShoppingClick("Sale")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Sale</a></li>
           </ul>
         </div>
 
         <div>
           <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Collection</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Lehenga</a></li>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Saree</a></li>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Anarkali</a></li>
-            <li><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Salwar Kameez</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleCollectionClick("Lehenga")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Lehenga</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleCollectionClick("Saree")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Saree</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleCollectionClick("Anarkali")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Anarkali</a></li>
+            <li style={{ cursor: "pointer" }}><a onClick={() => handleCollectionClick("Salwar Kameez")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Salwar Kameez</a></li>
           </ul>
         </div>
 
         <div>
           <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Policies</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Privacy Policy</a></li>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Shipping Info</a></li>
-            <li style={{ marginBottom: "8px" }}><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Returns</a></li>
-            <li><a href="#" style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px" }}>Terms & Conditions</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handlePolicyClick("Privacy Policy")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Privacy Policy</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handlePolicyClick("Shipping Info")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Shipping Info</a></li>
+            <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handlePolicyClick("Returns")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Returns</a></li>
+            <li style={{ cursor: "pointer" }}><a onClick={() => handlePolicyClick("Terms & Conditions")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Terms & Conditions</a></li>
           </ul>
         </div>
 
@@ -61,9 +85,9 @@ export default function Footer() {
             <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📞 +1 (555) 123-4567</li>
             <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "10px" : "15px" }}>Follow us:</li>
             <li style={{ marginTop: "8px", fontSize: isMobile ? "14px" : "18px" }}>
-              <a href="#" style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none" }}>f</a>
-              <a href="#" style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none" }}>📷</a>
-              <a href="#" style={{ color: "#D4AF37", textDecoration: "none" }}>𝕏</a>
+              <a onClick={() => handleSocialClick("Facebook")} style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none", cursor: "pointer" }}>f</a>
+              <a onClick={() => handleSocialClick("Instagram")} style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none", cursor: "pointer" }}>📷</a>
+              <a onClick={() => handleSocialClick("Twitter")} style={{ color: "#D4AF37", textDecoration: "none", cursor: "pointer" }}>𝕏</a>
             </li>
           </ul>
         </div>
