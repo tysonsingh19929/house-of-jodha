@@ -193,6 +193,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
     }
   }
 
+  const gridCols = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
+
   return (
     <div style={{ padding: "30px 20px", width: "100%", background: "#f5f5f5" }}>
       {/* Category Filter */}
@@ -228,11 +230,11 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
         ✨ {filteredProducts.length} {selectedCategory} products
       </div>
 
-      {/* Product Grid - Myntra Style */}
+      {/* Product Grid - 2 columns on mobile, 4 on desktop */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-        gap: "16px",
+        gridTemplateColumns: gridCols,
+        gap: "12px",
         width: "100%"
       }}>
         {filteredProducts.map((product) => {
@@ -293,41 +295,41 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
               </div>
 
               {/* Product Info */}
-              <div style={{ padding: "12px" }}>
+              <div style={{ padding: isMobile ? "8px" : "12px" }}>
                 {/* Brand/Category Badge */}
-                <div style={{ fontSize: "11px", color: "#999", marginBottom: "4px", textTransform: "uppercase", fontWeight: "600" }}>
+                <div style={{ fontSize: "10px", color: "#999", marginBottom: "3px", textTransform: "uppercase", fontWeight: "600" }}>
                   {product.category}
                 </div>
 
                 {/* Product Name */}
                 <h3 style={{
-                  fontSize: "13px",
+                  fontSize: isMobile ? "12px" : "13px",
                   fontWeight: "600",
                   color: "#333",
-                  marginBottom: "8px",
-                  lineHeight: "1.4",
-                  height: "32px",
+                  marginBottom: "6px",
+                  lineHeight: "1.3",
+                  height: isMobile ? "24px" : "32px",
                   overflow: "hidden"
                 }}>
                   {product.name}
                 </h3>
 
                 {/* Rating */}
-                <div style={{ fontSize: "12px", marginBottom: "8px", color: "#ff6b6b" }}>
-                  ⭐ 4.3 ★ <span style={{ color: "#999" }}>(2.2k)</span>
+                <div style={{ fontSize: isMobile ? "11px" : "12px", marginBottom: "6px", color: "#ff6b6b" }}>
+                  ⭐ 4.3 ★ <span style={{ color: "#999", fontSize: "10px" }}>(2.2k)</span>
                 </div>
 
                 {/* Pricing */}
-                <div style={{ marginBottom: "10px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ fontSize: "16px", fontWeight: "700", color: "#333" }}>
+                <div style={{ marginBottom: isMobile ? "8px" : "10px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "4px" : "8px", flexWrap: "wrap" }}>
+                    <span style={{ fontSize: isMobile ? "14px" : "16px", fontWeight: "700", color: "#333" }}>
                       ₹{product.price}
                     </span>
-                    <span style={{ fontSize: "13px", color: "#999", textDecoration: "line-through" }}>
+                    <span style={{ fontSize: isMobile ? "11px" : "13px", color: "#999", textDecoration: "line-through" }}>
                       ₹{product.originalPrice}
                     </span>
-                    <span style={{ fontSize: "12px", fontWeight: "600", color: "#ff6b6b" }}>
-                      ({discount}% OFF)
+                    <span style={{ fontSize: isMobile ? "10px" : "12px", fontWeight: "600", color: "#ff6b6b" }}>
+                      ({discount}%)
                     </span>
                   </div>
                 </div>
@@ -336,15 +338,15 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                 {addedProducts[product.id] ? (
                   <div style={{
                     display: "flex",
-                    gap: "6px",
+                    gap: "4px",
                     alignItems: "center"
                   }}>
                     <button
                       onClick={() => handleDecreaseQuantity(product)}
                       style={{
                         flex: 1,
-                        padding: "6px",
-                        fontSize: "14px",
+                        padding: isMobile ? "5px" : "6px",
+                        fontSize: isMobile ? "12px" : "14px",
                         background: "var(--accent)",
                         color: "#fff",
                         border: "none",
@@ -355,15 +357,15 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                     >
                       −
                     </button>
-                    <span style={{ flex: 1, textAlign: "center", fontSize: "13px", fontWeight: "600", color: "var(--accent)" }}>
+                    <span style={{ flex: 1, textAlign: "center", fontSize: isMobile ? "11px" : "13px", fontWeight: "600", color: "var(--accent)" }}>
                       {addedProducts[product.id]}
                     </span>
                     <button
                       onClick={() => handleIncreaseQuantity(product)}
                       style={{
                         flex: 1,
-                        padding: "6px",
-                        fontSize: "14px",
+                        padding: isMobile ? "5px" : "6px",
+                        fontSize: isMobile ? "12px" : "14px",
                         background: "var(--accent)",
                         color: "#fff",
                         border: "none",
@@ -380,8 +382,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                     onClick={() => handleAddProduct(product)}
                     style={{
                       width: "100%",
-                      padding: "8px",
-                      fontSize: "13px",
+                      padding: isMobile ? "6px" : "8px",
+                      fontSize: isMobile ? "12px" : "13px",
                       background: "var(--accent)",
                       color: "#fff",
                       border: "none",
