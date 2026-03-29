@@ -156,27 +156,27 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart }) {
           ← Back to Home
         </button>
         
-      <div style={{ textAlign: "center", marginBottom: "40px", background: details.bgColor, padding: "40px 20px", borderRadius: "8px" }}>
-          <h1 style={{ color: details.textColor, fontSize: isMobile ? "32px" : "48px", letterSpacing: "2px", marginBottom: "15px", margin: "0 0 15px 0" }}>
+      <div style={{ textAlign: "center", marginBottom: "20px", background: details.bgColor, padding: "15px 20px", borderRadius: "8px" }}>
+          <h1 style={{ color: details.textColor, fontSize: isMobile ? "24px" : "36px", letterSpacing: "2px", margin: "0 0 8px 0" }}>
             {details.name}
           </h1>
-          <p style={{ color: details.textColor, fontSize: isMobile ? "14px" : "16px", marginBottom: "20px", maxWidth: "600px", margin: "0 auto", opacity: 0.9 }}>
+          <p style={{ color: details.textColor, fontSize: isMobile ? "12px" : "14px", marginBottom: "10px", maxWidth: "600px", margin: "0 auto 10px", opacity: 0.9 }}>
             {details.description}
           </p>
           <div style={{
             background: "rgba(255, 255, 255, 0.6)",
-            padding: "20px",
-            borderRadius: "8px",
-            marginTop: "20px"
+            padding: "10px 15px",
+            borderRadius: "6px",
+            marginTop: "10px"
           }}>
-            <p style={{ color: details.textColor, fontSize: isMobile ? "13px" : "14px", margin: "0", fontWeight: "600" }}>
+            <p style={{ color: details.textColor, fontSize: isMobile ? "11px" : "12px", margin: "0", fontWeight: "600" }}>
               💡 Styling Tip: {details.tips}
             </p>
           </div>
         </div>
 
         {/* Product Grid */}
-        <h2 style={{ textAlign: "center", color: details.textColor, fontSize: isMobile ? "24px" : "32px", marginBottom: "30px", letterSpacing: "1px" }}>
+        <h2 style={{ textAlign: "center", color: details.textColor, fontSize: isMobile ? "20px" : "26px", marginBottom: "25px", letterSpacing: "1px", margin: "0 0 25px 0" }}>
           Shop {details.name}
         </h2>
         <div style={{
