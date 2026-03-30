@@ -68,26 +68,42 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   }, [productId]);
 
   const handleAddToCart = () => {
-    if (!product || !addToCart) {
-      console.warn("Product or addToCart function not available");
+    if (!product) {
+      alert("Product not loaded yet");
       return;
     }
+
+    if (!addToCart) {
+      alert("Add to cart function not available");
+      return;
+    }
+
+    // Get the quantity value
+    const qty = Math.max(1, Math.min(parseInt(quantity) || 1, 99));
     
-    // Capture quantity value at time of click
-    const itemQuantity = parseInt(quantity);
-    const validQuantity = Math.max(1, Math.min(itemQuantity, 99));
-    
-    console.log(`Adding ${validQuantity} items to cart for product ${product.id} with size ${selectedSize}`);
-    
-    // Add each item to cart individually
-    for (let i = 0; i < validQuantity; i++) {
-      addToCart({ 
-        ...product, 
-        size: selectedSize,
-        _cartItemId: `${product.id}-${selectedSize}-${Date.now()}-${i}` // Unique ID for each cart item
-      });
+    console.log("=== ADD TO CART DEBUG ===");
+    console.log("Product:", product.name);
+    console.log("Quantity:", qty);
+    console.log("Size:", selectedSize);
+
+    // Add items to cart
+    let itemsAdded = 0;
+    for (let i = 0; i < qty; i++) {
+      try {
+        addToCart({ 
+          ...product, 
+          size: selectedSize,
+          quantity: 1
+        });
+        itemsAdded++;
+      } catch (e) {
+        console.error("Error adding item to cart:", e);
+      }
     }
     
+    console.log(`Successfully added ${itemsAdded} items to cart`);
+    console.log("=======================");
+
     // Show success feedback
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
