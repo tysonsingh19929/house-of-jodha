@@ -93,8 +93,8 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       boxSizing: "border-box",
       borderBottom: "1px solid #f0f0f0"
     }}>
-      {/* Left Section - Menu Button */}
-      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      {/* Left Section - Navigation Buttons */}
+      <div style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {isMobile && (
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -104,8 +104,8 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
               fontSize: "28px",
               cursor: "pointer",
               padding: "0",
-              width: "100%",
-              height: "100%",
+              width: "50px",
+              height: "50px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -115,6 +115,68 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             ☰
           </button>
         )}
+        
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            background: "none",
+            border: "1px solid #ddd",
+            fontSize: isMobile ? "16px" : "18px",
+            cursor: "pointer",
+            padding: "6px 10px",
+            borderRadius: "4px",
+            color: "#08060d",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all 0.2s",
+            minWidth: "40px",
+            height: "40px"
+          }}
+          onMouseEnter={e => {
+            e.target.style.background = "#f5f5f5";
+            e.target.style.borderColor = "#999";
+          }}
+          onMouseLeave={e => {
+            e.target.style.background = "none";
+            e.target.style.borderColor = "#ddd";
+          }}
+          title="Go back"
+        >
+          ←
+        </button>
+
+        {/* Home Button */}
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            background: "none",
+            border: "1px solid #ddd",
+            fontSize: isMobile ? "16px" : "18px",
+            cursor: "pointer",
+            padding: "6px 10px",
+            borderRadius: "4px",
+            color: "#08060d",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all 0.2s",
+            minWidth: "40px",
+            height: "40px"
+          }}
+          onMouseEnter={e => {
+            e.target.style.background = "#f5f5f5";
+            e.target.style.borderColor = "#999";
+          }}
+          onMouseLeave={e => {
+            e.target.style.background = "none";
+            e.target.style.borderColor = "#ddd";
+          }}
+          title="Go to home"
+        >
+          🏠
+        </button>
       </div>
 
       {/* Desktop Navigation - Left */}
