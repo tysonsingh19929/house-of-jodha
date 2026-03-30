@@ -5,19 +5,33 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [isSeller, setIsSeller] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState(null);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const navbarRef = React.useRef(null);
 
-  // Check seller status on mount and when navbar updates
+  // Check seller status and user auth on mount and when navbar updates
   React.useEffect(() => {
-    // Initial check
+    // Initial checks
     const sellerStatus = localStorage.getItem("seller_authenticated") === "true";
     setIsSeller(sellerStatus);
+    
+    const user = localStorage.getItem("currentUser");
+    if (user) {
+      setCurrentUser(JSON.parse(user));
+    }
     
     // Listen for storage changes
     const handleStorageChange = () => {
       const status = localStorage.getItem("seller_authenticated") === "true";
       setIsSeller(status);
+      
+      const userData = localStorage.getItem("currentUser");
+      if (userData) {
+        setCurrentUser(JSON.parse(userData));
+      } else {
+        setCurrentUser(null);
+      }
     };
     
     window.addEventListener("storage", handleStorageChange);
@@ -52,6 +66,13 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }, 100);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    setCurrentUser(null);
+    setUserMenuOpen(false);
+    navigate("/");
   };
 
   return (
@@ -207,8 +228,117 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         />
       </div>
 
-      {/* Right Section - Cart Button */}
-      <div style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      {/* Right Section - Auth & Cart Buttons */}
+      <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "flex-end" }}>
+        {!isMobile && !currentUser && (
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button 
+              onClick={() => navigate("/login")}
+              style={{
+                background: "none",
+                color: "#D4AF37",
+                border: "1px solid #D4AF37",
+                padding: "8px 16px",
+                fontSize: "12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "600",
+                transition: "all 0.3s"
+              }}
+              onMouseEnter={e => e.target.style.background = "rgba(212,175,55,0.1)"}
+              onMouseLeave={e => e.target.style.background = "none"}
+            >
+              Login
+            </button>
+            <button 
+              onClick={() => navigate("/signup")}
+              style={{
+                background: "#D4AF37",
+                color: "#fff",
+                border: "none",
+                padding: "8px 16px",
+                fontSize: "12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "600",
+                transition: "all 0.3s"
+              }}
+              onMouseEnter={e => e.target.style.background = "#c49a27"}
+              onMouseLeave={e => e.target.style.background = "#D4AF37"}
+            >
+              Sign Up
+            </button>
+          </div>
+        )}
+
+        {!isMobile && currentUser && (
+          <div style={{ position: "relative" }}>
+            <button 
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              style={{
+                background: "none",
+                color: "#D4AF37",
+                border: "1px solid #D4AF37",
+                padding: "8px 16px",
+                fontSize: "12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.3s"
+              }}
+              onMouseEnter={e => e.target.style.background = "rgba(212,175,55,0.1)"}
+              onMouseLeave={e => e.target.style.background = "none"}
+            >
+              👤 {currentUser.fullName?.split(" ")[0]}
+            </button>
+            {userMenuOpen && (
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                right: "0",
+                background: "#fff",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                minWidth: "150px",
+                zIndex: 10000,
+                marginTop: "5px"
+              }}>
+                <div style={{
+                  padding: "12px 16px",
+                  borderBottom: "1px solid #eee",
+                  fontSize: "12px",
+                  color: "#666"
+                }}>
+                  {currentUser.email}
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  style={{
+                    width: "100%",
+                    padding: "10px 16px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#D4AF37",
+                    fontWeight: "600",
+                    fontSize: "12px",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => e.target.style.background = "rgba(212,175,55,0.1)"}
+                  onMouseLeave={e => e.target.style.background = "none"}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         <button 
           onClick={onCartClick}
           style={{
@@ -221,8 +351,6 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             cursor: "pointer",
             fontWeight: "600",
             whiteSpace: "nowrap",
-            width: "100%",
-            height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -340,11 +468,85 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
               cursor: "pointer",
               color: "#D4AF37",
               fontWeight: "600",
-              fontSize: "14px"
+              fontSize: "14px",
+              borderBottom: "1px solid #e5e4e7"
             }}
           >
             ✏️ Edit Products
           </button>
+
+          {!currentUser && (
+            <>
+              <button 
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate("/login");
+                }}
+                style={{
+                  padding: "12px 15px",
+                  textAlign: "left",
+                  background: "none",
+                  border: "none",
+                  borderBottom: "1px solid #e5e4e7",
+                  cursor: "pointer",
+                  color: "#D4AF37",
+                  fontWeight: "600",
+                  fontSize: "14px"
+                }}
+              >
+                🔐 Login
+              </button>
+              <button 
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate("/signup");
+                }}
+                style={{
+                  padding: "12px 15px",
+                  textAlign: "left",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#D4AF37",
+                  fontWeight: "600",
+                  fontSize: "14px"
+                }}
+              >
+                ✍️ Sign Up
+              </button>
+            </>
+          )}
+
+          {currentUser && (
+            <>
+              <div style={{
+                padding: "12px 15px",
+                borderBottom: "1px solid #e5e4e7",
+                fontSize: "12px",
+                color: "#666"
+              }}>
+                👤 {currentUser.fullName}
+              </div>
+              <button 
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                style={{
+                  padding: "12px 15px",
+                  textAlign: "left",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#D4AF37",
+                  fontWeight: "600",
+                  fontSize: "14px"
+                }}
+              >
+                🚪 Logout
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>

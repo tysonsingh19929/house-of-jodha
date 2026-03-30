@@ -24,6 +24,8 @@ import QuickEdit from "./pages/QuickEdit";
 import ProductDetail from "./pages/ProductDetail";
 import SearchResults from "./pages/SearchResults";
 import Checkout from "./pages/Checkout";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -50,10 +52,16 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  // Initialize products in localStorage on app load
+  // Initialize products in localStorage and check for logged-in user
   useEffect(() => {
     initializeProductsInStorage();
+    // Check if user is already logged in
+    const user = localStorage.getItem("currentUser");
+    if (user) {
+      setCurrentUser(JSON.parse(user));
+    }
   }, []);
 
   const addToCart = (product) => {
@@ -180,6 +188,26 @@ function App() {
               setCartOpen={setCartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}
+              cartCount={cartCount}
+            />
+          }
+        />
+        <Route 
+          path="/login" 
+          element={
+            <Login 
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              cartCount={cartCount}
+            />
+          }
+        />
+        <Route 
+          path="/signup" 
+          element={
+            <Signup 
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
               cartCount={cartCount}
             />
           }
