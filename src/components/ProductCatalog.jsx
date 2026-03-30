@@ -217,7 +217,10 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                     alignItems: "center"
                   }}>
                     <button
-                      onClick={() => handleDecreaseQuantity(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDecreaseQuantity(product);
+                      }}
                       style={{
                         flex: 1,
                         padding: isMobile ? "5px" : "6px",
@@ -236,7 +239,10 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                       {addedProducts[product.id]}
                     </span>
                     <button
-                      onClick={() => handleIncreaseQuantity(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleIncreaseQuantity(product);
+                      }}
                       style={{
                         flex: 1,
                         padding: isMobile ? "5px" : "6px",
@@ -254,7 +260,10 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                   </div>
                 ) : (
                   <button
-                    onClick={() => handleAddProduct(product)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddProduct(product);
+                    }}
                     style={{
                       width: "100%",
                       padding: isMobile ? "6px" : "8px",
