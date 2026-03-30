@@ -68,43 +68,34 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   }, [productId]);
 
   const handleAddToCart = () => {
-    alert(`Clicked Add to Cart! Qty: ${quantity}, Size: ${selectedSize}`);
-    
     if (!product) {
-      alert("Product not loaded yet");
+      console.error("Product not loaded yet");
       return;
     }
 
     if (!addToCart) {
-      alert("Add to cart function not available");
+      console.error("Add to cart function not available");
       return;
     }
 
     // Get the quantity value
     const qty = Math.max(1, Math.min(parseInt(quantity) || 1, 99));
     
-    console.log("=== ADD TO CART DEBUG ===");
+    console.log("=== ADD TO CART ===");
     console.log("Product:", product.name);
-    console.log("Quantity:", qty);
+    console.log("Quantity to add:", qty);
     console.log("Size:", selectedSize);
 
     // Add items to cart
-    let itemsAdded = 0;
     for (let i = 0; i < qty; i++) {
-      try {
-        addToCart({ 
-          ...product, 
-          size: selectedSize,
-          quantity: 1
-        });
-        itemsAdded++;
-      } catch (e) {
-        console.error("Error adding item to cart:", e);
-      }
+      addToCart({ 
+        ...product, 
+        size: selectedSize
+      });
     }
     
-    console.log(`Successfully added ${itemsAdded} items to cart`);
-    console.log("=======================");
+    console.log(`✓ Called addToCart ${qty} times`);
+    console.log("===================");
 
     // Show success feedback
     setAddedToCart(true);

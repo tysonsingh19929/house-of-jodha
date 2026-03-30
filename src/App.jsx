@@ -55,7 +55,12 @@ function App() {
   }, []);
 
   const addToCart = (product) => {
-    setCartItems([...cartItems, product]);
+    // Use functional state update to avoid closure issues
+    setCartItems((prevItems) => {
+      const updatedItems = [...prevItems, product];
+      console.log(`Cart updated. Total items: ${updatedItems.length}`);
+      return updatedItems;
+    });
   };
 
   const removeFromCart = (index) => {
