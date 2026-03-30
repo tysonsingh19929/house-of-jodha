@@ -68,6 +68,8 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   }, [productId]);
 
   const handleAddToCart = () => {
+    alert(`Clicked Add to Cart! Qty: ${quantity}, Size: ${selectedSize}`);
+    
     if (!product) {
       alert("Product not loaded yet");
       return;
