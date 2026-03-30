@@ -11,7 +11,7 @@ export default function SearchBar() {
 
   return (
     <form onSubmit={handleSearch} style={{
-      padding: isMobile ? "12px 15px" : "15px 30px"
+      padding: isMobile ? "8px 12px" : "15px 30px"
     }}>
       <div style={{
         display: "flex",

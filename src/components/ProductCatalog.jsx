@@ -213,12 +213,12 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
   const gridCols = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
 
   return (
-    <div style={{ padding: "30px 20px", width: "100%", background: "#f5f5f5" }}>
+    <div style={{ padding: isMobile ? "15px 12px" : "30px 20px", width: "100%", background: "#f5f5f5" }}>
       {/* Category Filter */}
       <div style={{
         display: "flex",
         gap: "10px",
-        marginBottom: "30px",
+        marginBottom: isMobile ? "15px" : "30px",
         justifyContent: "center",
         flexWrap: "wrap"
       }}>
@@ -227,8 +227,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
             key={cat}
             onClick={() => setSelectedCategory(cat)}
             style={{
-              padding: "10px 20px",
-              fontSize: "14px",
+              padding: isMobile ? "7px 12px" : "10px 20px",
+              fontSize: isMobile ? "12px" : "14px",
               background: selectedCategory === cat ? "var(--accent)" : "#fff",
               color: selectedCategory === cat ? "#fff" : "#666",
               border: selectedCategory === cat ? "none" : "1px solid #ddd",
@@ -243,7 +243,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
         ))}
       </div>
 
-      <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: "30px", fontSize: "14px", fontWeight: "600", textAlign: "center" }}>
+      <div style={{ padding: isMobile ? "8px" : "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: isMobile ? "15px" : "30px", fontSize: isMobile ? "12px" : "14px", fontWeight: "600", textAlign: "center" }}>
         ✨ {filteredProducts.length} {selectedCategory} products
       </div>
 

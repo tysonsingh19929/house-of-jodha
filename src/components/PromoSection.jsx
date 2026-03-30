@@ -15,21 +15,21 @@ export default function PromoSection() {
     <div style={{
       background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
       color: "#fff",
-      padding: isMobile ? "20px 15px" : "30px 30px",
+      padding: isMobile ? "12px 12px" : "30px 30px",
       textAlign: "center",
       borderBottom: "1px solid rgba(184, 68, 141, 0.3)"
     }}>
       <div>
         <h2 style={{ 
-          fontSize: isMobile ? "16px" : "20px",
-          marginBottom: "5px", 
-          margin: "0 0 5px 0" 
+          fontSize: isMobile ? "14px" : "20px",
+          marginBottom: "2px", 
+          margin: "0 0 2px 0" 
         }}>
           ✨ SPECIAL OFFER ✨
         </h2>
         <p style={{ 
-          fontSize: isMobile ? "12px" : "14px", 
-          margin: "0 0 15px 0"
+          fontSize: isMobile ? "11px" : "14px", 
+          margin: "0 0 8px 0"
         }}>
           SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <strong>JODHA5</strong>
         </p>
