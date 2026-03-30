@@ -1,0 +1,252 @@
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import Cart from "../components/Cart";
+import imageDatabase from "../data/imageDatabase.js";
+
+// Same products list as ProductCatalog
+const allProducts = [
+  // LEHENGA
+  { id: 1, name: "Beige Gold Tissue Silk Embroidered Lehenga Set", price: 25600, originalPrice: 30800, description: "Elegant beige and gold tissue silk lehenga with intricate embroidery work. Perfect for weddings and festive occasions.", category: "Lehenga", material: "Tissue Silk", color: "Beige & Gold", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 2200, stock: 5 },
+  { id: 11, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 32000, originalPrice: 40000, description: "Luxurious red silk bridal lehenga with hand embroidered details and mirror work. Ideal for weddings.", category: "Lehenga", material: "Silk", color: "Red", occasions: ["Wedding", "Bridal"], rating: 4.5, reviews: 1800, stock: 3 },
+  { id: 12, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga", price: 27000, originalPrice: 32900, description: "Soft blush pink bridal lehenga with tissue silk and embroidered choli. Stunning for wedding ceremonies.", category: "Lehenga", material: "Tissue Silk", color: "Blush Pink", occasions: ["Wedding", "Bridal"], rating: 4.4, reviews: 1950, stock: 4 },
+  { id: 13, name: "Maroon Tissue Silk Bridal Lehenga Choli Set", price: 29000, originalPrice: 36000, description: "Deep maroon bridal lehenga with ornate embroidery and matching choli. Complete bridal ensemble.", category: "Lehenga", material: "Tissue Silk", color: "Maroon", occasions: ["Wedding", "Bridal"], rating: 4.3, reviews: 1700, stock: 3 },
+  { id: 14, name: "Parrot Green Floral Printed Lehenga Set", price: 7700, originalPrice: 10500, description: "Vibrant parrot green lehenga with floral prints and light embroidery. Perfect for celebrations.", category: "Lehenga", material: "Cotton Silk", color: "Parrot Green", occasions: ["Festival", "Celebration"], rating: 4.2, reviews: 2100, stock: 6 },
+  
+  // SAREE
+  { id: 3, name: "Pre-draped Royal Purple Satin Saree", price: 8900, originalPrice: 10500, description: "Beautiful pre-draped saree in royal purple satin, perfect for any celebration. Easy to wear.", category: "Saree", material: "Satin", color: "Royal Purple", occasions: ["Festival", "Party"], rating: 4.1, reviews: 1600, stock: 7 },
+  { id: 22, name: "Gold Sequined Silk Bridal Saree", price: 21000, originalPrice: 27000, description: "Luxurious gold sequined silk saree with blouse. Perfect for bridal and festive occasions.", category: "Saree", material: "Silk", color: "Gold", occasions: ["Wedding", "Bridal"], rating: 4.6, reviews: 2300, stock: 4 },
+  { id: 23, name: "Ivory & Gold Embroidered Bridal Saree", price: 18000, originalPrice: 23000, description: "Elegant ivory saree with gold embroidery and beadwork. Traditional bridal attire.", category: "Saree", material: "Silk", color: "Ivory & Gold", occasions: ["Wedding", "Bridal"], rating: 4.5, reviews: 2050, stock: 3 },
+  
+  // ANARKALI
+  { id: 4, name: "Designer Anarkali Suit - Midnight Blue", price: 16800, originalPrice: 19800, description: "Beautiful midnight blue anarkali suit with embroidered yoke and hem. Comfortable and stylish.", category: "Anarkali", material: "Georgette", color: "Midnight Blue", occasions: ["Wedding", "Festival"], rating: 4.4, reviews: 1900, stock: 7 },
+  { id: 31, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 14000, originalPrice: 16900, description: "Stunning indigo blue anarkali with traditional embroidery and matching dupatta.", category: "Anarkali", material: "Georgette", color: "Indigo Blue", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 1750, stock: 5 },
+  
+  // SALWAR KAMEEZ
+  { id: 5, name: "Salwar Kameez - Emerald Green", price: 7500, originalPrice: 9000, description: "Classic emerald green salwar kameez with traditional embroidery. Timeless ethnic wear.", category: "Salwar Kameez", material: "Cotton Silk", color: "Emerald Green", occasions: ["Daily", "Festival"], rating: 4.0, reviews: 1500, stock: 10 },
+  { id: 40, name: "Navy Blue Crepe Silk Printed & Embroidered Indowestern Top & Palazzo Set", price: 9000, originalPrice: 11100, description: "Contemporary indowestern top with palazzo pants. Perfect for modern occasions.", category: "Salwar Kameez", material: "Crepe Silk", color: "Navy Blue", occasions: ["Party", "Celebration"], rating: 4.2, reviews: 1650, stock: 8 },
+  
+  // GHARARA
+  { id: 2, name: "Ivory Chinon Silk Gharara Set", price: 11500, originalPrice: 13500, description: "Sophisticated ivory chinon silk gharara with intricate embroidery. Elegant bridal option.", category: "Gharara", material: "Chinon Silk", color: "Ivory", occasions: ["Wedding", "Bridal"], rating: 4.4, reviews: 1850, stock: 3 },
+  { id: 49, name: "Pink Purple Georgette Embroidered Gharara Set", price: 9500, originalPrice: 12000, description: "Beautiful pink purple gharara with stunning embroidery work. Perfect for celebrations.", category: "Gharara", material: "Georgette", color: "Pink Purple", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 1700, stock: 5 },
+  
+  // SHARARA
+  { id: 6, name: "Sharara Suit - Wine Red", price: 12500, originalPrice: 15000, description: "Glamorous wine red sharara suit with embroidered details. Perfect for festive celebrations.", category: "Sharara", material: "Silk", color: "Wine Red", occasions: ["Wedding", "Festival"], rating: 4.5, reviews: 2000, stock: 5 },
+  { id: 56, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 6100, originalPrice: 10000, description: "Elegant pink purple sharara with beautiful embroidery and matching dupatta.", category: "Sharara", material: "Georgette", color: "Pink Purple", occasions: ["Festival", "Party"], rating: 4.2, reviews: 1600, stock: 6 }
+];
+
+const getImageForProduct = (category, index) => {
+  const categoryKey = category === "Salwar Kameez" ? "salwarKameez" : category.toLowerCase();
+  const urls = imageDatabase[categoryKey] || imageDatabase.lehenga;
+  return urls[index % urls.length];
+};
+
+export default function SearchResults({ cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount }) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const isMobile = window.innerWidth <= 768;
+  const query = searchParams.get("q") || "";
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (!query.trim()) return [];
+    
+    const searchTerm = query.toLowerCase();
+    
+    return allProducts
+      .filter(product => {
+        const name = product.name.toLowerCase();
+        const category = product.category.toLowerCase();
+        const material = product.material.toLowerCase();
+        const color = product.color.toLowerCase();
+        const description = product.description.toLowerCase();
+        const occasions = product.occasions.map(o => o.toLowerCase()).join(" ");
+        
+        return (
+          name.includes(searchTerm) ||
+          category.includes(searchTerm) ||
+          material.includes(searchTerm) ||
+          color.includes(searchTerm) ||
+          description.includes(searchTerm) ||
+          occasions.includes(searchTerm)
+        );
+      })
+      .map((product, index) => {
+        const categoryProducts = allProducts.filter(p => p.category === product.category);
+        const productIndex = categoryProducts.findIndex(p => p.id === product.id);
+        const image = getImageForProduct(product.category, productIndex);
+        return { ...product, image };
+      });
+  }, [query]);
+
+  return (
+    <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px", minHeight: "100vh" }}>
+      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      {cartOpen && (
+        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
+      )}
+
+      <div style={{ padding: isMobile ? "15px 12px" : "30px", maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Search Header */}
+        <div style={{ marginBottom: "30px" }}>
+          <h1 style={{ fontSize: isMobile ? "20px" : "28px", marginBottom: "10px", color: "#D4AF37" }}>
+            Search Results
+          </h1>
+          <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", margin: "0" }}>
+            {query ? `Showing ${filteredProducts.length} result${filteredProducts.length !== 1 ? 's' : ''} for "${query}"` : "Enter a search term"}
+          </p>
+        </div>
+
+        {/* Results Grid */}
+        {filteredProducts.length > 0 ? (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+            gap: "12px",
+            width: "100%"
+          }}>
+            {filteredProducts.map((product) => {
+              const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+              return (
+                <div
+                  key={product.id}
+                  onClick={() => navigate(`/product/${product.id}`)}
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #eee",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    overflow: "hidden"
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  <div style={{
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "1",
+                    overflow: "hidden",
+                    background: "#f5f5f5"
+                  }}>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover"
+                      }}
+                    />
+                    {discount > 0 && (
+                      <div style={{
+                        position: "absolute",
+                        top: "8px",
+                        right: "8px",
+                        background: "#ff6b6b",
+                        color: "#fff",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        fontSize: isMobile ? "11px" : "12px",
+                        fontWeight: "600"
+                      }}>
+                        -{discount}%
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ padding: isMobile ? "8px" : "12px" }}>
+                    <h3 style={{
+                      fontSize: isMobile ? "12px" : "13px",
+                      fontWeight: "600",
+                      color: "#333",
+                      margin: "0 0 6px 0",
+                      minHeight: isMobile ? "32px" : "35px",
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical"
+                    }}>
+                      {product.name}
+                    </h3>
+                    <p style={{
+                      fontSize: isMobile ? "10px" : "11px",
+                      color: "#999",
+                      margin: "0 0 6px 0"
+                    }}>
+                      {product.category} • {product.material}
+                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                      <span style={{
+                        fontSize: isMobile ? "12px" : "14px",
+                        fontWeight: "700",
+                        color: "#D4AF37"
+                      }}>
+                        ₹{product.price.toLocaleString()}
+                      </span>
+                      <span style={{
+                        fontSize: isMobile ? "10px" : "11px",
+                        color: "#999",
+                        textDecoration: "line-through"
+                      }}>
+                        ₹{product.originalPrice.toLocaleString()}
+                      </span>
+                    </div>
+                    <div style={{
+                      fontSize: isMobile ? "10px" : "11px",
+                      color: "#666"
+                    }}>
+                      ⭐ {product.rating} ({product.reviews} reviews)
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : query ? (
+          <div style={{
+            textAlign: "center",
+            padding: "40px 20px",
+            color: "#999"
+          }}>
+            <p style={{ fontSize: "16px", marginBottom: "20px" }}>
+              No products found for "{query}"
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                background: "#D4AF37",
+                color: "#fff",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontWeight: "600"
+              }}
+            >
+              Back to Home
+            </button>
+          </div>
+        ) : (
+          <div style={{
+            textAlign: "center",
+            padding: "40px 20px",
+            color: "#999"
+          }}>
+            <p style={{ fontSize: "16px" }}>
+              Use the search bar to find products
+            </p>
+          </div>
+        )}
+      </div>
+
+      <Footer />
+    </div>
+  );
+}

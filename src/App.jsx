@@ -22,6 +22,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import SellerLogin from "./pages/SellerLogin";
 import QuickEdit from "./pages/QuickEdit";
 import ProductDetail from "./pages/ProductDetail";
+import SearchResults from "./pages/SearchResults";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -148,6 +149,19 @@ function App() {
           path="/product/:productId" 
           element={
             <ProductDetail 
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              addToCart={addToCart}
+              removeFromCart={removeFromCart}
+              cartItems={cartItems}
+              cartCount={cartCount}
+            />
+          }
+        />
+        <Route 
+          path="/search" 
+          element={
+            <SearchResults 
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               addToCart={addToCart}

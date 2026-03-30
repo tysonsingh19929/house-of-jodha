@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
   };
 
   return (
