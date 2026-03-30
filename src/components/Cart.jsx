@@ -20,18 +20,37 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
 
   // Handle browser back button to close cart instead of navigating
   useEffect(() => {
-    // Push a history state when cart opens
-    window.history.pushState({ cartOpen: true }, "");
+    // Only push state once when cart opens
+    const stateKey = Math.random();
+    window.history.pushState({ cartOpen: true, key: stateKey }, "");
     
     const handlePopState = (e) => {
-      // Close the cart instead of navigating back
-      onClose();
-      // Push state again to prevent actual navigation
-      window.history.pushState({ cartOpen: true }, "");
+      // If this popstate is from our cart state, close the cart
+      if (e.state?.cartOpen) {
+        // Prevent the default back navigation
+        e.preventDefault?.();
+        // Close the cart
+        onClose();
+        // Push the state again to prevent actual navigation back
+        window.history.pushState({ cartOpen: true, key: stateKey }, "");
+      }
     };
     
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    // Use this to track if this effect is still mounted
+    let isMounted = true;
+    
+    // Add slight delay to ensure history is properly set
+    const timer = setTimeout(() => {
+      if (isMounted) {
+        window.addEventListener("popstate", handlePopState);
+      }
+    }, 0);
+    
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [onClose]);
 
   // Close cart when clicking outside
