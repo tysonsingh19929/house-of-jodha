@@ -1,9 +1,10 @@
 import { useState } from "react";
-import productImageDatabase from "../data/productImageDatabase.js";
+import imageDatabase from "../data/imageDatabase.js";
 
-const getImageForProduct = (productId) => {
-  // Look up image by product ID in the product-specific database
-  return productImageDatabase[productId] || productImageDatabase["1"] || "https://source.unsplash.com/400x600/?ethnic";
+const getImageForProduct = (category, index) => {
+  const categoryKey = category === "Salwar Kameez" ? "salwarKameez" : category.toLowerCase();
+  const urls = imageDatabase[categoryKey] || imageDatabase.lehenga;
+  return urls[index % urls.length];
 };
 
 
@@ -151,11 +152,6 @@ const products = [
   { id: 611, name: "Magenta Silk Embroidered Sharara Suit", price: 12300, originalPrice: 15500, image: getImageForProduct("Sharara", 20), category: "Sharara" },
   { id: 612, name: "Royal Blue Tissue Silk Sharara Set", price: 11600, originalPrice: 14500, image: getImageForProduct("Sharara", 21), category: "Sharara" }
 ];
-
-// Update all product images based on their IDs using product-specific search queries
-products.forEach(product => {
-  product.image = getImageForProduct(product.id);
-});
 
 export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
