@@ -431,7 +431,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                 position: "relative",
                 overflow: "hidden"
               }}>
-                {typeof product.image === "string" && product.image.startsWith("data:") ? (
+                {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:")) ? (
                   <img 
                     src={product.image} 
                     alt={product.name}
@@ -442,7 +442,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                     }}
                   />
                 ) : (
-                  product.image
+                  <span style={{ fontSize: "60px" }}>{product.image}</span>
                 )}
                 {/* Wishlist Icon */}
                 <button
