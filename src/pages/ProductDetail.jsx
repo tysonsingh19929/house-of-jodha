@@ -276,48 +276,64 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
           {/* Quantity Selection */}
           <div style={{ marginBottom: "30px" }}>
             <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#333", marginBottom: "10px" }}>Quantity</h3>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "150px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "auto" }}>
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "50px",
+                  height: "50px",
                   background: "#f5f5f5",
                   border: "1px solid #ddd",
                   borderRadius: "4px",
                   cursor: "pointer",
-                  fontSize: "16px",
-                  fontWeight: "600"
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  transition: "all 0.2s"
                 }}
+                onMouseEnter={e => e.target.style.background = "#e0e0e0"}
+                onMouseLeave={e => e.target.style.background = "#f5f5f5"}
               >
                 −
               </button>
               <input
                 type="number"
+                min="1"
+                max="99"
                 value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (!isNaN(val) && val >= 1) {
+                    setQuantity(val);
+                  }
+                }}
                 style={{
-                  flex: 1,
-                  height: "40px",
+                  width: "80px",
+                  height: "50px",
                   border: "1px solid #ddd",
                   borderRadius: "4px",
                   textAlign: "center",
-                  fontSize: "14px",
-                  fontWeight: "600"
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  color: "#333",
+                  background: "#fff",
+                  padding: "0 10px"
                 }}
               />
               <button
                 onClick={() => setQuantity(quantity + 1)}
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "50px",
+                  height: "50px",
                   background: "#f5f5f5",
                   border: "1px solid #ddd",
                   borderRadius: "4px",
                   cursor: "pointer",
-                  fontSize: "16px",
-                  fontWeight: "600"
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  transition: "all 0.2s"
                 }}
+                onMouseEnter={e => e.target.style.background = "#e0e0e0"}
+                onMouseLeave={e => e.target.style.background = "#f5f5f5"}
               >
                 +
               </button>
