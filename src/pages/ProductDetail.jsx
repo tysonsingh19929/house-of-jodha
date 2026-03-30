@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
+import SizeChart from "../components/SizeChart";
 import imageDatabase from "../data/imageDatabase.js";
+import { enhancedProductDatabase } from "../data/enhancedProductDatabase.js";
 
 // Hardcoded products (same as ProductCatalog)
 const allProducts = [
@@ -50,14 +52,26 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   const [selectedSize, setSelectedSize] = useState("M");
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
-    // Find product from hardcoded list
-    const found = allProducts.find(p => p.id === parseInt(productId));
+    // First try to find in enhanced database
+    let found = enhancedProductDatabase.find(p => p.id === parseInt(productId));
+    
+    // If not found, use hardcoded list
+    if (!found) {
+      found = allProducts.find(p => p.id === parseInt(productId));
+    }
+
     if (found) {
       // Assign image based on category and ID
-      const categoryProducts = allProducts.filter(p => p.category === found.category);
+      const categoryProducts = (enhancedProductDatabase.length > 0 ? enhancedProductDatabase : allProducts).filter(p => {
+        const prodCategory = p.category === "Salwar Kameez" ? "salwar" : p.category.toLowerCase();
+        const foundCategory = found.category === "Salwar Kameez" ? "salwar" : found.category.toLowerCase();
+        return prodCategory === foundCategory;
+      });
+      
       const index = categoryProducts.findIndex(p => p.id === found.id);
       const image = getImageForProduct(found.category, index);
       setProduct({ ...found, image });
@@ -266,7 +280,27 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
 
           {/* Size Selection */}
           <div style={{ marginBottom: "30px" }}>
-            <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#333", marginBottom: "10px" }}>Select Size</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#333", margin: "0" }}>Select Size</h3>
+              <button
+                onClick={() => setSizeChartOpen(true)}
+                style={{
+                  background: "none",
+                  border: "1px solid #D4AF37",
+                  color: "#D4AF37",
+                  padding: "4px 12px",
+                  fontSize: "12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={e => e.target.style.background = "rgba(212,175,55,0.1)"}
+                onMouseLeave={e => e.target.style.background = "none"}
+              >
+                📏 Size Guide
+              </button>
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "8px" }}>
               {sizes.map(size => (
                 <button
@@ -416,6 +450,144 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
         </div>
       </div>
 
+      {/* Detailed Product Information */}
+      {product && (product.fabricDetails || product.care || product.embroidery || product.deliveryDays) && (
+        <div style={{
+          background: "#f9f9f9",
+          padding: isMobile ? "20px" : "40px",
+          maxWidth: "1200px",
+          margin: "40px auto",
+          borderRadius: "8px"
+        }}>
+          <h2 style={{ fontSize: "24px", fontWeight: "700", color: "#333", marginBottom: "30px", textAlign: "center" }}>
+            Product Information
+          </h2>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: "40px"
+          }}>
+            {/* Fabric & Care */}
+            {(product.fabricDetails || product.care) && (
+              <div>
+                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#333", marginBottom: "15px" }}>
+                  🧵 Fabric & Care
+                </h3>
+                {product.fabricDetails && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <h4 style={{ fontSize: "13px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "8px" }}>
+                      Fabric Details
+                    </h4>
+                    {product.fabricDetails.top && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Top:</strong> {product.fabricDetails.top}
+                      </p>
+                    )}
+                    {product.fabricDetails.bottom && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Bottom:</strong> {product.fabricDetails.bottom}
+                      </p>
+                    )}
+                    {product.fabricDetails.dupatta && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Dupatta:</strong> {product.fabricDetails.dupatta}
+                      </p>
+                    )}
+                    {product.fabricDetails.blouse && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Blouse:</strong> {product.fabricDetails.blouse}
+                      </p>
+                    )}
+                    {product.fabricDetails.saree && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Saree:</strong> {product.fabricDetails.saree}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {product.care && (
+                  <div>
+                    <h4 style={{ fontSize: "13px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "8px" }}>
+                      Care Instructions
+                    </h4>
+                    <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>
+                      {product.care}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Embroidery & Details */}
+            {(product.embroidery || product.deliveryDays || product.deliveryType) && (
+              <div>
+                {product.embroidery && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#333", marginBottom: "15px" }}>
+                      ✨ Embroidery & Details
+                    </h3>
+                    <h4 style={{ fontSize: "13px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "8px" }}>
+                      Embellishments
+                    </h4>
+                    <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>
+                      {product.embroidery}
+                    </p>
+                  </div>
+                )}
+
+                {(product.deliveryDays || product.deliveryType) && (
+                  <div>
+                    <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#333", marginBottom: "15px" }}>
+                      🚚 Delivery & Shipping
+                    </h3>
+                    {product.deliveryType && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Delivery Type:</strong> {product.deliveryType}
+                      </p>
+                    )}
+                    {product.deliveryDays && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Delivery Time:</strong> {product.deliveryDays}
+                      </p>
+                    )}
+                    {product.freeShipping && (
+                      <p style={{ fontSize: "14px", color: "#27ae60", margin: "5px 0", fontWeight: "600" }}>
+                        ✓ Free Shipping Available
+                      </p>
+                    )}
+                    {product.maxBustSize && (
+                      <p style={{ fontSize: "14px", color: "#666", margin: "5px 0" }}>
+                        <strong>Max Standard Size:</strong> {product.maxBustSize} bust
+                      </p>
+                    )}
+                    {product.customFitAvailable && (
+                      <p style={{ fontSize: "14px", color: "#D4AF37", margin: "5px 0", fontWeight: "600" }}>
+                        ✓ Custom Fit Available
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {product.notes && (
+            <div style={{
+              background: "#fef3e6",
+              padding: "15px",
+              borderRadius: "4px",
+              marginTop: "30px",
+              fontSize: "14px",
+              color: "#333",
+              lineHeight: "1.6"
+            }}>
+              <strong style={{ color: "#D4AF37" }}>💡 Note:</strong> {product.notes}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Additional Info Sections */}
       <div style={{
         background: "#f9f9f9",
@@ -438,6 +610,8 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
           <p style={{ color: "#666", fontSize: "13px" }}>100% original products</p>
         </div>
       </div>
+
+      <SizeChart isOpen={sizeChartOpen} onClose={() => setSizeChartOpen(false)} />
 
       <Footer />
     </div>
