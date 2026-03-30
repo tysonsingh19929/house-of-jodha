@@ -242,35 +242,35 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       </div>
 
       {/* Footer - Always Visible */}
-      {groupedItems.length > 0 && (
-        <div style={{
-          background: "#fff",
-          borderTop: "2px solid #f0f0f0",
-          padding: window.innerWidth <= 768 ? "12px 15px" : "20px",
-          boxSizing: "border-box",
-          flexShrink: 0,
-          minHeight: "auto",
-          marginTop: "auto"
-        }}>
-          <div style={{
-            background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
-            padding: window.innerWidth <= 768 ? "10px" : "15px",
-            borderRadius: "8px",
-            marginBottom: "12px"
-          }}>
+      <div style={{
+        background: "#fff",
+        borderTop: "2px solid #f0f0f0",
+        padding: window.innerWidth <= 768 ? "12px 15px" : "20px",
+        boxSizing: "border-box",
+        flexShrink: 0,
+        minHeight: "auto",
+        marginTop: "auto"
+      }}>
+        {groupedItems.length > 0 && (
+          <>
             <div style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: window.innerWidth <= 768 ? "15px" : "18px",
-              fontWeight: "700",
-              color: "#08060d"
+              background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
+              padding: window.innerWidth <= 768 ? "10px" : "15px",
+              borderRadius: "8px",
+              marginBottom: "12px"
             }}>
-              <span>Total:</span>
-              <span style={{ color: "#D4AF37", fontSize: window.innerWidth <= 768 ? "18px" : "24px" }}>₹{total}</span>
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: window.innerWidth <= 768 ? "15px" : "18px",
+                fontWeight: "700",
+                color: "#08060d"
+              }}>
+                <span>Total:</span>
+                <span style={{ color: "#D4AF37", fontSize: window.innerWidth <= 768 ? "18px" : "24px" }}>₹{total}</span>
+              </div>
             </div>
-          </div>
 
-          <div style={{ display: "flex", gap: window.innerWidth <= 768 ? "10px" : "12px", flexDirection: "column" }}>
             <button
               onClick={() => {
                 navigate("/checkout");
@@ -288,7 +288,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 fontSize: window.innerWidth <= 768 ? "14px" : "15px",
                 transition: "all 0.3s",
                 boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)",
-                minHeight: window.innerWidth <= 768 ? "44px" : "auto"
+                minHeight: window.innerWidth <= 768 ? "44px" : "auto",
+                marginBottom: "12px"
               }}
               onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
               onMouseLeave={e => e.target.style.transform = "translateY(0)"}
@@ -309,63 +310,64 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 fontWeight: "600",
                 fontSize: window.innerWidth <= 768 ? "14px" : "14px",
                 transition: "all 0.3s",
-                minHeight: window.innerWidth <= 768 ? "44px" : "auto"
+                minHeight: window.innerWidth <= 768 ? "44px" : "auto",
+                marginBottom: "12px"
               }}
               onMouseEnter={e => e.target.style.background = "#1f3a2c"}
               onMouseLeave={e => e.target.style.background = "#2C4F3E"}
             >
               Continue Shopping
             </button>
+          </>
+        )}
 
-            <div style={{ display: "flex", gap: window.innerWidth <= 768 ? "10px" : "12px" }}>
-              <button
-                onClick={() => navigate(-1)}
-                style={{
-                  flex: 1,
-                  padding: window.innerWidth <= 768 ? "12px 10px" : "12px",
-                  background: "#666",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                  fontSize: window.innerWidth <= 768 ? "13px" : "13px",
-                  transition: "all 0.3s",
-                  minHeight: window.innerWidth <= 768 ? "40px" : "auto"
-                }}
-                onMouseEnter={e => e.target.style.background = "#555"}
-                onMouseLeave={e => e.target.style.background = "#666"}
-              >
-                ← Back
-              </button>
+        <div style={{ display: "flex", gap: window.innerWidth <= 768 ? "10px" : "12px" }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              flex: 1,
+              padding: window.innerWidth <= 768 ? "12px 10px" : "12px",
+              background: "#666",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: window.innerWidth <= 768 ? "13px" : "13px",
+              transition: "all 0.3s",
+              minHeight: window.innerWidth <= 768 ? "40px" : "auto"
+            }}
+            onMouseEnter={e => e.target.style.background = "#555"}
+            onMouseLeave={e => e.target.style.background = "#666"}
+          >
+            ← Back
+          </button>
 
-              <button
-                onClick={() => {
-                  navigate("/");
-                  onClose();
-                }}
-                style={{
-                  flex: 1,
-                  padding: window.innerWidth <= 768 ? "12px 10px" : "12px",
-                  background: "#08060d",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                  fontSize: window.innerWidth <= 768 ? "13px" : "13px",
-                  transition: "all 0.3s",
-                  minHeight: window.innerWidth <= 768 ? "40px" : "auto"
-                }}
-                onMouseEnter={e => e.target.style.background = "#1a1618"}
-                onMouseLeave={e => e.target.style.background = "#08060d"}
-              >
-                🏠 Home
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={() => {
+              navigate("/");
+              onClose();
+            }}
+            style={{
+              flex: 1,
+              padding: window.innerWidth <= 768 ? "12px 10px" : "12px",
+              background: "#08060d",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: window.innerWidth <= 768 ? "13px" : "13px",
+              transition: "all 0.3s",
+              minHeight: window.innerWidth <= 768 ? "40px" : "auto"
+            }}
+            onMouseEnter={e => e.target.style.background = "#1a1618"}
+            onMouseLeave={e => e.target.style.background = "#08060d"}
+          >
+            🏠 Home
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }
