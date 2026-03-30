@@ -328,24 +328,25 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
           </div>
 
           {/* Quantity Selection */}
-          <div style={{ marginBottom: "30px" }}>
-            <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#333", marginBottom: "10px" }}>Quantity</h3>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "auto" }}>
+          <div style={{ marginBottom: "15px" }}>
+            <h3 style={{ fontSize: "12px", fontWeight: "500", color: "#999", marginBottom: "5px", opacity: 0.8 }}>Quantity</h3>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", width: "auto" }}>
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 style={{
-                  width: "50px",
-                  height: "50px",
-                  background: "#f5f5f5",
-                  border: "1px solid #ddd",
-                  borderRadius: "4px",
+                  width: "35px",
+                  height: "35px",
+                  background: "#f9f9f9",
+                  border: "1px solid #e5e5e5",
+                  borderRadius: "3px",
                   cursor: "pointer",
-                  fontSize: "20px",
-                  fontWeight: "700",
-                  transition: "all 0.2s"
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  transition: "all 0.2s",
+                  color: "#999"
                 }}
-                onMouseEnter={e => e.target.style.background = "#e0e0e0"}
-                onMouseLeave={e => e.target.style.background = "#f5f5f5"}
+                onMouseEnter={e => e.target.style.background = "#f0f0f0"}
+                onMouseLeave={e => e.target.style.background = "#f9f9f9"}
               >
                 −
               </button>
@@ -380,33 +381,34 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
                   setQuantity(val);
                 }}
                 style={{
-                  width: "80px",
-                  height: "50px",
-                  border: "1px solid #ddd",
-                  borderRadius: "4px",
+                  width: "50px",
+                  height: "35px",
+                  border: "1px solid #e5e5e5",
+                  borderRadius: "3px",
                   textAlign: "center",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  color: "#333",
-                  background: "#fff",
-                  padding: "0 10px"
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  color: "#666",
+                  background: "#fafafa",
+                  padding: "0 6px"
                 }}
               />
               <button
                 onClick={() => setQuantity(quantity + 1)}
                 style={{
-                  width: "50px",
-                  height: "50px",
-                  background: "#f5f5f5",
-                  border: "1px solid #ddd",
-                  borderRadius: "4px",
+                  width: "35px",
+                  height: "35px",
+                  background: "#f9f9f9",
+                  border: "1px solid #e5e5e5",
+                  borderRadius: "3px",
                   cursor: "pointer",
-                  fontSize: "20px",
-                  fontWeight: "700",
-                  transition: "all 0.2s"
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  transition: "all 0.2s",
+                  color: "#999"
                 }}
-                onMouseEnter={e => e.target.style.background = "#e0e0e0"}
-                onMouseLeave={e => e.target.style.background = "#f5f5f5"}
+                onMouseEnter={e => e.target.style.background = "#f0f0f0"}
+                onMouseLeave={e => e.target.style.background = "#f9f9f9"}
               >
                 +
               </button>
