@@ -1,57 +1,35 @@
-import { useNavigate } from "react-router-dom";
-
 export default function PromoSection() {
-  const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
-
-  const handleShopClick = () => {
-    const productsSection = document.getElementById("products");
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
+      background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.9) 100%)",
       color: "#fff",
-      padding: isMobile ? "12px 12px" : "30px 30px",
+      padding: isMobile ? "20px 15px" : "40px 30px",
       textAlign: "center",
-      borderBottom: "1px solid rgba(184, 68, 141, 0.3)"
+      borderBottom: "2px solid rgba(184, 68, 141, 0.5)"
     }}>
       <div>
         <h2 style={{ 
-          fontSize: isMobile ? "14px" : "20px",
-          marginBottom: "2px", 
-          margin: "0 0 2px 0" 
+          fontSize: isMobile ? "18px" : "26px",
+          marginBottom: "12px", 
+          margin: "0 0 12px 0",
+          fontWeight: "900",
+          letterSpacing: "1px",
+          textShadow: "1px 1px 3px rgba(0,0,0,0.2)"
         }}>
           ✨ SPECIAL OFFER ✨
         </h2>
         <p style={{ 
-          fontSize: isMobile ? "11px" : "14px", 
-          margin: "0 0 8px 0"
+          fontSize: isMobile ? "13px" : "16px",
+          margin: "0",
+          fontWeight: "600",
+          letterSpacing: "0.5px",
+          lineHeight: "1.4"
         }}>
-          SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <strong>JODHA5</strong>
+          SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <strong style={{ fontSize: isMobile ? "14px" : "17px", color: "#fff", textDecoration: "underline" }}>JODHA5</strong>
         </p>
       </div>
-      <button 
-        onClick={handleShopClick}
-        style={{
-          background: "#fff",
-          color: "#D4AF37",
-          border: "none",
-          padding: isMobile ? "8px 15px" : "10px 20px",
-          fontSize: isMobile ? "12px" : "14px",
-          borderRadius: "20px",
-          fontWeight: "700",
-          cursor: "pointer",
-          transition: "all 0.3s"
-        }}
-        onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
-        onMouseLeave={e => e.target.style.transform = "scale(1)"}
-      >
-        Shop Now 🛍️
-      </button>
     </div>
   );
 }
