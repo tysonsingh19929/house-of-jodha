@@ -62,23 +62,27 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
     // If not found, use hardcoded list
     if (!found) {
       found = allProducts.find(p => p.id === parseInt(productId));
+      // For allProducts, assign image based on category and ID
+      if (found) {
+        const categoryProducts = allProducts.filter(p => p.category === found.category);
+        const index = categoryProducts.findIndex(p => p.id === found.id);
+        const image = getImageForProduct(found.category, index);
+        setProduct({ ...found, image });
+      }
+    } else {
+      // For enhanced products, use the explicit imageIndex if available
+      let image = found.image;
+      if (!image || image === "/images/sharara/1.jpg") {
+        // If image field exists and has explicit path with imageIndex, use it
+        const categoryKey = found.category === "salwarKameez" ? "salwarKameez" : found.category.toLowerCase();
+        if (found.imageIndex && imageDatabase[categoryKey]) {
+          image = getImageForProduct(found.category, found.imageIndex);
+        }
+      }
+      setProduct({ ...found, image });
     }
 
-    if (found) {
-      // Assign image based on category and ID
-      const categoryProducts = (enhancedProductDatabase.length > 0 ? enhancedProductDatabase : allProducts).filter(p => {
-        const prodCategory = p.category === "Salwar Kameez" ? "salwar" : p.category.toLowerCase();
-        const foundCategory = found.category === "Salwar Kameez" ? "salwar" : found.category.toLowerCase();
-        return prodCategory === foundCategory;
-      });
-      
-      const index = categoryProducts.findIndex(p => p.id === found.id);
-      const image = getImageForProduct(found.category, index);
-      setProduct({ ...found, image });
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
+    setLoading(false);
   }, [productId]);
 
   const handleAddToCart = () => {
