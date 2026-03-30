@@ -5,9 +5,9 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
   const cartRef = useRef(null);
   const navigate = useNavigate();
   
-  // Group items by id and calculate quantities
+  // Group items by id AND size - different sizes are separate line items
   const groupedItems = items.reduce((acc, item) => {
-    const existing = acc.find(i => i.id === item.id);
+    const existing = acc.find(i => i.id === item.id && i.size === item.size);
     if (existing) {
       existing.quantity += 1;
     } else {
@@ -139,6 +139,11 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "13px" : "15px", color: "#08060d" }}>
                   {item.name}
                 </p>
+                {item.size && (
+                  <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#999" }}>
+                    Size: <span style={{ fontWeight: "600", color: "#666" }}>{item.size}</span>
+                  </p>
+                )}
                 <p style={{ margin: "0", color: "#D4AF37", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "14px" : "16px" }}>
                   ₹{item.price}
                 </p>
@@ -148,8 +153,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
               <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
                 <button
                   onClick={() => {
-                    // Decrease quantity
-                    const itemIndex = items.findIndex(i => i.id === item.id);
+                    // Decrease quantity - remove only the item that matches both id and size
+                    const itemIndex = items.findIndex(i => i.id === item.id && i.size === item.size);
                     if (itemIndex !== -1) onRemove(itemIndex);
                   }}
                   style={{
@@ -180,23 +185,24 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 </span>
                 <button
                   onClick={() => {
-                    // Increase will be handled by parent adding item again
-                    // We'll need to modify this approach
+                    // Note: + button is disabled as quantity should be managed by adding items to cart
+                    // Users should use the product page to add more quantity
                   }}
+                  disabled={true}
                   style={{
-                    background: "#D4AF37",
+                    background: "#ccc",
                     border: "none",
                     width: "32px",
                     height: "32px",
                     borderRadius: "4px",
-                    cursor: "pointer",
+                    cursor: "not-allowed",
                     fontSize: "16px",
                     fontWeight: "600",
-                    color: "#fff",
-                    transition: "all 0.2s"
+                    color: "#999",
+                    transition: "all 0.2s",
+                    opacity: 0.6
                   }}
-                  onMouseEnter={e => e.target.style.background = "#c49a27"}
-                  onMouseLeave={e => e.target.style.background = "#D4AF37"}
+                  title="Add more quantities from the product page"
                 >
                   +
                 </button>
