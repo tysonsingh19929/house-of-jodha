@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import PromoSection from "./components/PromoSection";
 import SearchBar from "./components/SearchBar";
-import ProductCatalogOptimized from "./components/ProductCatalogOptimized";
+import ProductCatalog from "./components/ProductCatalog";
 import ShopByOccasion from "./components/ShopByOccasion";
 import Features from "./components/Features";
 import Newsletter from "./components/Newsletter";
@@ -32,7 +32,7 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
       <PromoSection />
       <SearchBar />
       <Hero />
-      <ProductCatalogOptimized onAddToCart={addToCart} onRemoveProduct={removeProductFromCart} />
+      <ProductCatalog onAddToCart={addToCart} onRemoveProduct={removeProductFromCart} />
       <ShopByOccasion />
       <Features />
       <Newsletter />
