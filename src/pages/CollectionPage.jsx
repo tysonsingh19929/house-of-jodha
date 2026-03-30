@@ -128,6 +128,7 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart, on
         </div>
         <Footer />
       </div>
+    </div>
     </>
   );
 }

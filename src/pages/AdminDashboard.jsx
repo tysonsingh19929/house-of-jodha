@@ -451,7 +451,7 @@ export default function AdminDashboard() {
                                 onMouseLeave={e => { e.target.style.background = "#ff6b6b"; e.target.style.transform = "scale(1)"; }}
                               >🗑️ Delete</button>
                             </>
-                          ) : (<span style{{ fontSize: "12px", color: "#999" }}>View Only</span>)}
+                          ) : (<span style={{ fontSize: "12px", color: "#999" }}>View Only</span>)}
                         </td>
                       </tr>
                     );

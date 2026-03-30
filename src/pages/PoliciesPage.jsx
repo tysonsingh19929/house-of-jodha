@@ -169,6 +169,7 @@ These terms and conditions are governed by and construed in accordance with the 
         </div>
         <Footer />
       </div>
+    </div>
     </>
   );
 }

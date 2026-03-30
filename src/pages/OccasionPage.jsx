@@ -155,159 +155,160 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
           <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
         )}
         <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto", width: "100%", flex: "1" }}>
-        <button 
-          onClick={() => navigate("/")}
-          style={{ padding: "8px 16px", background: details.bgColor, color: details.textColor, border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "20px", fontWeight: "600" }}
-        >
-          ← Back to Home
-        </button>
-        
-      <div style={{ textAlign: "center", marginBottom: "20px", background: details.bgColor, padding: "15px 20px", borderRadius: "8px" }}>
-          <h1 style={{ color: details.textColor, fontSize: isMobile ? "24px" : "36px", letterSpacing: "2px", margin: "0 0 8px 0" }}>
-            {details.name}
-          </h1>
-          <p style={{ color: details.textColor, fontSize: isMobile ? "12px" : "14px", marginBottom: "10px", maxWidth: "600px", margin: "0 auto 10px", opacity: 0.9 }}>
-            {details.description}
-          </p>
-          <div style={{
-            background: "rgba(255, 255, 255, 0.6)",
-            padding: "10px 15px",
-            borderRadius: "6px",
-            marginTop: "10px"
-          }}>
-            <p style={{ color: details.textColor, fontSize: isMobile ? "11px" : "12px", margin: "0", fontWeight: "600" }}>
-              💡 Styling Tip: {details.tips}
+          <button 
+            onClick={() => navigate("/")}
+            style={{ padding: "8px 16px", background: details.bgColor, color: details.textColor, border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "20px", fontWeight: "600" }}
+          >
+            ← Back to Home
+          </button>
+          
+          <div style={{ textAlign: "center", marginBottom: "20px", background: details.bgColor, padding: "15px 20px", borderRadius: "8px" }}>
+            <h1 style={{ color: details.textColor, fontSize: isMobile ? "24px" : "36px", letterSpacing: "2px", margin: "0 0 8px 0" }}>
+              {details.name}
+            </h1>
+            <p style={{ color: details.textColor, fontSize: isMobile ? "12px" : "14px", marginBottom: "10px", maxWidth: "600px", margin: "0 auto 10px", opacity: 0.9 }}>
+              {details.description}
             </p>
-          </div>
-        </div>
-
-        {/* Product Grid */}
-        <h2 style={{ textAlign: "center", color: details.textColor, fontSize: isMobile ? "20px" : "26px", marginBottom: "25px", letterSpacing: "1px", margin: "0 0 25px 0" }}>
-          Shop {details.name}
-        </h2>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: isMobile ? "15px" : "30px",
-          marginBottom: "40px"
-        }}>
-          {products.map(product => (
-            <div
-              key={product.id}
-              style={{
-                border: "1px solid var(--border)",
-                borderRadius: "8px",
-                overflow: "hidden",
-                transition: "all 0.3s",
-                cursor: "pointer",
-                background: "#fff"
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.boxShadow = "var(--shadow)";
-                e.currentTarget.style.transform = "translateY(-5px)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.boxShadow = "none";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              <div style={{
-                fontSize: isMobile ? "50px" : "60px",
-                textAlign: "center",
-                padding: isMobile ? "30px" : "40px",
-                background: "var(--accent-bg)"
-              }}>
-                {product.image}
-              </div>
-              <div style={{ padding: isMobile ? "15px" : "20px" }}>
-                <h3 style={{ fontSize: isMobile ? "14px" : "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
-                  {product.name}
-                </h3>
-                <div style={{ marginBottom: "15px" }}>
-                  <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
-                    ₹{product.originalPrice}
-                  </span>
-                  <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
-                    ₹{product.price}
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                  {addedProducts[product.id] ? (
-                    <>
-                      <button
-                        onClick={() => handleDecreaseQuantity(product)}
-                        style={{
-                          width: "35px",
-                          height: "35px",
-                          padding: "0",
-                          fontSize: "18px",
-                          background: "var(--accent)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontWeight: "600",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center"
-                        }}
-                      >
-                        −
-                      </button>
-                      <span style={{
-                        flex: 1,
-                        textAlign: "center",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "var(--accent)"
-                      }}>
-                        ✓ Added ({addedProducts[product.id]})
-                      </span>
-                      <button
-                        onClick={() => handleIncreaseQuantity(product)}
-                        style={{
-                          width: "35px",
-                          height: "35px",
-                          padding: "0",
-                          fontSize: "18px",
-                          background: "var(--accent)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontWeight: "600",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center"
-                        }}
-                      >
-                        +
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => handleAddProduct(product)}
-                      style={{
-                        width: "100%",
-                        padding: isMobile ? "8px" : "10px",
-                        fontSize: isMobile ? "13px" : "14px",
-                        background: "var(--accent)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontWeight: "500"
-                      }}
-                    >
-                      Add to Cart
-                    </button>
-                  )}
-                </div>
-              </div>
+            <div style={{
+              background: "rgba(255, 255, 255, 0.6)",
+              padding: "10px 15px",
+              borderRadius: "6px",
+              marginTop: "10px"
+            }}>
+              <p style={{ color: details.textColor, fontSize: isMobile ? "11px" : "12px", margin: "0", fontWeight: "600" }}>
+                💡 Styling Tip: {details.tips}
+              </p>
             </div>
-          ))}
+          </div>
+
+          {/* Product Grid */}
+          <h2 style={{ textAlign: "center", color: details.textColor, fontSize: isMobile ? "20px" : "26px", marginBottom: "25px", letterSpacing: "1px", margin: "0 0 25px 0" }}>
+            Shop {details.name}
+          </h2>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: isMobile ? "15px" : "30px",
+            marginBottom: "40px"
+          }}>
+            {products.map(product => (
+              <div
+                key={product.id}
+                style={{
+                  border: "1px solid var(--border)",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  transition: "all 0.3s",
+                  cursor: "pointer",
+                  background: "#fff"
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.boxShadow = "var(--shadow)";
+                  e.currentTarget.style.transform = "translateY(-5px)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.boxShadow = "none";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <div style={{
+                  fontSize: isMobile ? "50px" : "60px",
+                  textAlign: "center",
+                  padding: isMobile ? "30px" : "40px",
+                  background: "var(--accent-bg)"
+                }}>
+                  {product.image}
+                </div>
+                <div style={{ padding: isMobile ? "15px" : "20px" }}>
+                  <h3 style={{ fontSize: isMobile ? "14px" : "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>
+                    {product.name}
+                  </h3>
+                  <div style={{ marginBottom: "15px" }}>
+                    <span style={{ fontSize: "12px", color: "var(--text)", textDecoration: "line-through" }}>
+                      ₹{product.originalPrice}
+                    </span>
+                    <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "var(--accent)", marginLeft: "10px" }}>
+                      ₹{product.price}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    {addedProducts[product.id] ? (
+                      <>
+                        <button
+                          onClick={() => handleDecreaseQuantity(product)}
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            padding: "0",
+                            fontSize: "18px",
+                            background: "var(--accent)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          −
+                        </button>
+                        <span style={{
+                          flex: 1,
+                          textAlign: "center",
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "var(--accent)"
+                        }}>
+                          ✓ Added ({addedProducts[product.id]})
+                        </span>
+                        <button
+                          onClick={() => handleIncreaseQuantity(product)}
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            padding: "0",
+                            fontSize: "18px",
+                            background: "var(--accent)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          +
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => handleAddProduct(product)}
+                        style={{
+                          width: "100%",
+                          padding: isMobile ? "8px" : "10px",
+                          fontSize: isMobile ? "13px" : "14px",
+                          background: "var(--accent)",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          fontWeight: "500"
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
     </>
   );

@@ -284,7 +284,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
                 position: "relative",
                 overflow: "hidden"
               }}>
-                {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:")) ? (
+                {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
                   <img 
                     src={product.image} 
                     alt={product.name}

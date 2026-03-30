@@ -231,29 +231,3 @@ export default function SellerLogin() {
     </div>
   );
 }
-          }}
-          onMouseLeave={e => {
-            e.target.style.background = "#f5f5f5";
-            e.target.style.borderColor = "#ddd";
-          }}
-        >
-          ← Back to Home
-        </button>
-
-        {/* Info Box */}
-        <div style={{
-          background: "#f0f8ff",
-          border: "1px solid #cce5ff",
-          padding: "12px",
-          borderRadius: "6px",
-          marginTop: "20px",
-          fontSize: "12px",
-          color: "#0066cc",
-          textAlign: "center"
-        }}>
-          <strong>Demo Password:</strong> <code style={{ background: "#fff", padding: "2px 6px", borderRadius: "3px" }}>seller123</code>
-        </div>
-      </div>
-    </div>
-  );
-}
