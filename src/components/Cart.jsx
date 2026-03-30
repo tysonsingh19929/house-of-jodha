@@ -99,10 +99,63 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
         flexShrink: 0
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ margin: "0", color: "#fff", fontSize: window.innerWidth <= 768 ? "16px" : "20px", fontWeight: "700" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                background: "rgba(255,255,255,0.3)",
+                border: "none",
+                fontSize: window.innerWidth <= 768 ? "18px" : "16px",
+                cursor: "pointer",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                color: "#fff",
+                transition: "all 0.2s",
+                minWidth: "32px",
+                height: "32px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+              onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.5)"}
+              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.3)"}
+              title="Go back"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => {
+                navigate("/");
+                onClose();
+              }}
+              style={{
+                background: "rgba(255,255,255,0.3)",
+                border: "none",
+                fontSize: window.innerWidth <= 768 ? "18px" : "16px",
+                cursor: "pointer",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                color: "#fff",
+                transition: "all 0.2s",
+                minWidth: "32px",
+                height: "32px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+              onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.5)"}
+              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.3)"}
+              title="Go to home"
+            >
+              🏠
+            </button>
+          </div>
+
+          <h3 style={{ margin: "0", color: "#fff", fontSize: window.innerWidth <= 768 ? "16px" : "20px", fontWeight: "700", flex: 1, textAlign: "center" }}>
             🛍️ My Cart ({groupedItems.length} items)
           </h3>
+
           <button
             onClick={onClose}
             style={{
