@@ -68,12 +68,18 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   }, [productId]);
 
   const handleAddToCart = () => {
-    if (!product || !addToCart) return;
+    if (!product || !addToCart) {
+      console.warn("Product or addToCart function not available");
+      return;
+    }
     
-    // Ensure quantity is valid
-    const validQuantity = Math.max(1, Math.min(quantity, 99));
+    // Capture quantity value at time of click
+    const itemQuantity = parseInt(quantity);
+    const validQuantity = Math.max(1, Math.min(itemQuantity, 99));
     
-    // Add item to cart with quantity and size
+    console.log(`Adding ${validQuantity} items to cart for product ${product.id} with size ${selectedSize}`);
+    
+    // Add each item to cart individually
     for (let i = 0; i < validQuantity; i++) {
       addToCart({ 
         ...product, 
@@ -302,18 +308,29 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
                 max="99"
                 value={quantity}
                 onChange={(e) => {
-                  const inputValue = e.target.value.trim();
+                  const inputValue = e.target.value;
+                  
+                  // Allow empty field during typing
                   if (inputValue === "") {
-                    return; // Allow empty during typing
+                    return;
                   }
-                  const val = parseInt(inputValue);
-                  if (!isNaN(val)) {
-                    setQuantity(Math.max(1, Math.min(val, 99))); // Clamp between 1-99
+                  
+                  const numValue = parseInt(inputValue, 10);
+                  
+                  // Only update if it's a valid positive number
+                  if (!isNaN(numValue) && numValue > 0) {
+                    setQuantity(Math.min(numValue, 99)); // Cap at 99
                   }
                 }}
-                onBlur={() => {
-                  if (quantity < 1) setQuantity(1);
-                  if (quantity > 99) setQuantity(99);
+                onBlur={(e) => {
+                  // Ensure value is valid when leaving the field
+                  let val = parseInt(e.target.value, 10);
+                  if (isNaN(val) || val < 1) {
+                    val = 1;
+                  } else if (val > 99) {
+                    val = 99;
+                  }
+                  setQuantity(val);
                 }}
                 style={{
                   width: "80px",
