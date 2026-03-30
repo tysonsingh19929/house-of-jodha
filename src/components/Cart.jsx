@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
   const cartRef = useRef(null);
+  const navigate = useNavigate();
   
   // Group items by id and calculate quantities
   const groupedItems = items.reduce((acc, item) => {
@@ -248,6 +250,10 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
 
           <div style={{ display: "flex", gap: window.innerWidth <= 768 ? "10px" : "12px", flexDirection: "column" }}>
             <button
+              onClick={() => {
+                navigate("/checkout");
+                onClose();
+              }}
               style={{
                 width: "100%",
                 padding: window.innerWidth <= 768 ? "14px 12px" : "16px",

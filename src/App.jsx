@@ -23,6 +23,7 @@ import SellerLogin from "./pages/SellerLogin";
 import QuickEdit from "./pages/QuickEdit";
 import ProductDetail from "./pages/ProductDetail";
 import SearchResults from "./pages/SearchResults";
+import Checkout from "./pages/Checkout";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -167,6 +168,18 @@ function App() {
               addToCart={addToCart}
               removeFromCart={removeFromCart}
               cartItems={cartItems}
+              cartCount={cartCount}
+            />
+          }
+        />
+        <Route 
+          path="/checkout" 
+          element={
+            <Checkout 
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
               cartCount={cartCount}
             />
           }
