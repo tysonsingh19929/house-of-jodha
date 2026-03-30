@@ -7,7 +7,7 @@ import cartRoutes from './routes/cart.js';
 import orderRoutes from './routes/orders.js';
 import userRoutes from './routes/users.js';
 import sellerRoutes from './routes/sellers.js';
-import { seedSellers } from './seed.js';
+import { seedSellers, seedProducts } from './seed.js';
 
 dotenv.config();
 
@@ -22,8 +22,9 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/house-of-jodha')
   .then(async () => {
     console.log('MongoDB connected');
-    // Seed demo sellers on startup
+    // Seed demo sellers and products on startup
     await seedSellers();
+    await seedProducts();
   })
   .catch(err => console.log('MongoDB connection error:', err));
 
