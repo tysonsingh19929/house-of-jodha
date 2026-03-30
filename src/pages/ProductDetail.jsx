@@ -49,6 +49,7 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
   const [loading, setLoading] = useState(true);
+  const [addedToCart, setAddedToCart] = useState(false);
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
@@ -67,12 +68,24 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   }, [productId]);
 
   const handleAddToCart = () => {
-    if (product) {
+    if (product && addToCart) {
+      // Add product with quantity and size info
+      const itemToAdd = {
+        ...product,
+        size: selectedSize,
+        quantity: quantity,
+        addedAt: Date.now()
+      };
+      
+      // Add to cart once with all items
       for (let i = 0; i < quantity; i++) {
-        addToCart(product);
+        addToCart({ ...product, size: selectedSize });
       }
+      
+      // Show success feedback
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 2000);
       setQuantity(1);
-      alert(`Added ${quantity} item(s) to cart!`);
     }
   };
 
@@ -317,19 +330,20 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
             style={{
               width: "100%",
               padding: "15px",
-              background: "var(--accent)",
+              background: addedToCart ? "#27ae60" : "var(--accent)",
               color: "#fff",
               border: "none",
               borderRadius: "4px",
               fontSize: "16px",
               fontWeight: "700",
               cursor: "pointer",
-              marginBottom: "10px"
+              marginBottom: "10px",
+              transition: "all 0.3s ease"
             }}
-            onMouseEnter={e => e.target.style.background = "#c9860f"}
-            onMouseLeave={e => e.target.style.background = "var(--accent)"}
+            onMouseEnter={e => !addedToCart && (e.target.style.background = "#c9860f")}
+            onMouseLeave={e => !addedToCart && (e.target.style.background = "var(--accent)")}
           >
-            Add {quantity} to Cart
+            {addedToCart ? "✓ Added to Cart!" : `Add ${quantity} to Cart`}
           </button>
 
           {/* Wishlist Button */}
