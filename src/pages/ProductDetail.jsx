@@ -68,25 +68,26 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   }, [productId]);
 
   const handleAddToCart = () => {
-    if (product && addToCart) {
-      // Add product with quantity and size info
-      const itemToAdd = {
-        ...product,
+    if (!product || !addToCart) return;
+    
+    // Ensure quantity is valid
+    const validQuantity = Math.max(1, Math.min(quantity, 99));
+    
+    // Add item to cart with quantity and size
+    for (let i = 0; i < validQuantity; i++) {
+      addToCart({ 
+        ...product, 
         size: selectedSize,
-        quantity: quantity,
-        addedAt: Date.now()
-      };
-      
-      // Add to cart once with all items
-      for (let i = 0; i < quantity; i++) {
-        addToCart({ ...product, size: selectedSize });
-      }
-      
-      // Show success feedback
-      setAddedToCart(true);
-      setTimeout(() => setAddedToCart(false), 2000);
-      setQuantity(1);
+        _cartItemId: `${product.id}-${selectedSize}-${Date.now()}-${i}` // Unique ID for each cart item
+      });
     }
+    
+    // Show success feedback
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+    
+    // Reset quantity for next use
+    setQuantity(1);
   };
 
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -301,10 +302,18 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
                 max="99"
                 value={quantity}
                 onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  if (!isNaN(val) && val >= 1) {
-                    setQuantity(val);
+                  const inputValue = e.target.value.trim();
+                  if (inputValue === "") {
+                    return; // Allow empty during typing
                   }
+                  const val = parseInt(inputValue);
+                  if (!isNaN(val)) {
+                    setQuantity(Math.max(1, Math.min(val, 99))); // Clamp between 1-99
+                  }
+                }}
+                onBlur={() => {
+                  if (quantity < 1) setQuantity(1);
+                  if (quantity > 99) setQuantity(99);
                 }}
                 style={{
                   width: "80px",
