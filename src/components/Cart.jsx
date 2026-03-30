@@ -316,6 +316,53 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
             >
               Continue Shopping
             </button>
+
+            <div style={{ display: "flex", gap: window.innerWidth <= 768 ? "10px" : "12px" }}>
+              <button
+                onClick={() => navigate(-1)}
+                style={{
+                  flex: 1,
+                  padding: window.innerWidth <= 768 ? "12px 10px" : "12px",
+                  background: "#666",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: window.innerWidth <= 768 ? "13px" : "13px",
+                  transition: "all 0.3s",
+                  minHeight: window.innerWidth <= 768 ? "40px" : "auto"
+                }}
+                onMouseEnter={e => e.target.style.background = "#555"}
+                onMouseLeave={e => e.target.style.background = "#666"}
+              >
+                ← Back
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate("/");
+                  onClose();
+                }}
+                style={{
+                  flex: 1,
+                  padding: window.innerWidth <= 768 ? "12px 10px" : "12px",
+                  background: "#08060d",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: window.innerWidth <= 768 ? "13px" : "13px",
+                  transition: "all 0.3s",
+                  minHeight: window.innerWidth <= 768 ? "40px" : "auto"
+                }}
+                onMouseEnter={e => e.target.style.background = "#1a1618"}
+                onMouseLeave={e => e.target.style.background = "#08060d"}
+              >
+                🏠 Home
+              </button>
+            </div>
           </div>
         </div>
       )}
