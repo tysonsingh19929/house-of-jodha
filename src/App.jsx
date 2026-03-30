@@ -21,6 +21,7 @@ import PoliciesPage from "./pages/PoliciesPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import SellerLogin from "./pages/SellerLogin";
 import QuickEdit from "./pages/QuickEdit";
+import ProductDetail from "./pages/ProductDetail";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
@@ -137,6 +138,19 @@ function App() {
         <Route 
           path="/quick-edit" 
           element={<QuickEdit />}
+        />
+        <Route 
+          path="/product/:productId" 
+          element={
+            <ProductDetail 
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              addToCart={addToCart}
+              removeFromCart={removeFromCart}
+              cartItems={cartItems}
+              cartCount={cartCount}
+            />
+          }
         />
       </Routes>
     </BrowserRouter>

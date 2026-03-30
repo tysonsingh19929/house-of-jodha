@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import imageDatabase from "../data/imageDatabase.js";
 
 const getImageForProduct = (category, index) => {
@@ -154,6 +155,7 @@ const products = [
 ];
 
 export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [addedProducts, setAddedProducts] = useState({});
   
@@ -257,6 +259,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
           return (
             <div
               key={product.id}
+              onClick={() => navigate(`/product/${product.id}`)}
               style={{
                 background: "#fff",
                 borderRadius: "4px",
