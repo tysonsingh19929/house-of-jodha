@@ -1,7 +1,7 @@
 // Enhanced product database with Like A Diva inspired product details
 export const enhancedProductDatabase = [
   {
-    id: 1,
+    id: 401,
     name: "Ivory Chinon Silk Kurta Sharara Set",
     price: 15000,
     originalPrice: 16400,
@@ -35,7 +35,7 @@ It is paired with Chinon Silk crafted, pleated, & flared Sharara. To complete th
     customFitAvailable: true
   },
   {
-    id: 2,
+    id: 402,
     name: "Beige Gold Tissue Silk Lehenga Set",
     price: 25600,
     originalPrice: 30800,
@@ -72,7 +72,7 @@ Dupatta in matching olive gold tissue silk with a delicate multi-colour embroide
     notes: "If you desire, we can also add sleeves to the blouse."
   },
   {
-    id: 3,
+    id: 403,
     name: "Red Silk Bandhani Saree",
     price: 18000,
     originalPrice: 22000,
@@ -102,7 +102,7 @@ The saree showcases rich heritage craftsmanship with vibrant colors and elaborat
     customFitAvailable: true
   },
   {
-    id: 4,
+    id: 404,
     name: "Pink Anarkali Suit",
     price: 12000,
     originalPrice: 15000,
@@ -134,7 +134,7 @@ The suit comes with matching churidar pants and a flowing dupatta. The embroider
     customFitAvailable: true
   },
   {
-    id: 5,
+    id: 405,
     name: "Cream Salwar Kameez Suit",
     price: 8999,
     originalPrice: 11999,
@@ -165,7 +165,7 @@ The three-piece ensemble includes a beautifully designed kurta, comfortable matc
     customFitAvailable: true
   },
   {
-    id: 6,
+    id: 406,
     name: "Golden Gharara Set",
     price: 19999,
     originalPrice: 25000,
