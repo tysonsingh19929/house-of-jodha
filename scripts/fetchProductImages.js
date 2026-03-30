@@ -87,23 +87,17 @@ const products = [
 
 // Generate smart search keywords
 const generateKeywords = (product) => {
-  const keywords = [];
+  // Use ONLY these 6 single keywords
+  const keywords = {
+    "Lehenga": "Lehenga",
+    "Saree": "Saree",
+    "Anarkali": "Anarkali",
+    "Salwar Kameez": "Salwar",
+    "Gharara": "Gharara",
+    "Sharara": "Sharara"
+  };
   
-  // Add category keyword
-  keywords.push(product.category.toLowerCase());
-  
-  // Add color keyword
-  if (product.color) {
-    keywords.push(product.color.toLowerCase());
-  }
-  
-  // Add style keywords from name
-  if (product.name.includes("Bridal")) keywords.push("bridal");
-  if (product.name.includes("Embroidered")) keywords.push("embroidered");
-  if (product.name.includes("Silk")) keywords.push("silk");
-  if (product.name.includes("Hand")) keywords.push("hand");
-  
-  return keywords.join(" ");
+  return keywords[product.category] || product.category;
 };
 
 // Fetch from Unsplash with smart search
