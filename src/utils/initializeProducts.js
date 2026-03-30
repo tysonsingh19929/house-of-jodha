@@ -1,33 +1,33 @@
 // Initialize products in localStorage from the ProductCatalog with Women's Clothing Images
-const STORAGE_VERSION = 6; // Increment to force refresh
+const STORAGE_VERSION = 7; // Increment to force refresh
 
 // Diverse collection of women's clothing images
 const womensClothingImages = [
-  "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=600&h=800&fit=crop", // Woman in blue dress
-  "https://images.unsplash.com/photo-1609025027847-ae8efab1e0ce?w=600&h=800&fit=crop", // Woman in green top
-  "https://images.unsplash.com/photo-1595588239052-76e1f1a64a32?w=600&h=800&fit=crop", // Woman in casual skirt
-  "https://images.unsplash.com/photo-1499887142886-fd1cbc405130?w=600&h=800&fit=crop", // Woman walking
-  "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&h=800&fit=crop", // Woman in black formal wear
-  "https://images.unsplash.com/photo-1515497131986-e79210397a64?w=600&h=800&fit=crop", // Woman in stylish dress
-  "https://images.unsplash.com/photo-1506629082847-11d82b3bba63?w=600&h=800&fit=crop", // Woman in pink dress
-  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&h=800&fit=crop", // Woman in casual top
-  "https://images.unsplash.com/photo-1552062407-291826ad9b0a?w=600&h=800&fit=crop", // Woman in elegant dress
-  "https://images.unsplash.com/photo-1572804419406-1ceeb2b13495?w=600&h=800&fit=crop", // Woman in summer dress
+  "https://images.unsplash.com/photo-1595578996837-d68c5f7da11e?w=600&h=800&fit=crop", // Woman in black dress
+  "https://images.unsplash.com/photo-1551163943-3f221e38e75b?w=600&h=800&fit=crop", // Woman in white outfit
+  "https://images.unsplash.com/photo-1562572933382-ceb0c0dbfe51?w=600&h=800&fit=crop", // Woman in colorful dress
+  "https://images.unsplash.com/photo-1539720995652-340ee73570c0?w=600&h=800&fit=crop", // Woman in elegant clothing
   "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop", // Woman in stylish outfit
-  "https://images.unsplash.com/photo-1501196354995-cd51d1eb2bb4?w=600&h=800&fit=crop", // Woman in white dress
-  "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=600&h=800&fit=crop", // Woman in fashionable outfit
-  "https://images.unsplash.com/photo-1534004414409-c7ea1582f212?w=600&h=800&fit=crop", // Woman in stylish top
-  "https://images.unsplash.com/photo-1556333864518-0c5b60316e41?w=600&h=800&fit=crop", // Woman in casual wear
-  "https://images.unsplash.com/photo-1569505254587-c6f9e62b76dd?w=600&h=800&fit=crop", // Woman in casual outfit
-  "https://images.unsplash.com/photo-1515897084118-52eef2d2d808?w=600&h=800&fit=crop", // Woman in fashionable wear
-  "https://images.unsplash.com/photo-1524681528949-45a322d32fed?w=600&h=800&fit=crop", // Woman in elegant outfit
-  "https://images.unsplash.com/photo-1539230119ff92e9c00a353ee79c5fce122e37ce?w=600&h=800&fit=crop", // Woman in stylish dress
-  "https://images.unsplash.com/photo-1554062407-98eeb58d697f?w=600&h=800&fit=crop", // Woman in fashionable outfit
-  "https://images.unsplash.com/photo-1517711284815-82b9b1c5ff0e?w=600&h=800&fit=crop", // Woman in casual top
+  "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=800&fit=crop", // Woman in casual wear
+  "https://images.unsplash.com/photo-1595895917455-69f6646db940?w=600&h=800&fit=crop", // Woman in fashionable dress
+  "https://images.unsplash.com/photo-1549887534-7ef5d8fd4fad?w=600&h=800&fit=crop", // Woman in stylish top
+  "https://images.unsplash.com/photo-1515947811556-1efb3c3efb41?w=600&h=800&fit=crop", // Woman in casual outfit
+  "https://images.unsplash.com/photo-1564257631407-4deb1f38bbdb?w=600&h=800&fit=crop", // Woman in blue dress
+  "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&h=800&fit=crop", // Woman in formal wear
+  "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&h=800&fit=crop", // Woman in stylish clothing
+  "https://images.unsplash.com/photo-1506379773649-6bcc237052f9?w=600&h=800&fit=crop", // Woman in elegant dress
+  "https://images.unsplash.com/photo-1580136579312-94651dfd596d?w=600&h=800&fit=crop", // Woman in casual top
+  "https://images.unsplash.com/photo-1552062407-291826ad9b0a?w=600&h=800&fit=crop", // Woman in fashionable outfit
+  "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&h=800&fit=crop", // Woman in stylish dress
+  "https://images.unsplash.com/photo-1572804419406-1ceeb2b13495?w=600&h=800&fit=crop", // Woman in summer dress
+  "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&h=800&fit=crop", // Woman in casual wear
+  "https://images.unsplash.com/photo-1517711484589-48949750b8f6?w=600&h=800&fit=crop", // Woman in elegant outfit
+  "https://images.unsplash.com/photo-1488161622613-c23ccf9fa53e?w=600&h=800&fit=crop", // Woman in stylish clothing
+  "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop", // Woman in fashionable dress
+  "https://images.unsplash.com/photo-1515020234313-e391adaca76d?w=600&h=800&fit=crop", // Woman in casual outfit
+  "https://images.unsplash.com/photo-1539108149f65ee147c55d3a0261cdc7d4cc0563?w=600&h=800&fit=crop", // Woman in elegant wear
   "https://images.unsplash.com/photo-1541151024996-56a92df1c5b0?w=600&h=800&fit=crop", // Woman in dress
-  "https://images.unsplash.com/photo-1496747611176-843222e1e729?w=600&h=800&fit=crop", // Woman in stylish outfit
-  "https://images.unsplash.com/photo-1507894957500-b1d08e7265ac?w=600&h=800&fit=crop", // Woman in fashionable wear
-  "https://images.unsplash.com/photo-1539108149f65ee147c55d3a0261cdc7d4cc0563?w=600&h=800&fit=crop", // Woman in elegant outfit
+  "https://images.unsplash.com/photo-1508066806296-1be2931a9a86?w=600&h=800&fit=crop", // Woman in stylish outfit
 ];
 
 export const initializeProductsInStorage = () => {
