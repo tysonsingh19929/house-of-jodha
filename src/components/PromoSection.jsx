@@ -16,7 +16,8 @@ export default function PromoSection() {
           margin: "0 0 12px 0",
           fontWeight: "900",
           letterSpacing: "1px",
-          textShadow: "1px 1px 3px rgba(0,0,0,0.2)"
+          textShadow: "1px 1px 3px rgba(0,0,0,0.2)",
+          opacity: "0.5"
         }}>
           ✨ SPECIAL OFFER ✨
         </h2>
@@ -25,7 +26,8 @@ export default function PromoSection() {
           margin: "0",
           fontWeight: "600",
           letterSpacing: "0.5px",
-          lineHeight: "1.4"
+          lineHeight: "1.4",
+          opacity: "0.5"
         }}>
           SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <strong style={{ fontSize: isMobile ? "14px" : "17px", color: "#fff", textDecoration: "underline" }}>JODHA5</strong>
         </p>
