@@ -4,45 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
 import SizeChart from "../components/SizeChart";
-import imageDatabase from "../data/imageDatabase.js";
-import { enhancedProductDatabase } from "../data/enhancedProductDatabase.js";
-
-// Hardcoded products (same as ProductCatalog)
-const allProducts = [
-  // LEHENGA
-  { id: 1, name: "Beige Gold Tissue Silk Embroidered Lehenga Set", price: 25600, originalPrice: 30800, description: "Elegant beige and gold tissue silk lehenga with intricate embroidery work. Perfect for weddings and festive occasions.", category: "Lehenga", material: "Tissue Silk", color: "Beige & Gold", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 2200, stock: 5 },
-  { id: 11, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 32000, originalPrice: 40000, description: "Luxurious red silk bridal lehenga with hand embroidered details and mirror work. Ideal for weddings.", category: "Lehenga", material: "Silk", color: "Red", occasions: ["Wedding", "Bridal"], rating: 4.5, reviews: 1800, stock: 3 },
-  { id: 12, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga", price: 27000, originalPrice: 32900, description: "Soft blush pink bridal lehenga with tissue silk and embroidered choli. Stunning for wedding ceremonies.", category: "Lehenga", material: "Tissue Silk", color: "Blush Pink", occasions: ["Wedding", "Bridal"], rating: 4.4, reviews: 1950, stock: 4 },
-  { id: 13, name: "Maroon Tissue Silk Bridal Lehenga Choli Set", price: 29000, originalPrice: 36000, description: "Deep maroon bridal lehenga with ornate embroidery and matching choli. Complete bridal ensemble.", category: "Lehenga", material: "Tissue Silk", color: "Maroon", occasions: ["Wedding", "Bridal"], rating: 4.3, reviews: 1700, stock: 3 },
-  { id: 14, name: "Parrot Green Floral Printed Lehenga Set", price: 7700, originalPrice: 10500, description: "Vibrant parrot green lehenga with floral prints and light embroidery. Perfect for celebrations.", category: "Lehenga", material: "Cotton Silk", color: "Parrot Green", occasions: ["Festival", "Celebration"], rating: 4.2, reviews: 2100, stock: 6 },
-  
-  // SAREE
-  { id: 3, name: "Pre-draped Royal Purple Satin Saree", price: 8900, originalPrice: 10500, description: "Beautiful pre-draped saree in royal purple satin, perfect for any celebration. Easy to wear.", category: "Saree", material: "Satin", color: "Royal Purple", occasions: ["Festival", "Party"], rating: 4.1, reviews: 1600, stock: 7 },
-  { id: 22, name: "Gold Sequined Silk Bridal Saree", price: 21000, originalPrice: 27000, description: "Luxurious gold sequined silk saree with blouse. Perfect for bridal and festive occasions.", category: "Saree", material: "Silk", color: "Gold", occasions: ["Wedding", "Bridal"], rating: 4.6, reviews: 2300, stock: 4 },
-  { id: 23, name: "Ivory & Gold Embroidered Bridal Saree", price: 18000, originalPrice: 23000, description: "Elegant ivory saree with gold embroidery and beadwork. Traditional bridal attire.", category: "Saree", material: "Silk", color: "Ivory & Gold", occasions: ["Wedding", "Bridal"], rating: 4.5, reviews: 2050, stock: 3 },
-  
-  // ANARKALI
-  { id: 4, name: "Designer Anarkali Suit - Midnight Blue", price: 16800, originalPrice: 19800, description: "Beautiful midnight blue anarkali suit with embroidered yoke and hem. Comfortable and stylish.", category: "Anarkali", material: "Georgette", color: "Midnight Blue", occasions: ["Wedding", "Festival"], rating: 4.4, reviews: 1900, stock: 7 },
-  { id: 31, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 14000, originalPrice: 16900, description: "Stunning indigo blue anarkali with traditional embroidery and matching dupatta.", category: "Anarkali", material: "Georgette", color: "Indigo Blue", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 1750, stock: 5 },
-  
-  // SALWAR KAMEEZ
-  { id: 5, name: "Salwar Kameez - Emerald Green", price: 7500, originalPrice: 9000, description: "Classic emerald green salwar kameez with traditional embroidery. Timeless ethnic wear.", category: "Salwar Kameez", material: "Cotton Silk", color: "Emerald Green", occasions: ["Daily", "Festival"], rating: 4.0, reviews: 1500, stock: 10 },
-  { id: 40, name: "Navy Blue Crepe Silk Printed & Embroidered Indowestern Top & Palazzo Set", price: 9000, originalPrice: 11100, description: "Contemporary indowestern top with palazzo pants. Perfect for modern occasions.", category: "Salwar Kameez", material: "Crepe Silk", color: "Navy Blue", occasions: ["Party", "Celebration"], rating: 4.2, reviews: 1650, stock: 8 },
-  
-  // GHARARA
-  { id: 2, name: "Ivory Chinon Silk Gharara Set", price: 11500, originalPrice: 13500, description: "Sophisticated ivory chinon silk gharara with intricate embroidery. Elegant bridal option.", category: "Gharara", material: "Chinon Silk", color: "Ivory", occasions: ["Wedding", "Bridal"], rating: 4.4, reviews: 1850, stock: 3 },
-  { id: 49, name: "Pink Purple Georgette Embroidered Gharara Set", price: 9500, originalPrice: 12000, description: "Beautiful pink purple gharara with stunning embroidery work. Perfect for celebrations.", category: "Gharara", material: "Georgette", color: "Pink Purple", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 1700, stock: 5 },
-  
-  // SHARARA
-  { id: 6, name: "Sharara Suit - Wine Red", price: 12500, originalPrice: 15000, description: "Glamorous wine red sharara suit with embroidered details. Perfect for festive celebrations.", category: "Sharara", material: "Silk", color: "Wine Red", occasions: ["Wedding", "Festival"], rating: 4.5, reviews: 2000, stock: 5 },
-  { id: 56, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 6100, originalPrice: 10000, description: "Elegant pink purple sharara with beautiful embroidery and matching dupatta.", category: "Sharara", material: "Georgette", color: "Pink Purple", occasions: ["Festival", "Party"], rating: 4.2, reviews: 1600, stock: 6 }
-];
-
-const getImageForProduct = (category, index) => {
-  const categoryKey = category === "Salwar Kameez" ? "salwarKameez" : category.toLowerCase();
-  const urls = imageDatabase[categoryKey] || imageDatabase.lehenga;
-  return urls[index % urls.length];
-};
+import { products } from "../data/products.js";
 
 export default function ProductDetail({ cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount }) {
   const { productId } = useParams();
@@ -56,32 +18,16 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
-    // First try to find in enhanced database
-    let found = enhancedProductDatabase.find(p => p.id === parseInt(productId));
+    // Find product by ID from shared products list
+    const found = products.find(p => p.id === parseInt(productId));
     
-    // If not found, use hardcoded list
-    if (!found) {
-      found = allProducts.find(p => p.id === parseInt(productId));
-      // For allProducts, assign image based on category and ID
-      if (found) {
-        const categoryProducts = allProducts.filter(p => p.category === found.category);
-        const index = categoryProducts.findIndex(p => p.id === found.id);
-        const image = getImageForProduct(found.category, index);
-        setProduct({ ...found, image });
-      }
+    if (found) {
+      setProduct(found);
     } else {
-      // For enhanced products, use the explicit imageIndex if available
-      let image = found.image;
-      if (!image || image === "/images/sharara/1.jpg") {
-        // If image field exists and has explicit path with imageIndex, use it
-        const categoryKey = found.category === "salwarKameez" ? "salwarKameez" : found.category.toLowerCase();
-        if (found.imageIndex && imageDatabase[categoryKey]) {
-          image = getImageForProduct(found.category, found.imageIndex);
-        }
-      }
-      setProduct({ ...found, image });
+      // Product not found
+      console.warn(`Product with ID ${productId} not found`);
+      setProduct(null);
     }
-
     setLoading(false);
   }, [productId]);
 
@@ -232,7 +178,7 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
 
           {/* Rating */}
           <div style={{ fontSize: "14px", marginBottom: "20px", color: "#ff6b6b" }}>
-            ⭐ {product.rating} ★ <span style={{ color: "#999", fontSize: "13px" }}>({product.reviews.toLocaleString()} reviews)</span>
+            ⭐ 4.8 ★ <span style={{ color: "#999", fontSize: "13px" }}>(2,345 reviews)</span>
           </div>
 
           {/* Price Section */}
@@ -249,36 +195,17 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
                 {discount}% OFF
               </span>
             </div>
-            {product.stock <= 3 && (
-              <div style={{ color: "#ff6b6b", fontSize: "13px", fontWeight: "600" }}>
-                ⚠️ Only {product.stock} left in stock!
-              </div>
-            )}
           </div>
 
-          {/* Description */}
-          <div style={{ marginBottom: "30px" }}>
-            <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#333", marginBottom: "10px" }}>Description</h3>
-            <p style={{ color: "#666", lineHeight: "1.6", fontSize: "14px" }}>{product.description}</p>
-          </div>
-
-          {/* Product Details */}
+          {/* Category & Info */}
           <div style={{ marginBottom: "30px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <div>
-              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Material</h4>
-              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>{product.material}</p>
+              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Category</h4>
+              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>{product.category}</p>
             </div>
             <div>
-              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Color</h4>
-              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>{product.color}</p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Occasions</h4>
-              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>{product.occasions.join(", ")}</p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Stock Available</h4>
-              <p style={{ fontSize: "14px", color: product.stock > 5 ? "#27ae60" : "#ff6b6b", fontWeight: "500" }}>{product.stock} units</p>
+              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Price</h4>
+              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>₹{product.price}</p>
             </div>
           </div>
 
