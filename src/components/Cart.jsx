@@ -18,6 +18,22 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
 
   const total = groupedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
+  // Handle browser back button to close cart instead of navigating
+  useEffect(() => {
+    // Push a history state when cart opens
+    window.history.pushState({ cartOpen: true }, "");
+    
+    const handlePopState = (e) => {
+      // Close the cart instead of navigating back
+      onClose();
+      // Push state again to prevent actual navigation
+      window.history.pushState({ cartOpen: true }, "");
+    };
+    
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [onClose]);
+
   // Close cart when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
