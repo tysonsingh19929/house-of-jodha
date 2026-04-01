@@ -115,15 +115,16 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       <div style={{ 
         padding: window.innerWidth <= 768 ? "12px 15px" : "20px", 
         borderBottom: "2px solid #f0f0f0",
-        background: "linear-gradient(135deg, #D4AF37 0%, rgba(212, 175, 55, 0.8) 100%)",
-        flexShrink: 0
+        background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
+        flexShrink: 0,
+        boxShadow: "0 2px 10px rgba(136,14,79,0.2)"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <button
               onClick={() => navigate(-1)}
               style={{
-                background: "rgba(255,255,255,0.3)",
+                background: "rgba(255,255,255,0.2)",
                 border: "none",
                 fontSize: window.innerWidth <= 768 ? "18px" : "16px",
                 cursor: "pointer",
@@ -137,8 +138,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 alignItems: "center",
                 justifyContent: "center"
               }}
-              onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.5)"}
-              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.3)"}
+              onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.3)"}
+              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.2)"}
               title="Go back"
             >
               ←
@@ -152,7 +153,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           <button
             onClick={onClose}
             style={{
-              background: "rgba(255,255,255,0.3)",
+              background: "rgba(255,255,255,0.2)",
               border: "none",
               fontSize: "24px",
               cursor: "pointer",
@@ -161,8 +162,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
               color: "#fff",
               transition: "all 0.2s"
             }}
-            onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.5)"}
-            onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.3)"}
+            onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.3)"}
+            onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.2)"}
           >
             ✕
           </button>
@@ -189,16 +190,17 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
             <div
               key={idx}
               style={{
-                background: "#f9f9f9",
+                background: "#FFF0F6",
                 borderRadius: "8px",
                 padding: window.innerWidth <= 768 ? "12px" : "15px",
                 marginBottom: "12px",
-                border: "1px solid #e0e0e0",
-                transition: "all 0.2s"
+                border: "1px solid #f8bbd9",
+                transition: "all 0.2s",
+                boxShadow: "0 2px 8px rgba(136,14,79,0.08)"
               }}
             >
               <div style={{ marginBottom: "12px" }}>
-                <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "13px" : "15px", color: "#08060d" }}>
+                <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "13px" : "15px", color: "#880E4F" }}>
                   {item.name}
                 </p>
                 {item.size && (
@@ -206,7 +208,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                     Size: <span style={{ fontWeight: "600", color: "#666" }}>{item.size}</span>
                   </p>
                 )}
-                <p style={{ margin: "0", color: "#D4AF37", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "14px" : "16px" }}>
+                <p style={{ margin: "0", color: "#880E4F", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "14px" : "16px" }}>
                   ₹{item.price}
                 </p>
               </div>
@@ -220,19 +222,25 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                     if (itemIndex !== -1) onRemove(itemIndex);
                   }}
                   style={{
-                    background: "#f0f0f0",
-                    border: "1px solid #ddd",
+                    background: "#fff",
+                    border: "1.5px solid #f8bbd9",
                     width: "32px",
                     height: "32px",
                     borderRadius: "4px",
                     cursor: "pointer",
                     fontSize: "16px",
                     fontWeight: "600",
-                    color: "#333",
+                    color: "#880E4F",
                     transition: "all 0.2s"
                   }}
-                  onMouseEnter={e => e.target.style.background = "#e0e0e0"}
-                  onMouseLeave={e => e.target.style.background = "#f0f0f0"}
+                  onMouseEnter={e => {
+                    e.target.style.background = "#f8bbd9";
+                    e.target.style.color = "#fff";
+                  }}
+                  onMouseLeave={e => {
+                    e.target.style.background = "#fff";
+                    e.target.style.color = "#880E4F";
+                  }}
                 >
                   −
                 </button>
@@ -241,7 +249,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                   textAlign: "center",
                   fontWeight: "700",
                   fontSize: "16px",
-                  color: "#333"
+                  color: "#880E4F"
                 }}>
                   {item.quantity}
                 </span>
@@ -252,7 +260,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                   }}
                   disabled={true}
                   style={{
-                    background: "#ccc",
+                    background: "#f8bbd9",
                     border: "none",
                     width: "32px",
                     height: "32px",
@@ -260,9 +268,9 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                     cursor: "not-allowed",
                     fontSize: "16px",
                     fontWeight: "600",
-                    color: "#999",
+                    color: "#880E4F",
                     transition: "all 0.2s",
-                    opacity: 0.6
+                    opacity: 0.5
                   }}
                   title="Add more quantities from the product page"
                 >
@@ -276,11 +284,11 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 justifyContent: "space-between",
                 fontSize: window.innerWidth <= 768 ? "12px" : "13px",
                 color: "#666",
-                borderTop: "1px solid #e0e0e0",
+                borderTop: "1px solid #f8bbd9",
                 paddingTop: "8px"
               }}>
                 <span>Subtotal:</span>
-                <span style={{ fontWeight: "700", color: "#333" }}>₹{item.price * item.quantity}</span>
+                <span style={{ fontWeight: "700", color: "#880E4F" }}>₹{item.price * item.quantity}</span>
               </div>
             </div>
           ))
@@ -290,7 +298,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       {/* Footer - Always Visible */}
       <div style={{
         background: "#fff",
-        borderTop: "2px solid #f0f0f0",
+        borderTop: "2px solid #f8bbd9",
         padding: window.innerWidth <= 768 ? "12px 15px" : "20px",
         boxSizing: "border-box",
         flexShrink: 0,
@@ -300,20 +308,21 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         {groupedItems.length > 0 && (
           <>
             <div style={{
-              background: "linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)",
+              background: "linear-gradient(135deg, #FFF0F6 0%, #FCE4EC 100%)",
               padding: window.innerWidth <= 768 ? "10px" : "15px",
               borderRadius: "8px",
-              marginBottom: "12px"
+              marginBottom: "12px",
+              border: "1px solid #f8bbd9"
             }}>
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
                 fontSize: window.innerWidth <= 768 ? "15px" : "18px",
                 fontWeight: "700",
-                color: "#08060d"
+                color: "#880E4F"
               }}>
                 <span>Total:</span>
-                <span style={{ color: "#D4AF37", fontSize: window.innerWidth <= 768 ? "18px" : "24px" }}>₹{total}</span>
+                <span style={{ color: "#880E4F", fontSize: window.innerWidth <= 768 ? "18px" : "24px" }}>₹{total}</span>
               </div>
             </div>
 
@@ -325,7 +334,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
               style={{
                 width: "100%",
                 padding: window.innerWidth <= 768 ? "14px 12px" : "16px",
-                background: "linear-gradient(135deg, #D4AF37 0%, #c49a27 100%)",
+                background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
                 color: "#fff",
                 border: "none",
                 borderRadius: "6px",
@@ -333,7 +342,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 fontWeight: "700",
                 fontSize: window.innerWidth <= 768 ? "14px" : "15px",
                 transition: "all 0.3s",
-                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)",
+                boxShadow: "0 4px 12px rgba(136,14,79,0.3)",
                 minHeight: window.innerWidth <= 768 ? "44px" : "auto",
                 marginBottom: "12px"
               }}
@@ -348,9 +357,9 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
               style={{
                 width: "100%",
                 padding: window.innerWidth <= 768 ? "14px 12px" : "15px",
-                background: "#2C4F3E",
-                color: "#fff",
-                border: "none",
+                background: "#F48FB1",
+                color: "#880E4F",
+                border: "1.5px solid #880E4F",
                 borderRadius: "6px",
                 cursor: "pointer",
                 fontWeight: "600",
@@ -359,8 +368,14 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 minHeight: window.innerWidth <= 768 ? "44px" : "auto",
                 marginBottom: "12px"
               }}
-              onMouseEnter={e => e.target.style.background = "#1f3a2c"}
-              onMouseLeave={e => e.target.style.background = "#2C4F3E"}
+              onMouseEnter={e => {
+                e.target.style.background = "#880E4F";
+                e.target.style.color = "#fff";
+              }}
+              onMouseLeave={e => {
+                e.target.style.background = "#F48FB1";
+                e.target.style.color = "#880E4F";
+              }}
             >
               Continue Shopping
             </button>
