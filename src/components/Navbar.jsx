@@ -158,17 +158,17 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           alignItems: "center",
           justifyContent: "center",
           height: "100%",
-          padding: "8px 0",
+          padding: "8px 16px",
         }}>
           <img
-            src="/logo.png"
+            src="/jodha-logo.png"
             alt="House of Jodha"
             onClick={() => navigate("/")}
             style={{
-              maxHeight: "100%",
+              maxHeight: "95%",
               width: "auto",
               cursor: "pointer",
-              maxWidth: isMobile ? "90%" : "100%",
+              maxWidth: "100%",
               objectFit: "contain",
             }}
           />
