@@ -3,6 +3,16 @@ import Order from '../models/Order.js';
 
 const router = express.Router();
 
+// Get all orders (admin)
+router.get('/', async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Create order
 router.post('/create', async (req, res) => {
   try {

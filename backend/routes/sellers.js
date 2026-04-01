@@ -3,6 +3,16 @@ import Seller from '../models/Seller.js';
 
 const router = express.Router();
 
+// Get all sellers (admin only)
+router.get('/', async (req, res) => {
+  try {
+    const sellers = await Seller.find().select('-password');
+    res.json(sellers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Register seller
 router.post('/register', async (req, res) => {
   try {
@@ -88,16 +98,6 @@ router.put('/:id', async (req, res) => {
     res.json(seller);
   } catch (error) {
     res.status(400).json({ message: error.message });
-  }
-});
-
-// Get all sellers (admin only)
-router.get('/', async (req, res) => {
-  try {
-    const sellers = await Seller.find().select('-password');
-    res.json(sellers);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 });
 

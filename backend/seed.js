@@ -1,5 +1,5 @@
-import Seller from '../models/Seller.js';
-import Product from '../models/Product.js';
+import Seller from './models/Seller.js';
+import Product from './models/Product.js';
 
 export const seedSellers = async () => {
   try {
