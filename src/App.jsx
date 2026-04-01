@@ -4,8 +4,6 @@ import ScrollToTop from "./components/ScrollToTop";
 import { initializeProductsInStorage } from "./utils/initializeProducts";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import PromoSection from "./components/PromoSection";
-import SearchBar from "./components/SearchBar";
 import ProductCatalog from "./components/ProductCatalog";
 import ShopByOccasion from "./components/ShopByOccasion";
 import Features from "./components/Features";
@@ -34,8 +32,6 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
       )}
-      <PromoSection />
-      <SearchBar />
       <Hero />
       <ProductCatalog onAddToCart={addToCart} onRemoveProduct={removeProductFromCart} />
       <ShopByOccasion />

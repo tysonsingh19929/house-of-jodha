@@ -108,7 +108,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   return (
     <>
       <div ref={navbarRef} style={navStyle}>
-        {/* Left: Back + Home */}
+        {/* Left: Menu + Search + Back */}
         <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0 }}>
           {isMobile && (
             <button
@@ -119,7 +119,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             </button>
           )}
           <button onClick={() => navigate(-1)} style={iconBtnStyle} title="Go back">←</button>
-          <button onClick={() => navigate("/")} style={iconBtnStyle} title="Home">🏠</button>
+          <button onClick={() => navigate("/search")} style={iconBtnStyle} title="Search">🔍</button>
         </div>
 
         {/* Desktop Nav Links */}
@@ -151,14 +151,14 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           </div>
         )}
 
-        {/* Center Logo */}
+        {/* Center Logo - Large */}
         <div style={{
-          flex: isMobile ? 1 : "unset",
+          flex: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           height: "100%",
-          padding: "8px 0",
+          padding: "4px 0",
         }}>
           <img
             src="/house-of-jodha-logo.png"
@@ -168,7 +168,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
               maxHeight: "100%",
               width: "auto",
               cursor: "pointer",
-              maxWidth: "160px",
+              maxWidth: isMobile ? "100%" : "300px",
               objectFit: "contain",
               filter: "brightness(0) invert(1)",
             }}
