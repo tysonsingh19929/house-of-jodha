@@ -1,66 +1,66 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
+import { products } from "../data/products.js";
 
 export default function CollectionPage({ cartCount, onCartClick, onAddToCart, onRemoveProduct, cartOpen, cartItems, removeFromCart }) {
   const { type } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [addedProducts, setAddedProducts] = useState({});
 
-  const collections = {
-    lehenga: {
-      name: "Lehenga Collection",
-      description: "Beautiful and stunning Lehenga designs for every occasion",
-      products: [
-        { id: 1, name: "Beige Gold Tissue Silk Embroidered Lehenga Set", price: 25600, originalPrice: 30800, image: "👗" },
-        { id: 2, name: "Royal Blue Silk Lehenga with Gold Embroidery", price: 28900, originalPrice: 35000, image: "👗" }
-      ]
-    },
-    saree: {
-      name: "Saree Collection",
-      description: "Elegant and timeless Saree designs for the modern woman",
-      products: [
-        { id: 3, name: "Pre-draped Royal Purple Satin Saree", price: 8900, originalPrice: 10500, image: "🧥" },
-        { id: 4, name: "Cream and Gold Traditional Saree", price: 12500, originalPrice: 15000, image: "🧥" }
-      ]
-    },
-    anarkali: {
-      name: "Anarkali Collection",
-      description: "Graceful and flowing Anarkali suits for every celebration",
-      products: [
-        { id: 5, name: "Designer Anarkali Suit - Midnight Blue", price: 18900, originalPrice: 22500, image: "👚" },
-        { id: 6, name: "Maroon Silk Anarkali with Pearl Work", price: 21000, originalPrice: 25000, image: "👚" }
-      ]
-    },
-    salwarkameez: {
-      name: "Salwar Kameez Collection",
-      description: "Comfortable and stylish Salwar Kameez for daily wear",
-      products: [
-        { id: 7, name: "Cotton Embroidered Salwar Kameez - Teal", price: 5500, originalPrice: 7000, image: "👔" },
-        { id: 8, name: "Silk Salwar Kameez with Dupatta - Emerald", price: 8500, originalPrice: 10500, image: "👔" }
-      ]
-    }
+  const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
+  const allProducts = [...products, ...customProducts];
+
+  const handleAddProduct = (product) => {
+    setAddedProducts(prev => ({
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1
+    }));
+    onAddToCart(product);
   };
 
-  let collection;
-  
-  if (type === "all") {
-    const allProducts = [];
-    Object.values(collections).forEach(col => {
-      allProducts.push(...col.products);
-    });
-    collection = {
-      name: "All Products",
-      description: "Explore our complete collection of exquisite Indian ethnic wear, handpicked and tailored to perfection for every occasion.",
-      products: allProducts
-    };
-  } else {
-    collection = collections[type];
-  }
+  const handleIncreaseQuantity = (product) => {
+    setAddedProducts(prev => ({
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1
+    }));
+    onAddToCart(product);
+  };
 
-  if (!collection) {
-    return <div>Collection not found</div>;
+  const handleDecreaseQuantity = (product) => {
+    setAddedProducts(prev => {
+      const newQty = Math.max(0, (prev[product.id] || 0) - 1);
+      if (newQty === 0) {
+        const updated = {...prev};
+        delete updated[product.id];
+        onRemoveProduct?.(product.id);
+        return updated;
+      }
+      return { ...prev, [product.id]: newQty };
+    });
+  };
+
+  let filteredProducts;
+  let pageTitle = "";
+  let pageDescription = "";
+  let categories = [];
+
+  if (type === "all") {
+    categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
+    filteredProducts = selectedCategory === "All" 
+      ? allProducts 
+      : allProducts.filter(p => p.category === selectedCategory);
+    pageTitle = "All Products";
+    pageDescription = "Explore our complete collection of exquisite Indian ethnic wear";
+  } else {
+    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+    filteredProducts = allProducts.filter(p => p.category === capitalizedType);
+    pageTitle = capitalizedType;
+    pageDescription = `Browse our stunning ${pageTitle} collection`;
   }
 
   return (
@@ -70,79 +70,258 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart, on
         {cartOpen && (
           <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
         )}
-        <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto", width: "100%", flex: "1" }}>
-        <button 
-          onClick={() => navigate("/")}
-          style={{ padding: "8px 16px", background: "#D4AF37", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "20px" }}
-        >
-          ← Back to Home
-        </button>
-        
-        <h1 style={{ color: "#2C4F3E", fontSize: isMobile ? "28px" : "36px", marginBottom: "10px" }}>
-          {collection.name}
-        </h1>
-        <p style={{ color: "#666", fontSize: isMobile ? "14px" : "16px", marginBottom: "30px" }}>
-          {collection.description}
-        </p>
+        <div style={{ padding: isMobile ? "24px 12px" : "48px 28px", background: "#FFF0F6", flex: "1" }}>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: isMobile ? "15px" : "30px"
-        }}>
-          {collection.products.map(product => (
-            <div
-              key={product.id}
-              style={{
-                border: "1px solid #e5e4e7",
-                borderRadius: "8px",
-                overflow: "hidden",
-                background: "#fff"
-              }}
-            >
+          {/* Section Header */}
+          <div style={{ textAlign: "center", marginBottom: isMobile ? "20px" : "32px" }}>
+            <h2 style={{
+              fontFamily: "'Georgia', 'Times New Roman', serif",
+              fontSize: isMobile ? "26px" : "36px",
+              fontWeight: "700",
+              color: "#880E4F",
+              margin: "0 0 6px",
+            }}>
+              {pageTitle}
+            </h2>
+            <p style={{ color: "#9C4070", fontSize: isMobile ? "13px" : "14px", margin: 0 }}>
+              {pageDescription}
+            </p>
+          </div>
+
+          {/* Category Filter Pills - Only for "all" type */}
+          {type === "all" && (
+            <>
               <div style={{
-                fontSize: isMobile ? "50px" : "60px",
-                textAlign: "center",
-                padding: isMobile ? "30px" : "40px",
-                background: "rgba(212, 175, 55, 0.08)"
+                display: "flex",
+                gap: "8px",
+                marginBottom: isMobile ? "16px" : "28px",
+                justifyContent: "center",
+                flexWrap: "wrap",
               }}>
-                {product.image}
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    style={{
+                      padding: isMobile ? "7px 14px" : "9px 20px",
+                      fontSize: isMobile ? "11px" : "13px",
+                      background: selectedCategory === cat
+                        ? "linear-gradient(135deg, #E91E63, #C2185B)"
+                        : "#fff",
+                      color: selectedCategory === cat ? "#fff" : "#C2185B",
+                      border: selectedCategory === cat ? "none" : "1.5px solid #F48FB1",
+                      borderRadius: "20px",
+                      cursor: "pointer",
+                      fontWeight: "600",
+                      transition: "all 0.2s",
+                      boxShadow: selectedCategory === cat ? "0 2px 12px rgba(233,30,99,0.35)" : "none",
+                    }}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
-              <div style={{ padding: isMobile ? "15px" : "20px" }}>
-                <h3 style={{ fontSize: isMobile ? "14px" : "16px", marginBottom: "10px", color: "#08060d" }}>
-                  {product.name}
-                </h3>
-                <div style={{ marginBottom: "15px" }}>
-                  <span style={{ fontSize: "12px", color: "#666", textDecoration: "line-through" }}>
-                    ₹{product.originalPrice}
-                  </span>
-                  <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "#D4AF37", marginLeft: "10px" }}>
-                    ₹{product.price}
-                  </span>
-                </div>
-                <button
-                  onClick={() => onAddToCart(product)}
+
+              {/* Count badge */}
+              <div style={{
+                background: "#FCE4EC",
+                border: "1px solid #F48FB1",
+                borderRadius: "4px",
+                padding: isMobile ? "8px 12px" : "10px 16px",
+                marginBottom: isMobile ? "16px" : "24px",
+                fontSize: isMobile ? "12px" : "13px",
+                fontWeight: "600",
+                textAlign: "center",
+                color: "#880E4F",
+              }}>
+                ✨ {filteredProducts.length} {selectedCategory} products available
+              </div>
+            </>
+          )}
+
+          {/* Product Grid */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+            gap: isMobile ? "12px" : "16px",
+            width: "100%",
+          }}>
+            {filteredProducts.map((product) => {
+              const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+              return (
+                <div
+                  key={product.id}
+                  onClick={() => navigate(`/product/${product.id}`)}
                   style={{
-                    width: "100%",
-                    padding: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "13px" : "14px",
-                    background: "#D4AF37",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
+                    background: "#fff",
+                    borderRadius: "8px",
+                    overflow: "hidden",
                     cursor: "pointer",
-                    fontWeight: "500"
+                    border: "1px solid rgba(244,143,177,0.25)",
+                    transition: "all 0.25s",
+                    position: "relative",
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(194,24,91,0.18)";
+                    e.currentTarget.style.borderColor = "#E91E63";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.borderColor = "rgba(244,143,177,0.25)";
                   }}
                 >
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          ))}
+                  {/* Image Container */}
+                  <div style={{
+                    background: "linear-gradient(135deg, #FCE4EC 0%, #FFF0F6 100%)",
+                    aspectRatio: "1 / 1",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}>
+                    {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: isMobile ? "48px" : "60px" }}>{product.image}</span>
+                    )}
+
+                    {/* Discount Badge */}
+                    {discount > 0 && (
+                      <div style={{
+                        position: "absolute", top: "8px", left: "8px",
+                        background: "#C2185B",
+                        color: "#fff",
+                        fontSize: "10px", fontWeight: "700",
+                        padding: "3px 8px", borderRadius: "3px",
+                      }}>
+                        {discount}% OFF
+                      </div>
+                    )}
+
+                    {/* Wishlist */}
+                    <button
+                      style={{
+                        position: "absolute", top: "8px", right: "8px",
+                        background: "#fff", border: "none",
+                        width: "30px", height: "30px",
+                        borderRadius: "50%", cursor: "pointer",
+                        fontSize: "16px",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                        transition: "transform 0.2s",
+                      }}
+                      onClick={e => e.stopPropagation()}
+                      onMouseEnter={e => e.currentTarget.style.transform = "scale(1.15)"}
+                      onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+                    >
+                      ♡
+                    </button>
+                  </div>
+
+                  {/* Product Info */}
+                  <div style={{ padding: isMobile ? "8px 10px 10px" : "10px 12px 12px" }}>
+                    <div style={{
+                      fontSize: "9px", color: "#E91E63",
+                      textTransform: "uppercase", fontWeight: "700",
+                      letterSpacing: "1px", marginBottom: "3px",
+                    }}>
+                      {product.category}
+                    </div>
+
+                    <h3 style={{
+                      fontSize: isMobile ? "11px" : "13px",
+                      fontWeight: "600", color: "#1A0010",
+                      marginBottom: "4px", lineHeight: "1.4",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}>
+                      {product.name}
+                    </h3>
+
+                    <div style={{ fontSize: isMobile ? "11px" : "12px", marginBottom: "5px", color: "#E91E63" }}>
+                      ⭐ 4.3 <span style={{ color: "#bbb", fontSize: "10px" }}>(2.2k)</span>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: isMobile ? "8px" : "10px" }}>
+                      <span style={{ fontSize: isMobile ? "14px" : "16px", fontWeight: "700", color: "#880E4F" }}>
+                        ₹{product.price}
+                      </span>
+                      <span style={{ fontSize: isMobile ? "10px" : "12px", color: "#bbb", textDecoration: "line-through" }}>
+                        ₹{product.originalPrice}
+                      </span>
+                      <span style={{ fontSize: "10px", fontWeight: "700", color: "#E91E63" }}>
+                        ({discount}%)
+                      </span>
+                    </div>
+
+                    {/* Add to Cart / Quantity Controls */}
+                    {addedProducts[product.id] ? (
+                      <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                        <button
+                          onClick={e => { e.stopPropagation(); handleDecreaseQuantity(product); }}
+                          style={{
+                            flex: 1, padding: isMobile ? "5px" : "7px",
+                            background: "linear-gradient(135deg,#E91E63,#C2185B)",
+                            color: "#fff", border: "none", borderRadius: "3px",
+                            cursor: "pointer", fontWeight: "700", fontSize: "14px",
+                          }}
+                        >
+                          −
+                        </button>
+                        <span style={{
+                          flex: 1, textAlign: "center",
+                          fontSize: isMobile ? "12px" : "13px",
+                          fontWeight: "700", color: "#C2185B",
+                        }}>
+                          {addedProducts[product.id]}
+                        </span>
+                        <button
+                          onClick={e => { e.stopPropagation(); handleIncreaseQuantity(product); }}
+                          style={{
+                            flex: 1, padding: isMobile ? "5px" : "7px",
+                            background: "linear-gradient(135deg,#E91E63,#C2185B)",
+                            color: "#fff", border: "none", borderRadius: "3px",
+                            cursor: "pointer", fontWeight: "700", fontSize: "14px",
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={e => { e.stopPropagation(); handleAddProduct(product); }}
+                        style={{
+                          width: "100%",
+                          padding: isMobile ? "7px" : "9px",
+                          fontSize: isMobile ? "11px" : "12px",
+                          background: "linear-gradient(90deg, #E91E63, #C2185B)",
+                          color: "#fff", border: "none", borderRadius: "3px",
+                          cursor: "pointer", fontWeight: "700",
+                          transition: "opacity 0.2s",
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+                        onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                      >
+                        Add to Cart
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
         <Footer />
       </div>
-    </div>
     </>
   );
 }
