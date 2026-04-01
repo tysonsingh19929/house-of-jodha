@@ -43,7 +43,21 @@ export default function CollectionPage({ cartCount, onCartClick, onAddToCart, on
     }
   };
 
-  const collection = collections[type];
+  let collection;
+  
+  if (type === "all") {
+    const allProducts = [];
+    Object.values(collections).forEach(col => {
+      allProducts.push(...col.products);
+    });
+    collection = {
+      name: "All Products",
+      description: "Explore our complete collection of exquisite Indian ethnic wear, handpicked and tailored to perfection for every occasion.",
+      products: allProducts
+    };
+  } else {
+    collection = collections[type];
+  }
 
   if (!collection) {
     return <div>Collection not found</div>;
