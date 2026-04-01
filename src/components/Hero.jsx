@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <div id="home" style={{
       background: "#880E4F",
-      padding: isMobile ? "48px 20px 40px" : "80px 40px 70px",
+      padding: isMobile ? "20px 20px 20px" : "30px 40px 30px",
       textAlign: "center",
       position: "relative",
       overflow: "hidden",
