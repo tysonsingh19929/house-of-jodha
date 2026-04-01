@@ -17,6 +17,8 @@ import CollectionPage from "./pages/CollectionPage";
 import OccasionPage from "./pages/OccasionPage";
 import PoliciesPage from "./pages/PoliciesPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminPanel from "./pages/AdminPanel";
+import AdminLogin from "./pages/AdminLogin";
 import SellerLogin from "./pages/SellerLogin";
 import QuickEdit from "./pages/QuickEdit";
 import ProductDetail from "./pages/ProductDetail";
@@ -207,6 +209,14 @@ function App() {
               cartCount={cartCount}
             />
           }
+        />
+        <Route 
+          path="/admin-login" 
+          element={<AdminLogin />}
+        />
+        <Route 
+          path="/admin" 
+          element={<AdminPanel />}
         />
       </Routes>
     </BrowserRouter>
