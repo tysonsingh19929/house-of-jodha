@@ -5,6 +5,64 @@ import Footer from "../components/Footer";
 import Cart from "../components/Cart";
 import imageDatabase from "../data/imageDatabase.js";
 
+// Search bar component
+function SearchBar({ onSearch, initialQuery }) {
+  const [searchTerm, setSearchTerm] = useState(initialQuery || "");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      onSearch(searchTerm);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{
+      display: "flex",
+      gap: "8px",
+      marginBottom: "20px",
+      width: "100%"
+    }}>
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{
+          flex: 1,
+          padding: "12px 16px",
+          fontSize: "14px",
+          border: "2px solid #e0e0e0",
+          borderRadius: "4px",
+          outline: "none",
+          transition: "border-color 0.2s",
+          fontFamily: "inherit"
+        }}
+        onFocus={(e) => e.target.style.borderColor = "#880E4F"}
+        onBlur={(e) => e.target.style.borderColor = "#e0e0e0"}
+      />
+      <button
+        type="submit"
+        style={{
+          padding: "12px 24px",
+          background: "#880E4F",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontWeight: "600",
+          fontSize: "14px",
+          transition: "background 0.2s"
+        }}
+        onMouseEnter={(e) => e.target.style.background = "#6B0A3D"}
+        onMouseLeave={(e) => e.target.style.background = "#880E4F"}
+      >
+        Search
+      </button>
+    </form>
+  );
+}
+
 // Same products list as ProductCatalog
 const allProducts = [
   // LEHENGA
@@ -43,10 +101,14 @@ const getImageForProduct = (category, index) => {
 };
 
 export default function SearchResults({ cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount }) {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const query = searchParams.get("q") || "";
+
+  const handleSearch = (searchTerm) => {
+    setSearchParams({ q: searchTerm });
+  };
 
   // Filter products based on search query
   const filteredProducts = useMemo(() => {
@@ -88,6 +150,9 @@ export default function SearchResults({ cartOpen, setCartOpen, addToCart, remove
       )}
 
       <div style={{ padding: isMobile ? "15px 12px" : "30px", maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Search Input */}
+        <SearchBar onSearch={handleSearch} initialQuery={query} />
+
         {/* Search Header */}
         <div style={{ marginBottom: "30px" }}>
           <h1 style={{ fontSize: isMobile ? "20px" : "28px", marginBottom: "10px", color: "#D4AF37" }}>
@@ -240,7 +305,7 @@ export default function SearchResults({ cartOpen, setCartOpen, addToCart, remove
             color: "#999"
           }}>
             <p style={{ fontSize: "16px" }}>
-              Use the search bar to find products
+              Enter a product name, category, color, or material to search
             </p>
           </div>
         )}
