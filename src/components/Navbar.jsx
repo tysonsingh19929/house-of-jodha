@@ -7,8 +7,11 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
   const [isSeller, setIsSeller] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
+  const [searchExpanded, setSearchExpanded] = React.useState(false);
+  const [expandedSearchInput, setExpandedSearchInput] = React.useState("");
   const navigate = useNavigate();
   const navbarRef = React.useRef(null);
+  const expandedSearchRef = React.useRef(null);
 
   React.useEffect(() => {
     const sellerStatus = localStorage.getItem("seller_authenticated") === "true";
@@ -44,6 +47,29 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       return () => document.removeEventListener("click", handleClickOutside);
     }
   }, [menuOpen]);
+
+  React.useEffect(() => {
+    if (searchExpanded && expandedSearchRef.current) {
+      expandedSearchRef.current.focus();
+    }
+  }, [searchExpanded]);
+
+  const handleSearch = () => {
+    if (expandedSearchInput.trim()) {
+      setSearchExpanded(false);
+      setExpandedSearchInput("");
+      navigate(`/search?q=${encodeURIComponent(expandedSearchInput.trim())}`);
+    }
+  };
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    } else if (e.key === "Escape") {
+      setSearchExpanded(false);
+      setExpandedSearchInput("");
+    }
+  };
 
   const handleNavClick = (sectionId) => {
     setMenuOpen(false);
@@ -119,7 +145,68 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
             </button>
           )}
           <button onClick={() => navigate(-1)} style={iconBtnStyle} title="Go back">←</button>
-          <button onClick={() => navigate("/search")} style={iconBtnStyle} title="Search">🔍</button>
+          
+          {/* Expanding Search Bar */}
+          {searchExpanded ? (
+            <div style={{
+              display: "flex",
+              gap: "4px",
+              background: "rgba(255,255,255,0.15)",
+              borderRadius: "4px",
+              padding: "4px",
+              transition: "all 0.3s ease"
+            }}>
+              <input
+                ref={expandedSearchRef}
+                type="text"
+                placeholder="Search..."
+                value={expandedSearchInput}
+                onChange={(e) => setExpandedSearchInput(e.target.value)}
+                onKeyPress={handleSearchKeyPress}
+                style={{
+                  background: "#fff",
+                  border: "none",
+                  padding: "6px 10px",
+                  borderRadius: "3px",
+                  fontSize: "13px",
+                  outline: "none",
+                  width: "150px",
+                  color: "#333"
+                }}
+              />
+              <button
+                onClick={handleSearch}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#fff",
+                  cursor: "pointer",
+                  padding: "4px 6px",
+                  fontSize: "14px"
+                }}
+              >
+                ✓
+              </button>
+              <button
+                onClick={() => {
+                  setSearchExpanded(false);
+                  setExpandedSearchInput("");
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#fff",
+                  cursor: "pointer",
+                  padding: "4px 6px",
+                  fontSize: "14px"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => setSearchExpanded(true)} style={iconBtnStyle} title="Search">🔍</button>
+          )}
         </div>
 
         {/* Desktop Nav Links */}
@@ -371,6 +458,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
         </div>
         <style>{`@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
       </div>
-    </>
+
+      </>
   );
 }
