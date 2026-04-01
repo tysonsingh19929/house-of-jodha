@@ -109,11 +109,24 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
+        ::-webkit-scrollbar {
+          width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #f5f5f5;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #E91E63, #C2185B);
+          border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #C2185B, #A01848);
+        }
       `}</style>
 
       {/* Header */}
       <div style={{ 
-        padding: window.innerWidth <= 768 ? "12px 15px" : "20px", 
+        padding: window.innerWidth <= 768 ? "15px 15px" : "22px 20px", 
         borderBottom: "2px solid #f0f0f0",
         background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
         flexShrink: 0,
@@ -146,9 +159,14 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
             </button>
           </div>
 
-          <h3 style={{ margin: "0", color: "#fff", fontSize: window.innerWidth <= 768 ? "16px" : "20px", fontWeight: "700", flex: 1, textAlign: "center" }}>
-            🛍️ My Cart ({groupedItems.length} items)
-          </h3>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <h3 style={{ margin: "0", color: "#fff", fontSize: window.innerWidth <= 768 ? "16px" : "20px", fontWeight: "700" }}>
+              🛍️ My Cart
+            </h3>
+            <p style={{ margin: "4px 0 0 0", color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
+              {groupedItems.length} {groupedItems.length === 1 ? "item" : "items"}
+            </p>
+          </div>
 
           <button
             onClick={onClose}
@@ -173,7 +191,7 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       {/* Items List */}
       <div style={{
         flex: "1 1 auto",
-        maxHeight: window.innerWidth <= 768 ? "calc(100% - 200px)" : "calc(100% - 180px)",
+        maxHeight: window.innerWidth <= 768 ? "calc(100% - 220px)" : "calc(100% - 200px)",
         overflowY: "auto",
         padding: "15px",
         paddingBottom: "10px",
@@ -181,115 +199,189 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
         WebkitOverflowScrolling: "touch"
       }}>
         {groupedItems.length === 0 ? (
-          <div style={{ padding: "40px 20px", textAlign: "center" }}>
-            <p style={{ fontSize: "18px", color: "#666", margin: "0 0 10px 0" }}>Your cart is empty</p>
-            <p style={{ fontSize: "14px", color: "#999", margin: "0" }}>Add items to start shopping! 🛍️</p>
+          <div style={{ padding: "60px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: "48px", marginBottom: "16px", opacity: 0.8 }}>🛍️</div>
+            <p style={{ fontSize: "18px", color: "#333", margin: "0 0 8px 0", fontWeight: "600" }}>
+              Your cart is empty
+            </p>
+            <p style={{ fontSize: "14px", color: "#999", margin: "0 0 20px 0", lineHeight: "1.5" }}>
+              Explore our stunning collection and add your favorite pieces to get started
+            </p>
+            <button
+              onClick={() => {
+                onClose();
+                navigate("/");
+              }}
+              style={{
+                background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
+                color: "#fff",
+                border: "none",
+                padding: "10px 24px",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: "14px",
+                transition: "all 0.3s",
+                boxShadow: "0 4px 12px rgba(136,14,79,0.3)"
+              }}
+              onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.target.style.transform = "translateY(0)"}
+            >
+              Continue Shopping
+            </button>
           </div>
         ) : (
           groupedItems.map((item, idx) => (
             <div
               key={idx}
               style={{
-                background: "#FFF0F6",
-                borderRadius: "8px",
-                padding: window.innerWidth <= 768 ? "12px" : "15px",
-                marginBottom: "12px",
-                border: "1px solid #f8bbd9",
-                transition: "all 0.2s",
-                boxShadow: "0 2px 8px rgba(136,14,79,0.08)"
+                background: "#fff",
+                borderRadius: "10px",
+                padding: window.innerWidth <= 768 ? "14px" : "16px",
+                marginBottom: "14px",
+                border: "1.5px solid #f5f5f5",
+                transition: "all 0.3s",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                display: "flex",
+                gap: "12px"
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = "0 4px 16px rgba(136,14,79,0.12)";
+                e.currentTarget.style.borderColor = "#f0f0f0";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
+                e.currentTarget.style.borderColor = "#f5f5f5";
               }}
             >
-              <div style={{ marginBottom: "12px" }}>
-                <p style={{ margin: "0 0 5px 0", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "13px" : "15px", color: "#880E4F" }}>
+              {/* Product Image */}
+              {item.image && (
+                <div style={{
+                  width: "80px",
+                  height: "80px",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  backgroundColor: "#f5f5f5",
+                  flexShrink: 0,
+                  border: "1px solid #f0f0f0"
+                }}>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover"
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Details */}
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+                <p style={{ margin: "0 0 6px 0", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "13px" : "15px", color: "#1a0010", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {item.name}
                 </p>
                 {item.size && (
-                  <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#999" }}>
+                  <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#999" }}>
                     Size: <span style={{ fontWeight: "600", color: "#666" }}>{item.size}</span>
                   </p>
                 )}
-                <p style={{ margin: "0", color: "#880E4F", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "14px" : "16px" }}>
-                  ₹{item.price}
-                </p>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto" }}>
+                  <p style={{ margin: "0", color: "#880E4F", fontWeight: "700", fontSize: window.innerWidth <= 768 ? "14px" : "16px" }}>
+                    ₹{item.price}
+                  </p>
+                  
+                  {/* Quantity Controls */}
+                  <div style={{ display: "flex", gap: "6px", alignItems: "center", background: "#f5f5f5", padding: "4px 6px", borderRadius: "6px" }}>
+                    <button
+                      onClick={() => {
+                        const itemIndex = items.findIndex(i => i.id === item.id && i.size === item.size);
+                        if (itemIndex !== -1) onRemove(itemIndex);
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        width: "24px",
+                        height: "24px",
+                        borderRadius: "3px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#880E4F",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={e => {
+                        e.target.style.background = "#fff";
+                        e.target.style.color = "#6B0A3D";
+                      }}
+                      onMouseLeave={e => {
+                        e.target.style.background = "transparent";
+                        e.target.style.color = "#880E4F";
+                      }}
+                    >
+                      −
+                    </button>
+                    <span style={{
+                      textAlign: "center",
+                      fontWeight: "700",
+                      fontSize: "13px",
+                      color: "#333",
+                      minWidth: "20px"
+                    }}>
+                      {item.quantity}
+                    </span>
+                    <button
+                      disabled={true}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        width: "24px",
+                        height: "24px",
+                        borderRadius: "3px",
+                        cursor: "not-allowed",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#880E4F",
+                        opacity: 0.4
+                      }}
+                      title="Add more from product page"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Quantity Controls */}
-              <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
-                <button
-                  onClick={() => {
-                    // Decrease quantity - remove only the item that matches both id and size
-                    const itemIndex = items.findIndex(i => i.id === item.id && i.size === item.size);
-                    if (itemIndex !== -1) onRemove(itemIndex);
-                  }}
-                  style={{
-                    background: "#fff",
-                    border: "1.5px solid #f8bbd9",
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#880E4F",
-                    transition: "all 0.2s"
-                  }}
-                  onMouseEnter={e => {
-                    e.target.style.background = "#f8bbd9";
-                    e.target.style.color = "#fff";
-                  }}
-                  onMouseLeave={e => {
-                    e.target.style.background = "#fff";
-                    e.target.style.color = "#880E4F";
-                  }}
-                >
-                  −
-                </button>
-                <span style={{
-                  flex: "1",
-                  textAlign: "center",
-                  fontWeight: "700",
+              {/* Remove Button */}
+              <button
+                onClick={() => {
+                  const itemIndex = items.findIndex(i => i.id === item.id && i.size === item.size);
+                  if (itemIndex !== -1) onRemove(itemIndex);
+                }}
+                style={{
+                  background: "rgba(233, 30, 99, 0.1)",
+                  border: "none",
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
                   fontSize: "16px",
-                  color: "#880E4F"
-                }}>
-                  {item.quantity}
-                </span>
-                <button
-                  onClick={() => {
-                    // Note: + button is disabled as quantity should be managed by adding items to cart
-                    // Users should use the product page to add more quantity
-                  }}
-                  disabled={true}
-                  style={{
-                    background: "#f8bbd9",
-                    border: "none",
-                    width: "32px",
-                    height: "32px",
-                    borderRadius: "4px",
-                    cursor: "not-allowed",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#880E4F",
-                    transition: "all 0.2s",
-                    opacity: 0.5
-                  }}
-                  title="Add more quantities from the product page"
-                >
-                  +
-                </button>
-              </div>
-
-              {/* Subtotal */}
-              <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontSize: window.innerWidth <= 768 ? "12px" : "13px",
-                color: "#666",
-                borderTop: "1px solid #f8bbd9",
-                paddingTop: "8px"
-              }}>
-                <span>Subtotal:</span>
-                <span style={{ fontWeight: "700", color: "#880E4F" }}>₹{item.price * item.quantity}</span>
-              </div>
+                  color: "#E91E63",
+                  transition: "all 0.2s",
+                  flexShrink: 0
+                }}
+                onMouseEnter={e => {
+                  e.target.style.background = "#E91E63";
+                  e.target.style.color = "#fff";
+                }}
+                onMouseLeave={e => {
+                  e.target.style.background = "rgba(233, 30, 99, 0.1)";
+                  e.target.style.color = "#E91E63";
+                }}
+              >
+                ✕
+              </button>
             </div>
           ))
         )}
@@ -298,8 +390,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
       {/* Footer - Always Visible */}
       <div style={{
         background: "#fff",
-        borderTop: "2px solid #f8bbd9",
-        padding: window.innerWidth <= 768 ? "12px 15px" : "20px",
+        borderTop: "2px solid #f5f5f5",
+        padding: window.innerWidth <= 768 ? "14px 15px" : "20px",
         boxSizing: "border-box",
         flexShrink: 0,
         minHeight: "auto",
@@ -309,20 +401,30 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           <>
             <div style={{
               background: "linear-gradient(135deg, #FFF0F6 0%, #FCE4EC 100%)",
-              padding: window.innerWidth <= 768 ? "10px" : "15px",
+              padding: window.innerWidth <= 768 ? "12px 14px" : "16px",
               borderRadius: "8px",
-              marginBottom: "12px",
-              border: "1px solid #f8bbd9"
+              marginBottom: "14px",
+              border: "1.5px solid #f8bbd9"
             }}>
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                fontSize: window.innerWidth <= 768 ? "15px" : "18px",
-                fontWeight: "700",
-                color: "#880E4F"
+                alignItems: "center",
+                gap: "10px"
               }}>
-                <span>Total:</span>
-                <span style={{ color: "#880E4F", fontSize: window.innerWidth <= 768 ? "18px" : "24px" }}>₹{total}</span>
+                <div>
+                  <p style={{ margin: "0", fontSize: "12px", color: "#999", fontWeight: "600" }}>TOTAL AMOUNT</p>
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: window.innerWidth <= 768 ? "18px" : "24px",
+                    fontWeight: "700",
+                    color: "#880E4F",
+                    marginTop: "4px"
+                  }}>
+                    ₹<span>{total}</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -337,47 +439,20 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
                 color: "#fff",
                 border: "none",
-                borderRadius: "6px",
+                borderRadius: "8px",
                 cursor: "pointer",
                 fontWeight: "700",
                 fontSize: window.innerWidth <= 768 ? "14px" : "15px",
                 transition: "all 0.3s",
                 boxShadow: "0 4px 12px rgba(136,14,79,0.3)",
                 minHeight: window.innerWidth <= 768 ? "44px" : "auto",
-                marginBottom: "12px"
+                marginBottom: "10px",
+                letterSpacing: "0.5px"
               }}
               onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
               onMouseLeave={e => e.target.style.transform = "translateY(0)"}
             >
-              Proceed to Checkout
-            </button>
-
-            <button
-              onClick={onClose}
-              style={{
-                width: "100%",
-                padding: window.innerWidth <= 768 ? "14px 12px" : "15px",
-                background: "#F48FB1",
-                color: "#880E4F",
-                border: "1.5px solid #880E4F",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontWeight: "600",
-                fontSize: window.innerWidth <= 768 ? "14px" : "14px",
-                transition: "all 0.3s",
-                minHeight: window.innerWidth <= 768 ? "44px" : "auto",
-                marginBottom: "12px"
-              }}
-              onMouseEnter={e => {
-                e.target.style.background = "#880E4F";
-                e.target.style.color = "#fff";
-              }}
-              onMouseLeave={e => {
-                e.target.style.background = "#F48FB1";
-                e.target.style.color = "#880E4F";
-              }}
-            >
-              Continue Shopping
+              PROCEED TO CHECKOUT
             </button>
           </>
         )}

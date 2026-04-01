@@ -44,20 +44,38 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
+        ::-webkit-scrollbar {
+          width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #f5f5f5;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #E91E63, #C2185B);
+          border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #C2185B, #A01848);
+        }
       `}</style>
 
       {/* Header */}
       <div style={{ 
-        padding: isMobile ? "12px 15px" : "20px", 
+        padding: isMobile ? "15px 15px" : "22px 20px", 
         borderBottom: "2px solid #f0f0f0",
         background: "linear-gradient(135deg, #E91E63 0%, #C2185B 100%)",
         flexShrink: 0,
         boxShadow: "0 2px 10px rgba(233,30,99,0.2)"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
-          <h3 style={{ margin: "0", color: "#fff", fontSize: isMobile ? "16px" : "20px", fontWeight: "700", flex: 1, textAlign: "center" }}>
-            ♡ My Wishlist ({items.length})
-          </h3>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <h3 style={{ margin: "0", color: "#fff", fontSize: isMobile ? "16px" : "20px", fontWeight: "700" }}>
+              ♡ My Wishlist
+            </h3>
+            <p style={{ margin: "4px 0 0 0", color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
+              {items.length} {items.length === 1 ? "item" : "items"}
+            </p>
+          </div>
           <button
             onClick={onClose}
             style={{
@@ -81,30 +99,66 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
       {/* Items List */}
       <div style={{
         flex: "1 1 auto",
-        maxHeight: "calc(100% - 120px)",
+        maxHeight: isMobile ? "calc(100% - 180px)" : "calc(100% - 160px)",
         overflowY: "auto",
         padding: "15px",
         minHeight: "0",
         WebkitOverflowScrolling: "touch"
       }}>
         {items.length === 0 ? (
-          <div style={{ padding: "40px 20px", textAlign: "center" }}>
-            <p style={{ fontSize: "18px", color: "#666", margin: "0 0 10px 0" }}>Your wishlist is empty</p>
-            <p style={{ fontSize: "14px", color: "#999", margin: "0" }}>Add your favorite items here! ♡</p>
+          <div style={{ padding: "60px 20px", textAlign: "center" }}>
+            <div style={{ fontSize: "48px", marginBottom: "16px", opacity: 0.8 }}>♡</div>
+            <p style={{ fontSize: "18px", color: "#333", margin: "0 0 8px 0", fontWeight: "600" }}>
+              Your wishlist is empty
+            </p>
+            <p style={{ fontSize: "14px", color: "#999", margin: "0 0 20px 0", lineHeight: "1.5" }}>
+              Save your favorite pieces to view them anytime
+            </p>
+            <button
+              onClick={() => {
+                onClose();
+                navigate("/");
+              }}
+              style={{
+                background: "linear-gradient(135deg, #E91E63 0%, #C2185B 100%)",
+                color: "#fff",
+                border: "none",
+                padding: "10px 24px",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: "14px",
+                transition: "all 0.3s",
+                boxShadow: "0 4px 12px rgba(233,30,99,0.3)"
+              }}
+              onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.target.style.transform = "translateY(0)"}
+            >
+              Explore Collection
+            </button>
           </div>
         ) : (
           items.map((item, idx) => (
             <div
               key={idx}
               style={{
-                background: "#FFF0F6",
-                borderRadius: "8px",
-                padding: "12px",
-                marginBottom: "12px",
-                border: "1px solid #f8bbd9",
-                transition: "all 0.2s",
+                background: "#fff",
+                borderRadius: "10px",
+                padding: "14px",
+                marginBottom: "14px",
+                border: "1.5px solid #f5f5f5",
+                transition: "all 0.3s",
                 display: "flex",
-                gap: "12px"
+                gap: "12px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = "0 4px 16px rgba(233,30,99,0.12)";
+                e.currentTarget.style.borderColor = "#f0f0f0";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
+                e.currentTarget.style.borderColor = "#f5f5f5";
               }}
             >
               {/* Product Image */}
@@ -112,81 +166,111 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
                 <img
                   src={item.image}
                   alt={item.name}
-                  style={{
-                    width: "70px",
-                    height: "70px",
-                    borderRadius: "6px",
-                    objectFit: "cover",
-                    cursor: "pointer"
-                  }}
                   onClick={() => {
                     navigate(`/product/${item.id}`);
                     onClose();
                   }}
+                  style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                    cursor: "pointer",
+                    border: "1px solid #f0f0f0",
+                    transition: "transform 0.3s",
+                    flexShrink: 0
+                  }}
+                  onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
+                  onMouseLeave={e => e.target.style.transform = "scale(1)"}
                 />
               )}
 
               {/* Product Info */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p
-                  onClick={() => {
-                    navigate(`/product/${item.id}`);
-                    onClose();
-                  }}
-                  style={{
-                    margin: "0 0 4px 0",
-                    fontWeight: "700",
-                    fontSize: "13px",
-                    color: "#880E4F",
-                    cursor: "pointer",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
-                  }}
-                >
-                  {item.name}
-                </p>
-                <p style={{ margin: "0 0 8px 0", color: "#E91E63", fontWeight: "700", fontSize: "14px" }}>
-                  ₹{item.price}
-                </p>
-                <div style={{ display: "flex", gap: "6px" }}>
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <div>
+                  <p
+                    onClick={() => {
+                      navigate(`/product/${item.id}`);
+                      onClose();
+                    }}
+                    style={{
+                      margin: "0 0 5px 0",
+                      fontWeight: "700",
+                      fontSize: "13px",
+                      color: "#1a0010",
+                      cursor: "pointer",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      transition: "color 0.2s"
+                    }}
+                    onMouseEnter={e => e.target.style.color = "#E91E63"}
+                    onMouseLeave={e => e.target.style.color = "#1a0010"}
+                  >
+                    {item.name}
+                  </p>
+                  <p style={{ margin: "0 0 3px 0", fontSize: "11px", color: "#999" }}>
+                    {item.category}
+                  </p>
+                  <p style={{ margin: "0 0 8px 0", color: "#E91E63", fontWeight: "700", fontSize: "15px" }}>
+                    ₹{item.price}
+                  </p>
+                  {item.originalPrice && (
+                    <p style={{ margin: "0", color: "#bbb", fontSize: "12px", textDecoration: "line-through" }}>
+                      ₹{item.originalPrice}
+                    </p>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div style={{ display: "flex", gap: "6px", marginTop: "8px" }}>
                   <button
                     onClick={() => onAddToCart(item)}
                     style={{
                       flex: 1,
-                      padding: "6px 8px",
-                      background: "#880E4F",
+                      padding: "8px 12px",
+                      background: "linear-gradient(135deg, #E91E63, #C2185B)",
                       color: "#fff",
                       border: "none",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       cursor: "pointer",
-                      fontSize: "11px",
+                      fontSize: "12px",
                       fontWeight: "600",
-                      transition: "all 0.2s"
+                      transition: "all 0.3s",
+                      boxShadow: "0 2px 6px rgba(233, 30, 99, 0.2)"
                     }}
-                    onMouseEnter={e => e.target.style.background = "#6B0A3D"}
-                    onMouseLeave={e => e.target.style.background = "#880E4F"}
+                    onMouseEnter={e => {
+                      e.target.style.transform = "translateY(-2px)";
+                      e.target.style.boxShadow = "0 4px 12px rgba(233, 30, 99, 0.4)";
+                    }}
+                    onMouseLeave={e => {
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "0 2px 6px rgba(233, 30, 99, 0.2)";
+                    }}
                   >
                     Add to Cart
                   </button>
                   <button
                     onClick={() => onRemove(item.id)}
                     style={{
-                      padding: "6px 8px",
-                      background: "transparent",
+                      padding: "8px 12px",
+                      background: "rgba(233, 30, 99, 0.1)",
                       color: "#E91E63",
                       border: "1.5px solid #f8bbd9",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       cursor: "pointer",
                       fontSize: "16px",
-                      transition: "all 0.2s"
+                      transition: "all 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
                     }}
                     onMouseEnter={e => {
-                      e.target.style.background = "#f8bbd9";
+                      e.target.style.background = "#E91E63";
                       e.target.style.color = "#fff";
                     }}
                     onMouseLeave={e => {
-                      e.target.style.background = "transparent";
+                      e.target.style.background = "rgba(233, 30, 99, 0.1)";
                       e.target.style.color = "#E91E63";
                     }}
                     title="Remove from wishlist"
