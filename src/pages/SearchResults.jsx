@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
+import Wishlist from "../components/Wishlist";
 import imageDatabase from "../data/imageDatabase.js";
 
 // Search bar component
@@ -100,7 +101,10 @@ const getImageForProduct = (category, index) => {
   return urls[index % urls.length];
 };
 
-export default function SearchResults({ cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount }) {
+export default function SearchResults({ 
+  cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount,
+  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -144,9 +148,22 @@ export default function SearchResults({ cartOpen, setCartOpen, addToCart, remove
 
   return (
     <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px", minHeight: "100vh" }}>
-      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      <Navbar 
+        cartCount={cartCount} 
+        onCartClick={() => setCartOpen(!cartOpen)}
+        wishlistCount={wishlistCount}
+        onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
+      />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
+      )}
+      {wishlistOpen && (
+        <Wishlist 
+          items={wishlistItems} 
+          onRemove={removeFromWishlist} 
+          onClose={() => setWishlistOpen(false)}
+          onAddToCart={addToCart}
+        />
       )}
 
       <div style={{ padding: isMobile ? "15px 12px" : "30px", maxWidth: "1200px", margin: "0 auto" }}>
@@ -225,6 +242,47 @@ export default function SearchResults({ cartOpen, setCartOpen, addToCart, remove
                         -{discount}%
                       </div>
                     )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (isInWishlist && isInWishlist(product.id)) {
+                          removeFromWishlist(product.id);
+                        } else {
+                          addToWishlist(product);
+                        }
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "8px",
+                        transform: "translateY(-50%)",
+                        background: "#fff",
+                        border: "none",
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "50%",
+                        fontSize: "16px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                        transition: "all 0.2s",
+                        color: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#999"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#f0f0f0";
+                        e.target.style.color = isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63";
+                        e.target.style.transform = "translateY(-50%) scale(1.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = "#fff";
+                        e.target.style.color = isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#999";
+                        e.target.style.transform = "translateY(-50%) scale(1)";
+                      }}
+                    >
+                      {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
+                    </button>
                   </div>
                   <div style={{ padding: isMobile ? "8px" : "12px" }}>
                     <h3 style={{

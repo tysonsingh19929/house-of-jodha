@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { products } from "../data/products.js";
 
-export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
+export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWishlist, removeFromWishlist, isInWishlist }) {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [addedProducts, setAddedProducts] = useState({});
@@ -182,21 +182,37 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct }) {
 
                 {/* Wishlist */}
                 <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isInWishlist && isInWishlist(product.id)) {
+                      removeFromWishlist(product.id);
+                    } else {
+                      addToWishlist(product);
+                    }
+                  }}
                   style={{
                     position: "absolute", top: "8px", right: "8px",
-                    background: "#fff", border: "none",
-                    width: "30px", height: "30px",
+                    background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff", 
+                    border: "none",
+                    width: "32px", height: "32px",
                     borderRadius: "50%", cursor: "pointer",
                     fontSize: "16px",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                    transition: "transform 0.2s",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    transition: "all 0.2s",
+                    color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
                   }}
-                  onClick={e => e.stopPropagation()}
-                  onMouseEnter={e => e.currentTarget.style.transform = "scale(1.15)"}
-                  onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = "scale(1.2)";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(233,30,99,0.3)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+                  }}
+                  title={isInWishlist && isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                 >
-                  ♡
+                  {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
                 </button>
               </div>
 

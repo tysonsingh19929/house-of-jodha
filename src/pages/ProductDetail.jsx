@@ -3,10 +3,14 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
+import Wishlist from "../components/Wishlist";
 import SizeChart from "../components/SizeChart";
 import { products } from "../data/products.js";
 
-export default function ProductDetail({ cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount }) {
+export default function ProductDetail({ 
+  cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount,
+  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+}) {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -126,9 +130,22 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
 
   return (
     <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px" }}>
-      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      <Navbar 
+        cartCount={cartCount} 
+        onCartClick={() => setCartOpen(!cartOpen)}
+        wishlistCount={wishlistCount}
+        onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
+      />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
+      )}
+      {wishlistOpen && (
+        <Wishlist 
+          items={wishlistItems} 
+          onRemove={removeFromWishlist} 
+          onClose={() => setWishlistOpen(false)}
+          onAddToCart={addToCart}
+        />
       )}
 
       {/* Breadcrumb */}
@@ -428,12 +445,19 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
 
           {/* Wishlist Button */}
           <button
+            onClick={() => {
+              if (isInWishlist && isInWishlist(product.id)) {
+                removeFromWishlist(product.id);
+              } else {
+                addToWishlist(product);
+              }
+            }}
             style={{
               width: "100%",
               padding: "15px",
-              background: "#fff",
-              color: "#880E4F",
-              border: "2px solid #f8bbd9",
+              background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
+              color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
+              border: "2px solid #E91E63",
               borderRadius: "6px",
               fontSize: "16px",
               fontWeight: "700",
@@ -441,15 +465,20 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
               transition: "all 0.3s"
             }}
             onMouseEnter={e => {
-              e.target.style.background = "#FFF0F6";
-              e.target.style.borderColor = "#880E4F";
+              e.target.style.background = "#E91E63";
+              e.target.style.color = "#fff";
             }}
             onMouseLeave={e => {
-              e.target.style.background = "#fff";
-              e.target.style.borderColor = "#f8bbd9";
+              if (isInWishlist && isInWishlist(product.id)) {
+                e.target.style.background = "#E91E63";
+                e.target.style.color = "#fff";
+              } else {
+                e.target.style.background = "#fff";
+                e.target.style.color = "#E91E63";
+              }
             }}
           >
-            ♡ Add to Wishlist
+            {isInWishlist && isInWishlist(product.id) ? "♡ Added to Wishlist" : "♡ Add to Wishlist"}
           </button>
         </div>
       </div>

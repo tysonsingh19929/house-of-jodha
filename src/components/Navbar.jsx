@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar({ cartCount = 0, onCartClick }) {
+export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, onWishlistClick }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [isSeller, setIsSeller] = React.useState(false);
@@ -350,6 +350,36 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
               )}
             </div>
           )}
+
+          <button
+            onClick={onWishlistClick}
+            style={{
+              background: "rgba(255,255,255,0.15)",
+              color: "#fff",
+              border: "1.5px solid rgba(255,255,255,0.3)",
+              padding: "8px 12px",
+              fontSize: isMobile ? "11px" : "12px",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontWeight: "700",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              whiteSpace: "nowrap",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={e => {
+              e.target.style.background = "rgba(255,255,255,0.25)";
+              e.target.style.borderColor = "#fff";
+            }}
+            onMouseLeave={e => {
+              e.target.style.background = "rgba(255,255,255,0.15)";
+              e.target.style.borderColor = "rgba(255,255,255,0.3)";
+            }}
+            title="View Wishlist"
+          >
+            ♡ ({wishlistCount})
+          </button>
 
           <button
             onClick={onCartClick}

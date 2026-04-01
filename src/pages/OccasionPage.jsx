@@ -3,6 +3,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
+import Wishlist from "../components/Wishlist";
 
 const occasionProducts = {
   mehendi: [
@@ -60,7 +61,10 @@ const occasionProducts = {
   ]
 };
 
-export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRemoveProduct, cartOpen, cartItems, removeFromCart }) {
+export default function OccasionPage({ 
+  cartCount, onCartClick, onAddToCart, onRemoveProduct, cartOpen, cartItems, removeFromCart,
+  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+}) {
   const { occasion } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -150,9 +154,22 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: window.innerWidth <= 768 ? "100px" : "120px" }}>
-        <Navbar cartCount={cartCount} onCartClick={onCartClick} />
+        <Navbar 
+          cartCount={cartCount} 
+          onCartClick={onCartClick}
+          wishlistCount={wishlistCount}
+          onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
+        />
         {cartOpen && (
           <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
+        )}
+        {wishlistOpen && (
+          <Wishlist 
+            items={wishlistItems} 
+            onRemove={removeFromWishlist} 
+            onClose={() => setWishlistOpen(false)}
+            onAddToCart={onAddToCart}
+          />
         )}
         <div style={{ padding: isMobile ? "20px" : "40px 30px", maxWidth: "1126px", margin: "0 auto", width: "100%", flex: "1" }}>
           <button 
@@ -200,7 +217,8 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
                   overflow: "hidden",
                   transition: "all 0.3s",
                   cursor: "pointer",
-                  background: "#fff"
+                  background: "#fff",
+                  position: "relative"
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.boxShadow = "var(--shadow)";
@@ -215,9 +233,54 @@ export default function OccasionPage({ cartCount, onCartClick, onAddToCart, onRe
                   fontSize: isMobile ? "50px" : "60px",
                   textAlign: "center",
                   padding: isMobile ? "30px" : "40px",
-                  background: "var(--accent-bg)"
+                  background: "var(--accent-bg)",
+                  position: "relative"
                 }}>
                   {product.image}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isInWishlist && isInWishlist(product.id)) {
+                        removeFromWishlist(product.id);
+                      } else {
+                        addToWishlist(product);
+                      }
+                    }}
+                    style={{
+                      position: "absolute", 
+                      top: "10px", 
+                      right: "10px",
+                      background: "#fff", 
+                      border: "none",
+                      width: "28px", 
+                      height: "28px",
+                      borderRadius: "50%", 
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      display: "flex", 
+                      alignItems: "center", 
+                      justifyContent: "center",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "transform 0.2s, background 0.2s, color 0.2s",
+                      color: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#999",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.15)";
+                      if (isInWishlist && isInWishlist(product.id)) {
+                        e.currentTarget.style.background = "#E91E63";
+                        e.currentTarget.style.color = "#fff";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      if (isInWishlist && isInWishlist(product.id)) {
+                        e.currentTarget.style.background = "#fff";
+                        e.currentTarget.style.color = "#E91E63";
+                      }
+                    }}
+                  >
+                    {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
+                  </button>
                 </div>
                 <div style={{ padding: isMobile ? "15px" : "20px" }}>
                   <h3 style={{ fontSize: isMobile ? "14px" : "16px", marginBottom: "10px", color: "#08060d", fontWeight: "600" }}>

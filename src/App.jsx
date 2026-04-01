@@ -13,6 +13,7 @@ import FAQSection from "./components/FAQSection";
 import About from "./components/About";
 import Footer from "./components/Footer";
 import Cart from "./components/Cart";
+import Wishlist from "./components/Wishlist";
 import CollectionPage from "./pages/CollectionPage";
 import OccasionPage from "./pages/OccasionPage";
 import PoliciesPage from "./pages/PoliciesPage";
@@ -27,15 +28,37 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
-function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
+function HomePage({ 
+  cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
+  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+}) {
   return (
     <div style={{ background: "#fff", paddingTop: window.innerWidth <= 768 ? "160px" : "220px" }}>
-      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      <Navbar 
+        cartCount={cartCount} 
+        onCartClick={() => setCartOpen(!cartOpen)}
+        wishlistCount={wishlistCount}
+        onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
+      />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
       )}
+      {wishlistOpen && (
+        <Wishlist 
+          items={wishlistItems} 
+          onRemove={removeFromWishlist} 
+          onClose={() => setWishlistOpen(false)}
+          onAddToCart={addToCart}
+        />
+      )}
       <Hero />
-      <ProductCatalog onAddToCart={addToCart} onRemoveProduct={removeProductFromCart} />
+      <ProductCatalog 
+        onAddToCart={addToCart} 
+        onRemoveProduct={removeProductFromCart}
+        addToWishlist={addToWishlist}
+        removeFromWishlist={removeFromWishlist}
+        isInWishlist={isInWishlist}
+      />
       <ShopByOccasion />
       <Features />
       <Newsletter />
@@ -50,6 +73,8 @@ function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, r
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
   // Initialize products in localStorage and check for logged-in user
@@ -60,7 +85,17 @@ function App() {
     if (user) {
       setCurrentUser(JSON.parse(user));
     }
+    // Load wishlist from localStorage
+    const savedWishlist = localStorage.getItem("wishlist");
+    if (savedWishlist) {
+      setWishlistItems(JSON.parse(savedWishlist));
+    }
   }, []);
+
+  // Save wishlist to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
+  }, [wishlistItems]);
 
   const addToCart = (product) => {
     // Use functional state update to avoid closure issues
@@ -79,7 +114,23 @@ function App() {
     setCartItems(cartItems.filter(item => item.id !== productId));
   };
 
+  const addToWishlist = (product) => {
+    const isAlreadyInWishlist = wishlistItems.some(item => item.id === product.id);
+    if (!isAlreadyInWishlist) {
+      setWishlistItems([...wishlistItems, product]);
+    }
+  };
+
+  const removeFromWishlist = (productId) => {
+    setWishlistItems(wishlistItems.filter(item => item.id !== productId));
+  };
+
+  const isInWishlist = (productId) => {
+    return wishlistItems.some(item => item.id === productId);
+  };
+
   const cartCount = cartItems.length;
+  const wishlistCount = wishlistItems.length;
 
   return (
     <BrowserRouter>
@@ -97,6 +148,13 @@ function App() {
               removeFromCart={removeFromCart}
               removeProductFromCart={removeProductFromCart}
               cartCount={cartCount}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistItems={wishlistItems}
+              wishlistCount={wishlistCount}
+              addToWishlist={addToWishlist}
+              removeFromWishlist={removeFromWishlist}
+              isInWishlist={isInWishlist}
             />
           } 
         />
@@ -111,6 +169,13 @@ function App() {
               cartOpen={cartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistItems={wishlistItems}
+              wishlistCount={wishlistCount}
+              addToWishlist={addToWishlist}
+              removeFromWishlist={removeFromWishlist}
+              isInWishlist={isInWishlist}
             />
           } 
         />
@@ -125,6 +190,13 @@ function App() {
               cartOpen={cartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistItems={wishlistItems}
+              wishlistCount={wishlistCount}
+              addToWishlist={addToWishlist}
+              removeFromWishlist={removeFromWishlist}
+              isInWishlist={isInWishlist}
             />
           } 
         />
@@ -162,6 +234,13 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               cartCount={cartCount}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistItems={wishlistItems}
+              wishlistCount={wishlistCount}
+              addToWishlist={addToWishlist}
+              removeFromWishlist={removeFromWishlist}
+              isInWishlist={isInWishlist}
             />
           }
         />
@@ -175,6 +254,13 @@ function App() {
               removeFromCart={removeFromCart}
               cartItems={cartItems}
               cartCount={cartCount}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistItems={wishlistItems}
+              wishlistCount={wishlistCount}
+              addToWishlist={addToWishlist}
+              removeFromWishlist={removeFromWishlist}
+              isInWishlist={isInWishlist}
             />
           }
         />
