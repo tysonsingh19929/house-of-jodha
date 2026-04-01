@@ -69,6 +69,35 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
     setQuantity(1);
   };
 
+  const handleBuyNow = () => {
+    if (!product) {
+      console.error("Product not loaded yet");
+      return;
+    }
+
+    if (!addToCart) {
+      console.error("Add to cart function not available");
+      return;
+    }
+
+    // Get the quantity value
+    const qty = Math.max(1, Math.min(parseInt(quantity) || 1, 99));
+    
+    // Add items to cart
+    for (let i = 0; i < qty; i++) {
+      addToCart({ 
+        ...product, 
+        size: selectedSize
+      });
+    }
+    
+    // Reset quantity
+    setQuantity(1);
+    
+    // Navigate to checkout immediately
+    navigate("/checkout");
+  };
+
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
   const discount = product ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
 
@@ -342,27 +371,60 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
             </div>
           </div>
 
-          {/* Add to Cart Button */}
-          <button
-            onClick={handleAddToCart}
-            style={{
-              width: "100%",
-              padding: "15px",
-              background: addedToCart ? "#27ae60" : "var(--accent)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              fontSize: "16px",
-              fontWeight: "700",
-              cursor: "pointer",
-              marginBottom: "10px",
-              transition: "all 0.3s ease"
-            }}
-            onMouseEnter={e => !addedToCart && (e.target.style.background = "#c9860f")}
-            onMouseLeave={e => !addedToCart && (e.target.style.background = "var(--accent)")}
-          >
-            {addedToCart ? "✓ Added to Cart!" : `Add ${quantity} to Cart`}
-          </button>
+          {/* Buy Now and Add to Cart Buttons */}
+          <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+            <button
+              onClick={handleBuyNow}
+              style={{
+                flex: 1,
+                padding: "15px",
+                background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                fontSize: "16px",
+                fontWeight: "700",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                boxShadow: "0 4px 12px rgba(136,14,79,0.2)"
+              }}
+              onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.target.style.transform = "translateY(0)"}
+            >
+              🚀 Buy Now
+            </button>
+
+            <button
+              onClick={handleAddToCart}
+              style={{
+                flex: 1,
+                padding: "15px",
+                background: addedToCart ? "#27ae60" : "#F48FB1",
+                color: addedToCart ? "#fff" : "#880E4F",
+                border: "2px solid #880E4F",
+                borderRadius: "6px",
+                fontSize: "16px",
+                fontWeight: "700",
+                cursor: "pointer",
+                marginBottom: "0",
+                transition: "all 0.3s ease"
+              }}
+              onMouseEnter={e => {
+                if (!addedToCart) {
+                  e.target.style.background = "#880E4F";
+                  e.target.style.color = "#fff";
+                }
+              }}
+              onMouseLeave={e => {
+                if (!addedToCart) {
+                  e.target.style.background = "#F48FB1";
+                  e.target.style.color = "#880E4F";
+                }
+              }}
+            >
+              {addedToCart ? "✓ Added to Cart!" : `🛍️ Add to Cart`}
+            </button>
+          </div>
 
           {/* Wishlist Button */}
           <button
@@ -370,12 +432,21 @@ export default function ProductDetail({ cartOpen, setCartOpen, addToCart, remove
               width: "100%",
               padding: "15px",
               background: "#fff",
-              color: "#666",
-              border: "2px solid #ddd",
-              borderRadius: "4px",
+              color: "#880E4F",
+              border: "2px solid #f8bbd9",
+              borderRadius: "6px",
               fontSize: "16px",
               fontWeight: "700",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "all 0.3s"
+            }}
+            onMouseEnter={e => {
+              e.target.style.background = "#FFF0F6";
+              e.target.style.borderColor = "#880E4F";
+            }}
+            onMouseLeave={e => {
+              e.target.style.background = "#fff";
+              e.target.style.borderColor = "#f8bbd9";
             }}
           >
             ♡ Add to Wishlist
