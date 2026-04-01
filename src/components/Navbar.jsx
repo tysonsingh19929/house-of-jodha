@@ -71,7 +71,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
     position: "fixed",
     top: 0, left: 0, right: 0,
     zIndex: 9999,
-    height: isMobile ? "64px" : "72px",
+    height: isMobile ? "80px" : "140px",
     boxSizing: "border-box",
     borderBottom: "3px solid transparent",
     borderImage: "linear-gradient(90deg,#FFD54F,#E91E63,#F9A825,#F48FB1,#FFD54F) 1",
@@ -158,19 +158,18 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
           alignItems: "center",
           justifyContent: "center",
           height: "100%",
-          padding: "4px 0",
+          padding: "8px 0",
         }}>
           <img
-            src="/house-of-jodha-logo.png"
+            src="/logo.png"
             alt="House of Jodha"
             onClick={() => navigate("/")}
             style={{
               maxHeight: "100%",
               width: "auto",
               cursor: "pointer",
-              maxWidth: isMobile ? "100%" : "300px",
+              maxWidth: isMobile ? "90%" : "100%",
               objectFit: "contain",
-              filter: "brightness(0) invert(1)",
             }}
           />
         </div>
@@ -347,7 +346,7 @@ export default function Navbar({ cartCount = 0, onCartClick }) {
       {/* Scrolling Promo Strip */}
       <div style={{
         position: "fixed",
-        top: isMobile ? "64px" : "72px",
+        top: isMobile ? "80px" : "140px",
         left: 0, right: 0,
         zIndex: 9998,
         background: "linear-gradient(90deg,#E91E63,#C2185B,#F48FB1,#C2185B,#E91E63)",

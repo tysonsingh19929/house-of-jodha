@@ -27,7 +27,7 @@ import Signup from "./pages/Signup";
 
 function HomePage({ cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount }) {
   return (
-    <div style={{ background: "#fff", paddingTop: window.innerWidth <= 768 ? "100px" : "120px" }}>
+    <div style={{ background: "#fff", paddingTop: window.innerWidth <= 768 ? "160px" : "220px" }}>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
