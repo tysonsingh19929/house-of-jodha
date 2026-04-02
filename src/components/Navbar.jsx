@@ -57,8 +57,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       {/* Left: Menu Button + Logo */}
       <div style={{
         display: "flex",
-        alignItems: "center",
-        gap: "8px",
+        alignItems: "flex-end",\n        gap: "8px",
       }}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -84,9 +83,9 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             src="/jodha-logo.png"
             alt="House of Jodha"
             style={{
-              height: "40px",
+              height: "52px",
               width: "auto",
-              maxWidth: "120px",
+              maxWidth: "150px",
               objectFit: "contain",
             }}
           />
