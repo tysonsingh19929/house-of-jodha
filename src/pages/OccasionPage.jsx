@@ -4,29 +4,24 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { products as allProducts } from "../data/products.js";
 
-// Function to get random products for an occasion (deterministic based on occasion name)
 const getRandomProductsForOccasion = (occasion, allProducts, count = 12) => {
   if (!allProducts || allProducts.length === 0) return [];
-  
-  // Use occasion name as seed for consistent results
   const seed = occasion.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  
-  // Shuffle array using seed
   const shuffled = [...allProducts].sort((a, b) => {
     const aScore = (a.id * seed) % 100;
     const bScore = (b.id * seed) % 100;
     return aScore - bScore;
   });
-  
   return shuffled.slice(0, count);
 };
 
 export default function OccasionPage({ 
-  cartCount, onCartClick, onAddToCart, wishlistOpen, setWishlistOpen, wishlistItems, addToWishlist, removeFromWishlist, isInWishlist 
+  cartCount, onCartClick, onAddToCart, onRemoveProduct, wishlistOpen, setWishlistOpen, wishlistItems, addToWishlist, removeFromWishlist, isInWishlist 
 }) {
   const { occasion } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
+  const [addedProducts, setAddedProducts] = useState({});
 
   const occasionDetails = {
     mehendi: { name: "MEHENDI", bgColor: "#D4F1D4", textColor: "#2C6B2C", description: "Celebrate the joy of Mehendi with our vibrant and colorful collection. Green is the color of choice for this auspicious occasion.", tips: "Mehendi designs should be bright, festive, and comfortable. Opt for light fabrics with beautiful embroidery." },
@@ -39,10 +34,32 @@ export default function OccasionPage({
 
   const details = occasionDetails[occasion || 'mehendi'] || occasionDetails.mehendi;
   
-  // Get random products for this occasion (memoized to avoid recalculation)
   const products = useMemo(() => {
     return getRandomProductsForOccasion(occasion || 'mehendi', allProducts, 12);
-  }, [occasion, allProducts]);
+  }, [occasion]);
+
+  const handleAddProduct = (product) => {
+    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
+    onAddToCart(product);
+  };
+
+  const handleIncrease = (product) => {
+    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
+    onAddToCart(product);
+  };
+
+  const handleDecrease = (product) => {
+    setAddedProducts(prev => {
+      const newQty = Math.max(0, (prev[product.id] || 0) - 1);
+      if (newQty === 0) {
+        const updated = { ...prev };
+        delete updated[product.id];
+        onRemoveProduct?.(product.id);
+        return updated;
+      }
+      return { ...prev, [product.id]: newQty };
+    });
+  };
 
   return (
     <div style={{ paddingTop: "64px", minHeight: "100vh" }}>
@@ -62,15 +79,15 @@ export default function OccasionPage({
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, minmax(200px, 1fr))", gap: "20px", marginBottom: "40px" }}>
           {products.length > 0 ? products.map(product => (
             <div key={product.id} style={{ border: "1px solid #ddd", borderRadius: "10px", overflow: "hidden", position: "relative", transition: "transform 0.3s, box-shadow 0.3s", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-5px)";
-              e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
-            }}>
-              
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-5px)";
+                e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+              }}
+            >
               {/* PRODUCT IMAGE & INFO */}
               <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                 <div style={{ background: "#f8f6f0", padding: "20px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "180px", overflow: "hidden" }}>
@@ -121,22 +138,53 @@ export default function OccasionPage({
                 {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
               </button>
 
-              {/* BUY NOW BUTTON */}
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  onAddToCart(product);
-                }}
-                style={{
-                  width: "90%", margin: "0 5% 12px 5%", padding: "10px", background: details.textColor || "#D4AF37",
-                  color: "#fff", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer",
-                  transition: "opacity 0.2s"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
-              >
-                Buy Now
-              </button>
+              {/* ADD TO CART / QUANTITY CONTROLS */}
+              <div style={{ width: "90%", margin: "0 5% 12px 5%" }}>
+                {addedProducts[product.id] ? (
+                  <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                    <button
+                      onClick={(e) => { e.preventDefault(); handleDecrease(product); }}
+                      style={{
+                        flex: 1, padding: isMobile ? "5px" : "8px",
+                        background: details.textColor,
+                        color: "#fff", border: "none", borderRadius: "6px",
+                        cursor: "pointer", fontWeight: "700", fontSize: "16px",
+                      }}
+                    >−</button>
+                    <span style={{
+                      flex: 1, textAlign: "center",
+                      fontSize: isMobile ? "13px" : "14px",
+                      fontWeight: "700", color: details.textColor,
+                    }}>
+                      {addedProducts[product.id]}
+                    </span>
+                    <button
+                      onClick={(e) => { e.preventDefault(); handleIncrease(product); }}
+                      style={{
+                        flex: 1, padding: isMobile ? "5px" : "8px",
+                        background: details.textColor,
+                        color: "#fff", border: "none", borderRadius: "6px",
+                        cursor: "pointer", fontWeight: "700", fontSize: "16px",
+                      }}
+                    >+</button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={(e) => { e.preventDefault(); handleAddProduct(product); }}
+                    style={{
+                      width: "100%", padding: "10px",
+                      background: details.textColor,
+                      color: "#fff", border: "none", borderRadius: "6px",
+                      fontWeight: "600", cursor: "pointer", transition: "opacity 0.2s",
+                      fontSize: isMobile ? "12px" : "13px",
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </div>
             </div>
           )) : (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "#999" }}>
