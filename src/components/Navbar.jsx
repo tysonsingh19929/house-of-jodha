@@ -42,7 +42,8 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     color: "#333",
     width: "36px",
     height: "36px",
-    borderRadius: "4px",
+    padding: "0",
+    borderRadius: "0",
     cursor: "pointer",
     fontSize: "20px",
     display: "flex",
@@ -205,3 +206,4 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     </div>
   );
 }
+
