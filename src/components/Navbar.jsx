@@ -57,7 +57,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       {/* Left: Menu Button + Logo */}
       <div style={{
         display: "flex",
-        alignItems: "flex-end",
+        alignItems: "center",
         gap: "8px",
       }}>
         <button
