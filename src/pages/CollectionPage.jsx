@@ -69,7 +69,7 @@ export default function CollectionPage({
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: window.innerWidth <= 768 ? "160px" : "220px" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: "64px" }}>
         <Navbar 
           cartCount={cartCount} 
           onCartClick={onCartClick}

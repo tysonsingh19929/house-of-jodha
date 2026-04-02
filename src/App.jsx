@@ -33,7 +33,7 @@ function HomePage({
   wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
 }) {
   return (
-    <div style={{ background: "#fff", paddingTop: window.innerWidth <= 768 ? "160px" : "220px" }}>
+    <div style={{ background: "#fff", paddingTop: "64px" }}>
       <Navbar 
         cartCount={cartCount} 
         onCartClick={() => setCartOpen(!cartOpen)}

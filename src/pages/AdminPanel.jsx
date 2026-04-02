@@ -160,7 +160,7 @@ export default function AdminPanel() {
   const panelStyle = {
     minHeight: "100vh",
     background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    paddingTop: "120px",
+    paddingTop: "64px",
     paddingBottom: "40px"
   };
 

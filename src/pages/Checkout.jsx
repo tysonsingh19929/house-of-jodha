@@ -60,7 +60,7 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
 
   if (orderPlaced) {
     return (
-      <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
         <div style={{ textAlign: "center", padding: "40px 20px" }}>
           <div style={{ fontSize: "80px", marginBottom: "20px" }}>✓</div>
@@ -84,7 +84,7 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
   }
 
   return (
-    <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px", minHeight: "100vh" }}>
+    <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />

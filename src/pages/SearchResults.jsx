@@ -147,7 +147,7 @@ export default function SearchResults({
   }, [query]);
 
   return (
-    <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px", minHeight: "100vh" }}>
+    <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>
       <Navbar 
         cartCount={cartCount} 
         onCartClick={() => setCartOpen(!cartOpen)}

@@ -153,7 +153,7 @@ export default function OccasionPage({
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: window.innerWidth <= 768 ? "100px" : "120px" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: "64px" }}>
         <Navbar 
           cartCount={cartCount} 
           onCartClick={onCartClick}

@@ -50,7 +50,7 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
   };
 
   return (
-    <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
 
       <div style={{ flex: "1", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "20px" : "40px" }}>

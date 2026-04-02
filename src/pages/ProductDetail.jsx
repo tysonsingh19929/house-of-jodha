@@ -131,7 +131,7 @@ export default function ProductDetail({
   }
 
   return (
-    <div style={{ background: "#fff", paddingTop: isMobile ? "100px" : "120px" }}>
+    <div style={{ background: "#fff", paddingTop: "64px" }}>
       <Navbar 
         cartCount={cartCount} 
         onCartClick={() => setCartOpen(!cartOpen)}
