@@ -3,41 +3,37 @@ import { useNavigate } from "react-router-dom";
 
 const carouselSlides = [
   {
-    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80&fit=crop",
+    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1200&q=85&fit=crop",
     label: "Bridal Lehenga Collection",
     sub: "Crafted for your special day",
   },
   {
-    image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80&fit=crop",
+    image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1200&q=85&fit=crop",
     label: "Festive Saree Looks",
     sub: "Timeless elegance, modern drape",
   },
   {
-    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800&q=80&fit=crop",
+    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=1200&q=85&fit=crop",
     label: "Anarkali & Gharara Sets",
     sub: "Handpicked for every occasion",
   },
   {
-    image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?w=800&q=80&fit=crop",
+    image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?w=1200&q=85&fit=crop",
     label: "Sangeet & Mehendi Wear",
     sub: "Dance, celebrate, shine",
   },
   {
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80&fit=crop",
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=85&fit=crop",
     label: "Wedding Season Specials",
     sub: "Exclusive collections now live",
   },
 ];
 
-const slideBg = ["#f7d6e0", "#fde8c8", "#dceeff", "#e8f5e9", "#f3e5f5"];
 const slideAccent = ["#C2185B", "#E65100", "#1565C0", "#2E7D32", "#6A1B9A"];
-const slideEmojis = ["👰🏻", "🥻", "👗", "💃🏻", "💍"];
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState({});
-  const [imgError, setImgError] = useState({});
   const intervalRef = useRef(null);
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
@@ -48,7 +44,7 @@ export default function Hero() {
   const startAutoPlay = () => {
     intervalRef.current = setInterval(() => {
       setCurrent(prev => (prev + 1) % total);
-    }, 3000);
+    }, 3500);
   };
 
   const stopAutoPlay = () => {
@@ -65,7 +61,6 @@ export default function Hero() {
   const prev = () => { stopAutoPlay(); setCurrent(p => (p - 1 + total) % total); startAutoPlay(); };
   const next = () => { stopAutoPlay(); setCurrent(p => (p + 1) % total); startAutoPlay(); };
 
-  // Touch handlers for swipe
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
@@ -76,14 +71,9 @@ export default function Hero() {
     if (touchStartX.current === null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-
-    // Only swipe if horizontal movement is dominant
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
-      if (deltaX < 0) {
-        setCurrent(p => (p + 1) % total); // swipe left → next
-      } else {
-        setCurrent(p => (p - 1 + total) % total); // swipe right → prev
-      }
+      if (deltaX < 0) setCurrent(p => (p + 1) % total);
+      else setCurrent(p => (p - 1 + total) % total);
     }
     touchStartX.current = null;
     touchStartY.current = null;
@@ -100,199 +90,194 @@ export default function Hero() {
       style={{
         position: "relative",
         width: "100%",
-        height: isMobile ? "240px" : "420px",
+        height: isMobile ? "320px" : "540px",
         overflow: "hidden",
         userSelect: "none",
-        touchAction: "pan-y", // allow vertical scroll, intercept horizontal
+        touchAction: "pan-y",
+        background: "#111",
       }}
     >
-      {carouselSlides.map((s, i) => {
-        const accent = slideAccent[i];
-        const loaded = imgLoaded[i];
-        const error = imgError[i];
-
-        return (
-          <div
-            key={i}
+      {/* Slides */}
+      {carouselSlides.map((s, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            inset: 0,
+            opacity: i === current ? 1 : 0,
+            transition: "opacity 0.8s ease",
+            pointerEvents: i === current ? "auto" : "none",
+          }}
+        >
+          {/* Full-bleed background image */}
+          <img
+            src={s.image}
+            alt={s.label}
             style={{
               position: "absolute",
               inset: 0,
-              background: slideBg[i],
-              opacity: i === current ? 1 : 0,
-              transition: "opacity 0.7s ease",
-              pointerEvents: i === current ? "auto" : "none",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
             }}
-          >
-            {/* Decorative blobs */}
-            <div style={{
-              position: "absolute", inset: 0,
-              backgroundImage: `radial-gradient(ellipse at 15% 50%, ${accent}20 0%, transparent 55%),
-                                radial-gradient(ellipse at 85% 20%, ${accent}15 0%, transparent 45%)`,
-            }} />
+          />
 
-            {/* Layout */}
+          {/* Dark gradient overlay for text legibility */}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to right, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.08) 100%)",
+          }} />
+
+          {/* Text overlay — bottom-left */}
+          <div style={{
+            position: "absolute",
+            bottom: isMobile ? "38px" : "60px",
+            left: isMobile ? "18px" : "52px",
+            zIndex: 2,
+            textAlign: "left",
+            maxWidth: isMobile ? "220px" : "420px",
+          }}>
             <div style={{
-              position: "absolute", inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: isMobile ? "16px 16px 30px" : "40px 60px 50px",
-              gap: isMobile ? "10px" : "30px",
+              fontSize: isMobile ? "9px" : "11px",
+              fontWeight: 700,
+              letterSpacing: "3.5px",
+              color: slideAccent[i],
+              textTransform: "uppercase",
+              marginBottom: isMobile ? "6px" : "10px",
+              textShadow: "0 1px 4px rgba(0,0,0,0.4)",
             }}>
-
-              {/* Left: Text */}
-              <div style={{ flex: 1, textAlign: "left", zIndex: 2 }}>
-                <div style={{
-                  fontSize: isMobile ? "9px" : "12px",
-                  fontWeight: 700,
-                  letterSpacing: "3px",
-                  color: accent,
-                  textTransform: "uppercase",
-                  marginBottom: isMobile ? "5px" : "10px",
-                }}>
-                  New Collection
-                </div>
-                <div style={{
-                  fontFamily: "Georgia, serif",
-                  fontSize: isMobile ? "16px" : "32px",
-                  fontWeight: 700,
-                  color: "#2c1a1a",
-                  lineHeight: 1.2,
-                  marginBottom: isMobile ? "5px" : "10px",
-                }}>
-                  {s.label}
-                </div>
-                <div style={{
-                  fontSize: isMobile ? "10px" : "14px",
-                  color: "#777",
-                  fontStyle: "italic",
-                  marginBottom: isMobile ? "12px" : "22px",
-                }}>
-                  {s.sub}
-                </div>
-                <button
-                  onClick={() => navigate("/collection/all")}
-                  style={{
-                    background: accent,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "25px",
-                    padding: isMobile ? "7px 15px" : "10px 24px",
-                    fontSize: isMobile ? "10px" : "13px",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    boxShadow: `0 4px 14px ${accent}44`,
-                    letterSpacing: "0.3px",
-                  }}
-                >
-                  Shop Now →
-                </button>
-              </div>
-
-              {/* Right: Image card */}
-              <div style={{
-                flex: isMobile ? "0 0 120px" : "0 0 280px",
-                height: isMobile ? "170px" : "330px",
-                borderRadius: isMobile ? "14px" : "20px",
-                overflow: "hidden",
-                boxShadow: `0 8px 30px ${accent}40`,
-                background: `${accent}18`,
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-                {!error ? (
-                  <img
-                    src={s.image}
-                    alt={s.label}
-                    onLoad={() => setImgLoaded(p => ({ ...p, [i]: true }))}
-                    onError={() => setImgError(p => ({ ...p, [i]: true }))}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: loaded ? "block" : "none",
-                    }}
-                  />
-                ) : null}
-
-                {(!loaded || error) && (
-                  <div style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                    position: "absolute",
-                    inset: 0,
-                    background: `linear-gradient(135deg, ${accent}18, ${accent}35)`,
-                  }}>
-                    <div style={{ fontSize: isMobile ? "42px" : "80px" }}>
-                      {slideEmojis[i]}
-                    </div>
-                    <div style={{
-                      fontSize: isMobile ? "9px" : "12px",
-                      color: accent,
-                      fontWeight: 600,
-                      textAlign: "center",
-                      padding: "0 6px",
-                    }}>
-                      {s.label}
-                    </div>
-                  </div>
-                )}
-              </div>
+              New Collection
             </div>
+            <div style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontSize: isMobile ? "20px" : "38px",
+              fontWeight: 700,
+              color: "#fff",
+              lineHeight: 1.15,
+              marginBottom: isMobile ? "6px" : "12px",
+              textShadow: "0 2px 12px rgba(0,0,0,0.5)",
+            }}>
+              {s.label}
+            </div>
+            <div style={{
+              fontSize: isMobile ? "11px" : "14px",
+              color: "rgba(255,255,255,0.82)",
+              fontStyle: "italic",
+              marginBottom: isMobile ? "14px" : "24px",
+              textShadow: "0 1px 6px rgba(0,0,0,0.4)",
+            }}>
+              {s.sub}
+            </div>
+            <button
+              onClick={() => navigate("/collection/all")}
+              style={{
+                background: slideAccent[i],
+                color: "#fff",
+                border: "none",
+                borderRadius: "25px",
+                padding: isMobile ? "8px 18px" : "11px 28px",
+                fontSize: isMobile ? "11px" : "13px",
+                fontWeight: 700,
+                cursor: "pointer",
+                boxShadow: `0 4px 18px ${slideAccent[i]}88`,
+                letterSpacing: "0.4px",
+                transition: "transform 0.18s, box-shadow 0.18s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+            >
+              Shop Now →
+            </button>
           </div>
-        );
-      })}
+        </div>
+      ))}
 
       {/* Left Arrow */}
-      <button onClick={(e) => { e.stopPropagation(); prev(); }} style={{
-        position: "absolute", left: "8px", top: "50%",
-        transform: "translateY(-50%)",
-        background: "rgba(255,255,255,0.9)", border: "none",
-        borderRadius: "50%",
-        width: isMobile ? "26px" : "36px", height: isMobile ? "26px" : "36px",
-        cursor: "pointer", fontSize: isMobile ? "15px" : "20px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        zIndex: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-      }}>‹</button>
+      <button
+        onClick={(e) => { e.stopPropagation(); prev(); }}
+        style={{
+          position: "absolute", left: "10px", top: "50%",
+          transform: "translateY(-50%)",
+          background: "rgba(255,255,255,0.18)",
+          backdropFilter: "blur(6px)",
+          border: "1px solid rgba(255,255,255,0.3)",
+          borderRadius: "50%",
+          width: isMobile ? "28px" : "38px",
+          height: isMobile ? "28px" : "38px",
+          cursor: "pointer",
+          fontSize: isMobile ? "16px" : "22px",
+          color: "#fff",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 10,
+          transition: "background 0.2s",
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.32)"}
+        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.18)"}
+      >
+        ‹
+      </button>
 
       {/* Right Arrow */}
-      <button onClick={(e) => { e.stopPropagation(); next(); }} style={{
-        position: "absolute", right: "8px", top: "50%",
-        transform: "translateY(-50%)",
-        background: "rgba(255,255,255,0.9)", border: "none",
-        borderRadius: "50%",
-        width: isMobile ? "26px" : "36px", height: isMobile ? "26px" : "36px",
-        cursor: "pointer", fontSize: isMobile ? "15px" : "20px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        zIndex: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-      }}>›</button>
+      <button
+        onClick={(e) => { e.stopPropagation(); next(); }}
+        style={{
+          position: "absolute", right: "10px", top: "50%",
+          transform: "translateY(-50%)",
+          background: "rgba(255,255,255,0.18)",
+          backdropFilter: "blur(6px)",
+          border: "1px solid rgba(255,255,255,0.3)",
+          borderRadius: "50%",
+          width: isMobile ? "28px" : "38px",
+          height: isMobile ? "28px" : "38px",
+          cursor: "pointer",
+          fontSize: isMobile ? "16px" : "22px",
+          color: "#fff",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 10,
+          transition: "background 0.2s",
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.32)"}
+        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.18)"}
+      >
+        ›
+      </button>
 
       {/* Dots */}
       <div style={{
-        position: "absolute", bottom: "10px", left: "50%",
+        position: "absolute", bottom: "12px", left: "50%",
         transform: "translateX(-50%)",
         display: "flex", gap: "6px", zIndex: 10,
       }}>
         {carouselSlides.map((_, i) => (
-          <div key={i} onClick={() => goTo(i)} style={{
-            width: i === current ? "20px" : "7px", height: "7px",
-            borderRadius: "4px",
-            background: i === current ? slideAccent[current] : "rgba(0,0,0,0.2)",
-            cursor: "pointer", transition: "all 0.3s ease",
-          }} />
+          <div
+            key={i}
+            onClick={() => goTo(i)}
+            style={{
+              width: i === current ? "22px" : "7px",
+              height: "7px",
+              borderRadius: "4px",
+              background: i === current ? "#fff" : "rgba(255,255,255,0.45)",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+            }}
+          />
         ))}
       </div>
 
       {/* Counter */}
       <div style={{
-        position: "absolute", top: "10px", right: "14px",
-        background: "rgba(0,0,0,0.25)", color: "#fff",
-        fontSize: "11px", padding: "3px 8px", borderRadius: "10px", zIndex: 10,
+        position: "absolute", top: "12px", right: "14px",
+        background: "rgba(0,0,0,0.35)",
+        backdropFilter: "blur(4px)",
+        color: "#fff",
+        fontSize: "11px",
+        padding: "3px 9px",
+        borderRadius: "10px",
+        zIndex: 10,
+        letterSpacing: "0.5px",
       }}>
         {current + 1} / {total}
       </div>
