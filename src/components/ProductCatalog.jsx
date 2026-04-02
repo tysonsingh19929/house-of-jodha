@@ -5,6 +5,7 @@ import { products } from "../data/products.js";
 export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWishlist, removeFromWishlist, isInWishlist }) {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [addedProducts, setAddedProducts] = useState({});
 
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
@@ -42,14 +43,47 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
   
-  const filteredProducts = selectedCategory === "All" 
+  const filteredProducts = (selectedCategory === "All" 
     ? allProducts 
-    : allProducts.filter(p => p.category === selectedCategory);
+    : allProducts.filter(p => p.category === selectedCategory))
+    .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const gridCols = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
 
   return (
     <div id="products" style={{ padding: isMobile ? "24px 12px" : "48px 28px", background: "#FFF0F6" }}>
+      
+      {/* Search Bar Section - Minimal Clean Design */}
+      <div style={{
+        marginBottom: isMobile ? "24px" : "32px",
+      }}>
+        {/* Search Input */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          background: "#fff",
+          borderRadius: "20px",
+          padding: "10px 16px",
+          border: "1px solid #e0e0e0",
+        }}>
+          <span style={{ fontSize: "14px", marginRight: "10px", color: "#999" }}>🔍</span>
+          <input
+            type="text"
+            placeholder="Search for brands and products"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              flex: 1,
+              border: "none",
+              background: "transparent",
+              fontSize: isMobile ? "13px" : "14px",
+              outline: "none",
+              color: "#666",
+              fontFamily: "inherit",
+            }}
+          />
+        </div>
+      </div>
 
       {/* Section Header */}
       <div style={{ textAlign: "center", marginBottom: isMobile ? "20px" : "32px" }}>
