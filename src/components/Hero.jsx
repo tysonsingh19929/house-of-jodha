@@ -1,43 +1,43 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-// 🔁 REPLACE these with your actual image URLs later
 const carouselSlides = [
   {
-    image: null, // replace with: "/images/slide1.jpg" or a URL
+    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80&fit=crop",
     label: "Bridal Lehenga Collection",
     sub: "Crafted for your special day",
-    bg: "#f7d6e0",
   },
   {
-    image: null,
+    image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80&fit=crop",
     label: "Festive Saree Looks",
     sub: "Timeless elegance, modern drape",
-    bg: "#fde8c8",
   },
   {
-    image: null,
+    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800&q=80&fit=crop",
     label: "Anarkali & Gharara Sets",
     sub: "Handpicked for every occasion",
-    bg: "#dceeff",
   },
   {
-    image: null,
+    image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?w=800&q=80&fit=crop",
     label: "Sangeet & Mehendi Wear",
     sub: "Dance, celebrate, shine",
-    bg: "#e8f5e9",
   },
   {
-    image: null,
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80&fit=crop",
     label: "Wedding Season Specials",
     sub: "Exclusive collections now live",
-    bg: "#f3e5f5",
   },
 ];
+
+const slideBg = ["#f7d6e0", "#fde8c8", "#dceeff", "#e8f5e9", "#f3e5f5"];
+const slideAccent = ["#C2185B", "#E65100", "#1565C0", "#2E7D32", "#6A1B9A"];
+const slideEmojis = ["👰🏻", "🥻", "👗", "💃🏻", "💍"];
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState({});
+  const [imgError, setImgError] = useState({});
   const intervalRef = useRef(null);
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -46,29 +46,22 @@ export default function Hero() {
   const startAutoPlay = () => {
     intervalRef.current = setInterval(() => {
       setCurrent(prev => (prev + 1) % total);
-    }, 2000);
+    }, 3000);
   };
 
   const stopAutoPlay = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
+  useEffect(() => { startAutoPlay(); return () => stopAutoPlay(); }, []);
   useEffect(() => {
-    startAutoPlay();
-    return () => stopAutoPlay();
-  }, []);
-
-  useEffect(() => {
-    if (isHovered) stopAutoPlay();
-    else startAutoPlay();
+    if (isHovered) stopAutoPlay(); else startAutoPlay();
     return () => stopAutoPlay();
   }, [isHovered]);
 
-  const goTo = (index) => setCurrent(index);
-  const prev = () => setCurrent(prev => (prev - 1 + total) % total);
-  const next = () => setCurrent(prev => (prev + 1) % total);
-
-  const slide = carouselSlides[current];
+  const goTo = (i) => setCurrent(i);
+  const prev = () => setCurrent(p => (p - 1 + total) % total);
+  const next = () => setCurrent(p => (p + 1) % total);
 
   return (
     <div
@@ -78,204 +71,199 @@ export default function Hero() {
       style={{
         position: "relative",
         width: "100%",
-        height: isMobile ? "220px" : "380px",
+        height: isMobile ? "240px" : "420px",
         overflow: "hidden",
-        background: slide.bg,
-        transition: "background 0.5s ease",
-        cursor: "pointer",
       }}
     >
-      {/* Slide Content */}
-      {carouselSlides.map((s, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            opacity: i === current ? 1 : 0,
-            transform: i === current ? "scale(1)" : "scale(1.03)",
-            transition: "opacity 0.6s ease, transform 0.6s ease",
-            pointerEvents: i === current ? "auto" : "none",
-          }}
-        >
-          {s.image ? (
-            <img
-              src={s.image}
-              alt={s.label}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                position: "absolute",
-                inset: 0,
-              }}
-            />
-          ) : (
-            /* Placeholder when no image */
+      {carouselSlides.map((s, i) => {
+        const accent = slideAccent[i];
+        const loaded = imgLoaded[i];
+        const error = imgError[i];
+
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: slideBg[i],
+              opacity: i === current ? 1 : 0,
+              transition: "opacity 0.7s ease",
+              pointerEvents: i === current ? "auto" : "none",
+            }}
+          >
+            {/* Decorative blobs */}
             <div style={{
-              width: "100%",
-              height: "100%",
-              background: s.bg,
+              position: "absolute", inset: 0,
+              backgroundImage: `radial-gradient(ellipse at 15% 50%, ${accent}20 0%, transparent 55%),
+                                radial-gradient(ellipse at 85% 20%, ${accent}15 0%, transparent 45%)`,
+            }} />
+
+            {/* Layout */}
+            <div style={{
+              position: "absolute", inset: 0,
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: "12px",
-              padding: "20px",
+              justifyContent: "space-between",
+              padding: isMobile ? "16px 16px 30px" : "40px 60px 50px",
+              gap: isMobile ? "10px" : "30px",
             }}>
-              {/* Decorative placeholder icon */}
-              <div style={{
-                fontSize: isMobile ? "48px" : "80px",
-                opacity: 0.35,
-              }}>
-                👗
-              </div>
-              <div style={{
-                textAlign: "center",
-                background: "rgba(255,255,255,0.7)",
-                borderRadius: "8px",
-                padding: isMobile ? "10px 16px" : "16px 28px",
-              }}>
+
+              {/* Left: Text */}
+              <div style={{ flex: 1, textAlign: "left", zIndex: 2 }}>
+                <div style={{
+                  fontSize: isMobile ? "9px" : "12px",
+                  fontWeight: 700,
+                  letterSpacing: "3px",
+                  color: accent,
+                  textTransform: "uppercase",
+                  marginBottom: isMobile ? "5px" : "10px",
+                }}>
+                  New Collection
+                </div>
                 <div style={{
                   fontFamily: "Georgia, serif",
-                  fontSize: isMobile ? "16px" : "26px",
-                  fontWeight: "bold",
-                  color: "#880E4F",
-                  marginBottom: "4px",
+                  fontSize: isMobile ? "16px" : "32px",
+                  fontWeight: 700,
+                  color: "#2c1a1a",
+                  lineHeight: 1.2,
+                  marginBottom: isMobile ? "5px" : "10px",
                 }}>
                   {s.label}
                 </div>
                 <div style={{
-                  fontSize: isMobile ? "11px" : "14px",
-                  color: "#666",
+                  fontSize: isMobile ? "10px" : "14px",
+                  color: "#777",
+                  fontStyle: "italic",
+                  marginBottom: isMobile ? "12px" : "22px",
                 }}>
                   {s.sub}
                 </div>
+                <button
+                  onClick={() => navigate("/collection/all")}
+                  style={{
+                    background: accent,
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: isMobile ? "7px 15px" : "10px 24px",
+                    fontSize: isMobile ? "10px" : "13px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    boxShadow: `0 4px 14px ${accent}44`,
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Shop Now →
+                </button>
               </div>
-            </div>
-          )}
 
-          {/* Overlay text when image exists */}
-          {s.image && (
-            <div style={{
-              position: "absolute",
-              bottom: "40px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              textAlign: "center",
-              background: "rgba(0,0,0,0.45)",
-              borderRadius: "8px",
-              padding: isMobile ? "8px 16px" : "12px 28px",
-              whiteSpace: "nowrap",
-            }}>
+              {/* Right: Image card */}
               <div style={{
-                fontFamily: "Georgia, serif",
-                fontSize: isMobile ? "16px" : "24px",
-                fontWeight: "bold",
-                color: "#FFD54F",
+                flex: isMobile ? "0 0 120px" : "0 0 280px",
+                height: isMobile ? "170px" : "330px",
+                borderRadius: isMobile ? "14px" : "20px",
+                overflow: "hidden",
+                boxShadow: `0 8px 30px ${accent}40`,
+                background: `${accent}18`,
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}>
-                {s.label}
-              </div>
-              <div style={{ fontSize: isMobile ? "11px" : "13px", color: "rgba(255,255,255,0.85)" }}>
-                {s.sub}
+                {/* Always render img, show emoji on error */}
+                {!error ? (
+                  <img
+                    src={s.image}
+                    alt={s.label}
+                    onLoad={() => setImgLoaded(p => ({ ...p, [i]: true }))}
+                    onError={() => setImgError(p => ({ ...p, [i]: true }))}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: loaded ? "block" : "none",
+                    }}
+                  />
+                ) : null}
+
+                {/* Emoji shown when image not yet loaded or errored */}
+                {(!loaded || error) && (
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    position: "absolute",
+                    inset: 0,
+                    background: `linear-gradient(135deg, ${accent}18, ${accent}35)`,
+                  }}>
+                    <div style={{ fontSize: isMobile ? "42px" : "80px" }}>
+                      {slideEmojis[i]}
+                    </div>
+                    <div style={{
+                      fontSize: isMobile ? "9px" : "12px",
+                      color: accent,
+                      fontWeight: 600,
+                      textAlign: "center",
+                      padding: "0 6px",
+                    }}>
+                      {s.label}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
-      ))}
+          </div>
+        );
+      })}
 
       {/* Left Arrow */}
-      <button
-        onClick={(e) => { e.stopPropagation(); prev(); }}
-        style={{
-          position: "absolute",
-          left: "10px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.85)",
-          border: "none",
-          borderRadius: "50%",
-          width: isMobile ? "28px" : "36px",
-          height: isMobile ? "28px" : "36px",
-          cursor: "pointer",
-          fontSize: isMobile ? "14px" : "18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 10,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        }}
-      >
-        ‹
-      </button>
+      <button onClick={(e) => { e.stopPropagation(); prev(); }} style={{
+        position: "absolute", left: "8px", top: "50%",
+        transform: "translateY(-50%)",
+        background: "rgba(255,255,255,0.9)", border: "none",
+        borderRadius: "50%",
+        width: isMobile ? "26px" : "36px", height: isMobile ? "26px" : "36px",
+        cursor: "pointer", fontSize: isMobile ? "15px" : "20px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        zIndex: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      }}>‹</button>
 
       {/* Right Arrow */}
-      <button
-        onClick={(e) => { e.stopPropagation(); next(); }}
-        style={{
-          position: "absolute",
-          right: "10px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: "rgba(255,255,255,0.85)",
-          border: "none",
-          borderRadius: "50%",
-          width: isMobile ? "28px" : "36px",
-          height: isMobile ? "28px" : "36px",
-          cursor: "pointer",
-          fontSize: isMobile ? "14px" : "18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 10,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        }}
-      >
-        ›
-      </button>
+      <button onClick={(e) => { e.stopPropagation(); next(); }} style={{
+        position: "absolute", right: "8px", top: "50%",
+        transform: "translateY(-50%)",
+        background: "rgba(255,255,255,0.9)", border: "none",
+        borderRadius: "50%",
+        width: isMobile ? "26px" : "36px", height: isMobile ? "26px" : "36px",
+        cursor: "pointer", fontSize: isMobile ? "15px" : "20px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        zIndex: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      }}>›</button>
 
-      {/* Dot Indicators */}
+      {/* Dots */}
       <div style={{
-        position: "absolute",
-        bottom: "10px",
-        left: "50%",
+        position: "absolute", bottom: "10px", left: "50%",
         transform: "translateX(-50%)",
-        display: "flex",
-        gap: "6px",
-        zIndex: 10,
+        display: "flex", gap: "6px", zIndex: 10,
       }}>
         {carouselSlides.map((_, i) => (
-          <div
-            key={i}
-            onClick={() => goTo(i)}
-            style={{
-              width: i === current ? "20px" : "7px",
-              height: "7px",
-              borderRadius: "4px",
-              background: i === current ? "#C2185B" : "rgba(255,255,255,0.7)",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-            }}
-          />
+          <div key={i} onClick={() => goTo(i)} style={{
+            width: i === current ? "20px" : "7px", height: "7px",
+            borderRadius: "4px",
+            background: i === current ? slideAccent[current] : "rgba(0,0,0,0.2)",
+            cursor: "pointer", transition: "all 0.3s ease",
+          }} />
         ))}
       </div>
 
-      {/* Slide counter */}
+      {/* Counter */}
       <div style={{
-        position: "absolute",
-        top: "10px",
-        right: "14px",
-        background: "rgba(0,0,0,0.3)",
-        color: "#fff",
-        fontSize: "11px",
-        padding: "3px 8px",
-        borderRadius: "10px",
-        zIndex: 10,
+        position: "absolute", top: "10px", right: "14px",
+        background: "rgba(0,0,0,0.25)", color: "#fff",
+        fontSize: "11px", padding: "3px 8px", borderRadius: "10px", zIndex: 10,
       }}>
         {current + 1} / {total}
       </div>
