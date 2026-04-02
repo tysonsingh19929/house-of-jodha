@@ -68,6 +68,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        height: "100%",
       }}>
         <button
           onClick={() => navigate("/")}
@@ -75,13 +76,23 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "#880E4F",
-            fontFamily: "'Georgia', serif",
+            padding: "0",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          M
+          <img
+            src="/jodha-logo.png"
+            alt="House of Jodha"
+            style={{
+              height: "50px",
+              width: "auto",
+              maxWidth: "120px",
+              objectFit: "contain",
+            }}
+          />
         </button>
       </div>
 
