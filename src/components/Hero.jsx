@@ -39,6 +39,8 @@ export default function Hero() {
   const [imgLoaded, setImgLoaded] = useState({});
   const [imgError, setImgError] = useState({});
   const intervalRef = useRef(null);
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const total = carouselSlides.length;
@@ -60,19 +62,48 @@ export default function Hero() {
   }, [isHovered]);
 
   const goTo = (i) => setCurrent(i);
-  const prev = () => setCurrent(p => (p - 1 + total) % total);
-  const next = () => setCurrent(p => (p + 1) % total);
+  const prev = () => { stopAutoPlay(); setCurrent(p => (p - 1 + total) % total); startAutoPlay(); };
+  const next = () => { stopAutoPlay(); setCurrent(p => (p + 1) % total); startAutoPlay(); };
+
+  // Touch handlers for swipe
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    stopAutoPlay();
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Only swipe if horizontal movement is dominant
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
+      if (deltaX < 0) {
+        setCurrent(p => (p + 1) % total); // swipe left → next
+      } else {
+        setCurrent(p => (p - 1 + total) % total); // swipe right → prev
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+    startAutoPlay();
+  };
 
   return (
     <div
       id="home"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{
         position: "relative",
         width: "100%",
         height: isMobile ? "240px" : "420px",
         overflow: "hidden",
+        userSelect: "none",
+        touchAction: "pan-y", // allow vertical scroll, intercept horizontal
       }}
     >
       {carouselSlides.map((s, i) => {
@@ -171,7 +202,6 @@ export default function Hero() {
                 alignItems: "center",
                 justifyContent: "center",
               }}>
-                {/* Always render img, show emoji on error */}
                 {!error ? (
                   <img
                     src={s.image}
@@ -187,7 +217,6 @@ export default function Hero() {
                   />
                 ) : null}
 
-                {/* Emoji shown when image not yet loaded or errored */}
                 {(!loaded || error) && (
                   <div style={{
                     display: "flex",

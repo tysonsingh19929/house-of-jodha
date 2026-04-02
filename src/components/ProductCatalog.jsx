@@ -2,29 +2,26 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { products } from "../data/products.js";
 
+const PRODUCTS_PER_PAGE = 12;
+
 export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWishlist, removeFromWishlist, isInWishlist }) {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [addedProducts, setAddedProducts] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
 
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
   const allProducts = [...products, ...customProducts];
   const isMobile = window.innerWidth <= 768;
 
   const handleAddProduct = (product) => {
-    setAddedProducts(prev => ({
-      ...prev,
-      [product.id]: (prev[product.id] || 0) + 1
-    }));
+    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
 
   const handleIncreaseQuantity = (product) => {
-    setAddedProducts(prev => ({
-      ...prev,
-      [product.id]: (prev[product.id] || 0) + 1
-    }));
+    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
 
@@ -32,7 +29,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     setAddedProducts(prev => {
       const newQty = Math.max(0, (prev[product.id] || 0) - 1);
       if (newQty === 0) {
-        const updated = {...prev};
+        const updated = { ...prev };
         delete updated[product.id];
         onRemoveProduct?.(product.id);
         return updated;
@@ -40,46 +37,51 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       return { ...prev, [product.id]: newQty };
     });
   };
-  
+
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
-  
-  const filteredProducts = (selectedCategory === "All" 
-    ? allProducts 
+
+  const filteredProducts = (selectedCategory === "All"
+    ? allProducts
     : allProducts.filter(p => p.category === selectedCategory))
     .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const gridCols = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1); // reset to page 1 on category change
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of products section
+    document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div id="products" style={{ padding: isMobile ? "24px 12px" : "48px 28px", background: "#FFF0F6" }}>
-      
-      {/* Search Bar Section - Minimal Clean Design */}
-      <div style={{
-        marginBottom: isMobile ? "24px" : "32px",
-      }}>
-        {/* Search Input */}
+
+      {/* Search Bar */}
+      <div style={{ marginBottom: isMobile ? "24px" : "32px" }}>
         <div style={{
-          display: "flex",
-          alignItems: "center",
-          background: "#fff",
-          borderRadius: "20px",
-          padding: "10px 16px",
-          border: "1px solid #e0e0e0",
+          display: "flex", alignItems: "center",
+          background: "#fff", borderRadius: "20px",
+          padding: "10px 16px", border: "1px solid #e0e0e0",
         }}>
           <span style={{ fontSize: "14px", marginRight: "10px", color: "#999" }}>🔍</span>
           <input
             type="text"
             placeholder="Search for brands and products"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             style={{
-              flex: 1,
-              border: "none",
-              background: "transparent",
+              flex: 1, border: "none", background: "transparent",
               fontSize: isMobile ? "13px" : "14px",
-              outline: "none",
-              color: "#666",
-              fontFamily: "inherit",
+              outline: "none", color: "#666", fontFamily: "inherit",
             }}
           />
         </div>
@@ -90,9 +92,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         <h2 style={{
           fontFamily: "'Georgia', 'Times New Roman', serif",
           fontSize: isMobile ? "26px" : "36px",
-          fontWeight: "700",
-          color: "#880E4F",
-          margin: "0 0 6px",
+          fontWeight: "700", color: "#880E4F", margin: "0 0 6px",
         }}>
           Our Collections
         </h2>
@@ -103,27 +103,22 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
       {/* Category Filter Pills */}
       <div style={{
-        display: "flex",
-        gap: "8px",
+        display: "flex", gap: "8px",
         marginBottom: isMobile ? "16px" : "28px",
-        justifyContent: "center",
-        flexWrap: "wrap",
+        justifyContent: "center", flexWrap: "wrap",
       }}>
         {categories.map(cat => (
           <button
             key={cat}
-            onClick={() => setSelectedCategory(cat)}
+            onClick={() => handleCategoryChange(cat)}
             style={{
               padding: isMobile ? "7px 14px" : "9px 20px",
               fontSize: isMobile ? "11px" : "13px",
               background: selectedCategory === cat
-                ? "linear-gradient(135deg, #E91E63, #C2185B)"
-                : "#fff",
+                ? "linear-gradient(135deg, #E91E63, #C2185B)" : "#fff",
               color: selectedCategory === cat ? "#fff" : "#C2185B",
               border: selectedCategory === cat ? "none" : "1.5px solid #F48FB1",
-              borderRadius: "20px",
-              cursor: "pointer",
-              fontWeight: "600",
+              borderRadius: "20px", cursor: "pointer", fontWeight: "600",
               transition: "all 0.2s",
               boxShadow: selectedCategory === cat ? "0 2px 12px rgba(233,30,99,0.35)" : "none",
             }}
@@ -135,15 +130,11 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
       {/* Count badge */}
       <div style={{
-        background: "#FCE4EC",
-        border: "1px solid #F48FB1",
-        borderRadius: "4px",
-        padding: isMobile ? "8px 12px" : "10px 16px",
+        background: "#FCE4EC", border: "1px solid #F48FB1",
+        borderRadius: "4px", padding: isMobile ? "8px 12px" : "10px 16px",
         marginBottom: isMobile ? "16px" : "24px",
         fontSize: isMobile ? "12px" : "13px",
-        fontWeight: "600",
-        textAlign: "center",
-        color: "#880E4F",
+        fontWeight: "600", textAlign: "center", color: "#880E4F",
       }}>
         ✨ {filteredProducts.length} {selectedCategory} products available
       </div>
@@ -155,20 +146,17 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         gap: isMobile ? "12px" : "16px",
         width: "100%",
       }}>
-        {filteredProducts.map((product) => {
+        {paginatedProducts.map((product) => {
           const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
           return (
             <div
               key={product.id}
               onClick={() => navigate(`/product/${product.id}`)}
               style={{
-                background: "#fff",
-                borderRadius: "8px",
-                overflow: "hidden",
-                cursor: "pointer",
+                background: "#fff", borderRadius: "8px",
+                overflow: "hidden", cursor: "pointer",
                 border: "1px solid rgba(244,143,177,0.25)",
-                transition: "all 0.25s",
-                position: "relative",
+                transition: "all 0.25s", position: "relative",
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.transform = "translateY(-4px)";
@@ -185,11 +173,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
               <div style={{
                 background: "linear-gradient(135deg, #FCE4EC 0%, #FFF0F6 100%)",
                 aspectRatio: "1 / 1",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                position: "relative", overflow: "hidden",
               }}>
                 {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
                   <img
@@ -205,8 +190,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                 {discount > 0 && (
                   <div style={{
                     position: "absolute", top: "8px", left: "8px",
-                    background: "#C2185B",
-                    color: "#fff",
+                    background: "#C2185B", color: "#fff",
                     fontSize: "10px", fontWeight: "700",
                     padding: "3px 8px", borderRadius: "3px",
                   }}>
@@ -226,24 +210,15 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                   }}
                   style={{
                     position: "absolute", top: "8px", right: "8px",
-                    background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff", 
-                    border: "none",
-                    width: "32px", height: "32px",
-                    borderRadius: "50%", cursor: "pointer",
-                    fontSize: "16px",
+                    background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
+                    border: "none", width: "32px", height: "32px",
+                    borderRadius: "50%", cursor: "pointer", fontSize: "16px",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                    transition: "all 0.2s",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)", transition: "all 0.2s",
                     color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
                   }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = "scale(1.2)";
-                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(233,30,99,0.3)";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
-                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.2)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
                   title={isInWishlist && isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                 >
                   {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
@@ -299,9 +274,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                         color: "#fff", border: "none", borderRadius: "3px",
                         cursor: "pointer", fontWeight: "700", fontSize: "14px",
                       }}
-                    >
-                      −
-                    </button>
+                    >−</button>
                     <span style={{
                       flex: 1, textAlign: "center",
                       fontSize: isMobile ? "12px" : "13px",
@@ -317,21 +290,17 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                         color: "#fff", border: "none", borderRadius: "3px",
                         cursor: "pointer", fontWeight: "700", fontSize: "14px",
                       }}
-                    >
-                      +
-                    </button>
+                    >+</button>
                   </div>
                 ) : (
                   <button
                     onClick={e => { e.stopPropagation(); handleAddProduct(product); }}
                     style={{
-                      width: "100%",
-                      padding: isMobile ? "7px" : "9px",
+                      width: "100%", padding: isMobile ? "7px" : "9px",
                       fontSize: isMobile ? "11px" : "12px",
                       background: "linear-gradient(90deg, #E91E63, #C2185B)",
                       color: "#fff", border: "none", borderRadius: "3px",
-                      cursor: "pointer", fontWeight: "700",
-                      transition: "opacity 0.2s",
+                      cursor: "pointer", fontWeight: "700", transition: "opacity 0.2s",
                     }}
                     onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
                     onMouseLeave={e => e.currentTarget.style.opacity = "1"}
@@ -344,6 +313,83 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
           );
         })}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div style={{
+          display: "flex", justifyContent: "center",
+          alignItems: "center", gap: "8px",
+          marginTop: isMobile ? "24px" : "36px",
+          flexWrap: "wrap",
+        }}>
+          {/* Prev button */}
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            style={{
+              padding: isMobile ? "7px 14px" : "9px 18px",
+              fontSize: isMobile ? "12px" : "13px",
+              background: currentPage === 1 ? "#f5f5f5" : "linear-gradient(135deg, #E91E63, #C2185B)",
+              color: currentPage === 1 ? "#bbb" : "#fff",
+              border: "none", borderRadius: "20px",
+              cursor: currentPage === 1 ? "not-allowed" : "pointer",
+              fontWeight: "600", transition: "all 0.2s",
+            }}
+          >
+            ← Prev
+          </button>
+
+          {/* Page numbers */}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              style={{
+                width: isMobile ? "32px" : "38px",
+                height: isMobile ? "32px" : "38px",
+                borderRadius: "50%",
+                border: page === currentPage ? "none" : "1.5px solid #F48FB1",
+                background: page === currentPage
+                  ? "linear-gradient(135deg, #E91E63, #C2185B)" : "#fff",
+                color: page === currentPage ? "#fff" : "#C2185B",
+                cursor: "pointer", fontWeight: "700",
+                fontSize: isMobile ? "12px" : "13px",
+                transition: "all 0.2s",
+                boxShadow: page === currentPage ? "0 2px 10px rgba(233,30,99,0.35)" : "none",
+              }}
+            >
+              {page}
+            </button>
+          ))}
+
+          {/* Next button */}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            style={{
+              padding: isMobile ? "7px 14px" : "9px 18px",
+              fontSize: isMobile ? "12px" : "13px",
+              background: currentPage === totalPages ? "#f5f5f5" : "linear-gradient(135deg, #E91E63, #C2185B)",
+              color: currentPage === totalPages ? "#bbb" : "#fff",
+              border: "none", borderRadius: "20px",
+              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+              fontWeight: "600", transition: "all 0.2s",
+            }}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
+      {/* Page info */}
+      {totalPages > 1 && (
+        <div style={{
+          textAlign: "center", marginTop: "12px",
+          fontSize: isMobile ? "11px" : "12px", color: "#9C4070",
+        }}>
+          Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–{Math.min(currentPage * PRODUCTS_PER_PAGE, filteredProducts.length)} of {filteredProducts.length} products
+        </div>
+      )}
     </div>
   );
 }
