@@ -126,24 +126,24 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
 
       {/* Header */}
       <div style={{ 
-        padding: window.innerWidth <= 768 ? "15px 15px" : "22px 20px", 
-        borderBottom: "2px solid #f0f0f0",
-        background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
+        padding: window.innerWidth <= 768 ? "8px 15px" : "12px 20px", 
+        borderBottom: "1px solid #e0e0e0",
+        background: "#fff",
         flexShrink: 0,
-        boxShadow: "0 2px 10px rgba(136,14,79,0.2)"
+        boxShadow: "none"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <button
               onClick={() => navigate(-1)}
               style={{
-                background: "rgba(255,255,255,0.2)",
+                background: "none",
                 border: "none",
                 fontSize: window.innerWidth <= 768 ? "18px" : "16px",
                 cursor: "pointer",
                 padding: "4px 8px",
-                borderRadius: "4px",
-                color: "#fff",
+                borderRadius: "0",
+                color: "#333",
                 transition: "all 0.2s",
                 minWidth: "32px",
                 height: "32px",
@@ -151,8 +151,8 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
                 alignItems: "center",
                 justifyContent: "center"
               }}
-              onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.3)"}
-              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.2)"}
+              onMouseEnter={e => e.target.style.opacity = "0.7"}
+              onMouseLeave={e => e.target.style.opacity = "1"}
               title="Go back"
             >
               ←
@@ -160,10 +160,10 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           </div>
 
           <div style={{ flex: 1, textAlign: "center" }}>
-            <h3 style={{ margin: "0", color: "#fff", fontSize: window.innerWidth <= 768 ? "16px" : "20px", fontWeight: "700" }}>
+            <h3 style={{ margin: "0", color: "#333", fontSize: window.innerWidth <= 768 ? "14px" : "16px", fontWeight: "600" }}>
               🛍️ My Cart
             </h3>
-            <p style={{ margin: "4px 0 0 0", color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
+            <p style={{ margin: "2px 0 0 0", color: "#999", fontSize: "11px" }}>
               {groupedItems.length} {groupedItems.length === 1 ? "item" : "items"}
             </p>
           </div>
@@ -171,17 +171,17 @@ export default function Cart({ items, onRemove, onClose, onUpdateQuantity }) {
           <button
             onClick={onClose}
             style={{
-              background: "rgba(255,255,255,0.2)",
+              background: "none",
               border: "none",
               fontSize: "24px",
               cursor: "pointer",
               padding: "4px 8px",
-              borderRadius: "4px",
-              color: "#fff",
+              borderRadius: "0",
+              color: "#333",
               transition: "all 0.2s"
             }}
-            onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.3)"}
-            onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.2)"}
+            onMouseEnter={e => e.target.style.opacity = "0.7"}
+            onMouseLeave={e => e.target.style.opacity = "1"}
           >
             ✕
           </button>

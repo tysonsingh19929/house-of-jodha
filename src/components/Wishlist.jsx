@@ -61,35 +61,35 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
 
       {/* Header */}
       <div style={{ 
-        padding: isMobile ? "15px 15px" : "22px 20px", 
-        borderBottom: "2px solid #f0f0f0",
-        background: "linear-gradient(135deg, #E91E63 0%, #C2185B 100%)",
+        padding: isMobile ? "8px 15px" : "12px 20px", 
+        borderBottom: "1px solid #e0e0e0",
+        background: "#fff",
         flexShrink: 0,
-        boxShadow: "0 2px 10px rgba(233,30,99,0.2)"
+        boxShadow: "none"
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
           <div style={{ flex: 1, textAlign: "center" }}>
-            <h3 style={{ margin: "0", color: "#fff", fontSize: isMobile ? "16px" : "20px", fontWeight: "700" }}>
+            <h3 style={{ margin: "0", color: "#333", fontSize: isMobile ? "14px" : "16px", fontWeight: "600" }}>
               ♡ My Wishlist
             </h3>
-            <p style={{ margin: "4px 0 0 0", color: "rgba(255,255,255,0.8)", fontSize: "12px" }}>
+            <p style={{ margin: "2px 0 0 0", color: "#999", fontSize: "11px" }}>
               {items.length} {items.length === 1 ? "item" : "items"}
             </p>
           </div>
           <button
             onClick={onClose}
             style={{
-              background: "rgba(255,255,255,0.2)",
+              background: "none",
               border: "none",
               fontSize: "24px",
               cursor: "pointer",
               padding: "4px 8px",
-              borderRadius: "4px",
-              color: "#fff",
+              borderRadius: "0",
+              color: "#333",
               transition: "all 0.2s"
             }}
-            onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.3)"}
-            onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.2)"}
+            onMouseEnter={e => e.target.style.opacity = "0.7"}
+            onMouseLeave={e => e.target.style.opacity = "1"}
           >
             ✕
           </button>
