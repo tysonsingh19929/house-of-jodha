@@ -53,23 +53,20 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
 
   return (
     <div ref={navbarRef} style={navStyle}>
-      {/* Left: Menu Button */}
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        style={{ ...iconBtnStyle }}
-        title="Menu"
-      >
-        ☰
-      </button>
-
-      {/* Center: Logo */}
+      {/* Left: Menu Button + Logo */}
       <div style={{
-        flex: 1,
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        height: "100%",
+        gap: "8px",
       }}>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{ ...iconBtnStyle }}
+          title="Menu"
+        >
+          ☰
+        </button>
+        
         <button
           onClick={() => navigate("/")}
           style={{
@@ -77,7 +74,6 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             border: "none",
             cursor: "pointer",
             padding: "0",
-            height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -87,9 +83,9 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             src="/jodha-logo.png"
             alt="House of Jodha"
             style={{
-              height: "50px",
+              height: "32px",
               width: "auto",
-              maxWidth: "120px",
+              maxWidth: "80px",
               objectFit: "contain",
             }}
           />
