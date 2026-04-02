@@ -158,7 +158,7 @@ const ProductCard = memo(({ product, onAddToCart, onRemoveProduct, addedProducts
             onMouseEnter={e => e.target.style.background = "#c9860f"}
             onMouseLeave={e => e.target.style.background = "var(--accent)"}
           >
-            Add to Cart
+            Buy Now
           </button>
         )}
       </div>
