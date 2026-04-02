@@ -18,6 +18,8 @@ export default function ProductDetail({
   const [selectedSize, setSelectedSize] = useState("M");
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [zoom, setZoom] = useState(false);
+  const [viewingCount] = useState(Math.floor(Math.random() * 30) + 10); // 10-40 people
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const isMobile = window.innerWidth <= 768;
 
@@ -149,51 +151,101 @@ export default function ProductDetail({
       )}
 
       {/* Breadcrumb */}
-      <div style={{ padding: "20px", fontSize: "14px", color: "#666", borderBottom: "1px solid #eee" }}>
-        <span onClick={() => navigate("/")} style={{ cursor: "pointer", color: "var(--accent)" }}>Home</span> &gt; 
-        <span onClick={() => navigate("/")} style={{ cursor: "pointer", color: "var(--accent)", marginLeft: "10px" }}>{product.category}</span> &gt; 
-        <span style={{ marginLeft: "10px", color: "#999" }}>{product.name.substring(0, 50)}...</span>
+      <div style={{ padding: "12px 20px", fontSize: "13px", color: "#999", borderBottom: "1px solid #f0f0f0", maxWidth: "1400px", margin: "0 auto" }}>
+        <span onClick={() => navigate("/")} style={{ cursor: "pointer", color: "#880E4F", fontWeight: "500" }}>Home</span>
+        <span style={{ margin: "0 8px", color: "#ddd" }}>/</span>
+        <span onClick={() => navigate(`/collection/${product.category.toLowerCase()}`)} style={{ cursor: "pointer", color: "#880E4F", fontWeight: "500" }}>{product.category}</span>
+        <span style={{ margin: "0 8px", color: "#ddd" }}>/</span>
+        <span style={{ color: "#999" }}>{product.name.substring(0, 40)}</span>
       </div>
 
-      {/* Product Details Container */}
+      {/* Product Details Container - Modern 2-Column Layout */}
       <div style={{
         display: "grid",
         gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-        gap: "40px",
-        padding: isMobile ? "20px" : "40px",
-        maxWidth: "1200px",
-        margin: "0 auto"
+        gap: isMobile ? "20px" : "60px",
+        padding: isMobile ? "20px" : "40px 60px",
+        maxWidth: "1400px",
+        margin: "0 auto",
+        alignItems: "start"
       }}>
-        {/* Product Images */}
-        <div>
+        {/* LEFT COLUMN - Product Image with Zoom */}
+        <div style={{ position: "relative" }}>
+          {/* Main Product Image */}
           <div style={{
-            background: "#f5f5f5",
-            aspectRatio: "1",
-            borderRadius: "8px",
+            background: "#f9f9f9",
+            aspectRatio: isMobile ? "9/12" : "3/4",
+            borderRadius: "12px",
             overflow: "hidden",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+            cursor: zoom ? "zoom-out" : "zoom-in"
+          }}
+          onClick={() => setZoom(!zoom)}
+          >
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                transform: zoom ? "scale(1.3)" : "scale(1)",
+                transition: "transform 0.3s ease"
+              }} 
+            />
+            {/* Zoom Icon */}
+            <div style={{
+              position: "absolute",
+              bottom: "15px",
+              right: "15px",
+              background: "#fff",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              cursor: "pointer",
+              fontSize: "20px",
+              transition: "all 0.3s"
+            }}
+            onMouseEnter={e => e.target.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)"}
+            onMouseLeave={e => e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)"}
+            >
+              🔍
+            </div>
+          </div>
+
+          {/* Product View Controls */}
+          <div style={{
+            display: "flex",
+            gap: "10px",
             justifyContent: "center"
           }}>
-            <img src={product.image} alt={product.name} style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover"
-            }} />
-          </div>
-          
-          {/* Image Thumbnails (Placeholder) */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} style={{
+              <div key={i} 
+              style={{
+                width: isMobile ? "50px" : "60px",
+                aspectRatio: "3/4",
                 background: "#f5f5f5",
-                aspectRatio: "1",
-                borderRadius: "4px",
+                borderRadius: "6px",
+                overflow: "hidden",
                 cursor: "pointer",
-                border: i === 1 ? "2px solid var(--accent)" : "1px solid #ddd",
-                overflow: "hidden"
-              }}>
+                border: i === 1 ? "2px solid #880E4F" : "1px solid #e0e0e0",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={e => {
+                if (i !== 1) e.currentTarget.style.borderColor = "#880E4F";
+              }}
+              onMouseLeave={e => {
+                if (i !== 1) e.currentTarget.style.borderColor = "#e0e0e0";
+              }}
+              >
                 <img src={product.image} alt={`View ${i}`} style={{
                   width: "100%",
                   height: "100%",
@@ -204,10 +256,17 @@ export default function ProductDetail({
           </div>
         </div>
 
-        {/* Product Info */}
+        {/* RIGHT COLUMN - Product Info */}
         <div>
-          {/* Category & Stock */}
-          <div style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "10px" }}>
+          {/* Category Badge */}
+          <div style={{ 
+            fontSize: "11px", 
+            color: "#888",
+            textTransform: "uppercase",
+            fontWeight: "700",
+            letterSpacing: "1.5px",
+            marginBottom: "12px"
+          }}>
             {product.category}
           </div>
 
@@ -215,83 +274,152 @@ export default function ProductDetail({
           <h1 style={{
             fontSize: isMobile ? "20px" : "28px",
             fontWeight: "700",
-            color: "#333",
-            marginBottom: "10px",
-            lineHeight: "1.3"
+            color: "#1a0010",
+            marginBottom: "8px",
+            lineHeight: "1.3",
+            maxWidth: "100%"
           }}>
             {product.name}
           </h1>
 
           {/* Rating */}
-          <div style={{ fontSize: "14px", marginBottom: "20px", color: "#ff6b6b" }}>
-            ⭐ 4.8 ★ <span style={{ color: "#999", fontSize: "13px" }}>(2,345 reviews)</span>
+          <div style={{ 
+            fontSize: "13px", 
+            marginBottom: "20px", 
+            color: "#E91E63",
+            fontWeight: "600"
+          }}>
+            ⭐ 4.8/5 <span style={{ color: "#999", marginLeft: "6px", fontWeight: "400" }}>({product.reviews || 324} reviews)</span>
           </div>
 
           {/* Price Section */}
           <div style={{
-            padding: "20px",
-            background: "#f9f9f9",
-            borderRadius: "8px",
-            marginBottom: "20px"
+            marginBottom: "24px",
+            paddingBottom: "24px",
+            borderBottom: "1px solid #f0f0f0"
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-              <span style={{ fontSize: "32px", fontWeight: "700", color: "#333" }}>₹{product.price}</span>
-              <span style={{ fontSize: "18px", color: "#999", textDecoration: "line-through" }}>₹{product.originalPrice}</span>
-              <span style={{ fontSize: "16px", fontWeight: "600", color: "#fff", background: "#ff6b6b", padding: "4px 8px", borderRadius: "4px" }}>
-                {discount}% OFF
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+              <span style={{ fontSize: isMobile ? "24px" : "32px", fontWeight: "700", color: "#1a0010" }}>
+                ₹{product.price.toLocaleString()}
+              </span>
+              <span style={{ fontSize: "16px", color: "#999", textDecoration: "line-through" }}>
+                ₹{product.originalPrice.toLocaleString()}
+              </span>
+              <span style={{ 
+                fontSize: "13px", 
+                fontWeight: "700", 
+                color: "#fff", 
+                background: "#E91E63", 
+                padding: "4px 10px", 
+                borderRadius: "4px",
+                marginLeft: "6px"
+              }}>
+                -{discount}% OFF
               </span>
             </div>
+            <p style={{ fontSize: "12px", color: "#888", margin: "6px 0 0 0" }}>
+              Inclusive of all taxes
+            </p>
           </div>
 
-          {/* Category & Info */}
-          <div style={{ marginBottom: "30px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+          {/* Social Proof */}
+          <div style={{
+            background: "#FFF0F6",
+            border: "1px solid #f8bbd9",
+            borderRadius: "8px",
+            padding: "12px 14px",
+            marginBottom: "20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px"
+          }}>
+            <span style={{ fontSize: "16px" }}>👥</span>
             <div>
-              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Category</h4>
-              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>{product.category}</p>
-            </div>
-            <div>
-              <h4 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", fontWeight: "600", marginBottom: "5px" }}>Price</h4>
-              <p style={{ fontSize: "14px", color: "#333", fontWeight: "500" }}>₹{product.price}</p>
+              <p style={{ margin: "0", fontSize: "13px", color: "#880E4F", fontWeight: "600" }}>
+                {viewingCount} people viewing this item
+              </p>
+              <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#999" }}>
+                Don't wait! Stock is limited
+              </p>
             </div>
           </div>
 
           {/* Size Selection */}
-          <div style={{ marginBottom: "30px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-              <h3 style={{ fontSize: "14px", fontWeight: "600", color: "#333", margin: "0" }}>Select Size</h3>
+          <div style={{ marginBottom: "20px" }}>
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center", 
+              marginBottom: "12px" 
+            }}>
+              <h3 style={{ 
+                fontSize: "13px", 
+                fontWeight: "700", 
+                color: "#333", 
+                margin: "0",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px"
+              }}>
+                Select Size
+              </h3>
               <button
                 onClick={() => setSizeChartOpen(true)}
                 style={{
-                  background: "none",
-                  border: "1px solid #D4AF37",
-                  color: "#D4AF37",
-                  padding: "4px 12px",
-                  fontSize: "12px",
+                  background: "transparent",
+                  border: "1px solid #880E4F",
+                  color: "#880E4F",
+                  padding: "4px 10px",
+                  fontSize: "11px",
                   borderRadius: "4px",
                   cursor: "pointer",
                   fontWeight: "600",
-                  transition: "all 0.2s"
+                  transition: "all 0.2s",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.3px"
                 }}
-                onMouseEnter={e => e.target.style.background = "rgba(212,175,55,0.1)"}
-                onMouseLeave={e => e.target.style.background = "none"}
+                onMouseEnter={e => {
+                  e.target.style.background = "#880E4F";
+                  e.target.style.color = "#fff";
+                }}
+                onMouseLeave={e => {
+                  e.target.style.background = "transparent";
+                  e.target.style.color = "#880E4F";
+                }}
               >
                 📏 Size Guide
               </button>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "8px" }}>
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(6, 1fr)", 
+              gap: "8px"
+            }}>
               {sizes.map(size => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   style={{
-                    padding: "10px",
-                    background: selectedSize === size ? "var(--accent)" : "#f5f5f5",
+                    padding: "11px 0",
+                    background: selectedSize === size ? "#880E4F" : "#f5f5f5",
                     color: selectedSize === size ? "#fff" : "#333",
-                    border: selectedSize === size ? "none" : "1px solid #ddd",
-                    borderRadius: "4px",
+                    border: "1px solid " + (selectedSize === size ? "#880E4F" : "#e0e0e0"),
+                    borderRadius: "6px",
                     cursor: "pointer",
                     fontWeight: "600",
-                    fontSize: "13px"
+                    fontSize: "12px",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => {
+                    if (selectedSize !== size) {
+                      e.target.style.borderColor = "#880E4F";
+                      e.target.style.background = "#fff8fc";
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (selectedSize !== size) {
+                      e.target.style.borderColor = "#e0e0e0";
+                      e.target.style.background = "#f5f5f5";
+                    }
                   }}
                 >
                   {size}
@@ -301,25 +429,40 @@ export default function ProductDetail({
           </div>
 
           {/* Quantity Selection */}
-          <div style={{ marginBottom: "15px" }}>
-            <h3 style={{ fontSize: "12px", fontWeight: "500", color: "#999", marginBottom: "5px", opacity: 0.8 }}>Quantity</h3>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", width: "auto" }}>
+          <div style={{ marginBottom: "24px" }}>
+            <h3 style={{ 
+              fontSize: "13px", 
+              fontWeight: "700", 
+              color: "#333", 
+              margin: "0 0 12px 0",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px"
+            }}>
+              Quantity
+            </h3>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "fit-content" }}>
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 style={{
-                  width: "35px",
-                  height: "35px",
-                  background: "#f9f9f9",
-                  border: "1px solid #e5e5e5",
-                  borderRadius: "3px",
+                  width: "40px",
+                  height: "40px",
+                  background: "#f5f5f5",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "6px",
                   cursor: "pointer",
-                  fontSize: "16px",
+                  fontSize: "18px",
                   fontWeight: "600",
-                  transition: "all 0.2s",
-                  color: "#999"
+                  color: "#880E4F",
+                  transition: "all 0.2s"
                 }}
-                onMouseEnter={e => e.target.style.background = "#f0f0f0"}
-                onMouseLeave={e => e.target.style.background = "#f9f9f9"}
+                onMouseEnter={e => {
+                  e.target.style.background = "#fff0f6";
+                  e.target.style.borderColor = "#880E4F";
+                }}
+                onMouseLeave={e => {
+                  e.target.style.background = "#f5f5f5";
+                  e.target.style.borderColor = "#e0e0e0";
+                }}
               >
                 −
               </button>
@@ -330,120 +473,129 @@ export default function ProductDetail({
                 value={quantity}
                 onChange={(e) => {
                   const inputValue = e.target.value;
-                  
-                  // Allow empty field during typing
-                  if (inputValue === "") {
-                    return;
-                  }
-                  
+                  if (inputValue === "") return;
                   const numValue = parseInt(inputValue, 10);
-                  
-                  // Only update if it's a valid positive number
                   if (!isNaN(numValue) && numValue > 0) {
-                    setQuantity(Math.min(numValue, 99)); // Cap at 99
+                    setQuantity(Math.min(numValue, 99));
                   }
                 }}
                 onBlur={(e) => {
-                  // Ensure value is valid when leaving the field
                   let val = parseInt(e.target.value, 10);
-                  if (isNaN(val) || val < 1) {
-                    val = 1;
-                  } else if (val > 99) {
-                    val = 99;
-                  }
+                  if (isNaN(val) || val < 1) val = 1;
+                  else if (val > 99) val = 99;
                   setQuantity(val);
                 }}
                 style={{
-                  width: "50px",
-                  height: "35px",
-                  border: "1px solid #e5e5e5",
-                  borderRadius: "3px",
+                  width: "60px",
+                  height: "40px",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "6px",
                   textAlign: "center",
-                  fontSize: "14px",
+                  fontSize: "15px",
                   fontWeight: "600",
-                  color: "#666",
-                  background: "#fafafa",
-                  padding: "0 6px"
+                  color: "#333",
+                  background: "#fff",
+                  padding: "0"
                 }}
               />
               <button
-                onClick={() => setQuantity(quantity + 1)}
+                onClick={() => setQuantity(Math.min(99, quantity + 1))}
                 style={{
-                  width: "35px",
-                  height: "35px",
-                  background: "#f9f9f9",
-                  border: "1px solid #e5e5e5",
-                  borderRadius: "3px",
+                  width: "40px",
+                  height: "40px",
+                  background: "#f5f5f5",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "6px",
                   cursor: "pointer",
-                  fontSize: "16px",
+                  fontSize: "18px",
                   fontWeight: "600",
-                  transition: "all 0.2s",
-                  color: "#999"
+                  color: "#880E4F",
+                  transition: "all 0.2s"
                 }}
-                onMouseEnter={e => e.target.style.background = "#f0f0f0"}
-                onMouseLeave={e => e.target.style.background = "#f9f9f9"}
+                onMouseEnter={e => {
+                  e.target.style.background = "#fff0f6";
+                  e.target.style.borderColor = "#880E4F";
+                }}
+                onMouseLeave={e => {
+                  e.target.style.background = "#f5f5f5";
+                  e.target.style.borderColor = "#e0e0e0";
+                }}
               >
                 +
               </button>
             </div>
           </div>
 
-          {/* Buy Now and Add to Cart Buttons */}
-          <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+          {/* Main CTA Buttons */}
+          <div style={{ display: "flex", gap: "12px", marginBottom: "14px" }}>
+            {/* Buy Now Button */}
             <button
               onClick={handleBuyNow}
               style={{
                 flex: 1,
-                padding: "15px",
-                background: "linear-gradient(135deg, #880E4F 0%, #6B0A3D 100%)",
-                color: "#fff",
-                border: "none",
-                borderRadius: "6px",
-                fontSize: "16px",
+                padding: "14px 24px",
+                background: "#fff",
+                color: "#880E4F",
+                border: "2px solid #880E4F",
+                borderRadius: "8px",
+                fontSize: "14px",
                 fontWeight: "700",
                 cursor: "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: "0 4px 12px rgba(136,14,79,0.2)"
+                transition: "all 0.3s",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
               }}
-              onMouseEnter={e => e.target.style.transform = "translateY(-2px)"}
-              onMouseLeave={e => e.target.style.transform = "translateY(0)"}
+              onMouseEnter={e => {
+                e.target.style.background = "#880E4F";
+                e.target.style.color = "#fff";
+                e.target.style.boxShadow = "0 4px 16px rgba(136,14,79,0.2)";
+              }}
+              onMouseLeave={e => {
+                e.target.style.background = "#fff";
+                e.target.style.color = "#880E4F";
+                e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+              }}
             >
-              🚀 Buy Now
+              BUY IT NOW
             </button>
 
+            {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
               style={{
                 flex: 1,
-                padding: "15px",
-                background: addedToCart ? "#27ae60" : "#F48FB1",
-                color: addedToCart ? "#fff" : "#880E4F",
-                border: "2px solid #880E4F",
-                borderRadius: "6px",
-                fontSize: "16px",
+                padding: "14px 24px",
+                background: "#1a0010",
+                color: "#fff",
+                border: "2px solid #1a0010",
+                borderRadius: "8px",
+                fontSize: "14px",
                 fontWeight: "700",
                 cursor: "pointer",
-                marginBottom: "0",
-                transition: "all 0.3s ease"
+                transition: "all 0.3s",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
               }}
               onMouseEnter={e => {
                 if (!addedToCart) {
-                  e.target.style.background = "#880E4F";
-                  e.target.style.color = "#fff";
+                  e.target.style.background = "#2d0014";
+                  e.target.style.boxShadow = "0 4px 16px rgba(26,0,16,0.3)";
                 }
               }}
               onMouseLeave={e => {
                 if (!addedToCart) {
-                  e.target.style.background = "#F48FB1";
-                  e.target.style.color = "#880E4F";
+                  e.target.style.background = "#1a0010";
+                  e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
                 }
               }}
             >
-              {addedToCart ? "✓ Added to Cart!" : `🛍️ Add to Cart`}
+              {addedToCart ? "✓ ADDED TO CART" : "ADD TO CART"}
             </button>
           </div>
 
-          {/* Wishlist Button */}
+          {/* Add to Wishlist Button */}
           <button
             onClick={() => {
               if (isInWishlist && isInWishlist(product.id)) {
@@ -454,15 +606,17 @@ export default function ProductDetail({
             }}
             style={{
               width: "100%",
-              padding: "15px",
+              padding: "12px 24px",
               background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
               color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
               border: "2px solid #E91E63",
-              borderRadius: "6px",
-              fontSize: "16px",
+              borderRadius: "8px",
+              fontSize: "13px",
               fontWeight: "700",
               cursor: "pointer",
-              transition: "all 0.3s"
+              transition: "all 0.3s",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px"
             }}
             onMouseEnter={e => {
               e.target.style.background = "#E91E63";
@@ -471,15 +625,57 @@ export default function ProductDetail({
             onMouseLeave={e => {
               if (isInWishlist && isInWishlist(product.id)) {
                 e.target.style.background = "#E91E63";
-                e.target.style.color = "#fff";
               } else {
                 e.target.style.background = "#fff";
-                e.target.style.color = "#E91E63";
               }
             }}
           >
-            {isInWishlist && isInWishlist(product.id) ? "♡ Added to Wishlist" : "♡ Add to Wishlist"}
+            {isInWishlist && isInWishlist(product.id) ? "♥ ADDED TO WISHLIST" : "♡ ADD TO WISHLIST"}
           </button>
+
+          {/* Trust Badges */}
+          <div style={{
+            marginTop: "24px",
+            paddingTop: "20px",
+            borderTop: "1px solid #f0f0f0",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px"
+          }}>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <span style={{ fontSize: "20px" }}>🚚</span>
+              <div>
+                <p style={{ margin: "0", fontSize: "13px", fontWeight: "600", color: "#333" }}>
+                  Free Shipping
+                </p>
+                <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#999" }}>
+                  Within India on orders above ₹500
+                </p>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <span style={{ fontSize: "20px" }}>↩️</span>
+              <div>
+                <p style={{ margin: "0", fontSize: "13px", fontWeight: "600", color: "#333" }}>
+                  Easy Returns
+                </p>
+                <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#999" }}>
+                  30-day return policy, no questions asked
+                </p>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <span style={{ fontSize: "20px" }}>🔒</span>
+              <div>
+                <p style={{ margin: "0", fontSize: "13px", fontWeight: "600", color: "#333" }}>
+                  Secure Checkout
+                </p>
+                <p style={{ margin: "2px 0 0 0", fontSize: "11px", color: "#999" }}>
+                  100% secure payment gateway
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
