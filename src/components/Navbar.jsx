@@ -84,9 +84,9 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             src="/jodha-logo.png"
             alt="House of Jodha"
             style={{
-              height: "32px",
+              height: "40px",
               width: "auto",
-              maxWidth: "80px",
+              maxWidth: "120px",
               objectFit: "contain",
             }}
           />
