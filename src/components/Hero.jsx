@@ -1,35 +1,36 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 const carouselSlides = [
   {
-    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1200&q=85&fit=crop",
+    image: "https://images.unsplash.com/photo-1721324807069-a19b0f5d6748?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     label: "Bridal Lehenga Collection",
     sub: "Crafted for your special day",
   },
   {
-    image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1200&q=85&fit=crop",
+    image: "https://images.unsplash.com/photo-1710655182570-a5069e1f4c23?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     label: "Festive Saree Looks",
     sub: "Timeless elegance, modern drape",
   },
   {
-    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=1200&q=85&fit=crop",
+    image: "https://images.pexels.com/photos/9418537/pexels-photo-9418537.jpeg",
     label: "Anarkali & Gharara Sets",
     sub: "Handpicked for every occasion",
   },
   {
-    image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?w=1200&q=85&fit=crop",
+    image: "https://images.pexels.com/photos/35327940/pexels-photo-35327940.jpeg",
     label: "Sangeet & Mehendi Wear",
     sub: "Dance, celebrate, shine",
   },
   {
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=85&fit=crop",
+    image: "https://images.pexels.com/photos/29370686/pexels-photo-29370686.jpeg",
     label: "Wedding Season Specials",
     sub: "Exclusive collections now live",
   },
 ];
 
 const slideAccent = ["#C2185B", "#E65100", "#1565C0", "#2E7D32", "#6A1B9A"];
+const INTERVAL_MS = 3000;
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
@@ -41,25 +42,50 @@ export default function Hero() {
   const isMobile = window.innerWidth <= 768;
   const total = carouselSlides.length;
 
-  const startAutoPlay = () => {
+  // Single source of truth for autoplay — clears before setting to avoid stacking
+  const resetInterval = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setCurrent(prev => (prev + 1) % total);
-    }, 3500);
-  };
+    }, INTERVAL_MS);
+  }, [total]);
 
-  const stopAutoPlay = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
+  const stopAutoPlay = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
-  useEffect(() => { startAutoPlay(); return () => stopAutoPlay(); }, []);
+  // Start on mount, stop on unmount
   useEffect(() => {
-    if (isHovered) stopAutoPlay(); else startAutoPlay();
+    resetInterval();
     return () => stopAutoPlay();
-  }, [isHovered]);
+  }, [resetInterval, stopAutoPlay]);
 
-  const goTo = (i) => setCurrent(i);
-  const prev = () => { stopAutoPlay(); setCurrent(p => (p - 1 + total) % total); startAutoPlay(); };
-  const next = () => { stopAutoPlay(); setCurrent(p => (p + 1) % total); startAutoPlay(); };
+  // Pause on hover
+  useEffect(() => {
+    if (isHovered) {
+      stopAutoPlay();
+    } else {
+      resetInterval();
+    }
+  }, [isHovered, resetInterval, stopAutoPlay]);
+
+  const goTo = (i) => {
+    setCurrent(i);
+    resetInterval();
+  };
+
+  const prev = () => {
+    setCurrent(p => (p - 1 + total) % total);
+    resetInterval();
+  };
+
+  const next = () => {
+    setCurrent(p => (p + 1) % total);
+    resetInterval();
+  };
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -77,7 +103,7 @@ export default function Hero() {
     }
     touchStartX.current = null;
     touchStartY.current = null;
-    startAutoPlay();
+    resetInterval();
   };
 
   return (
@@ -97,7 +123,6 @@ export default function Hero() {
         background: "#111",
       }}
     >
-      {/* Slides */}
       {carouselSlides.map((s, i) => (
         <div
           key={i}
@@ -124,14 +149,14 @@ export default function Hero() {
             }}
           />
 
-          {/* Dark gradient overlay for text legibility */}
+          {/* Dark gradient overlay */}
           <div style={{
             position: "absolute",
             inset: 0,
             background: "linear-gradient(to right, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.08) 100%)",
           }} />
 
-          {/* Text overlay — bottom-left */}
+          {/* Text — bottom-left */}
           <div style={{
             position: "absolute",
             bottom: isMobile ? "38px" : "60px",
@@ -184,7 +209,7 @@ export default function Hero() {
                 cursor: "pointer",
                 boxShadow: `0 4px 18px ${slideAccent[i]}88`,
                 letterSpacing: "0.4px",
-                transition: "transform 0.18s, box-shadow 0.18s",
+                transition: "transform 0.18s",
               }}
               onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; }}
               onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
@@ -212,13 +237,8 @@ export default function Hero() {
           color: "#fff",
           display: "flex", alignItems: "center", justifyContent: "center",
           zIndex: 10,
-          transition: "background 0.2s",
         }}
-        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.32)"}
-        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.18)"}
-      >
-        ‹
-      </button>
+      >‹</button>
 
       {/* Right Arrow */}
       <button
@@ -237,13 +257,8 @@ export default function Hero() {
           color: "#fff",
           display: "flex", alignItems: "center", justifyContent: "center",
           zIndex: 10,
-          transition: "background 0.2s",
         }}
-        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.32)"}
-        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.18)"}
-      >
-        ›
-      </button>
+      >›</button>
 
       {/* Dots */}
       <div style={{
