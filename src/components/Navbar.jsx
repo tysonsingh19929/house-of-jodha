@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, onWishlistClick }) {
-  const [isMobile] = React.useState(window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const navbarRef = React.useRef(null);
@@ -19,23 +18,6 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     }
   }, [menuOpen]);
 
-  const navStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "12px 16px",
-    background: "#f5f5f5",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 9999,
-    height: "64px",
-    boxSizing: "border-box",
-    borderBottom: "1px solid #e0e0e0",
-  };
-
   const iconBtnStyle = {
     background: "none",
     border: "none",
@@ -43,124 +25,110 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     width: "36px",
     height: "36px",
     padding: "0",
-    borderRadius: "0",
     cursor: "pointer",
-    fontSize: "20px",
+    fontSize: "22px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "background 0.2s",
+    flexShrink: 0,
   };
 
   return (
-    <div ref={navbarRef} style={navStyle}>
-      {/* Left: Menu Button + Logo */}
+    <div ref={navbarRef} style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "0 16px",
+      background: "#f5f5f5",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+      position: "fixed",
+      top: 0, left: 0, right: 0,
+      zIndex: 9999,
+      height: "64px",
+      boxSizing: "border-box",
+      borderBottom: "1px solid #e0e0e0",
+    }}>
+
+      {/* Left: Menu + Logo */}
       <div style={{
         display: "flex",
         alignItems: "center",
-        gap: "2px",
+        gap: "8px",
       }}>
-        <button
+        <div
           onClick={() => setMenuOpen(!menuOpen)}
-          style={{ ...iconBtnStyle }}
-          title="Menu"
+          style={{ ...iconBtnStyle, userSelect: "none" }}
         >
           ☰
-        </button>
-        
-        <button
+        </div>
+
+        <span
           onClick={() => navigate("/")}
           style={{
-            background: "none",
-            border: "none",
             cursor: "pointer",
-            padding: "0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: "15px",
+            fontWeight: "bold",
+            letterSpacing: "2px",
+            textTransform: "uppercase",
+            color: "#B8860B",
+            lineHeight: "1",
+            userSelect: "none",
+            whiteSpace: "nowrap",
           }}
         >
-          <img
-            src="/jodha-logo.png"
-            alt="House of Jodha"
-            style={{
-              height: "52px",
-              width: "auto",
-              maxWidth: "150px",
-              objectFit: "contain",
-            }}
-          />
-        </button>
+          House of Jodha
+        </span>
       </div>
 
       {/* Right: Wishlist + Cart */}
-      <div style={{ display: "flex", gap: "2px", alignItems: "center" }}>
-        <button
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <div
           onClick={onWishlistClick}
-          style={{ ...iconBtnStyle, position: "relative" }}
-          title="Wishlist"
+          style={{ ...iconBtnStyle, position: "relative", fontSize: "24px", cursor: "pointer" }}
         >
           ♡
           {wishlistCount > 0 && (
             <span style={{
-              position: "absolute",
-              top: "-6px",
-              right: "-6px",
-              background: "#E91E63",
-              color: "#fff",
-              fontSize: "10px",
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              position: "absolute", top: "-4px", right: "-4px",
+              background: "#E91E63", color: "#fff",
+              fontSize: "10px", width: "17px", height: "17px",
+              borderRadius: "50%", display: "flex",
+              alignItems: "center", justifyContent: "center",
               fontWeight: "bold",
             }}>
               {wishlistCount}
             </span>
           )}
-        </button>
+        </div>
 
-        <button
+        <div
           onClick={onCartClick}
-          style={{ ...iconBtnStyle, position: "relative" }}
-          title="Cart"
+          style={{ ...iconBtnStyle, position: "relative", cursor: "pointer" }}
         >
           🛍️
           {cartCount > 0 && (
             <span style={{
-              position: "absolute",
-              top: "-6px",
-              right: "-6px",
-              background: "#E91E63",
-              color: "#fff",
-              fontSize: "10px",
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              position: "absolute", top: "-4px", right: "-4px",
+              background: "#E91E63", color: "#fff",
+              fontSize: "10px", width: "17px", height: "17px",
+              borderRadius: "50%", display: "flex",
+              alignItems: "center", justifyContent: "center",
               fontWeight: "bold",
             }}>
               {cartCount}
             </span>
           )}
-        </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Dropdown */}
       {menuOpen && (
         <div style={{
-          position: "absolute",
-          top: "64px",
-          left: 0,
-          right: 0,
+          position: "absolute", top: "64px", left: 0, right: 0,
           background: "#fff",
           boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
-          display: "flex",
-          flexDirection: "column",
+          display: "flex", flexDirection: "column",
           zIndex: 9998,
           borderBottom: "1px solid #e0e0e0",
         }}>
@@ -171,7 +139,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             { icon: "🔐", label: "Login" },
             { icon: "✍️", label: "Sign Up" },
           ].map(({ icon, label }) => (
-            <button
+            <div
               key={label}
               onClick={() => {
                 setMenuOpen(false);
@@ -183,27 +151,20 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               }}
               style={{
                 padding: "12px 16px",
-                textAlign: "left",
                 background: "none",
-                border: "none",
                 borderBottom: "1px solid #f0f0f0",
-                cursor: "pointer",
-                color: "#333",
-                fontWeight: "500",
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
+                cursor: "pointer", color: "#333",
+                fontWeight: "500", fontSize: "14px",
+                display: "flex", alignItems: "center", gap: "12px",
               }}
-              onMouseEnter={e => e.target.style.background = "#f9f9f9"}
-              onMouseLeave={e => e.target.style.background = "none"}
+              onMouseEnter={e => e.currentTarget.style.background = "#f9f9f9"}
+              onMouseLeave={e => e.currentTarget.style.background = "none"}
             >
               {icon} {label}
-            </button>
+            </div>
           ))}
         </div>
       )}
     </div>
   );
 }
-
