@@ -28,32 +28,33 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
-function HomePage({ 
+function HomePage({
   cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
-  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist,
+  handleCartClick, handleWishlistClick
 }) {
   return (
     <div style={{ background: "#fff", paddingTop: "64px" }}>
-      <Navbar 
-        cartCount={cartCount} 
-        onCartClick={() => setCartOpen(!cartOpen)}
+      <Navbar
+        cartCount={cartCount}
+        onCartClick={handleCartClick}
         wishlistCount={wishlistCount}
-        onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
+        onWishlistClick={handleWishlistClick}
       />
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
       )}
       {wishlistOpen && (
-        <Wishlist 
-          items={wishlistItems} 
-          onRemove={removeFromWishlist} 
+        <Wishlist
+          items={wishlistItems}
+          onRemove={removeFromWishlist}
           onClose={() => setWishlistOpen(false)}
           onAddToCart={addToCart}
         />
       )}
       <Hero />
-      <ProductCatalog 
-        onAddToCart={addToCart} 
+      <ProductCatalog
+        onAddToCart={addToCart}
         onRemoveProduct={removeProductFromCart}
         addToWishlist={addToWishlist}
         removeFromWishlist={removeFromWishlist}
@@ -77,28 +78,30 @@ function App() {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Initialize products in localStorage and check for logged-in user
   useEffect(() => {
     initializeProductsInStorage();
-    // Check if user is already logged in
     const user = localStorage.getItem("currentUser");
-    if (user) {
-      setCurrentUser(JSON.parse(user));
-    }
-    // Load wishlist from localStorage
+    if (user) setCurrentUser(JSON.parse(user));
     const savedWishlist = localStorage.getItem("wishlist");
-    if (savedWishlist) {
-      setWishlistItems(JSON.parse(savedWishlist));
-    }
+    if (savedWishlist) setWishlistItems(JSON.parse(savedWishlist));
   }, []);
 
-  // Save wishlist to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
   }, [wishlistItems]);
 
+  // Toggle handlers — clicking again closes, opening one closes the other
+  const handleCartClick = () => {
+    setCartOpen(prev => !prev);
+    setWishlistOpen(false);
+  };
+
+  const handleWishlistClick = () => {
+    setWishlistOpen(prev => !prev);
+    setCartOpen(false);
+  };
+
   const addToCart = (product) => {
-    // Use functional state update to avoid closure issues
     setCartItems((prevItems) => {
       const updatedItems = [...prevItems, product];
       console.log(`Cart updated. Total items: ${updatedItems.length}`);
@@ -116,9 +119,7 @@ function App() {
 
   const addToWishlist = (product) => {
     const isAlreadyInWishlist = wishlistItems.some(item => item.id === product.id);
-    if (!isAlreadyInWishlist) {
-      setWishlistItems([...wishlistItems, product]);
-    }
+    if (!isAlreadyInWishlist) setWishlistItems([...wishlistItems, product]);
   };
 
   const removeFromWishlist = (productId) => {
@@ -136,15 +137,15 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
-            <HomePage 
-              cartOpen={cartOpen} 
-              setCartOpen={setCartOpen} 
-              cartItems={cartItems} 
-              setCartItems={setCartItems} 
-              addToCart={addToCart} 
+            <HomePage
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              addToCart={addToCart}
               removeFromCart={removeFromCart}
               removeProductFromCart={removeProductFromCart}
               cartCount={cartCount}
@@ -155,15 +156,17 @@ function App() {
               addToWishlist={addToWishlist}
               removeFromWishlist={removeFromWishlist}
               isInWishlist={isInWishlist}
+              handleCartClick={handleCartClick}
+              handleWishlistClick={handleWishlistClick}
             />
-          } 
+          }
         />
-        <Route 
-          path="/collection/:type" 
+        <Route
+          path="/collection/:type"
           element={
-            <CollectionPage 
-              cartCount={cartCount} 
-              onCartClick={() => setCartOpen(!cartOpen)} 
+            <CollectionPage
+              cartCount={cartCount}
+              onCartClick={handleCartClick}
               onAddToCart={addToCart}
               onRemoveProduct={removeProductFromCart}
               cartOpen={cartOpen}
@@ -176,15 +179,16 @@ function App() {
               addToWishlist={addToWishlist}
               removeFromWishlist={removeFromWishlist}
               isInWishlist={isInWishlist}
+              onWishlistClick={handleWishlistClick}
             />
-          } 
+          }
         />
-        <Route 
-          path="/occasion/:occasion" 
+        <Route
+          path="/occasion/:occasion"
           element={
-            <OccasionPage 
-              cartCount={cartCount} 
-              onCartClick={() => setCartOpen(!cartOpen)}
+            <OccasionPage
+              cartCount={cartCount}
+              onCartClick={handleCartClick}
               onAddToCart={addToCart}
               onRemoveProduct={removeProductFromCart}
               cartOpen={cartOpen}
@@ -197,37 +201,29 @@ function App() {
               addToWishlist={addToWishlist}
               removeFromWishlist={removeFromWishlist}
               isInWishlist={isInWishlist}
+              onWishlistClick={handleWishlistClick}
             />
-          } 
+          }
         />
-        <Route 
-          path="/policy/:policy" 
+        <Route
+          path="/policy/:policy"
           element={
-            <PoliciesPage 
-              cartCount={cartCount} 
-              onCartClick={() => setCartOpen(!cartOpen)}
+            <PoliciesPage
+              cartCount={cartCount}
+              onCartClick={handleCartClick}
               cartOpen={cartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}
             />
-          } 
+          }
         />
-        <Route 
-          path="/admin-dashboard" 
-          element={<AdminDashboard />}
-        />
-        <Route 
-          path="/seller-login" 
-          element={<SellerLogin />}
-        />
-        <Route 
-          path="/quick-edit" 
-          element={<QuickEdit />}
-        />
-        <Route 
-          path="/product/:productId" 
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/seller-login" element={<SellerLogin />} />
+        <Route path="/quick-edit" element={<QuickEdit />} />
+        <Route
+          path="/product/:productId"
           element={
-            <ProductDetail 
+            <ProductDetail
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               addToCart={addToCart}
@@ -241,13 +237,15 @@ function App() {
               addToWishlist={addToWishlist}
               removeFromWishlist={removeFromWishlist}
               isInWishlist={isInWishlist}
+              onCartClick={handleCartClick}
+              onWishlistClick={handleWishlistClick}
             />
           }
         />
-        <Route 
-          path="/search" 
+        <Route
+          path="/search"
           element={
-            <SearchResults 
+            <SearchResults
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               addToCart={addToCart}
@@ -261,49 +259,48 @@ function App() {
               addToWishlist={addToWishlist}
               removeFromWishlist={removeFromWishlist}
               isInWishlist={isInWishlist}
+              onCartClick={handleCartClick}
+              onWishlistClick={handleWishlistClick}
             />
           }
         />
-        <Route 
-          path="/checkout" 
+        <Route
+          path="/checkout"
           element={
-            <Checkout 
+            <Checkout
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               cartItems={cartItems}
               removeFromCart={removeFromCart}
               cartCount={cartCount}
+              onCartClick={handleCartClick}
             />
           }
         />
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
-            <Login 
+            <Login
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               cartCount={cartCount}
+              onCartClick={handleCartClick}
             />
           }
         />
-        <Route 
-          path="/signup" 
+        <Route
+          path="/signup"
           element={
-            <Signup 
+            <Signup
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               cartCount={cartCount}
+              onCartClick={handleCartClick}
             />
           }
         />
-        <Route 
-          path="/admin-login" 
-          element={<AdminLogin />}
-        />
-        <Route 
-          path="/admin" 
-          element={<AdminPanel />}
-        />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
     </BrowserRouter>
   );

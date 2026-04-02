@@ -50,11 +50,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     }}>
 
       {/* Left: Menu + Logo */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-      }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <div
           onClick={() => setMenuOpen(!menuOpen)}
           style={{ ...iconBtnStyle, userSelect: "none" }}
@@ -83,7 +79,9 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
 
       {/* Right: Wishlist + Cart */}
       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        {/* ✅ id added here */}
         <div
+          id="navbar-wishlist-btn"
           onClick={onWishlistClick}
           style={{ ...iconBtnStyle, position: "relative", fontSize: "24px", cursor: "pointer" }}
         >
@@ -102,7 +100,9 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
           )}
         </div>
 
+        {/* ✅ id added here */}
         <div
+          id="navbar-cart-btn"
           onClick={onCartClick}
           style={{ ...iconBtnStyle, position: "relative", cursor: "pointer" }}
         >

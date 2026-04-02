@@ -3,100 +3,41 @@ import Product from '../models/Product.js';
 
 const router = express.Router();
 
-// Get all products (public)
+const productsData = [
+  // MEHENDI
+  { id: 101, name: "Multicolor Organza Silk Printed & Hand Embroidered Lehenga Set", price: 12300, originalPrice: 14700, image: "👗", category: "Lehenga", occasion: "mehendi" },
+  { id: 102, name: "Green Luxe Fabric Embroidered Saree", price: 9800, originalPrice: 12900, image: "🧥", category: "Saree", occasion: "mehendi" },
+  { id: 103, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 6100, originalPrice: 10000, image: "👚", category: "Sharara", occasion: "mehendi" },
+  { id: 104, name: "Light Green Chanderi Silk Hand Embroidered Sharara Set With Shrug", price: 14500, originalPrice: 16300, image: "👗", category: "Sharara", occasion: "mehendi" },
+  { id: 105, name: "Parrot Green Floral Printed Lehenga Set", price: 7700, originalPrice: 10500, image: "👗", category: "Lehenga", occasion: "mehendi" },
+  
+  // SANGEET
+  { id: 201, name: "Gold Tissue Silk Embroidered Lehenga Set", price: 24000, originalPrice: 31000, image: "👗", category: "Lehenga", occasion: "sangeet" },
+  { id: 202, name: "Ivory Georgette Embroidered Anarkali Suit", price: 16000, originalPrice: 20000, image: "👗", category: "Anarkali", occasion: "sangeet" },
+  
+  // WEDDING
+  { id: 301, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga Set", price: 27000, originalPrice: 32900, image: "👗", category: "Lehenga", occasion: "wedding" },
+  { id: 302, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 32000, originalPrice: 40000, image: "👗", category: "Lehenga", occasion: "wedding" }
+];
+
+// Get all products
 router.get('/', async (req, res) => {
   try {
-    const category = req.query.category;
-    const query = category && category !== 'All' ? { category } : {};
-    const products = await Product.find(query);
+    const products = await Product.find();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get products for specific seller (for dashboard)
-router.get('/seller/:sellerId', async (req, res) => {
-  try {
-    const { sellerId } = req.params;
-    const products = await Product.find({ sellerId });
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Get single product
+// Get product by ID
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
     res.json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Create product
-router.post('/', async (req, res) => {
-  // sellerId and sellerName must be provided
-  if (!req.body.sellerId || !req.body.sellerName) {
-    return res.status(400).json({ message: 'sellerId and sellerName required' });
-  }
-
-  const product = new Product(req.body);
-  try {
-    const savedProduct = await product.save();
-    res.status(201).json(savedProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Update product (only seller who created it or super admin)
-router.put('/:id', async (req, res) => {
-  try {
-    const { sellerId, isSuperAdmin } = req.body;
-    const product = await Product.findById(req.params.id);
-    
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    // Check permission: super admin can edit all, others can only edit their own
-    if (!isSuperAdmin && product.sellerId !== sellerId) {
-      return res.status(403).json({ message: 'Unauthorized: You can only edit your own products' });
-    }
-
-    // Update product
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body, updatedAt: new Date() },
-      { new: true }
-    );
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Delete product (only seller who created it or super admin)
-router.delete('/:id', async (req, res) => {
-  try {
-    const { sellerId, isSuperAdmin } = req.body;
-    const product = await Product.findById(req.params.id);
-    
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    // Check permission: super admin can delete all, others can only delete their own
-    if (!isSuperAdmin && product.sellerId !== sellerId) {
-      return res.status(403).json({ message: 'Unauthorized: You can only delete your own products' });
-    }
-
-    await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Product deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
