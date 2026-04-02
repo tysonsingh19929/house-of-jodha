@@ -57,7 +57,8 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       {/* Left: Menu Button + Logo */}
       <div style={{
         display: "flex",
-        alignItems: "flex-end",\n        gap: "8px",
+        alignItems: "flex-end",
+        gap: "8px",
       }}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
