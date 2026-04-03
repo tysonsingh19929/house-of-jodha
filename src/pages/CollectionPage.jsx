@@ -2,6 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { products as masterProducts } from "../data/products.js";
 
 export default function OccasionPage({ 
   cartCount, onCartClick, onAddToCart, onRemoveProduct, cartItems = [],
@@ -102,10 +103,18 @@ export default function OccasionPage({
 
   useEffect(() => {
     const all = JSON.parse(localStorage.getItem("products") || "[]");
-    const filtered = all.filter(p =>
-      p.occasion?.toLowerCase() === occasionKey ||
-      p.category?.toLowerCase() === occasionKey
-    );
+    const filtered = all
+      .filter(p =>
+        p.occasion?.toLowerCase() === occasionKey ||
+        p.category?.toLowerCase() === occasionKey
+      )
+      .map(p => {
+        const master = masterProducts.find(mp => mp.id === p.id);
+        return {
+          ...p,
+          image: master?.image || p.image,
+        };
+      });
     setProducts(filtered);
   }, [occasionKey]);
 
@@ -270,12 +279,12 @@ export default function OccasionPage({
           display: flex; align-items: baseline; gap: 5px; margin-bottom: 0; flex-wrap: nowrap;
         }
         .occ-price {
-          font-family: 'Cormorant Garamond', serif; font-weight: 700;
-          font-size: 17px; color: ${d.priceColor};
+          font-family: 'Jost', sans-serif; font-weight: 700;
+          font-size: 14px; color: #880E4F;
           margin: 0; line-height: 1; white-space: nowrap;
         }
         .occ-original {
-          font-family: 'Jost', sans-serif; font-size: 10px;
+          font-family: 'Jost', sans-serif; font-size: 12px;
           color: #bbb; text-decoration: line-through; margin: 0; white-space: nowrap;
         }
         .occ-off {
