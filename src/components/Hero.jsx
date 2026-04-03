@@ -6,26 +6,31 @@ const carouselSlides = [
     image: "https://images.pexels.com/photos/13124449/pexels-photo-13124449.jpeg",
     label: "Bridal Lehenga Collection",
     sub: "Crafted for your special day",
+    route: "/collection/lehenga",
   },
   {
     image: "https://images.pexels.com/photos/27575174/pexels-photo-27575174.jpeg",
     label: "Festive Saree Looks",
     sub: "Timeless elegance, modern drape",
+    route: "/collection/saree",
   },
   {
     image: "https://images.pexels.com/photos/9418537/pexels-photo-9418537.jpeg",
     label: "Anarkali & Gharara Sets",
     sub: "Handpicked for every occasion",
+    route: "/collection/anarkali",
   },
   {
     image: "https://images.pexels.com/photos/35327940/pexels-photo-35327940.jpeg",
     label: "Sangeet & Mehendi Wear",
     sub: "Dance, celebrate, shine",
+    route: "/occasion/sangeet",
   },
   {
     image: "https://images.pexels.com/photos/29370686/pexels-photo-29370686.jpeg",
     label: "Wedding Season Specials",
     sub: "Exclusive collections now live",
+    route: "/occasion/wedding",
   },
 ];
 
@@ -84,6 +89,13 @@ export default function Hero() {
     resetInterval();
   };
 
+  const scrollToOccasions = () => {
+    const section = document.getElementById("shop-by-occasion");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
@@ -94,10 +106,16 @@ export default function Hero() {
     if (touchStartX.current === null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
-      if (deltaX < 0) setCurrent(p => (p + 1) % total);
-      else setCurrent(p => (p - 1 + total) % total);
+
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+      if (deltaX < 0) {
+        setCurrent((p) => (p + 1) % total);
+      } else {
+        setCurrent((p) => (p - 1 + total) % total);
+      }
     }
+
+    // reset after immediate manual update
     touchStartX.current = null;
     touchStartY.current = null;
     resetInterval();
@@ -191,7 +209,7 @@ export default function Hero() {
               {s.sub}
             </div>
             <button
-              onClick={() => navigate("/collection/all")}
+              onClick={scrollToOccasions}
               style={{
                 background: slideAccent[i],
                 color: "#fff",

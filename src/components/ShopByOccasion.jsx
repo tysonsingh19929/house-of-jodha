@@ -36,7 +36,7 @@ const ShopByOccasion = () => {
   ];
 
   return (
-    <section style={{ padding: "60px 20px", background: "#fff" }}>
+    <section id="shop-by-occasion" style={{ padding: "60px 20px", background: "#fff" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <h2 style={{ 
           textAlign: "center", 

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { products as masterProducts } from "../data/products.js";
+import { enhancedProductDatabase } from "../data/enhancedProductDatabase.js";
 
 export default function OccasionPage({ 
   cartCount, onCartClick, onAddToCart, onRemoveProduct, cartItems = [],
@@ -102,12 +103,17 @@ export default function OccasionPage({
   };
 
   useEffect(() => {
-    const all = JSON.parse(localStorage.getItem("products") || "[]");
+    const localProducts = JSON.parse(localStorage.getItem("products") || "[]");
+    const all = localProducts.length ? localProducts : enhancedProductDatabase;
+
     const filtered = all
-      .filter(p =>
-        p.occasion?.toLowerCase() === occasionKey ||
-        p.category?.toLowerCase() === occasionKey
-      )
+      .filter(p => {
+        const occasionMatch =
+          p.occasion?.toLowerCase() === occasionKey ||
+          (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
+        const categoryMatch = p.category?.toLowerCase() === occasionKey;
+        return occasionMatch || categoryMatch;
+      })
       .map(p => {
         const master = masterProducts.find(mp => mp.id === p.id);
         return {
@@ -115,6 +121,7 @@ export default function OccasionPage({
           image: master?.image || p.image,
         };
       });
+
     setProducts(filtered);
   }, [occasionKey]);
 
