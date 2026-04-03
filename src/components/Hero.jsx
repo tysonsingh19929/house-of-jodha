@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 const carouselSlides = [
   {
-    image: "https://images.unsplash.com/photo-1721324807069-a19b0f5d6748?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.pexels.com/photos/13124449/pexels-photo-13124449.jpeg",
     label: "Bridal Lehenga Collection",
     sub: "Crafted for your special day",
   },
   {
-    image: "https://images.unsplash.com/photo-1710655182570-a5069e1f4c23?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.pexels.com/photos/27575174/pexels-photo-27575174.jpeg",
     label: "Festive Saree Looks",
     sub: "Timeless elegance, modern drape",
   },
