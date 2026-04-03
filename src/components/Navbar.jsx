@@ -22,53 +22,51 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     background: "none",
     border: "none",
     color: "#333",
-    width: "40px",
-    height: "40px",
+    width: "36px",
+    height: "36px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
     padding: "0",
     position: "relative",
+    flexShrink: 0,
   };
 
-  // Check if user is logged in
   const currentUser = (() => {
     try { return JSON.parse(localStorage.getItem("currentUser")); } catch { return null; }
   })();
 
   const handleProfileClick = () => {
-    if (currentUser) {
-      navigate("/profile");
-    } else {
-      navigate("/login");
-    }
+    navigate(currentUser ? "/profile" : "/login");
   };
 
   return (
-    <div ref={navbarRef} style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "0 16px",
-      background: "#fff",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-      position: "fixed",
-      top: 0, left: 0, right: 0,
-      zIndex: 9999,
-      height: "64px",
-      boxSizing: "border-box",
-      borderBottom: "1px solid #e0e0e0",
-    }}>
-
-      {/* LEFT SECTION: Menu + Logo + Icons */}
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        {/* Hamburger */}
-        <button onClick={() => setMenuOpen(!menuOpen)} style={{ ...iconBtnStyle, fontSize: "24px" }}>
+    <div
+      ref={navbarRef}
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "0 12px",
+        background: "#fff",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        position: "fixed",
+        top: 0, left: 0, right: 0,
+        zIndex: 9999,
+        height: "64px",
+        boxSizing: "border-box",
+        borderBottom: "1px solid #e0e0e0",
+      }}
+    >
+      {/* LEFT: Hamburger + Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{ ...iconBtnStyle, fontSize: "22px" }}
+        >
           ☰
         </button>
-
-        {/* Logo */}
         <span
           onClick={() => navigate("/")}
           style={{
@@ -81,28 +79,31 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             color: "#B8860B",
             userSelect: "none",
             whiteSpace: "nowrap",
-            marginRight: "8px",
           }}
         >
           House of Jodha
         </span>
+      </div>
 
-        {/* PROFILE ICON */}
+      {/* RIGHT: Profile + Wishlist + Cart — tight group */}
+      <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+
+        {/* PROFILE */}
         <button
           onClick={handleProfileClick}
           style={iconBtnStyle}
           title={currentUser ? "My Profile" : "Login"}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
           </svg>
         </button>
 
-        {/* WISHLIST ICON */}
+        {/* WISHLIST */}
         <button
           onClick={onWishlistClick}
-          style={{ ...iconBtnStyle, fontSize: "24px" }}
+          style={{ ...iconBtnStyle, fontSize: "22px" }}
           title="Wishlist"
         >
           ♡
@@ -111,10 +112,10 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
           )}
         </button>
 
-        {/* CART ICON */}
+        {/* CART */}
         <button
           onClick={onCartClick}
-          style={{ ...iconBtnStyle, fontSize: "22px" }}
+          style={{ ...iconBtnStyle, fontSize: "20px" }}
           title="Cart"
         >
           🛍️
@@ -124,7 +125,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
         </button>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Dropdown Menu */}
       {menuOpen && (
         <div style={dropdownStyle}>
           {[
@@ -138,7 +139,8 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               onClick={() => { setMenuOpen(false); navigate(item.path); }}
               style={dropdownItemStyle}
             >
-              <span style={{ fontSize: "18px" }}>{item.icon}</span> {item.label}
+              <span style={{ fontSize: "18px" }}>{item.icon}</span>
+              {item.label}
             </div>
           ))}
         </div>

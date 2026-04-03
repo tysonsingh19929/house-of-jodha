@@ -107,6 +107,39 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
             </section>
           )}
 
+          {activeTab === "shipping" && (
+            <section>
+              <h3 style={{ marginBottom: "20px" }}>Shipping Address</h3>
+              <div style={{ display: "grid", gap: "15px" }}>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#999" }}>Street Address</label>
+                  <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.address || "Not provided"}</p>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#999" }}>City</label>
+                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.city || "Not provided"}</p>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#999" }}>State</label>
+                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.state || "Not provided"}</p>
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#999" }}>Zip Code</label>
+                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.zipCode || "Not provided"}</p>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: "12px", color: "#999" }}>Phone</label>
+                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.phone || "Not provided"}</p>
+                  </div>
+                </div>
+                <button style={{ padding: "10px 20px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "4px", marginTop: "10px", cursor: "pointer", alignSelf: "start" }}>Edit Address</button>
+              </div>
+            </section>
+          )}
+
         </div>
       </div>
       <Footer />
