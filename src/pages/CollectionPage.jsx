@@ -1,45 +1,135 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Cart from "../components/Cart";
-import Wishlist from "../components/Wishlist";
-import { products } from "../data/products.js";
 
-export default function CollectionPage({ 
-  cartCount, onCartClick, onAddToCart, onRemoveProduct, cartOpen, cartItems, removeFromCart,
-  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+export default function OccasionPage({ 
+  cartCount, onCartClick, onAddToCart, onRemoveProduct, cartItems = [],
+  wishlistItems, setWishlistOpen, addToWishlist, removeFromWishlist, isInWishlist 
 }) {
-  const { type } = useParams();
+  const { occasion } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState({});
 
-  const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
-  const allProducts = [...products, ...customProducts];
+  const occasionDetails = {
+    mehendi: {
+      name: "MEHENDI", tagline: "Ceremony Collection",
+      bgGradient: "linear-gradient(135deg, #A8D5A2 0%, #D4F1D4 40%, #F0FAF0 100%)",
+      accentColor: "#1B4332", accentMid: "#4A9E6B",
+      btnBg: "linear-gradient(135deg, #1B4332, #2D6A4F)",
+      qtyBg: "linear-gradient(135deg, #1B4332, #2D6A4F)",
+      cardBorder: "#A8D5A2", priceBg: "#E8F7E8", priceColor: "#1B4332",
+      badgeBg: "rgba(27,67,50,0.12)", badgeColor: "#1B4332", wishlistActive: "#1B4332",
+      description: "Vibrant & colorful styles for your Mehendi ceremony.",
+      tips: "Bright colors look best!", icon: "🌿",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231B4332' fill-opacity='0.06'%3E%3Cpath d='M30 0 C30 0 20 10 30 20 C40 10 30 0 30 0Z'/%3E%3C/g%3E%3C/svg%3E")`
+    },
+    sangeet: {
+      name: "SANGEET", tagline: "Music & Dance Collection",
+      bgGradient: "linear-gradient(135deg, #F5C842 0%, #FFF4D6 40%, #FFFDF5 100%)",
+      accentColor: "#744A00", accentMid: "#D4911A",
+      btnBg: "linear-gradient(135deg, #744A00, #B87333)",
+      qtyBg: "linear-gradient(135deg, #744A00, #B87333)",
+      cardBorder: "#F5D878", priceBg: "#FFF8E0", priceColor: "#744A00",
+      badgeBg: "rgba(116,74,0,0.1)", badgeColor: "#744A00", wishlistActive: "#B87333",
+      description: "Elegant, dance-ready outfits for a night of celebration.",
+      tips: "Choose comfortable fabrics.", icon: "✨",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2' fill='%23744A00' fill-opacity='0.08'/%3E%3C/svg%3E")`
+    },
+    wedding: {
+      name: "WEDDING", tagline: "Bridal Couture Collection",
+      bgGradient: "linear-gradient(135deg, #E8A0B0 0%, #F8D7E0 40%, #FFF5F7 100%)",
+      accentColor: "#590D22", accentMid: "#C9374A",
+      btnBg: "linear-gradient(135deg, #590D22, #9A1534)",
+      qtyBg: "linear-gradient(135deg, #590D22, #9A1534)",
+      cardBorder: "#F0A0B5", priceBg: "#FEF0F3", priceColor: "#590D22",
+      badgeBg: "rgba(89,13,34,0.1)", badgeColor: "#590D22", wishlistActive: "#9A1534",
+      description: "Exquisite bridal wear for the most special day.",
+      tips: "Go for heavy embroidery.", icon: "💍",
+      pattern: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 5 L22 15 L32 15 L24 21 L27 31 L20 25 L13 31 L16 21 L8 15 L18 15Z' fill='%23590D22' fill-opacity='0.05'/%3E%3C/svg%3E")`
+    },
+    engagement: {
+      name: "ENGAGEMENT", tagline: "Promise & Love Collection",
+      bgGradient: "linear-gradient(135deg, #C39BD3 0%, #E9D7F5 40%, #F8F4FF 100%)",
+      accentColor: "#3C096C", accentMid: "#7B2FBE",
+      btnBg: "linear-gradient(135deg, #3C096C, #7B2FBE)",
+      qtyBg: "linear-gradient(135deg, #3C096C, #7B2FBE)",
+      cardBorder: "#C8A0E8", priceBg: "#F4EEFF", priceColor: "#3C096C",
+      badgeBg: "rgba(60,9,108,0.1)", badgeColor: "#3C096C", wishlistActive: "#7B2FBE",
+      description: "Sophisticated looks for your special announcement.",
+      tips: "Pastels are trending!", icon: "💜",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='3' fill='%233C096C' fill-opacity='0.06'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%233C096C' fill-opacity='0.06'/%3E%3Ccircle cx='50' cy='10' r='3' fill='%233C096C' fill-opacity='0.06'/%3E%3C/svg%3E")`
+    },
+    reception: {
+      name: "RECEPTION", tagline: "Evening Glamour Collection",
+      bgGradient: "linear-gradient(135deg, #B8860B 0%, #F5E6C8 40%, #FFFDF5 100%)",
+      accentColor: "#5C3D00", accentMid: "#C9921A",
+      btnBg: "linear-gradient(135deg, #5C3D00, #C9921A)",
+      qtyBg: "linear-gradient(135deg, #5C3D00, #C9921A)",
+      cardBorder: "#E8C97A", priceBg: "#FDF6E3", priceColor: "#5C3D00",
+      badgeBg: "rgba(92,61,0,0.1)", badgeColor: "#5C3D00", wishlistActive: "#C9921A",
+      description: "Dazzling glamour for your reception night.",
+      tips: "Go for bold & sparkly!", icon: "🥂",
+      pattern: `url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='25,5 27,18 40,18 30,26 33,39 25,31 17,39 20,26 10,18 23,18' fill='%235C3D00' fill-opacity='0.06'/%3E%3C/svg%3E")`
+    },
+    cocktail: {
+      name: "COCKTAIL", tagline: "Party & Soirée Collection",
+      bgGradient: "linear-gradient(135deg, #7B4FA6 0%, #D8B4FE 40%, #F5F0FF 100%)",
+      accentColor: "#3B0764", accentMid: "#8B5CF6",
+      btnBg: "linear-gradient(135deg, #3B0764, #7C3AED)",
+      qtyBg: "linear-gradient(135deg, #3B0764, #7C3AED)",
+      cardBorder: "#C4B5FD", priceBg: "#F3EEFF", priceColor: "#3B0764",
+      badgeBg: "rgba(59,7,100,0.1)", badgeColor: "#3B0764", wishlistActive: "#7C3AED",
+      description: "Chic & contemporary styles for cocktail evenings.",
+      tips: "Minis & midis are in!", icon: "🍸",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='15' cy='15' r='4' fill='%233B0764' fill-opacity='0.06'/%3E%3Ccircle cx='45' cy='45' r='4' fill='%233B0764' fill-opacity='0.06'/%3E%3C/svg%3E")`
+    }
+  };
 
-  const handleAddProduct = (product) => {
-    setAddedProducts(prev => ({
-      ...prev,
-      [product.id]: (prev[product.id] || 0) + 1
-    }));
+  const occasionKey = occasion?.toLowerCase().trim();
+  const d = occasionDetails[occasionKey] || {
+    name: occasionKey?.toUpperCase() || "OCCASION", tagline: "Special Collection",
+    bgGradient: "linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%)",
+    accentColor: "#333", accentMid: "#888",
+    btnBg: "linear-gradient(135deg, #333, #666)", qtyBg: "linear-gradient(135deg, #333, #666)",
+    cardBorder: "#ddd", priceBg: "#f5f5f5", priceColor: "#333",
+    badgeBg: "rgba(0,0,0,0.08)", badgeColor: "#333", wishlistActive: "#333",
+    description: "Curated styles for your special occasion.",
+    tips: "Dress to impress!", icon: "👗", pattern: ""
+  };
+
+  useEffect(() => {
+    const all = JSON.parse(localStorage.getItem("products") || "[]");
+    const filtered = all.filter(p =>
+      p.occasion?.toLowerCase() === occasionKey ||
+      p.category?.toLowerCase() === occasionKey
+    );
+    setProducts(filtered);
+  }, [occasionKey]);
+
+  const handleAddProduct = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
 
-  const handleIncreaseQuantity = (product) => {
-    setAddedProducts(prev => ({
-      ...prev,
-      [product.id]: (prev[product.id] || 0) + 1
-    }));
+  const handleIncrease = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
 
-  const handleDecreaseQuantity = (product) => {
+  const handleDecrease = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
     setAddedProducts(prev => {
       const newQty = Math.max(0, (prev[product.id] || 0) - 1);
       if (newQty === 0) {
-        const updated = {...prev};
+        const updated = { ...prev };
         delete updated[product.id];
         onRemoveProduct?.(product.id);
         return updated;
@@ -48,317 +138,288 @@ export default function CollectionPage({
     });
   };
 
-  let filteredProducts;
-  let pageTitle = "";
-  let pageDescription = "";
-  let categories = [];
-
-  if (type === "all") {
-    categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
-    filteredProducts = selectedCategory === "All" 
-      ? allProducts 
-      : allProducts.filter(p => p.category === selectedCategory);
-    pageTitle = "All Products";
-    pageDescription = "Explore our complete collection of exquisite Indian ethnic wear";
-  } else {
-    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-    filteredProducts = allProducts.filter(p => p.category === capitalizedType);
-    pageTitle = capitalizedType;
-    pageDescription = `Browse our stunning ${pageTitle} collection`;
-  }
+  const handleWishlistToggle = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInWishlist(product.id)) removeFromWishlist(product.id);
+    else addToWishlist(product);
+  };
 
   return (
-    <>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", paddingTop: "64px" }}>
-        <Navbar 
-          cartCount={cartCount} 
-          onCartClick={onCartClick}
-          wishlistCount={wishlistCount}
-          onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
-        />
-        {cartOpen && (
-          <Cart items={cartItems} onRemove={removeFromCart} onClose={() => onCartClick?.()} />
-        )}
-        {wishlistOpen && (
-          <Wishlist 
-            items={wishlistItems} 
-            onRemove={removeFromWishlist} 
-            onClose={() => setWishlistOpen(false)}
-            onAddToCart={onAddToCart}
-          />
-        )}
-        <div style={{ padding: isMobile ? "24px 12px" : "48px 28px", background: "#FFF0F6", flex: "1" }}>
+    <div style={{ paddingTop: "64px", minHeight: "100vh", background: "#FAFAFA" }}>
+      <Navbar
+        cartCount={cartCount}
+        onCartClick={onCartClick}
+        wishlistCount={wishlistItems.length}
+        onWishlistClick={() => setWishlistOpen(true)}
+      />
 
-          {/* Section Header */}
-          <div style={{ textAlign: "center", marginBottom: isMobile ? "20px" : "32px" }}>
-            <h2 style={{
-              fontFamily: "'Georgia', 'Times New Roman', serif",
-              fontSize: isMobile ? "26px" : "36px",
-              fontWeight: "700",
-              color: "#880E4F",
-              margin: "0 0 6px",
-            }}>
-              {pageTitle}
-            </h2>
-            <p style={{ color: "#9C4070", fontSize: isMobile ? "13px" : "14px", margin: 0 }}>
-              {pageDescription}
-            </p>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600;700;800&display=swap');
+
+        .occ-header { position: relative; overflow: hidden; background: ${d.bgGradient}; }
+        .occ-header::before {
+          content: ''; position: absolute; inset: 0;
+          background-image: ${d.pattern}; pointer-events: none;
+        }
+        .occ-back {
+          background: rgba(255,255,255,0.5); backdrop-filter: blur(8px);
+          border: 1px solid rgba(255,255,255,0.6); color: ${d.accentColor};
+          padding: 6px 16px; border-radius: 20px; cursor: pointer;
+          font-size: 11px; font-weight: 700; font-family: 'Jost', sans-serif;
+          letter-spacing: 1.5px; text-transform: uppercase;
+          transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .occ-back:hover { background: rgba(255,255,255,0.85); transform: translateX(-2px); }
+        .occ-name {
+          font-family: 'Cormorant Garamond', serif; font-weight: 700;
+          color: ${d.accentColor}; font-size: ${isMobile ? "46px" : "72px"};
+          line-height: 1; margin: 0; letter-spacing: -1px;
+        }
+        .occ-tagline {
+          font-family: 'Jost', sans-serif; font-weight: 400; font-size: 11px;
+          letter-spacing: 4px; text-transform: uppercase; color: ${d.accentMid}; margin: 0;
+        }
+        .occ-desc {
+          font-family: 'Jost', sans-serif; font-size: 14px;
+          color: ${d.accentColor}; opacity: 0.8; margin: 0 auto;
+          max-width: 280px; line-height: 1.6;
+        }
+        .occ-tip {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: rgba(255,255,255,0.65); backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.8); border-radius: 30px;
+          padding: 6px 16px; font-family: 'Jost', sans-serif;
+          font-size: 11px; font-weight: 600; color: ${d.accentColor};
+        }
+        .occ-divider {
+          width: 48px; height: 2px; background: ${d.accentMid};
+          opacity: 0.5; margin: 10px auto; border-radius: 2px;
+        }
+        .occ-count {
+          background: ${d.badgeBg}; color: ${d.badgeColor};
+          font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 700;
+          letter-spacing: 2px; text-transform: uppercase;
+          padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 16px;
+        }
+
+        /* CARD */
+        .occ-card {
+          background: #fff; border: 1px solid ${d.cardBorder};
+          border-radius: 12px; overflow: hidden;
+          transition: all 0.25s ease;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+          display: flex; flex-direction: column;
+          cursor: pointer;
+        }
+        .occ-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+          border-color: ${d.accentMid};
+        }
+
+        /* IMAGE */
+        .occ-img-wrap { position: relative; overflow: hidden; flex-shrink: 0; }
+        .occ-img {
+          width: 100%; height: 185px; object-fit: cover;
+          display: block; transition: transform 0.4s ease;
+        }
+        .occ-card:hover .occ-img { transform: scale(1.04); }
+
+        /* DISCOUNT BADGE */
+        .occ-discount {
+          position: absolute; top: 7px; left: 7px;
+          background: ${d.accentColor}; color: #fff;
+          font-family: 'Jost', sans-serif; font-size: 9px; font-weight: 800;
+          letter-spacing: 0.5px; padding: 3px 7px; border-radius: 3px;
+        }
+
+        /* WISHLIST */
+        .occ-wish {
+          position: absolute; top: 7px; right: 7px;
+          width: 28px; height: 28px; border-radius: 50%;
+          background: rgba(255,255,255,0.9); border: none;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.2s; z-index: 5;
+          box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+          font-size: 14px; padding: 0; color: #ccc;
+        }
+        .occ-wish:hover { transform: scale(1.18); background: #fff; color: ${d.wishlistActive}; }
+        .occ-wish.on { color: ${d.wishlistActive}; }
+
+        /* INFO */
+        .occ-info {
+          padding: 9px 10px 5px; flex: 1;
+          text-decoration: none; display: block; color: inherit;
+        }
+        .occ-cat {
+          font-family: 'Jost', sans-serif; font-size: 9px;
+          color: ${d.accentMid}; text-transform: uppercase;
+          font-weight: 700; letter-spacing: 1px; margin: 0 0 3px;
+        }
+        .occ-name-text {
+          font-family: 'Jost', sans-serif; font-size: 11px;
+          color: #222; margin: 0 0 6px; font-weight: 600;
+          line-height: 1.35;
+          display: -webkit-box; -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        /* PRICE ROW — clean, single line */
+        .occ-price-row {
+          display: flex; align-items: baseline; gap: 5px; margin-bottom: 0; flex-wrap: nowrap;
+        }
+        .occ-price {
+          font-family: 'Cormorant Garamond', serif; font-weight: 700;
+          font-size: 17px; color: ${d.priceColor};
+          margin: 0; line-height: 1; white-space: nowrap;
+        }
+        .occ-original {
+          font-family: 'Jost', sans-serif; font-size: 10px;
+          color: #bbb; text-decoration: line-through; margin: 0; white-space: nowrap;
+        }
+        .occ-off {
+          font-family: 'Jost', sans-serif; font-size: 9px;
+          color: ${d.accentMid}; font-weight: 700; margin: 0; white-space: nowrap;
+        }
+
+        /* CART CONTROLS */
+        .occ-cart-wrap { padding: 6px 10px 11px; }
+
+        .occ-add-btn {
+          width: 100%; padding: 9px 8px;
+          background: ${d.btnBg}; color: #fff;
+          border: none; border-radius: 6px;
+          font-family: 'Jost', sans-serif; font-weight: 700;
+          font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+          cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+          display: block;
+        }
+        .occ-add-btn:hover { opacity: 0.86; }
+        .occ-add-btn:active { transform: scale(0.97); }
+
+        /* +/- quantity row — same style as CollectionPage */
+        .occ-qty-row {
+          display: flex; align-items: center; gap: 4px;
+        }
+        .occ-qty-btn {
+          flex: 1; padding: 8px 4px;
+          background: ${d.qtyBg}; color: #fff;
+          border: none; border-radius: 5px;
+          cursor: pointer; font-weight: 700; font-size: 15px;
+          transition: opacity 0.2s; line-height: 1;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .occ-qty-btn:hover { opacity: 0.82; }
+        .occ-qty-num {
+          flex: 1; text-align: center;
+          font-family: 'Jost', sans-serif;
+          font-size: 13px; font-weight: 800;
+          color: ${d.priceColor};
+        }
+
+        .occ-empty {
+          text-align: center; padding: 60px 20px;
+          font-family: 'Jost', sans-serif; color: ${d.accentMid};
+        }
+      `}</style>
+
+      {/* HEADER */}
+      <div className="occ-header" style={{ padding: "0 0 32px" }}>
+        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px 20px 0", textAlign: "center" }}>
+          <button className="occ-back" onClick={() => navigate("/")}>← BACK</button>
+          <div style={{ marginTop: "20px" }}>
+            <p className="occ-tagline">{d.tagline}</p>
+            <div className="occ-divider" />
+            <h1 className="occ-name">{d.icon} {d.name}</h1>
+            <div className="occ-divider" style={{ margin: "12px auto" }} />
+            <p className="occ-desc">{d.description}</p>
           </div>
+          <div style={{ marginTop: "18px" }}>
+            <span className="occ-tip">💡 TIP: {d.tips}</span>
+          </div>
+        </div>
+      </div>
 
-          {/* Category Filter Pills - Only for "all" type */}
-          {type === "all" && (
-            <>
-              <div style={{
-                display: "flex",
-                gap: "8px",
-                marginBottom: isMobile ? "16px" : "28px",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    style={{
-                      padding: isMobile ? "7px 14px" : "9px 20px",
-                      fontSize: isMobile ? "11px" : "13px",
-                      background: selectedCategory === cat
-                        ? "linear-gradient(135deg, #E91E63, #C2185B)"
-                        : "#fff",
-                      color: selectedCategory === cat ? "#fff" : "#C2185B",
-                      border: selectedCategory === cat ? "none" : "1.5px solid #F48FB1",
-                      borderRadius: "20px",
-                      cursor: "pointer",
-                      fontWeight: "600",
-                      transition: "all 0.2s",
-                      boxShadow: selectedCategory === cat ? "0 2px 12px rgba(233,30,99,0.35)" : "none",
-                    }}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+      {/* GRID */}
+      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "24px 16px 40px" }}>
+        {products.length > 0 && (
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <span className="occ-count">{products.length} Styles Available</span>
+          </div>
+        )}
 
-              {/* Count badge */}
-              <div style={{
-                background: "#FCE4EC",
-                border: "1px solid #F48FB1",
-                borderRadius: "4px",
-                padding: isMobile ? "8px 12px" : "10px 16px",
-                marginBottom: isMobile ? "16px" : "24px",
-                fontSize: isMobile ? "12px" : "13px",
-                fontWeight: "600",
-                textAlign: "center",
-                color: "#880E4F",
-              }}>
-                ✨ {filteredProducts.length} {selectedCategory} products available
-              </div>
-            </>
-          )}
+        {products.length === 0 ? (
+          <div className="occ-empty">
+            <div style={{ fontSize: "48px", marginBottom: "12px" }}>{d.icon}</div>
+            <p style={{ fontWeight: "600", fontSize: "16px", marginBottom: "6px" }}>No styles yet</p>
+            <p style={{ fontSize: "13px", opacity: 0.7 }}>Check back soon for new arrivals</p>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+            {products.map(product => {
+              const qty = addedProducts[product.id] || 0;
+              const wishlisted = isInWishlist(product.id);
+              const discount = product.originalPrice
+                ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+                : 0;
 
-          {/* Product Grid */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-            gap: isMobile ? "12px" : "16px",
-            width: "100%",
-          }}>
-            {filteredProducts.map((product) => {
-              const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
               return (
-                <div
-                  key={product.id}
-                  onClick={() => navigate(`/product/${product.id}`)}
-                  style={{
-                    background: "#fff",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    border: "1px solid rgba(244,143,177,0.25)",
-                    transition: "all 0.25s",
-                    position: "relative",
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(194,24,91,0.18)";
-                    e.currentTarget.style.borderColor = "#E91E63";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.borderColor = "rgba(244,143,177,0.25)";
-                  }}
-                >
-                  {/* Image Container */}
-                  <div style={{
-                    background: "linear-gradient(135deg, #FCE4EC 0%, #FFF0F6 100%)",
-                    aspectRatio: "1 / 1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}>
-                    {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    ) : (
-                      <span style={{ fontSize: isMobile ? "48px" : "60px" }}>{product.image}</span>
-                    )}
+                <div key={product.id} className="occ-card" onClick={() => navigate(`/product/${product.id}`)}>
 
-                    {/* Discount Badge */}
+                  {/* IMAGE */}
+                  <div className="occ-img-wrap">
+                    <img src={product.image} alt={product.name} className="occ-img" />
                     {discount > 0 && (
-                      <div style={{
-                        position: "absolute", top: "8px", left: "8px",
-                        background: "#C2185B",
-                        color: "#fff",
-                        fontSize: "10px", fontWeight: "700",
-                        padding: "3px 8px", borderRadius: "3px",
-                      }}>
-                        {discount}% OFF
-                      </div>
+                      <span className="occ-discount">{discount}% OFF</span>
                     )}
-
-                    {/* Wishlist */}
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (isInWishlist && isInWishlist(product.id)) {
-                          removeFromWishlist(product.id);
-                        } else {
-                          addToWishlist(product);
-                        }
-                      }}
-                      style={{
-                        position: "absolute", top: "8px", right: "8px",
-                        background: "#fff", border: "none",
-                        width: "30px", height: "30px",
-                        borderRadius: "50%", cursor: "pointer",
-                        fontSize: "16px",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                        transition: "transform 0.2s, background 0.2s, color 0.2s",
-                        color: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#999",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "scale(1.15)";
-                        if (isInWishlist && isInWishlist(product.id)) {
-                          e.currentTarget.style.background = "#E91E63";
-                          e.currentTarget.style.color = "#fff";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
-                        if (isInWishlist && isInWishlist(product.id)) {
-                          e.currentTarget.style.background = "#fff";
-                          e.currentTarget.style.color = "#E91E63";
-                        }
-                      }}
+                      className={`occ-wish${wishlisted ? " on" : ""}`}
+                      onClick={(e) => handleWishlistToggle(e, product)}
+                      title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                     >
-                      {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
+                      {wishlisted ? "♥" : "♡"}
                     </button>
                   </div>
 
-                  {/* Product Info */}
-                  <div style={{ padding: isMobile ? "8px 10px 10px" : "10px 12px 12px" }}>
-                    <div style={{
-                      fontSize: "9px", color: "#E91E63",
-                      textTransform: "uppercase", fontWeight: "700",
-                      letterSpacing: "1px", marginBottom: "3px",
-                    }}>
-                      {product.category}
+                  {/* INFO */}
+                  <div className="occ-info" onClick={e => e.stopPropagation()}>
+                    <p className="occ-cat">{product.category}</p>
+                    <p className="occ-name-text">{product.name}</p>
+                    <div className="occ-price-row">
+                      <p className="occ-price">₹{product.price?.toLocaleString("en-IN")}</p>
+                      {product.originalPrice && (
+                        <p className="occ-original">₹{product.originalPrice?.toLocaleString("en-IN")}</p>
+                      )}
+                      {discount > 0 && (
+                        <p className="occ-off">({discount}%)</p>
+                      )}
                     </div>
+                  </div>
 
-                    <h3 style={{
-                      fontSize: isMobile ? "11px" : "13px",
-                      fontWeight: "600", color: "#1A0010",
-                      marginBottom: "4px", lineHeight: "1.4",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}>
-                      {product.name}
-                    </h3>
-
-                    <div style={{ fontSize: isMobile ? "11px" : "12px", marginBottom: "5px", color: "#E91E63" }}>
-                      ⭐ 4.3 <span style={{ color: "#bbb", fontSize: "10px" }}>(2.2k)</span>
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: isMobile ? "8px" : "10px" }}>
-                      <span style={{ fontSize: isMobile ? "14px" : "16px", fontWeight: "700", color: "#880E4F" }}>
-                        ₹{product.price}
-                      </span>
-                      <span style={{ fontSize: isMobile ? "10px" : "12px", color: "#bbb", textDecoration: "line-through" }}>
-                        ₹{product.originalPrice}
-                      </span>
-                      <span style={{ fontSize: "10px", fontWeight: "700", color: "#E91E63" }}>
-                        ({discount}%)
-                      </span>
-                    </div>
-
-                    {/* Add to Cart / Quantity Controls */}
-                    {addedProducts[product.id] ? (
-                      <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                        <button
-                          onClick={e => { e.stopPropagation(); handleDecreaseQuantity(product); }}
-                          style={{
-                            flex: 1, padding: isMobile ? "5px" : "7px",
-                            background: "linear-gradient(135deg,#E91E63,#C2185B)",
-                            color: "#fff", border: "none", borderRadius: "3px",
-                            cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                          }}
-                        >
-                          −
-                        </button>
-                        <span style={{
-                          flex: 1, textAlign: "center",
-                          fontSize: isMobile ? "12px" : "13px",
-                          fontWeight: "700", color: "#C2185B",
-                        }}>
-                          {addedProducts[product.id]}
-                        </span>
-                        <button
-                          onClick={e => { e.stopPropagation(); handleIncreaseQuantity(product); }}
-                          style={{
-                            flex: 1, padding: isMobile ? "5px" : "7px",
-                            background: "linear-gradient(135deg,#E91E63,#C2185B)",
-                            color: "#fff", border: "none", borderRadius: "3px",
-                            cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                          }}
-                        >
-                          +
-                        </button>
+                  {/* CART CONTROLS */}
+                  <div className="occ-cart-wrap" onClick={e => e.stopPropagation()}>
+                    {qty > 0 ? (
+                      <div className="occ-qty-row">
+                        <button className="occ-qty-btn" onClick={(e) => handleDecrease(e, product)}>−</button>
+                        <span className="occ-qty-num">{qty}</span>
+                        <button className="occ-qty-btn" onClick={(e) => handleIncrease(e, product)}>+</button>
                       </div>
                     ) : (
-                      <button
-                        onClick={e => { e.stopPropagation(); handleAddProduct(product); }}
-                        style={{
-                          width: "100%",
-                          padding: isMobile ? "7px" : "9px",
-                          fontSize: isMobile ? "11px" : "12px",
-                          background: "linear-gradient(90deg, #E91E63, #C2185B)",
-                          color: "#fff", border: "none", borderRadius: "3px",
-                          cursor: "pointer", fontWeight: "700",
-                          transition: "opacity 0.2s",
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
-                        onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-                      >
-                        Buy Now
+                      <button className="occ-add-btn" onClick={(e) => handleAddProduct(e, product)}>
+                        + Add to Cart
                       </button>
                     )}
                   </div>
+
                 </div>
               );
             })}
           </div>
-        </div>
-        <Footer />
+        )}
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 }
