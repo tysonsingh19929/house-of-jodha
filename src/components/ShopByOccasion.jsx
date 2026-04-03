@@ -3,26 +3,56 @@ import { Link } from 'react-router-dom';
 
 const ShopByOccasion = () => {
   const occasions = [
-    { key: 'mehendi', title: 'MEHENDI', color: '#D4F1D4' },
-    { key: 'sangeet', title: 'SANGEET', color: '#FFF4D6' },
-    { key: 'wedding', title: 'WEDDING', color: '#F8D7E0' },
-    { key: 'engagement', title: 'ENGAGEMENT', color: '#F4ECF7' },
-    { key: 'reception', title: 'RECEPTION', color: '#E0F7F9' },
-    { key: 'cocktail', title: 'COCKTAIL', color: '#FDEDEC' }
+    { 
+      key: 'mehendi', 
+      title: 'MEHENDI', 
+      image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg' 
+    },
+    { 
+      key: 'sangeet', 
+      title: 'SANGEET', 
+      image: 'https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg' 
+    },
+    { 
+      key: 'wedding', 
+      title: 'WEDDING', 
+      image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg' 
+    },
+    { 
+      key: 'engagement', 
+      title: 'ENGAGEMENT', 
+      image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg' 
+    },
+    { 
+      key: 'reception', 
+      title: 'RECEPTION', 
+      image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg' 
+    },
+    { 
+      key: 'cocktail', 
+      title: 'COCKTAIL', 
+      image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg' 
+    }
   ];
 
   return (
-    <section style={{ padding: "40px 20px", background: "#f9f7f0" }}>
+    <section style={{ padding: "60px 20px", background: "#fff" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", fontSize: "32px", color: "#2C4F3E", marginBottom: "30px", fontWeight: "600" }}>
+        <h2 style={{ 
+          textAlign: "center", 
+          fontSize: "32px", 
+          color: "#1a1a1a", 
+          marginBottom: "40px", 
+          fontWeight: "600",
+          letterSpacing: "1px"
+        }}>
           Shop by Occasion
         </h2>
         
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: "20px",
-          padding: "0 15px"
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", // Slightly wider for banners
+          gap: "24px",
         }}>
           {occasions.map((occasion) => (
             <Link 
@@ -31,29 +61,60 @@ const ShopByOccasion = () => {
               style={{ textDecoration: 'none' }}
             >
               <div style={{
-                background: occasion.color,
-                padding: "40px 20px",
-                borderRadius: "10px",
-                textAlign: "center",
+                height: "200px", // Fixed height for the banner
+                borderRadius: "12px",
+                position: "relative",
+                overflow: "hidden",
                 cursor: "pointer",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+                transition: "all 0.4s ease",
+                boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+                // SET BACKGROUND IMAGE HERE
+                background: `url(${occasion.image}) no-repeat center center`,
+                backgroundSize: "cover"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-5px)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                e.currentTarget.style.transform = "scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.2)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
               }}
               >
-                <h3 style={{ fontSize: "20px", fontWeight: "600", color: "#2c2c2c", margin: "0" }}>
-                  {occasion.title}
-                </h3>
-                <p style={{ fontSize: "14px", color: "#666", margin: "10px 0 0 0" }}>
-                  Explore Collection
-                </p>
+                {/* DARK OVERLAY FOR TEXT READABILITY */}
+                <div style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.5))",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "20px"
+                }}>
+                  <h3 style={{ 
+                    fontSize: "24px", 
+                    fontWeight: "700", 
+                    color: "#fff", 
+                    margin: "0",
+                    textShadow: "0 2px 4px rgba(0,0,0,0.3)"
+                  }}>
+                    {occasion.title}
+                  </h3>
+                  <div style={{
+                    marginTop: "10px",
+                    padding: "6px 16px",
+                    border: "1px solid #fff",
+                    color: "#fff",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    borderRadius: "4px"
+                  }}>
+                    Explore Collection
+                  </div>
+                </div>
               </div>
             </Link>
           ))}
