@@ -27,6 +27,7 @@ import SearchResults from "./pages/SearchResults";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ProfilePage from "./pages/ProfilePage";
 
 function HomePage({
   cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
@@ -288,6 +289,7 @@ function App() {
             />
           }
         />
+      
         <Route
           path="/signup"
           element={
@@ -301,6 +303,17 @@ function App() {
         />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminPanel />} />
+        <Route 
+  path="/profile" 
+  element={
+    <ProfilePage 
+      cartCount={cartCount} 
+      onCartClick={handleCartClick} 
+      wishlistCount={wishlistCount} 
+      onWishlistClick={handleWishlistClick}
+    />
+  } 
+/>
       </Routes>
     </BrowserRouter>
   );

@@ -22,15 +22,27 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     background: "none",
     border: "none",
     color: "#333",
-    width: "36px",
-    height: "36px",
-    padding: "0",
-    cursor: "pointer",
-    fontSize: "22px",
+    width: "40px",
+    height: "40px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
+    cursor: "pointer",
+    padding: "0",
+    position: "relative",
+  };
+
+  // Check if user is logged in
+  const currentUser = (() => {
+    try { return JSON.parse(localStorage.getItem("currentUser")); } catch { return null; }
+  })();
+
+  const handleProfileClick = () => {
+    if (currentUser) {
+      navigate("/profile");
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
@@ -39,7 +51,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       justifyContent: "space-between",
       alignItems: "center",
       padding: "0 16px",
-      background: "#f5f5f5",
+      background: "#fff",
       boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
       position: "fixed",
       top: 0, left: 0, right: 0,
@@ -49,118 +61,84 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       borderBottom: "1px solid #e0e0e0",
     }}>
 
-      {/* Left: Menu + Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <div
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{ ...iconBtnStyle, userSelect: "none" }}
-        >
+      {/* LEFT SECTION: Menu + Logo + Icons */}
+      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+        {/* Hamburger */}
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ ...iconBtnStyle, fontSize: "24px" }}>
           ☰
-        </div>
+        </button>
 
+        {/* Logo */}
         <span
           onClick={() => navigate("/")}
           style={{
             cursor: "pointer",
             fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: "15px",
+            fontSize: "16px",
             fontWeight: "bold",
-            letterSpacing: "2px",
+            letterSpacing: "1.5px",
             textTransform: "uppercase",
             color: "#B8860B",
-            lineHeight: "1",
             userSelect: "none",
             whiteSpace: "nowrap",
+            marginRight: "8px",
           }}
         >
           House of Jodha
         </span>
-      </div>
 
-      {/* Right: Wishlist + Cart */}
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        {/* ✅ id added here */}
-        <div
-          id="navbar-wishlist-btn"
+        {/* PROFILE ICON */}
+        <button
+          onClick={handleProfileClick}
+          style={iconBtnStyle}
+          title={currentUser ? "My Profile" : "Login"}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        {/* WISHLIST ICON */}
+        <button
           onClick={onWishlistClick}
-          style={{ ...iconBtnStyle, position: "relative", fontSize: "24px", cursor: "pointer" }}
+          style={{ ...iconBtnStyle, fontSize: "24px" }}
+          title="Wishlist"
         >
           ♡
           {wishlistCount > 0 && (
-            <span style={{
-              position: "absolute", top: "-4px", right: "-4px",
-              background: "#E91E63", color: "#fff",
-              fontSize: "10px", width: "17px", height: "17px",
-              borderRadius: "50%", display: "flex",
-              alignItems: "center", justifyContent: "center",
-              fontWeight: "bold",
-            }}>
-              {wishlistCount}
-            </span>
+            <span style={badgeStyle}>{wishlistCount}</span>
           )}
-        </div>
+        </button>
 
-        {/* ✅ id added here */}
-        <div
-          id="navbar-cart-btn"
+        {/* CART ICON */}
+        <button
           onClick={onCartClick}
-          style={{ ...iconBtnStyle, position: "relative", cursor: "pointer" }}
+          style={{ ...iconBtnStyle, fontSize: "22px" }}
+          title="Cart"
         >
           🛍️
           {cartCount > 0 && (
-            <span style={{
-              position: "absolute", top: "-4px", right: "-4px",
-              background: "#E91E63", color: "#fff",
-              fontSize: "10px", width: "17px", height: "17px",
-              borderRadius: "50%", display: "flex",
-              alignItems: "center", justifyContent: "center",
-              fontWeight: "bold",
-            }}>
-              {cartCount}
-            </span>
+            <span style={badgeStyle}>{cartCount}</span>
           )}
-        </div>
+        </button>
       </div>
 
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
-        <div style={{
-          position: "absolute", top: "64px", left: 0, right: 0,
-          background: "#fff",
-          boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
-          display: "flex", flexDirection: "column",
-          zIndex: 9998,
-          borderBottom: "1px solid #e0e0e0",
-        }}>
+        <div style={dropdownStyle}>
           {[
-            { icon: "🏠", label: "Home" },
-            { icon: "🛍️", label: "Shop" },
-            { icon: "📊", label: "Admin" },
-            { icon: "🔐", label: "Login" },
-            { icon: "✍️", label: "Sign Up" },
-          ].map(({ icon, label }) => (
+            { icon: "🏠", label: "Home", path: "/" },
+            { icon: "🛍️", label: "Shop All", path: "/collection/all" },
+            { icon: "👤", label: currentUser ? "My Profile" : "Login", path: currentUser ? "/profile" : "/login" },
+            { icon: "📊", label: "Admin", path: "/admin-dashboard" },
+          ].map((item) => (
             <div
-              key={label}
-              onClick={() => {
-                setMenuOpen(false);
-                if (label === "Home") navigate("/");
-                else if (label === "Shop") navigate("/collection/all");
-                else if (label === "Admin") navigate("/admin-dashboard");
-                else if (label === "Login") navigate("/login");
-                else if (label === "Sign Up") navigate("/signup");
-              }}
-              style={{
-                padding: "12px 16px",
-                background: "none",
-                borderBottom: "1px solid #f0f0f0",
-                cursor: "pointer", color: "#333",
-                fontWeight: "500", fontSize: "14px",
-                display: "flex", alignItems: "center", gap: "12px",
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "#f9f9f9"}
-              onMouseLeave={e => e.currentTarget.style.background = "none"}
+              key={item.label}
+              onClick={() => { setMenuOpen(false); navigate(item.path); }}
+              style={dropdownItemStyle}
             >
-              {icon} {label}
+              <span style={{ fontSize: "18px" }}>{item.icon}</span> {item.label}
             </div>
           ))}
         </div>
@@ -168,3 +146,33 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     </div>
   );
 }
+
+const badgeStyle = {
+  position: "absolute",
+  top: "2px",
+  right: "2px",
+  background: "#E91E63",
+  color: "#fff",
+  fontSize: "10px",
+  minWidth: "16px",
+  height: "16px",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: "bold",
+  padding: "0 2px",
+};
+
+const dropdownStyle = {
+  position: "absolute", top: "64px", left: 0, right: 0,
+  background: "#fff", boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
+  display: "flex", flexDirection: "column", zIndex: 9998,
+  borderBottom: "1px solid #e0e0e0",
+};
+
+const dropdownItemStyle = {
+  padding: "14px 20px", borderBottom: "1px solid #f0f0f0",
+  cursor: "pointer", color: "#333", fontWeight: "600", fontSize: "14px",
+  display: "flex", alignItems: "center", gap: "12px",
+};
