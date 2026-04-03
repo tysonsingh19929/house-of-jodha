@@ -133,7 +133,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             { icon: "🛍️", label: "Shop All", path: "/collection/all" },
             { icon: "👤", label: currentUser ? "My Profile" : "Login", path: currentUser ? "/profile" : "/login" },
             { icon: "✍️", label: "Sign Up", path: "/signup" },
-            { icon: "📊", label: "Admin", path: "/admin-dashboard" },
+            { icon: "📊", label: "Seller login", path: "/admin-dashboard" },
           ].map((item) => (
             <div
               key={item.label}
