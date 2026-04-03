@@ -1,198 +1,378 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { products as allProducts } from "../data/products.js";
-
-const getRandomProductsForOccasion = (occasion, allProducts, count = 12) => {
-  if (!allProducts || allProducts.length === 0) return [];
-  const seed = occasion.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const shuffled = [...allProducts].sort((a, b) => {
-    const aScore = (a.id * seed) % 100;
-    const bScore = (b.id * seed) % 100;
-    return aScore - bScore;
-  });
-  return shuffled.slice(0, count);
-};
 
 export default function OccasionPage({ 
-  cartCount, onCartClick, onAddToCart, onRemoveProduct, wishlistOpen, setWishlistOpen, wishlistItems, addToWishlist, removeFromWishlist, isInWishlist 
+  cartCount, onCartClick, onAddToCart, wishlistItems, setWishlistOpen, addToWishlist, removeFromWishlist, isInWishlist 
 }) {
   const { occasion } = useParams();
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
-  const [addedProducts, setAddedProducts] = useState({});
+  const [products, setProducts] = useState([]);
 
   const occasionDetails = {
-    mehendi: { name: "MEHENDI", bgColor: "#D4F1D4", textColor: "#2C6B2C", description: "Celebrate the joy of Mehendi with our vibrant and colorful collection. Green is the color of choice for this auspicious occasion.", tips: "Mehendi designs should be bright, festive, and comfortable. Opt for light fabrics with beautiful embroidery." },
-    sangeet: { name: "SANGEET", bgColor: "#FFF4D6", textColor: "#8B7500", description: "Get ready to dance with our elegant Sangeet collection. Shimmer, shine, and move freely in these high-energy designs.", tips: "Choose designs that allow movement for dancing. Look for outfits with mirror work or sequins." },
-    wedding: { name: "WEDDING", bgColor: "#F8D7E0", textColor: "#8B3A5C", description: "Exquisite designs for the most special day. Traditional elegance meets modern craftsmanship.", tips: "Grand and statement-making premium fabrics. Classic silks and heavy embroidery are perfect." },
-    engagement: { name: "ENGAGEMENT", bgColor: "#F4ECF7", textColor: "#8e44ad", description: "Start your journey with grace. Our engagement collection features delicate pastels and sophisticated silhouettes.", tips: "Soft pastels and floral motifs create a romantic, dreamy look." },
-    reception: { name: "RECEPTION", bgColor: "#E0F7F9", textColor: "#00838f", description: "Glamour takes center stage. Discover sophisticated evening wear and contemporary ethnic fusion for the grand finale.", tips: "Deep jewel tones and sleek drapes work best for evening receptions." },
-    cocktail: { name: "COCKTAIL", bgColor: "#FDEDEC", textColor: "#c0392b", description: "Chic, stylish, and bold. Perfect your cocktail look with our range of modern drapes and avant-garde designs.", tips: "Don't be afraid to experiment with western-fusion silhouettes and bold cuts." }
+    mehendi: {
+      name: "MEHENDI",
+      tagline: "Ceremony Collection",
+      bgGradient: "linear-gradient(135deg, #A8D5A2 0%, #D4F1D4 40%, #F0FAF0 100%)",
+      accentColor: "#1B4332",
+      accentLight: "#D4F1D4",
+      accentMid: "#4A9E6B",
+      btnBg: "linear-gradient(135deg, #1B4332, #2D6A4F)",
+      btnHover: "#1B4332",
+      cardBorder: "#A8D5A2",
+      priceBg: "#E8F7E8",
+      priceColor: "#1B4332",
+      badgeBg: "rgba(27,67,50,0.12)",
+      badgeColor: "#1B4332",
+      description: "Vibrant & colorful styles for your Mehendi ceremony.",
+      tips: "Bright colors look best!",
+      icon: "🌿",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231B4332' fill-opacity='0.06'%3E%3Cpath d='M30 0 C30 0 20 10 30 20 C40 10 30 0 30 0Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+    },
+    sangeet: {
+      name: "SANGEET",
+      tagline: "Music & Dance Collection",
+      bgGradient: "linear-gradient(135deg, #F5C842 0%, #FFF4D6 40%, #FFFDF5 100%)",
+      accentColor: "#744A00",
+      accentLight: "#FFF4D6",
+      accentMid: "#D4911A",
+      btnBg: "linear-gradient(135deg, #744A00, #B87333)",
+      btnHover: "#744A00",
+      cardBorder: "#F5D878",
+      priceBg: "#FFF8E0",
+      priceColor: "#744A00",
+      badgeBg: "rgba(116,74,0,0.1)",
+      badgeColor: "#744A00",
+      description: "Elegant, dance-ready outfits for a night of celebration.",
+      tips: "Choose comfortable fabrics.",
+      icon: "✨",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Ccircle cx='30' cy='30' r='2' fill='%23744A00' fill-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E")`
+    },
+    wedding: {
+      name: "WEDDING",
+      tagline: "Bridal Couture Collection",
+      bgGradient: "linear-gradient(135deg, #E8A0B0 0%, #F8D7E0 40%, #FFF5F7 100%)",
+      accentColor: "#590D22",
+      accentLight: "#F8D7E0",
+      accentMid: "#C9374A",
+      btnBg: "linear-gradient(135deg, #590D22, #9A1534)",
+      btnHover: "#590D22",
+      cardBorder: "#F0A0B5",
+      priceBg: "#FEF0F3",
+      priceColor: "#590D22",
+      badgeBg: "rgba(89,13,34,0.1)",
+      badgeColor: "#590D22",
+      description: "Exquisite bridal wear for the most special day.",
+      tips: "Go for heavy embroidery.",
+      icon: "💍",
+      pattern: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23590D22' fill-opacity='0.05'%3E%3Cpath d='M20 5 L22 15 L32 15 L24 21 L27 31 L20 25 L13 31 L16 21 L8 15 L18 15Z'/%3E%3C/g%3E%3C/svg%3E")`
+    },
+    engagement: {
+      name: "ENGAGEMENT",
+      tagline: "Promise & Love Collection",
+      bgGradient: "linear-gradient(135deg, #C39BD3 0%, #E9D7F5 40%, #F8F4FF 100%)",
+      accentColor: "#3C096C",
+      accentLight: "#E9D7F5",
+      accentMid: "#7B2FBE",
+      btnBg: "linear-gradient(135deg, #3C096C, #7B2FBE)",
+      btnHover: "#3C096C",
+      cardBorder: "#C8A0E8",
+      priceBg: "#F4EEFF",
+      priceColor: "#3C096C",
+      badgeBg: "rgba(60,9,108,0.1)",
+      badgeColor: "#3C096C",
+      description: "Sophisticated looks for your special announcement.",
+      tips: "Pastels are trending!",
+      icon: "💜",
+      pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233C096C' fill-opacity='0.06'%3E%3Ccircle cx='10' cy='10' r='3'/%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3Ccircle cx='50' cy='10' r='3'/%3E%3C/g%3E%3C/svg%3E")`
+    }
   };
 
-  const details = occasionDetails[occasion || 'mehendi'] || occasionDetails.mehendi;
-  
-  const products = useMemo(() => {
-    return getRandomProductsForOccasion(occasion || 'mehendi', allProducts, 12);
+  const d = occasionDetails[occasion] || occasionDetails.mehendi;
+
+  useEffect(() => {
+    const all = JSON.parse(localStorage.getItem("products") || "[]");
+    const filtered = all.filter(p => 
+      p.occasion?.toLowerCase() === occasion?.toLowerCase() || 
+      p.category?.toLowerCase() === occasion?.toLowerCase()
+    );
+    setProducts(filtered);
   }, [occasion]);
 
-  const handleAddProduct = (product) => {
-    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
-    onAddToCart(product);
-  };
-
-  const handleIncrease = (product) => {
-    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
-    onAddToCart(product);
-  };
-
-  const handleDecrease = (product) => {
-    setAddedProducts(prev => {
-      const newQty = Math.max(0, (prev[product.id] || 0) - 1);
-      if (newQty === 0) {
-        const updated = { ...prev };
-        delete updated[product.id];
-        onRemoveProduct?.(product.id);
-        return updated;
-      }
-      return { ...prev, [product.id]: newQty };
-    });
-  };
-
   return (
-    <div style={{ paddingTop: "64px", minHeight: "100vh" }}>
-      <Navbar cartCount={cartCount} onCartClick={onCartClick} wishlistCount={wishlistItems.length} onWishlistClick={() => setWishlistOpen(true)} />
-      
-      <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-        {/* OCCASION HEADER */}
-        <div style={{ background: details.bgColor, padding: "20px", borderRadius: "10px", textAlign: "center", marginBottom: "30px", border: `2px solid ${details.textColor}33` }}>
-          <h1 style={{ color: details.textColor, fontSize: "32px", margin: "0 0 10px 0", letterSpacing: "2px" }}>{details.name}</h1>
-          <p style={{ fontSize: "14px", margin: "0 0 12px 0", color: "#555", lineHeight: "1.6" }}>{details.description}</p>
-          <div style={{ background: "rgba(255,255,255,0.7)", padding: "10px 15px", borderRadius: "8px", fontSize: "13px", color: details.textColor, fontStyle: "italic", display: "inline-block" }}>
-            💡 {details.tips}
+    <div style={{ paddingTop: "64px", minHeight: "100vh", background: "#FAFAFA" }}>
+      <Navbar 
+        cartCount={cartCount} 
+        onCartClick={onCartClick} 
+        wishlistCount={wishlistItems.length} 
+        onWishlistClick={() => setWishlistOpen(true)} 
+      />
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600;700;800&display=swap');
+
+        .occasion-header {
+          position: relative;
+          overflow: hidden;
+          background: ${d.bgGradient};
+        }
+        .occasion-header::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: ${d.pattern};
+          pointer-events: none;
+        }
+        .back-btn {
+          background: rgba(255,255,255,0.5);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255,255,255,0.6);
+          color: ${d.accentColor};
+          padding: 6px 16px;
+          border-radius: 20px;
+          cursor: pointer;
+          font-size: 11px;
+          font-weight: 700;
+          font-family: 'Jost', sans-serif;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          transition: all 0.2s;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+        }
+        .back-btn:hover {
+          background: rgba(255,255,255,0.8);
+          transform: translateX(-2px);
+        }
+        .occasion-name {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 700;
+          color: ${d.accentColor};
+          font-size: ${isMobile ? "52px" : "72px"};
+          line-height: 1;
+          margin: 0;
+          letter-spacing: -1px;
+        }
+        .occasion-tagline {
+          font-family: 'Jost', sans-serif;
+          font-weight: 400;
+          font-size: 11px;
+          letter-spacing: 4px;
+          text-transform: uppercase;
+          color: ${d.accentMid};
+          margin: 0;
+        }
+        .occasion-desc {
+          font-family: 'Jost', sans-serif;
+          font-weight: 400;
+          font-size: 14px;
+          color: ${d.accentColor};
+          opacity: 0.8;
+          margin: 0;
+          max-width: 280px;
+          line-height: 1.6;
+        }
+        .tip-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(255,255,255,0.65);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.8);
+          border-radius: 30px;
+          padding: 6px 16px;
+          font-family: 'Jost', sans-serif;
+          font-size: 11px;
+          font-weight: 600;
+          color: ${d.accentColor};
+          letter-spacing: 0.5px;
+        }
+        .divider-line {
+          width: 48px;
+          height: 2px;
+          background: ${d.accentMid};
+          opacity: 0.5;
+          margin: 10px auto;
+          border-radius: 2px;
+        }
+        .product-card {
+          background: #fff;
+          border: 1px solid ${d.cardBorder};
+          border-radius: 12px;
+          overflow: hidden;
+          transition: all 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .product-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+          border-color: ${d.accentMid};
+        }
+        .product-img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
+        .product-card:hover .product-img {
+          transform: scale(1.04);
+        }
+        .product-name {
+          font-family: 'Jost', sans-serif;
+          font-size: 11.5px;
+          color: #333;
+          margin: 0 0 4px;
+          height: 30px;
+          overflow: hidden;
+          font-weight: 600;
+          letter-spacing: 0.2px;
+          line-height: 1.3;
+        }
+        .product-price {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 700;
+          font-size: 20px;
+          color: ${d.priceColor};
+          background: ${d.priceBg};
+          display: inline-block;
+          padding: 1px 8px;
+          border-radius: 4px;
+          margin: 0;
+        }
+        .add-to-cart-btn {
+          width: calc(100% - 20px);
+          margin: 0 10px 12px;
+          padding: 10px 0;
+          background: ${d.btnBg};
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          font-family: 'Jost', sans-serif;
+          font-weight: 700;
+          font-size: 10.5px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        .add-to-cart-btn::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: rgba(255,255,255,0);
+          transition: background 0.2s;
+        }
+        .add-to-cart-btn:hover::after {
+          background: rgba(255,255,255,0.1);
+        }
+        .add-to-cart-btn:active {
+          transform: scale(0.98);
+        }
+        .count-badge {
+          background: ${d.badgeBg};
+          color: ${d.badgeColor};
+          font-family: 'Jost', sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 4px 12px;
+          border-radius: 20px;
+          display: inline-block;
+          margin-bottom: 16px;
+        }
+        .empty-state {
+          text-align: center;
+          padding: 60px 20px;
+          font-family: 'Jost', sans-serif;
+          color: ${d.accentMid};
+        }
+        .empty-icon {
+          font-size: 48px;
+          margin-bottom: 12px;
+        }
+      `}</style>
+
+      {/* PREMIUM HEADER */}
+      <div className="occasion-header" style={{ padding: "0 0 32px" }}>
+        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px 20px 0", textAlign: "center" }}>
+          <button className="back-btn" onClick={() => navigate("/")}>
+            ← BACK
+          </button>
+
+          <div style={{ marginTop: "20px" }}>
+            <p className="occasion-tagline">{d.tagline}</p>
+            <div className="divider-line" />
+            <h1 className="occasion-name">{d.icon} {d.name}</h1>
+            <div className="divider-line" style={{ margin: "12px auto" }} />
+            <p className="occasion-desc">{d.description}</p>
+          </div>
+
+          <div style={{ marginTop: "18px" }}>
+            <span className="tip-badge">
+              💡 TIP: {d.tips}
+            </span>
           </div>
         </div>
-
-        {/* PRODUCTS GRID */}
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, minmax(200px, 1fr))", gap: "20px", marginBottom: "40px" }}>
-          {products.length > 0 ? products.map(product => (
-            <div key={product.id} style={{ border: "1px solid #ddd", borderRadius: "10px", overflow: "hidden", position: "relative", transition: "transform 0.3s, box-shadow 0.3s", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-5px)";
-                e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
-              }}
-            >
-              {/* PRODUCT IMAGE & INFO */}
-              <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                <div style={{ background: "#f8f6f0", padding: "20px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "180px", overflow: "hidden" }}>
-                  {typeof product.image === 'string' && (product.image.startsWith('http') || product.image.startsWith('/')) ? (
-                    <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <div style={{ fontSize: "60px" }}>{product.image || '👗'}</div>
-                  )}
-                </div>
-                <div style={{ padding: "12px" }}>
-                  <h3 style={{ fontSize: "13px", fontWeight: "600", margin: "0 0 8px 0", minHeight: "40px", overflow: "hidden", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: "2" }}>
-                    {product.name}
-                  </h3>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ textDecoration: "line-through", color: "#999", fontSize: "12px" }}>
-                      ₹{product.originalPrice || product.price}
-                    </span>
-                    <span style={{ fontWeight: "bold", color: "#D4AF37", fontSize: "14px" }}>
-                      ₹{product.price}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-
-              {/* WISHLIST BUTTON */}
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (isInWishlist && isInWishlist(product.id)) {
-                    removeFromWishlist(product.id);
-                  } else {
-                    addToWishlist(product);
-                  }
-                }}
-                style={{
-                  position: "absolute", top: "8px", right: "8px",
-                  background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
-                  border: "none", width: "32px", height: "32px",
-                  borderRadius: "50%", cursor: "pointer", fontSize: "16px",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)", transition: "all 0.2s",
-                  color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.2)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
-                title={isInWishlist && isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
-              >
-                {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
-              </button>
-
-              {/* ADD TO CART / QUANTITY CONTROLS */}
-              <div style={{ width: "90%", margin: "0 5% 12px 5%" }}>
-                {addedProducts[product.id] ? (
-                  <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                    <button
-                      onClick={(e) => { e.preventDefault(); handleDecrease(product); }}
-                      style={{
-                        flex: 1, padding: isMobile ? "5px" : "8px",
-                        background: details.textColor,
-                        color: "#fff", border: "none", borderRadius: "6px",
-                        cursor: "pointer", fontWeight: "700", fontSize: "16px",
-                      }}
-                    >−</button>
-                    <span style={{
-                      flex: 1, textAlign: "center",
-                      fontSize: isMobile ? "13px" : "14px",
-                      fontWeight: "700", color: details.textColor,
-                    }}>
-                      {addedProducts[product.id]}
-                    </span>
-                    <button
-                      onClick={(e) => { e.preventDefault(); handleIncrease(product); }}
-                      style={{
-                        flex: 1, padding: isMobile ? "5px" : "8px",
-                        background: details.textColor,
-                        color: "#fff", border: "none", borderRadius: "6px",
-                        cursor: "pointer", fontWeight: "700", fontSize: "16px",
-                      }}
-                    >+</button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={(e) => { e.preventDefault(); handleAddProduct(product); }}
-                    style={{
-                      width: "100%", padding: "10px",
-                      background: details.textColor,
-                      color: "#fff", border: "none", borderRadius: "6px",
-                      fontWeight: "600", cursor: "pointer", transition: "opacity 0.2s",
-                      fontSize: isMobile ? "12px" : "13px",
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
-                    onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
-                  >
-                    Add to Cart
-                  </button>
-                )}
-              </div>
-            </div>
-          )) : (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "#999" }}>
-              <p>No products available for this occasion</p>
-            </div>
-          )}
-        </div>
       </div>
+
+      {/* PRODUCT GRID */}
+      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "24px 16px 40px" }}>
+        {products.length > 0 && (
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <span className="count-badge">{products.length} Styles Available</span>
+          </div>
+        )}
+
+        {products.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">{d.icon}</div>
+            <p style={{ fontWeight: "600", fontSize: "16px", marginBottom: "6px" }}>No styles yet</p>
+            <p style={{ fontSize: "13px", opacity: 0.7 }}>Check back soon for new arrivals</p>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+            {products.map(product => (
+              <div key={product.id} className="product-card">
+                <Link to={`/product/${product.id}`} style={{ textDecoration: "none", display: "block", overflow: "hidden" }}>
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="product-img"
+                  />
+                  <div style={{ padding: "10px 10px 8px" }}>
+                    <h3 className="product-name">{product.name}</h3>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "6px" }}>
+                      <p className="product-price">₹{product.price?.toLocaleString()}</p>
+                      {product.originalPrice && (
+                        <p style={{
+                          fontFamily: "'Jost', sans-serif",
+                          fontSize: "11px",
+                          color: "#999",
+                          textDecoration: "line-through"
+                        }}>₹{product.originalPrice?.toLocaleString()}</p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+                <button 
+                  className="add-to-cart-btn"
+                  onClick={() => onAddToCart(product)}
+                >
+                  + Add to Cart
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <Footer />
     </div>
   );
