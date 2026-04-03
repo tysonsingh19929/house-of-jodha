@@ -38,12 +38,19 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     });
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
   const filteredProducts = (selectedCategory === "All"
     ? allProducts
-    : allProducts.filter(p => p.category === selectedCategory))
-    .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    : allProducts.filter(p => p.category === selectedCategory));
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
   const paginatedProducts = filteredProducts.slice(
@@ -53,39 +60,52 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
   const handleCategoryChange = (cat) => {
     setSelectedCategory(cat);
-    setCurrentPage(1); // reset to page 1 on category change
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Scroll to top of products section
     document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div id="products" style={{ padding: isMobile ? "24px 12px" : "48px 28px", background: "#FFF0F6" }}>
 
-      {/* Search Bar */}
-      <div style={{ marginBottom: isMobile ? "24px" : "32px" }}>
+      {/* Search Bar — navigates to /search */}
+      <form onSubmit={handleSearchSubmit} style={{ marginBottom: isMobile ? "24px" : "32px" }}>
         <div style={{
           display: "flex", alignItems: "center",
           background: "#fff", borderRadius: "20px",
           padding: "10px 16px", border: "1px solid #e0e0e0",
+          gap: "8px",
         }}>
-          <span style={{ fontSize: "14px", marginRight: "10px", color: "#999" }}>🔍</span>
+          <span style={{ fontSize: "14px", color: "#999" }}>🔍</span>
           <input
             type="text"
             placeholder="Search for brands and products"
             value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               flex: 1, border: "none", background: "transparent",
               fontSize: isMobile ? "13px" : "14px",
               outline: "none", color: "#666", fontFamily: "inherit",
             }}
           />
+          {searchQuery.trim() && (
+            <button
+              type="submit"
+              style={{
+                background: "#E91E63", color: "#fff",
+                border: "none", borderRadius: "12px",
+                padding: "4px 12px", fontSize: "12px",
+                fontWeight: "600", cursor: "pointer",
+              }}
+            >
+              Go
+            </button>
+          )}
         </div>
-      </div>
+      </form>
 
       {/* Section Header */}
       <div style={{ textAlign: "center", marginBottom: isMobile ? "20px" : "32px" }}>
@@ -322,7 +342,6 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
           marginTop: isMobile ? "24px" : "36px",
           flexWrap: "wrap",
         }}>
-          {/* Prev button */}
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
@@ -339,7 +358,6 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
             ← Prev
           </button>
 
-          {/* Page numbers */}
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
             <button
               key={page}
@@ -362,7 +380,6 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
             </button>
           ))}
 
-          {/* Next button */}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
@@ -381,7 +398,6 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         </div>
       )}
 
-      {/* Page info */}
       {totalPages > 1 && (
         <div style={{
           textAlign: "center", marginTop: "12px",
