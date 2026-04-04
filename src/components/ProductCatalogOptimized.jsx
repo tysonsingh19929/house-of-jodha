@@ -167,7 +167,7 @@ const ProductCard = memo(({ product, onAddToCart, onRemoveProduct, addedProducts
           onClick={(e) => {
             e.stopPropagation();
             const message = `Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`;
-            const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
+            const whatsappUrl = `https://wa.me/9967670497?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
           }}
           style={{

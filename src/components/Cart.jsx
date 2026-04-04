@@ -239,7 +239,7 @@ export default function Cart({ items, onRemove, onClose }) {
                   onClick={(e) => {
                     e.stopPropagation();
                     const message = `Hi! I'm interested in this product from my cart: ${item.name} - ₹${item.price}${item.size ? ` (Size: ${item.size})` : ''}. Can you provide more details?`;
-                    const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
+                    const whatsappUrl = `https://wa.me/9967670497?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
                   }}
                   style={{

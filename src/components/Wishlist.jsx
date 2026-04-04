@@ -188,7 +188,7 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
                 <button
                   onClick={() => {
                     const message = `Hi! I'm interested in this product from my wishlist: ${item.name} - ₹${item.price}. Can you provide more details?`;
-                    const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
+                    const whatsappUrl = `https://wa.me/9967670497?text=${encodeURIComponent(message)}`;
                     window.open(whatsappUrl, '_blank');
                   }}
                   style={{
