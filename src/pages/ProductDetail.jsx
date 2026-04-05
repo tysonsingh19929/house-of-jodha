@@ -189,7 +189,8 @@ export default function ProductDetail({
           >
             <img 
               src={product.image} 
-              alt={product.name} 
+              alt={product.name}
+              loading="lazy"
               style={{
                 width: "100%",
                 height: "100%",
@@ -247,7 +248,7 @@ export default function ProductDetail({
                 if (i !== 1) e.currentTarget.style.borderColor = "#e0e0e0";
               }}
               >
-                <img src={product.image} alt={`View ${i}`} style={{
+                <img src={product.image} alt={`View ${i}`} loading="lazy" style={{
                   width: "100%",
                   height: "100%",
                   objectFit: "cover"

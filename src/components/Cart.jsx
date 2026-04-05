@@ -183,7 +183,7 @@ export default function Cart({ items, onRemove, onClose }) {
                   overflow: "hidden", backgroundColor: "#f5f5f5",
                   flexShrink: 0, border: "1px solid #f0f0f0"
                 }}>
-                  <img src={item.image} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img src={item.image} alt={item.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
               )}
 

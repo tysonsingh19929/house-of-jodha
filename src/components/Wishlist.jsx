@@ -125,6 +125,7 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
                 <img
                   src={item.image}
                   alt={item.name}
+                  loading="lazy"
                   onClick={() => { navigate(`/product/${item.id}`); onClose(); }}
                   style={{
                     width: "75px", height: "75px", borderRadius: "8px",

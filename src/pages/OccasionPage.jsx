@@ -386,7 +386,7 @@ export default function OccasionPage({
 
                   {/* IMAGE */}
                   <div className="occ-img-wrap">
-                    <img src={product.image} alt={product.name} className="occ-img" />
+                    <img src={product.image} alt={product.name} className="occ-img" loading="lazy" />
                     {discount > 0 && (
                       <span className="occ-discount">{discount}% OFF</span>
                     )}
