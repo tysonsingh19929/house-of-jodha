@@ -63,7 +63,7 @@ export const products = [
   { id: 213, name: "Royal Blue Tissue Silk Embroidered Saree", price: 18500, originalPrice: 23000, image: getImageForProduct("Saree", 22), category: "Saree" },
   { id: 214, name: "Magenta Silk Hand Embroidered Saree", price: 14500, originalPrice: 18000, image: getImageForProduct("Saree", 23), category: "Saree" },
 
-  // ANARKALI (25+ products)
+  // ANARKALI (23 products)
   { id: 4, name: "Designer Anarkali Suit - Midnight Blue", price: 16800, originalPrice: 19800, image: getImageForProduct("Anarkali", 0), category: "Anarkali" },
   { id: 31, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 14000, originalPrice: 16900, image: getImageForProduct("Anarkali", 1), category: "Anarkali" },
   { id: 32, name: "Ivory Georgette Embroidered Anarkali Dress With Dupatta", price: 14000, originalPrice: 16900, image: getImageForProduct("Anarkali", 2), category: "Anarkali" },
