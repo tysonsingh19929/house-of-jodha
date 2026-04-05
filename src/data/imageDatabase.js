@@ -4,7 +4,7 @@
 
 const imageDatabase = {
   lehenga: [
-    "https://images.pexels.com/photos/33343580/pexels-photo-33343580.jpeg",
+    "https://images.unsplash.com/photo-1736849625289-fd47ba58dca3?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.pexels.com/photos/12747886/pexels-photo-12747886.jpeg",
     "https://images.pexels.com/photos/13031589/pexels-photo-13031589.jpeg",
     "https://images.pexels.com/photos/12791934/pexels-photo-12791934.jpeg",
@@ -24,11 +24,11 @@ const imageDatabase = {
     "https://images.pexels.com/photos/14683783/pexels-photo-14683783.jpeg",
     "https://images.pexels.com/photos/12411105/pexels-photo-12411105.jpeg",
     "https://images.pexels.com/photos/35441226/pexels-photo-35441226.jpeg",
+    "https://images.pexels.com/photos/13191611/pexels-photo-13191611.jpeg",
     "https://images.pexels.com/photos/19376370/pexels-photo-19376370.jpeg",
-    "/images/lehenga/22.jpg",
-    "/images/lehenga/23.jpg",
-    "/images/lehenga/24.jpg",
-    "/images/lehenga/25.jpg"
+    "https://images.pexels.com/photos/14683783/pexels-photo-14683783.jpeg",
+    "https://images.pexels.com/photos/12993125/pexels-photo-12993125.jpeg",
+    "https://images.pexels.com/photos/13022464/pexels-photo-13022464.jpeg"
   ],
   saree: [
     "https://source.unsplash.com/400x600/?saree%20embroidered&0",
