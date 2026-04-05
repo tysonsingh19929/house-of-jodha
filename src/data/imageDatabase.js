@@ -99,14 +99,14 @@ const imageDatabase = {
     "https://images.pexels.com/photos/19556876/pexels-photo-19556876.jpeg",
     "https://images.pexels.com/photos/29413592/pexels-photo-29413592.jpeg",
     "https://images.pexels.com/photos/18976988/pexels-photo-18976988.jpeg",
+    "https://images.pexels.com/photos/18976989/pexels-photo-18976989.jpeg",
     "https://images.pexels.com/photos/20702675/pexels-photo-20702675.jpeg",
     "https://images.pexels.com/photos/18976989/pexels-photo-18976989.jpeg",
     "https://images.pexels.com/photos/32347596/pexels-photo-32347596.jpeg",
     "https://images.pexels.com/photos/18977059/pexels-photo-18977059.jpeg",
-    "https://images.pexels.com/photos/27284114/pexels-photo-27284114.jpeg",
+    "https://images.pexels.com/photos/35340709/pexels-photo-35340709.jpeg",
     "https://images.pexels.com/photos/19248045/pexels-photo-19248045.jpeg",
     "https://images.pexels.com/photos/20407208/pexels-photo-20407208.jpeg",
-    "https://source.unsplash.com/400x600/?salwar%20kameez&19",
     "https://source.unsplash.com/400x600/?salwar%20kameez&20"
   ],
   gharara: [
