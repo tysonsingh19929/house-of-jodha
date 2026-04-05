@@ -3,31 +3,31 @@ import { useNavigate } from "react-router-dom";
 
 const carouselSlides = [
   {
-    image: "https://images.pexels.com/photos/13124449/pexels-photo-13124449.jpeg",
+    image: "https://images.pexels.com/photos/13124449/pexels-photo-13124449.jpeg?auto=compress&w=800&format=webp",
     label: "Bridal Lehenga Collection",
     sub: "Crafted for your special day",
     route: "/collection/lehenga",
   },
   {
-    image: "https://images.pexels.com/photos/27575174/pexels-photo-27575174.jpeg",
+    image: "https://images.pexels.com/photos/27575174/pexels-photo-27575174.jpeg?auto=compress&w=800&format=webp",
     label: "Festive Saree Looks",
     sub: "Timeless elegance, modern drape",
     route: "/collection/saree",
   },
   {
-    image: "https://images.pexels.com/photos/9418537/pexels-photo-9418537.jpeg",
+    image: "https://images.pexels.com/photos/9418537/pexels-photo-9418537.jpeg?auto=compress&w=800&format=webp",
     label: "Anarkali & Gharara Sets",
     sub: "Handpicked for every occasion",
     route: "/collection/anarkali",
   },
   {
-    image: "https://images.pexels.com/photos/35327940/pexels-photo-35327940.jpeg",
+    image: "https://images.pexels.com/photos/35327940/pexels-photo-35327940.jpeg?auto=compress&w=800&format=webp",
     label: "Sangeet & Mehendi Wear",
     sub: "Dance, celebrate, shine",
     route: "/occasion/sangeet",
   },
   {
-    image: "https://images.pexels.com/photos/29370686/pexels-photo-29370686.jpeg",
+    image: "https://images.pexels.com/photos/29370686/pexels-photo-29370686.jpeg?auto=compress&w=800&format=webp",
     label: "Wedding Season Specials",
     sub: "Exclusive collections now live",
     route: "/occasion/wedding",
