@@ -40,7 +40,7 @@ export default function AdminPanel() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products");
+      const response = await fetch("/api/products");
       if (response.ok) {
         const data = await response.json();
         setProducts(Array.isArray(data) ? data : []);
@@ -52,7 +52,7 @@ export default function AdminPanel() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/orders");
+      const response = await fetch("/api/orders");
       if (response.ok) {
         const data = await response.json();
         setOrders(Array.isArray(data) ? data : []);
@@ -64,7 +64,7 @@ export default function AdminPanel() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/users");
+      const response = await fetch("/api/users");
       if (response.ok) {
         const data = await response.json();
         setUsers(Array.isArray(data) ? data : []);
@@ -76,7 +76,7 @@ export default function AdminPanel() {
 
   const fetchSellers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/sellers");
+      const response = await fetch("/api/sellers");
       if (response.ok) {
         const data = await response.json();
         setSellers(Array.isArray(data) ? data : []);
@@ -107,7 +107,7 @@ export default function AdminPanel() {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/api/products", {
+      const response = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -130,7 +130,7 @@ export default function AdminPanel() {
     if (!window.confirm("Delete this product?")) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`/api/products/${id}`, {
         method: "DELETE"
       });
 

@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { signup } from "../services/api";
 
 export default function Signup({ cartOpen, setCartOpen, cartCount }) {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
     phone: "",
     password: "",
@@ -31,7 +32,7 @@ export default function Signup({ cartOpen, setCartOpen, cartCount }) {
   };
 
   const validateForm = () => {
-    if (!formData.fullName.trim()) {
+    if (!formData.name.trim()) {
       setError("Full name is required");
       return false;
     }
@@ -48,34 +49,22 @@ export default function Signup({ cartOpen, setCartOpen, cartCount }) {
       setError("Phone number is required");
       return false;
     }
-    if (formData.phone.length < 10) {
-      setError("Phone number should be at least 10 digits");
-      return false;
-    }
     if (!formData.password) {
       setError("Password is required");
       return false;
     }
     if (formData.password.length < 6) {
-      setError("Password should be at least 6 characters");
+      setError("Password must be at least 6 characters");
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return false;
     }
-    if (!formData.address.trim()) {
-      setError("Address is required");
-      return false;
-    }
-    if (!formData.city.trim()) {
-      setError("City is required");
-      return false;
-    }
     return true;
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -86,42 +75,26 @@ export default function Signup({ cartOpen, setCartOpen, cartCount }) {
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      
-      // Check if user already exists
-      if (users.find(u => u.email === formData.email)) {
-        setError("Email already registered. Please login instead.");
-        setLoading(false);
-        return;
-      }
-
-      // Save new user (without confirmPassword)
-      const newUser = {
-        id: Date.now(),
-        fullName: formData.fullName,
+    try {
+      const response = await signup({
+        name: formData.name,
         email: formData.email,
-        phone: formData.phone,
         password: formData.password,
+        phone: formData.phone,
         address: formData.address,
         city: formData.city,
         state: formData.state,
-        zipCode: formData.zipCode,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
-      localStorage.setItem("currentUser", JSON.stringify(newUser));
-
-      setSuccess("Account created successfully! Redirecting to home...");
+        zipCode: formData.zipCode
+      });
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("currentUser", JSON.stringify(response.user));
+      setSuccess("Account created successfully!");
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setLoading(false);
-
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    }, 1000);
+    }
   };
 
   return (
@@ -181,8 +154,8 @@ export default function Signup({ cartOpen, setCartOpen, cartCount }) {
               </label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
                 style={{

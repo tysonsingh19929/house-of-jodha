@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { login } from "../services/api";
 
 export default function Login({ cartOpen, setCartOpen, cartCount }) {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
     setError("");
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -33,20 +34,16 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
       return;
     }
 
-    // Simulate API call - check if user exists in localStorage
-    setTimeout(() => {
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const user = users.find(u => u.email === formData.email && u.password === formData.password);
-
-      if (user) {
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        setLoading(false);
-        navigate("/");
-      } else {
-        setError("Invalid email or password");
-        setLoading(false);
-      }
-    }, 1000);
+    try {
+      const response = await login(formData.email, formData.password);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("currentUser", JSON.stringify(response.user));
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

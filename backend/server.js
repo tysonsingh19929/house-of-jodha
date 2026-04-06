@@ -12,14 +12,18 @@ import { seedSellers, seedProducts } from './seed.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Database Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/house-of-jodha')
+const mongoUri = process.env.MONGODB_URI && !process.env.MONGODB_URI.includes('<db_password>')
+  ? process.env.MONGODB_URI
+  : 'mongodb://localhost:27017/house-of-jodha';
+
+mongoose.connect(mongoUri)
   .then(async () => {
     console.log('MongoDB connected');
     // Seed demo sellers and products on startup

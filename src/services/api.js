@@ -1,5 +1,5 @@
 // API utility for frontend to connect to backend
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const api = {
   // Products
@@ -86,3 +86,7 @@ export const api = {
     return res.json();
   }
 };
+
+export const login = api.login;
+export const signup = api.register;
+export default api;

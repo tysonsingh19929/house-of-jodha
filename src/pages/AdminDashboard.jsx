@@ -39,8 +39,8 @@ export default function AdminDashboard() {
       setLoading(true);
       // If super admin, get all products; otherwise get seller's products
       const url = isSuperAdmin 
-        ? "http://localhost:5000/api/products"
-        : `http://localhost:5000/api/products/seller/${sellerId}`;
+        ? "/api/products"
+        : `/api/products/seller/${sellerId}`;
       
       const response = await fetch(url);
       const data = await response.json();
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
+      const response = await fetch("/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${editingId}`, {
+      const response = await fetch(`/api/products/${editingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+      const response = await fetch(`/api/products/${productId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"

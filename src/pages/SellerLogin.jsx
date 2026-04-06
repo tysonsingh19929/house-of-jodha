@@ -14,7 +14,7 @@ export default function SellerLogin() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/sellers/login", {
+      const response = await fetch("/api/sellers/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
