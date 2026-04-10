@@ -27,6 +27,8 @@ export default function SearchBar() {
       }}>
         <input
           type="text"
+          name="search"
+          id="search"
           placeholder="Search for dresses, categories, fabrics..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

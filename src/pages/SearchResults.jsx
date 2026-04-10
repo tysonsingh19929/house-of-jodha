@@ -21,6 +21,8 @@ function SearchBar({ onSearch, initialQuery }) {
     <form onSubmit={handleSubmit} style={{ display: "flex", gap: "8px", marginBottom: "20px", width: "100%" }}>
       <input
         type="text"
+        name="search"
+        id="search"
         placeholder="Search products..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

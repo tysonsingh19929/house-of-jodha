@@ -83,6 +83,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
           <span style={{ fontSize: "14px", color: "#999" }}>🔍</span>
           <input
             type="text"
+            name="productSearch"
+            id="productSearch"
             placeholder="Search for brands and products"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

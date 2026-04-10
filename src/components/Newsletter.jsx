@@ -31,6 +31,8 @@ export default function Newsletter() {
       }}>
         <input
           type="email"
+          name="newsletterEmail"
+          id="newsletterEmail"
           placeholder="Enter your email"
           required
           style={{
