@@ -34,28 +34,31 @@ router.post('/message', async (req, res) => {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (apiKey) {
-      // Import only when requested to avoid crash if not fully installed yet
-      const { GoogleGenAI } = await import('@google/genai');
-      const ai = new GoogleGenAI({ apiKey });
+      // Using the highly stable older package for absolute reliability
+      const { GoogleGenerativeAI } = await import('@google/generative-ai');
+      const genAI = new GoogleGenerativeAI(apiKey);
+      
+      const model = genAI.getGenerativeModel({ 
+        model: 'gemini-1.5-flash',
+        systemInstruction: systemInstruction
+      });
       
       const chatHistory = history ? history.map(h => ({
         role: h.role,
         parts: [{ text: h.text }]
       })) : [];
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
+      const result = await model.generateContent({
         contents: [
           ...chatHistory,
           { role: 'user', parts: [{ text: message }] }
         ],
-        config: {
-          systemInstruction: systemInstruction,
+        generationConfig: {
           temperature: 0.7,
         }
       });
       
-      responseText = response.text;
+      responseText = result.response.text();
     } else {
       // Fallback Demo Response for testing UI without API key
       console.warn("GEMINI_API_KEY is not set. Using mocked response.");
