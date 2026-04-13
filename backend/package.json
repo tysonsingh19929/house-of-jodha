@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "set PORT=5002&& nodemon server.js"
+    "dev": "set PORT=5002&& nodemon server.js",
+    "build": "echo 'No build step needed'"
   },
   "dependencies": {
     "@google/genai": "*",

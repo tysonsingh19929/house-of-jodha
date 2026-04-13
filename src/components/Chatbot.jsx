@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Chatbot.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -32,7 +34,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:5002/api/chat/message', {
+      const response = await fetch(`${API_BASE_URL}/chat/message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -46,12 +48,12 @@ const Chatbot = () => {
       }
 
       const data = await response.json();
-      
+
       setMessages(prev => [...prev, { role: 'model', text: data.text }]);
     } catch (error) {
       console.error('Chat error:', error);
       setMessages(prev => [
-        ...prev, 
+        ...prev,
         { role: 'model', text: 'Apologies darling, I seem to have lost connection. Could you try asking me again?' }
       ]);
     } finally {
@@ -62,8 +64,8 @@ const Chatbot = () => {
   return (
     <div className="chatbot-container">
       {/* Search/Chat Toggle Button */}
-      <button 
-        className={`chatbot-toggle ${isOpen ? 'open' : ''}`} 
+      <button
+        className={`chatbot-toggle ${isOpen ? 'open' : ''}`}
         onClick={toggleChat}
         aria-label="Chat with Ishani"
       >
@@ -86,7 +88,7 @@ const Chatbot = () => {
               <span>Senior Fashion Consultant</span>
             </div>
             <button className="chatbot-close-btn" onClick={toggleChat} aria-label="Close Chat">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
 
@@ -95,7 +97,7 @@ const Chatbot = () => {
               <div key={index} className={`message-wrapper ${message.role}`}>
                 {message.role === 'model' && (
                   <div className="message-avatar">
-                     <img src="/placeholder-avatar.jpg" alt="Ishani" onError={(e) => { e.target.onerror = null; e.target.style.display="none" }} />
+                    <img src="/placeholder-avatar.jpg" alt="Ishani" onError={(e) => { e.target.onerror = null; e.target.style.display = "none" }} />
                   </div>
                 )}
                 <div className={`message-bubble ${message.role}`}>
@@ -105,12 +107,12 @@ const Chatbot = () => {
             ))}
             {isTyping && (
               <div className="message-wrapper model">
-                  <div className="message-avatar"></div>
-                  <div className="message-bubble model typing">
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                  </div>
+                <div className="message-avatar"></div>
+                <div className="message-bubble model typing">
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />
