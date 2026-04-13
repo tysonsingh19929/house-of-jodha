@@ -29,6 +29,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import WhatsAppButton from "./components/WhatsAppButton";
+import Chatbot from "./components/Chatbot";
 
 function HomePage({
   cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
@@ -317,6 +318,7 @@ function App() {
 />
       </Routes>
       <WhatsAppButton />
+      <Chatbot />
     </BrowserRouter>
   );
 }
