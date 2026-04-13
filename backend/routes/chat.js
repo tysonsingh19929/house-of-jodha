@@ -43,14 +43,21 @@ router.post('/message', async (req, res) => {
         systemInstruction: systemInstruction
       });
       
-      const chatHistory = history ? history.map(h => ({
-        role: h.role,
+      let formattedHistory = history ? history.map(h => ({
+        role: h.role, // role must be 'user' or 'model'
         parts: [{ text: h.text }]
       })) : [];
 
+      // CRITICAL FIX: The Gemini API strictly rejects requests where the first message 
+      // in the contents array is from the 'model'. The conversation must start with a 'user'.
+      // We remove the hardcoded initial greeting from the history to satisfy this rule.
+      if (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
+        formattedHistory.shift();
+      }
+
       const result = await model.generateContent({
         contents: [
-          ...chatHistory,
+          ...formattedHistory,
           { role: 'user', parts: [{ text: message }] }
         ],
         generationConfig: {
