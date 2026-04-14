@@ -734,24 +734,7 @@ export default function ProductDetail({
         </div>
       )}
 
-      {/* Features Strip */}
-      <div className="pd-features-strip">
-        <div className="pd-feature-item">
-          <div className="pd-feature-icon"><IconTruck /></div>
-          <p className="pd-feature-title">Free Shipping</p>
-          <p className="pd-feature-sub">Orders above ₹500</p>
-        </div>
-        <div className="pd-feature-item">
-          <div className="pd-feature-icon"><IconReturn /></div>
-          <p className="pd-feature-title">Easy Returns</p>
-          <p className="pd-feature-sub">30-day return policy</p>
-        </div>
-        <div className="pd-feature-item">
-          <div className="pd-feature-icon"><IconLock /></div>
-          <p className="pd-feature-title">Authentic Products</p>
-          <p className="pd-feature-sub">100% original, verified</p>
-        </div>
-      </div>
+
 
       <SizeChart isOpen={sizeChartOpen} onClose={() => setSizeChartOpen(false)} />
       <Footer />
