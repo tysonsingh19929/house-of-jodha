@@ -11,8 +11,8 @@
   background: transparent;
   border: none;
   border-radius: 50%;
-  width: 42px;
-  height: 42px;
+  width: 55px;
+  height: 55px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -53,8 +53,8 @@
   position: relative;
   z-index: 2;
   color: #D4AF37;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   transition: transform 0.3s ease, opacity 0.2s ease;
 }
 
