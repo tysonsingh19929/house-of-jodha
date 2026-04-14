@@ -1,7 +1,7 @@
 .whatsapp-button-container {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -12,35 +12,42 @@
   background: linear-gradient(135deg, #25D366, #128C7E);
   color: white;
   border-radius: 50%;
-  width: 64px;
-  height: 64px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 3px 10px rgba(37, 211, 102, 0.4);
   text-decoration: none;
-  font-size: 32px;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+}
+
+.whatsapp-float::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  opacity: 0.3;
+  animation: wa-pulse 2.5s ease-out infinite;
+  z-index: -1;
 }
 
 .whatsapp-float::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: -6px;
   border-radius: 50%;
-  border: 2px solid #25D366;
-  opacity: 0;
-  animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  opacity: 0.15;
+  animation: wa-pulse 2.5s ease-out infinite 0.4s;
   z-index: -1;
 }
 
 .whatsapp-float:hover {
-  transform: scale(1.1) translateY(-4px);
-  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+  transform: scale(1.12) translateY(-3px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.55);
   color: white;
 }
 
@@ -49,8 +56,8 @@
 }
 
 .whatsapp-icon {
-  width: 34px;
-  height: 34px;
+  width: 22px;
+  height: 22px;
   transition: transform 0.3s ease;
 }
 
@@ -58,17 +65,8 @@
   transform: rotate(10deg) scale(1.1);
 }
 
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.8;
-  }
-  70% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
+@keyframes wa-pulse {
+  0% { transform: scale(1); opacity: 0.35; }
+  70% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
