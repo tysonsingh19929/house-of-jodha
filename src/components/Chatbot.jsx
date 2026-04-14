@@ -8,6 +8,30 @@ const buildApiUrl = (path) => {
   return `${normalizedBase}${path.startsWith('/') ? '' : '/'}${path}`;
 };
 
+// Helper function to convert URLs in text to clickable links
+const makeLinksClickable = (text) => {
+  const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, index) => {
+    if (urlRegex.test(part)) {
+      urlRegex.lastIndex = 0; // Reset regex state
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#D4AF37', textDecoration: 'underline' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -124,7 +148,7 @@ const Chatbot = () => {
                     <img src="/placeholder-avatar.jpg" alt="Ishani" onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }} />
                   </div>
                 )}
-                <div className={`message-bubble ${message.role}`}>{message.text}</div>
+                <div className={`message-bubble ${message.role}`}>{makeLinksClickable(message.text)}</div>
               </div>
             ))}
             {isTyping && (

@@ -94,14 +94,14 @@ PROHIBITED:
 
 router.post('/message', async (req, res) => {
   const { message, history } = req.body;
-  
+
   try {
     let responseText = "";
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       console.warn("⚠️ GEMINI_API_KEY is not set. Using fallback demo response.");
-      responseText = history.length === 0 
+      responseText = history.length === 0
         ? "Namaste! Welcome to House of Jodha. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
         : "I understand completely! Let me know your preferred color and occasion, love.";
       return res.json({ text: responseText });
@@ -111,12 +111,12 @@ router.post('/message', async (req, res) => {
       // Using the highly stable older package for absolute reliability
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(apiKey);
-      
-      const model = genAI.getGenerativeModel({ 
+
+      const model = genAI.getGenerativeModel({
         model: 'gemini-2.5-flash',
         systemInstruction: systemInstruction
       });
-      
+
       let formattedHistory = history ? history.map(h => ({
         role: h.role, // role must be 'user' or 'model'
         parts: [{ text: h.text }]
@@ -138,7 +138,7 @@ router.post('/message', async (req, res) => {
           temperature: 0.7,
         }
       });
-      
+
       responseText = result.response.text();
     } catch (geminiError) {
       console.error('Gemini API Error:', geminiError.message);
@@ -149,8 +149,8 @@ router.post('/message', async (req, res) => {
     res.json({ text: responseText });
   } catch (error) {
     console.error('Chatbot API Error Details:', error);
-    res.status(500).json({ 
-      error: 'Failed to process AI response.', 
+    res.status(500).json({
+      error: 'Failed to process AI response.',
       details: error.message || String(error),
       type: error.name
     });
