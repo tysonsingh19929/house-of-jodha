@@ -195,9 +195,10 @@ export default function AdminPanel() {
 
   const panelStyle = {
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "#FAFAFA",
     paddingTop: "64px",
-    paddingBottom: "40px"
+    paddingBottom: "40px",
+    fontFamily: "'Inter', sans-serif"
   };
 
   const containerStyle = {
@@ -211,10 +212,11 @@ export default function AdminPanel() {
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "30px",
-    background: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+    background: "linear-gradient(135deg, #1A1A1A, #2A2A2A)",
+    padding: "25px 35px",
+    borderRadius: "16px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+    color: "#D4AF37"
   };
 
   const tabBarStyle = {
@@ -222,51 +224,60 @@ export default function AdminPanel() {
     gap: "10px",
     marginBottom: "30px",
     background: "#fff",
-    padding: "15px",
-    borderRadius: "8px",
+    padding: "16px",
+    borderRadius: "16px",
     flexWrap: "wrap",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+    boxShadow: "0 4px 15px rgba(0,0,0,0.02)",
+    border: "1px solid rgba(212,175,55,0.1)"
   };
 
   const tabButtonStyle = (isActive) => ({
-    padding: "10px 20px",
+    padding: "10px 24px",
     border: "none",
-    borderRadius: "6px",
-    background: isActive ? "#667eea" : "#f0f0f0",
-    color: isActive ? "#fff" : "#333",
+    borderRadius: "30px",
+    background: isActive ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
+    color: isActive ? "#fff" : "#666",
     cursor: "pointer",
     fontWeight: "600",
-    transition: "all 0.3s"
+    fontSize: "14px",
+    transition: "all 0.3s ease",
+    boxShadow: isActive ? "0 4px 15px rgba(212,175,55,0.3)" : "none"
   });
 
   const cardStyle = {
     background: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-    marginBottom: "20px"
+    padding: "30px",
+    borderRadius: "16px",
+    boxShadow: "0 8px 30px rgba(0,0,0,0.04)",
+    marginBottom: "24px",
+    border: "1px solid rgba(212,175,55,0.05)"
   };
 
   const statsGridStyle = {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
     gap: "20px",
     marginBottom: "30px"
   };
 
   const statCardStyle = {
     background: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-    textAlign: "center"
+    padding: "30px 20px",
+    borderRadius: "16px",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.03)",
+    textAlign: "center",
+    border: "1px solid rgba(0,0,0,0.04)",
+    transition: "transform 0.3s ease",
+    cursor: "default"
   };
 
   const statNumberStyle = {
-    fontSize: "32px",
-    fontWeight: "700",
-    color: "#667eea",
-    marginBottom: "10px"
+    fontSize: "38px",
+    fontWeight: "800",
+    background: "linear-gradient(135deg, #D4AF37, #B8860B)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    marginBottom: "8px"
   };
 
   return (
@@ -274,18 +285,24 @@ export default function AdminPanel() {
       <div style={containerStyle}>
         {/* Header */}
         <div style={headerStyle}>
-          <h1 style={{ margin: "0", color: "#333" }}>🔐 Admin Panel</h1>
+          <div>
+            <h1 style={{ margin: "0", color: "#D4AF37", fontSize: "28px" }}>👑 Super Admin Console</h1>
+            <p style={{ margin: "5px 0 0 0", color: "#aaa", fontSize: "14px" }}>House of Jodha Headquarters</p>
+          </div>
           <button
             onClick={handleLogout}
             style={{
-              padding: "10px 20px",
-              background: "#e74c3c",
+              padding: "10px 24px",
+              background: "transparent",
               color: "#fff",
-              border: "none",
-              borderRadius: "6px",
+              border: "1px solid #D4AF37",
+              borderRadius: "30px",
               fontWeight: "600",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "all 0.2s"
             }}
+            onMouseEnter={(e) => e.target.style.background = "rgba(212,175,55,0.1)"}
+            onMouseLeave={(e) => e.target.style.background = "transparent"}
           >
             Logout
           </button>
@@ -333,10 +350,13 @@ export default function AdminPanel() {
         {/* Dashboard Tab */}
         {activeTab === "dashboard" && (
           <div style={cardStyle}>
-            <h2 style={{ color: "#333", marginBottom: "20px" }}>Welcome to Admin Panel</h2>
-            <p style={{ color: "#666", lineHeight: "1.6" }}>
-              Use the tabs above to manage products, orders, users, and sellers. 
-              Click on each section to view and manage respective data.
+            <h2 style={{ color: "#1A1A1A", marginBottom: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+              Welcome to the Command Center
+            </h2>
+            <p style={{ color: "#666", lineHeight: "1.6", margin: 0 }}>
+              Here you hold the keys to the entire boutique. Use the navigation above to securely audit products, track incoming orders, verify user registrations, and moderate seller accounts. 
+              All system metrics are tracked in real-time.
             </p>
           </div>
         )}
@@ -435,35 +455,36 @@ export default function AdminPanel() {
                     }}
                   />
                 )}
-                <button
+                  <button
                   type="submit"
                   disabled={loading}
                   style={{
-                    padding: "12px",
-                    background: "#667eea",
+                    padding: "14px",
+                    background: "linear-gradient(135deg, #D4AF37, #B8860B)",
                     color: "#fff",
                     border: "none",
                     borderRadius: "6px",
-                    fontWeight: "600",
+                    fontWeight: "700",
                     cursor: loading ? "not-allowed" : "pointer",
-                    opacity: loading ? 0.6 : 1
+                    opacity: loading ? 0.6 : 1,
+                    transition: "opacity 0.2s"
                   }}
                 >
-                  {loading ? "Adding..." : "Add Product"}
+                  {loading ? "Adding Product..." : "✨ Add Master Product"}
                 </button>
               </form>
             </div>
 
             <div style={cardStyle}>
-              <h2 style={{ color: "#333", marginBottom: "20px" }}>All Products ({products.length})</h2>
+              <h2 style={{ color: "#1A1A1A", marginBottom: "20px" }}>Master Catalog ({products.length})</h2>
               <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
                   <thead>
-                    <tr style={{ borderBottom: "2px solid #ddd" }}>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Name</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Category</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Price</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Action</th>
+                    <tr style={{ background: "#FDFDFD", borderBottom: "2px solid #EAEAEA" }}>
+                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Name</th>
+                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Category</th>
+                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Price</th>
+                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -472,20 +493,21 @@ export default function AdminPanel() {
                         <td style={{ padding: "10px", color: "#333" }}>{product.name}</td>
                         <td style={{ padding: "10px", color: "#333" }}>{product.category}</td>
                         <td style={{ padding: "10px", color: "#333" }}>₹{product.price}</td>
-                        <td style={{ padding: "10px" }}>
+                        <td style={{ padding: "16px" }}>
                           <button
                             onClick={() => handleDeleteProduct(product._id)}
                             style={{
-                              padding: "6px 12px",
-                              background: "#e74c3c",
+                              padding: "8px 16px",
+                              background: "#ff4757",
                               color: "#fff",
                               border: "none",
                               borderRadius: "4px",
                               cursor: "pointer",
-                              fontSize: "12px"
+                              fontSize: "12px",
+                              fontWeight: "600"
                             }}
                           >
-                            Delete
+                            ✖ Delete
                           </button>
                         </td>
                       </tr>

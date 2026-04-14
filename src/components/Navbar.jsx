@@ -63,7 +63,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
         </svg>
       ),
       label: "Shop All",
-      path: "/collection/all",
+      path: "/#products",
     },
     {
       icon: (
@@ -224,7 +224,18 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               {navItems.map((item, i) => (
                 <div
                   key={item.label}
-                  onClick={() => { setMenuOpen(false); navigate(item.path); }}
+                  onClick={() => { 
+                    setMenuOpen(false); 
+                    if (item.path.startsWith("/#")) {
+                      navigate(item.path);
+                      setTimeout(() => {
+                        const id = item.path.split("#")[1];
+                        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    } else {
+                      navigate(item.path);
+                    }
+                  }}
                   style={{
                     ...dropdownItemStyle,
                     animationDelay: `${i * 40}ms`,

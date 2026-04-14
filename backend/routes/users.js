@@ -92,7 +92,16 @@ router.post('/register', async (req, res) => {
     
     res.status(201).json({
       message: 'User registered successfully',
-      user: { id: savedUser._id, name: savedUser.name, email: savedUser.email },
+      user: { 
+        id: savedUser._id, 
+        name: savedUser.name, 
+        email: savedUser.email,
+        phone: savedUser.phone,
+        address: savedUser.address,
+        city: savedUser.city,
+        state: savedUser.state,
+        zipCode: savedUser.zipCode
+      },
       token
     });
   } catch (error) {
@@ -122,7 +131,16 @@ router.post('/login', async (req, res) => {
     
     res.json({
       message: 'Login successful',
-      user: { id: user._id, name: user.name, email: user.email },
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        city: user.city,
+        state: user.state,
+        zipCode: user.zipCode
+      },
       token
     });
   } catch (error) {
