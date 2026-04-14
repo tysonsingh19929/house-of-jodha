@@ -129,15 +129,35 @@ router.post('/message', async (req, res) => {
         formattedHistory.shift();
       }
 
-      const result = await model.generateContent({
-        contents: [
-          ...formattedHistory,
-          { role: 'user', parts: [{ text: message }] }
-        ],
-        generationConfig: {
-          temperature: 0.7,
+      const MAX_RETRIES = 3;
+      let result;
+      let attempt = 0;
+      
+      while (attempt < MAX_RETRIES) {
+        try {
+          result = await model.generateContent({
+            contents: [
+              ...formattedHistory,
+              { role: 'user', parts: [{ text: message }] }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+            }
+          });
+          break; // Success
+        } catch (error) {
+          attempt++;
+          // Check if it's a 429 Too Many Requests error
+          const isRateLimit = error.status === 429 || (error.message && error.message.includes('429'));
+          if (attempt >= MAX_RETRIES || !isRateLimit) {
+            throw error; // Let the outer catch handle it
+          }
+          // Exponential backoff: 1000ms, 2000ms, 4000ms + random jitter
+          const delay = Math.pow(2, attempt - 1) * 1000 + Math.random() * 500;
+          console.warn(`⚠️ Gemini API rate limit hit. Retrying in ${Math.round(delay)}ms (Attempt ${attempt}/${MAX_RETRIES})...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
         }
-      });
+      }
 
       responseText = result.response.text();
     } catch (geminiError) {

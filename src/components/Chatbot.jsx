@@ -122,7 +122,7 @@ const Chatbot = () => {
           <div className="chatbot-header">
             <div className="chatbot-avatar">
               <img
-                src="/placeholder-avatar.jpg"
+                src="/ishani-avatar.png"
                 alt="Ishani"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -146,7 +146,7 @@ const Chatbot = () => {
               <div key={index} className={`message-wrapper ${message.role}`}>
                 {message.role === 'model' && (
                   <div className="message-avatar">
-                    <img src="/placeholder-avatar.jpg" alt="Ishani" onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }} />
+                    <img src="/ishani-avatar.png" alt="Ishani" onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }} />
                   </div>
                 )}
                 <div className={`message-bubble ${message.role}`}>{makeLinksClickable(message.text)}</div>
