@@ -79,8 +79,12 @@ router.post('/message', async (req, res) => {
 
     res.json({ text: responseText });
   } catch (error) {
-    console.error('Chatbot API Error:', error);
-    res.status(500).json({ error: 'Failed to process AI response.' });
+    console.error('Chatbot API Error Details:', error);
+    res.status(500).json({ 
+      error: 'Failed to process AI response.', 
+      details: error.message || String(error),
+      type: error.name
+    });
   }
 });
 

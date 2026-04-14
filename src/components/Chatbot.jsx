@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Chatbot.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizeApiBase = (base) => base.replace(/\/+$/, '');
+const buildApiUrl = (path) => {
+  const normalizedBase = normalizeApiBase(API_BASE_URL);
+  return `${normalizedBase}${path.startsWith('/') ? '' : '/'}${path}`;
+};
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +39,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/message`, {
+      const response = await fetch(buildApiUrl('/chat/message'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
