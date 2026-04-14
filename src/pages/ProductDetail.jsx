@@ -582,7 +582,7 @@ export default function ProductDetail({
               <span className="pd-price-original">₹{product.originalPrice.toLocaleString()}</span>
               {discount > 0 && <span className="pd-price-save">Save {discount}%</span>}
             </div>
-            <p className="pd-price-note">Inclusive of all taxes • Free shipping above ₹500</p>
+            <p className="pd-price-note">Inclusive of all taxes • Free shipping above ₹5000</p>
           </div>
 
           {/* Social proof */}
@@ -671,7 +671,7 @@ export default function ProductDetail({
               <div className="pd-trust-icon"><IconTruck /></div>
               <div>
                 <p className="pd-trust-title">Free Shipping in India</p>
-                <p className="pd-trust-sub">On all orders above ₹500</p>
+                <p className="pd-trust-sub">On all orders above ₹5000</p>
               </div>
             </div>
             <div className="pd-trust-item">
