@@ -1,11 +1,12 @@
 import express from 'express';
+import Product from '../models/Product.js';
 // We'll dynamically require or import the Google GenAI library if it exists
 // Using a simple mock fallback if we don't have the API key or library yet.
 
 const router = express.Router();
 
-// The specific persona instructions given by the user
-const systemInstruction = `
+// Base persona instructions
+const getSystemInstruction = (dynamicProductsStr) => `
 The Boutique Specialist
 Name: Ishani
 Role: Senior Fashion Consultant & Customer Representative
@@ -32,24 +33,8 @@ FORMAT EXAMPLES (Copy this exact format):
 
 DO NOT just say "I recommend the Red Lehenga" - ALWAYS include the full link!
 
-FEATURED PRODUCTS TO RECOMMEND (Master List):
-
-LEHENGA COLLECTION:
-1. Beige Gold Tissue Silk Embroidered - ₹25,600 → https://house-of-jodha.vercel.app/product/1
-2. Red Silk Hand Embroidered Bridal - ₹32,000 → https://house-of-jodha.vercel.app/product/11
-3. Blush Pink Tissue Silk Bridal - ₹27,000 → https://house-of-jodha.vercel.app/product/12
-4. Maroon Tissue Silk Bridal - ₹29,000 → https://house-of-jodha.vercel.app/product/13
-5. Parrot Green Floral Printed - ₹7,700 → https://house-of-jodha.vercel.app/product/14
-6. Ivory Silk Embroidered Bridal - ₹35,000 → https://house-of-jodha.vercel.app/product/101
-7. Navy Blue Georgette Printed - ₹9,200 → https://house-of-jodha.vercel.app/product/102
-8. Royal Purple Silk Embroidered - ₹24,500 → https://house-of-jodha.vercel.app/product/103
-
-SAREE COLLECTION:
-1. Pre-draped Royal Purple Satin - ₹8,900 → https://house-of-jodha.vercel.app/product/3
-2. Gold Sequined Silk Bridal - ₹21,000 → https://house-of-jodha.vercel.app/product/22
-3. Ivory & Gold Embroidered Bridal - ₹18,000 → https://house-of-jodha.vercel.app/product/23
-4. Green Luxe Fabric Embroidered - ₹9,800 → https://house-of-jodha.vercel.app/product/24
-5. Bronze Maroon Silk Embroidered - ₹6,100 → https://house-of-jodha.vercel.app/product/25
+FEATURED PRODUCTS TO RECOMMEND (Based on User's Request):
+${dynamicProductsStr}
 
 ═══════════════════════════════════════════════════════════════════════════════
 CUSTOMER INTERACTION WORKFLOW:
@@ -82,7 +67,7 @@ STRICT RULES - NO EXCEPTIONS:
 ═══════════════════════════════════════════════════════════════════════════════
 ✓ EVERY product recommendation MUST have a link
 ✓ Format: "Name - ₹Price → https://house-of-jodha.vercel.app/product/[ID]"
-✓ If customer asks "What do you have?", recommend 2-3 products WITH links
+✓ If customer asks "What do you have?", recommend 2-3 products WITH links from the provided list.
 ✓ Never say "There's a red lehenga" - say "Red Silk Hand Embroidered Bridal - ₹32,000 → https://house-of-jodha.vercel.app/product/11"
 ✓ Be warm, luxe, professional - always use "love" at end of sentences
 
@@ -107,6 +92,45 @@ router.post('/message', async (req, res) => {
       return res.json({ text: responseText });
     }
 
+    // Dynamic Product Fetching Strategy
+    let dynamicProductsStr = "Here are some of our best sellers:\n";
+    try {
+      const lowerMsg = message.toLowerCase();
+      const categories = ['lehenga', 'saree', 'anarkali', 'salwar kameez', 'gharara', 'sharara'];
+      
+      let query = {};
+      
+      // Match category if mentioned
+      const matchedCategory = categories.find(c => lowerMsg.includes(c));
+      if (matchedCategory) {
+        query.category = { $regex: new RegExp(`^${matchedCategory}$`, 'i') };
+      }
+      
+      // Match color if mentioned
+      const colors = ['red', 'blue', 'green', 'pink', 'gold', 'ivory', 'black', 'white', 'yellow', 'purple', 'maroon'];
+      const matchedColor = colors.find(c => lowerMsg.includes(c));
+      if (matchedColor) {
+        query.name = { $regex: new RegExp(matchedColor, 'i') };
+      }
+
+      // Fetch up to 5 matching products, or just 5 random products if no match
+      let products = await Product.find(query).limit(5);
+      
+      // If we didn't find enough, fetch some random ones
+      if (products.length < 5) {
+          const additionalProducts = await Product.find({ _id: { $nin: products.map(p => p._id) } }).limit(5 - products.length);
+          products = [...products, ...additionalProducts];
+      }
+
+      products.forEach((p, index) => {
+        dynamicProductsStr += `${index + 1}. ${p.name} - ₹${p.price.toLocaleString('en-IN')} → https://house-of-jodha.vercel.app/product/${p._id}\n`;
+      });
+      
+    } catch (dbError) {
+        console.error("Error fetching dynamic products:", dbError);
+        dynamicProductsStr += "1. Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n2. Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n";
+    }
+
     try {
       // Using the highly stable older package for absolute reliability
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
@@ -114,7 +138,7 @@ router.post('/message', async (req, res) => {
 
       const model = genAI.getGenerativeModel({
         model: 'gemini-2.5-flash',
-        systemInstruction: systemInstruction
+        systemInstruction: getSystemInstruction(dynamicProductsStr)
       });
 
       let formattedHistory = history ? history.map(h => ({

@@ -88,11 +88,17 @@ function App() {
     if (user) setCurrentUser(JSON.parse(user));
     const savedWishlist = localStorage.getItem("wishlist");
     if (savedWishlist) setWishlistItems(JSON.parse(savedWishlist));
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) setCartItems(JSON.parse(savedCart));
   }, []);
 
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
   }, [wishlistItems]);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Toggle handlers — clicking again closes, opening one closes the other
   const handleCartClick = () => {
@@ -111,6 +117,7 @@ function App() {
       console.log(`Cart updated. Total items: ${updatedItems.length}`);
       return updatedItems;
     });
+    setWishlistItems((prevWishlist) => prevWishlist.filter(item => item.id !== product.id));
   };
 
   const removeFromCart = (index) => {
