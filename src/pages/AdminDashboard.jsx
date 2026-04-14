@@ -13,6 +13,7 @@ const DollarSignIcon = () => <svg width="24" height="24" fill="none" stroke="cur
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, products, add_product, settings
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,8 +43,10 @@ export default function AdminDashboard() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const url = isSuperAdmin ? "/api/products" : `/api/products/seller/${sellerId}`;
-      const response = await fetch(url);
+      const url = isSuperAdmin 
+        ? '/products'
+        : `/products/seller/${sellerId}`;
+      const response = await fetch(buildApiUrl(url));
       const data = await response.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -80,7 +83,7 @@ export default function AdminDashboard() {
     }
 
     try {
-      const response = await fetch("/api/products", {
+      const response = await fetch(buildApiUrl("/products"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -136,7 +139,7 @@ export default function AdminDashboard() {
       alert("Please fill all required fields"); return;
     }
     try {
-      const response = await fetch(`/api/products/${editingId}`, {
+      const response = await fetch(buildApiUrl(`/products/${editingId}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,7 +160,7 @@ export default function AdminDashboard() {
     if (!canEditProduct(product)) { alert("Permission denied"); return; }
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(buildApiUrl(`/products/${productId}`), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sellerId: sellerId, isSuperAdmin: isSuperAdmin })

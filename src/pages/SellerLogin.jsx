@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizeApiBase = (base) => base.replace(/\/+$/, '');
+const buildApiUrl = (path) => {
+  const normalizedBase = normalizeApiBase(API_BASE_URL);
+  return `${normalizedBase}${path.startsWith('/') ? '' : '/'}${path}`;
+};
+
 export default function SellerLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +21,7 @@ export default function SellerLogin() {
     setError("");
 
     try {
-      const response = await fetch("/api/sellers/login", {
+      const response = await fetch(buildApiUrl('/sellers/login'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -26,6 +33,7 @@ export default function SellerLogin() {
 
       if (!response.ok) {
         setError(data.message || "Login failed");
+        setLoading(false);
         return;
       }
 
@@ -237,8 +245,7 @@ export default function SellerLogin() {
         }}>
           <strong>Demo Sellers:</strong>
           <div style={{ marginTop: "8px", fontSize: "11px" }}>
-            Super Admin: admin@example.com / admin123
-            <br />Regular Seller: seller@example.com / seller123
+            Regular Seller: seller@example.com / seller123
           </div>
         </div>
       </div>

@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const normalizeApiBase = (base) => base.replace(/\/+$/, '');
+const buildApiUrl = (path) => {
+  const normalizedBase = normalizeApiBase(API_BASE_URL);
+  return `${normalizedBase}${path.startsWith('/') ? '' : '/'}${path}`;
+};
+
 export default function SellerSignup() {
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
@@ -16,7 +23,7 @@ export default function SellerSignup() {
     setError("");
 
     try {
-      const response = await fetch("/api/sellers/register", {
+      const response = await fetch(buildApiUrl('/sellers/register'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -28,6 +35,7 @@ export default function SellerSignup() {
 
       if (!response.ok) {
         setError(data.message || "Registration failed");
+        setLoading(false);
         return;
       }
 

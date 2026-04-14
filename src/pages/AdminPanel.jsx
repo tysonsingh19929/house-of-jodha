@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminPanel() {
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ export default function AdminPanel() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/products");
+      const response = await fetch(`${API_BASE_URL}/products`);
       if (response.ok) {
         const data = await response.json();
         setProducts(Array.isArray(data) ? data : []);
@@ -52,7 +53,7 @@ export default function AdminPanel() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch("/api/orders");
+      const response = await fetch(`${API_BASE_URL}/orders`);
       if (response.ok) {
         const data = await response.json();
         setOrders(Array.isArray(data) ? data : []);
@@ -64,7 +65,7 @@ export default function AdminPanel() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/users");
+      const response = await fetch(`${API_BASE_URL}/users`);
       if (response.ok) {
         const data = await response.json();
         setUsers(Array.isArray(data) ? data : []);
@@ -76,7 +77,7 @@ export default function AdminPanel() {
 
   const fetchSellers = async () => {
     try {
-      const response = await fetch("/api/sellers");
+      const response = await fetch(`${API_BASE_URL}/sellers`);
       if (response.ok) {
         const data = await response.json();
         setSellers(Array.isArray(data) ? data : []);
@@ -107,7 +108,7 @@ export default function AdminPanel() {
 
     try {
       setLoading(true);
-      const response = await fetch("/api/products", {
+      const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -130,7 +131,7 @@ export default function AdminPanel() {
     if (!window.confirm("Delete this product?")) return;
 
     try {
-      const response = await fetch(`/api/products/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${id}`, {
         method: "DELETE"
       });
 
@@ -145,7 +146,7 @@ export default function AdminPanel() {
 
   const handleUpdateSellerStatus = async (id, status) => {
     try {
-      const response = await fetch(`/api/sellers/${id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/sellers/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status })
@@ -165,7 +166,7 @@ export default function AdminPanel() {
     if (!window.confirm("Are you sure you want to delete this seller?")) return;
 
     try {
-      const response = await fetch(`/api/sellers/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/sellers/${id}`, {
         method: "DELETE"
       });
       if (response.ok) {

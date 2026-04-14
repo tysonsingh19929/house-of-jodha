@@ -106,15 +106,7 @@ export default function AdminLogin() {
     marginBottom: "15px"
   };
 
-  const demoStyle = {
-    padding: "15px",
-    background: "#e8f4f8",
-    border: "1px solid #b3d9e8",
-    borderRadius: "6px",
-    fontSize: "12px",
-    color: "#333",
-    marginTop: "20px"
-  };
+
 
   return (
     <div style={containerStyle}>
@@ -144,14 +136,7 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        <div style={demoStyle}>
-          <strong>Demo Credentials:</strong>
-          <div style={{ marginTop: "8px" }}>
-            📧 Email: admin@jodha.com
-            <br />
-            🔑 Password: admin123
-          </div>
-        </div>
+
 
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <button
