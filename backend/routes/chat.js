@@ -33,13 +33,21 @@ router.post('/message', async (req, res) => {
     let responseText = "";
     const apiKey = process.env.GEMINI_API_KEY;
 
-    if (apiKey) {
+    if (!apiKey) {
+      console.warn("⚠️ GEMINI_API_KEY is not set. Using fallback demo response.");
+      responseText = history.length === 0 
+        ? "Namaste! Welcome to House of Jodha. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
+        : "I understand completely! Let me know your preferred color and occasion, love.";
+      return res.json({ text: responseText });
+    }
+
+    try {
       // Using the highly stable older package for absolute reliability
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(apiKey);
       
       const model = genAI.getGenerativeModel({ 
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
         systemInstruction: systemInstruction
       });
       
@@ -66,15 +74,10 @@ router.post('/message', async (req, res) => {
       });
       
       responseText = result.response.text();
-    } else {
-      // Fallback Demo Response for testing UI without API key
-      console.warn("GEMINI_API_KEY is not set. Using mocked response.");
-      
-      if (history.length === 0) {
-          responseText = "Namaste! Welcome to House of Jodha. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love? (Note: This is a demo mode. Please configure GEMINI_API_KEY in backend/.env for full AI response)";
-      } else {
-          responseText = "I understand completely! The Velvet suits are perfect for the UK chill, whereas our Pastel Organza is very trendy for summer weddings. Let me know your preferred color, love. (Demo Mode: MOCK AI RESPONSE)";
-      }
+    } catch (geminiError) {
+      console.error('Gemini API Error:', geminiError.message);
+      // Fallback to demo response if Gemini fails
+      responseText = "I apologize for the technical difficulty. Let me help you with general information about House of Jodha's collections. What occasion are you shopping for?";
     }
 
     res.json({ text: responseText });
