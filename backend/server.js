@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import productRoutes from './routes/products.js';
 import cartRoutes from './routes/cart.js';
 import orderRoutes from './routes/orders.js';
@@ -11,6 +13,9 @@ import chatRoutes from './routes/chat.js';
 import { seedSellers, seedProducts } from './seed.js';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5002;
@@ -44,6 +49,14 @@ app.use('/api/chat', chatRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running' });
+});
+
+// Serve frontend static files in production
+const frontendBuildPath = path.join(__dirname, '../dist');
+app.use(express.static(frontendBuildPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendBuildPath, 'index.html'));
 });
 
 app.listen(PORT, () => {

@@ -9,7 +9,45 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setFormData({
+      name: user?.name || "",
+      phone: user?.phone || "",
+      address: user?.address || "",
+      city: user?.city || "",
+      state: user?.state || "",
+      zipCode: user?.zipCode || ""
+    });
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const updatedUser = await api.updateUser(user._id || user.id, formData);
+      setUser(updatedUser);
+      setIsEditing(false);
+      const currentLoc = JSON.parse(localStorage.getItem("currentUser"));
+      localStorage.setItem("currentUser", JSON.stringify({ ...currentLoc, ...updatedUser }));
+    } catch (err) {
+      console.error("Failed to update profile", err);
+      alert("Failed to update profile");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -76,11 +114,38 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
           
           {activeTab === "profile" && (
             <section>
-              <h3 style={{ marginBottom: "20px" }}>Personal Information</h3>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h3 style={{ margin: 0 }}>Personal Information</h3>
+                {!isEditing ? (
+                  <button onClick={handleEdit} style={{ padding: "8px 16px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Edit Details</button>
+                ) : (
+                  <div>
+                    <button onClick={() => setIsEditing(false)} style={{ padding: "8px 16px", background: "#f5f5f5", color: "#333", border: "1px solid #ddd", borderRadius: "4px", cursor: "pointer", marginRight: "10px" }}>Cancel</button>
+                    <button onClick={handleSave} disabled={isSaving} style={{ padding: "8px 16px", background: "#D4AF37", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>{isSaving ? "Saving..." : "Save Changes"}</button>
+                  </div>
+                )}
+              </div>
               <div style={{ display: "grid", gap: "15px" }}>
-                <div><label style={{ fontSize: "12px", color: "#999" }}>Full Name</label><p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.name}</p></div>
-                <div><label style={{ fontSize: "12px", color: "#999" }}>Email Address</label><p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.email}</p></div>
-                <button style={{ padding: "10px 20px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "4px", marginTop: "10px", cursor: "pointer" }}>Edit Profile</button>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Full Name</label>
+                  {isEditing ? (
+                    <input name="name" value={formData.name} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                  ) : (
+                    <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.name}</p>
+                  )}
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Email Address</label>
+                  <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.email} <span style={{fontSize: '11px', color: '#999', fontWeight: 'normal'}}>(cannot be changed)</span></p>
+                </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Phone</label>
+                  {isEditing ? (
+                    <input name="phone" value={formData.phone} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                  ) : (
+                    <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.phone || "Not provided"}</p>
+                  )}
+                </div>
               </div>
             </section>
           )}
@@ -109,33 +174,52 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
 
           {activeTab === "shipping" && (
             <section>
-              <h3 style={{ marginBottom: "20px" }}>Shipping Address</h3>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h3 style={{ margin: 0 }}>Shipping Address</h3>
+                {!isEditing ? (
+                  <button onClick={handleEdit} style={{ padding: "8px 16px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Edit Address</button>
+                ) : (
+                  <div>
+                    <button onClick={() => setIsEditing(false)} style={{ padding: "8px 16px", background: "#f5f5f5", color: "#333", border: "1px solid #ddd", borderRadius: "4px", cursor: "pointer", marginRight: "10px" }}>Cancel</button>
+                    <button onClick={handleSave} disabled={isSaving} style={{ padding: "8px 16px", background: "#D4AF37", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>{isSaving ? "Saving..." : "Save Changes"}</button>
+                  </div>
+                )}
+              </div>
               <div style={{ display: "grid", gap: "15px" }}>
                 <div>
-                  <label style={{ fontSize: "12px", color: "#999" }}>Street Address</label>
-                  <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.address || "Not provided"}</p>
+                  <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Street Address</label>
+                  {isEditing ? (
+                    <input name="address" value={formData.address} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                  ) : (
+                    <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.address || "Not provided"}</p>
+                  )}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
                   <div>
-                    <label style={{ fontSize: "12px", color: "#999" }}>City</label>
-                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.city || "Not provided"}</p>
+                    <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>City</label>
+                    {isEditing ? (
+                      <input name="city" value={formData.city} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                    ) : (
+                      <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.city || "Not provided"}</p>
+                    )}
                   </div>
                   <div>
-                    <label style={{ fontSize: "12px", color: "#999" }}>State</label>
-                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.state || "Not provided"}</p>
+                    <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>State</label>
+                    {isEditing ? (
+                      <input name="state" value={formData.state} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                    ) : (
+                      <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.state || "Not provided"}</p>
+                    )}
                   </div>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#999" }}>Zip Code</label>
-                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.zipCode || "Not provided"}</p>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "12px", color: "#999" }}>Phone</label>
-                    <p style={{ fontSize: "16px", fontWeight: "600" }}>{user?.phone || "Not provided"}</p>
-                  </div>
+                <div>
+                  <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Zip Code</label>
+                  {isEditing ? (
+                    <input name="zipCode" value={formData.zipCode} onChange={handleChange} style={{ width: "50%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                  ) : (
+                    <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.zipCode || "Not provided"}</p>
+                  )}
                 </div>
-                <button style={{ padding: "10px 20px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "4px", marginTop: "10px", cursor: "pointer", alignSelf: "start" }}>Edit Address</button>
               </div>
             </section>
           )}
