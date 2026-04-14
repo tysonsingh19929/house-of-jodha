@@ -21,6 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import AdminLogin from "./pages/AdminLogin";
 import SellerLogin from "./pages/SellerLogin";
+import SellerSignup from "./pages/SellerSignup";
 import QuickEdit from "./pages/QuickEdit";
 import ProductDetail from "./pages/ProductDetail";
 import SearchResults from "./pages/SearchResults";
@@ -222,6 +223,7 @@ function App() {
         />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/seller-login" element={<SellerLogin />} />
+        <Route path="/seller-signup" element={<SellerSignup />} />
         <Route path="/quick-edit" element={<QuickEdit />} />
         <Route
           path="/product/:productId"
@@ -277,6 +279,7 @@ function App() {
               removeFromCart={removeFromCart}
               cartCount={cartCount}
               onCartClick={handleCartClick}
+              clearCart={() => setCartItems([])}
             />
           }
         />

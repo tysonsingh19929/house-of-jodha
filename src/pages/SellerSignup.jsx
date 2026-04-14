@@ -1,48 +1,41 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function SellerLogin() {
+export default function SellerSignup() {
+  const [name, setName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("/api/sellers/login", {
+      const response = await fetch("/api/sellers/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, businessName, email, password })
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Login failed");
+        setError(data.message || "Registration failed");
         return;
       }
 
-      // Store seller info in localStorage
-      localStorage.setItem("seller_authenticated", "true");
-      localStorage.setItem("seller_id", data.seller.id);
-      localStorage.setItem("seller_name", data.seller.name);
-      localStorage.setItem("seller_email", data.seller.email);
-      localStorage.setItem("seller_role", data.seller.role);
-      localStorage.setItem("is_super_admin", String(data.isSuperAdmin));
-
-      setEmail("");
-      setPassword("");
-      navigate("/admin-dashboard");
+      // Redirect to login after successful registration
+      navigate("/seller-login");
     } catch (error) {
       setError("Connection error. Make sure the server is running.");
-      console.error("Login error:", error);
+      console.error("Signup error:", error);
     } finally {
       setLoading(false);
     }
@@ -68,10 +61,10 @@ export default function SellerLogin() {
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
           <h1 style={{ color: "#2C4F3E", fontSize: "28px", margin: "0 0 10px 0" }}>
-            🔐 Seller Login
+            🛍️ Seller Registration
           </h1>
           <p style={{ color: "#666", fontSize: "14px", margin: "0" }}>
-            Access the product management dashboard
+            Create an account to start selling
           </p>
         </div>
 
@@ -91,9 +84,66 @@ export default function SellerLogin() {
           </div>
         )}
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: "20px" }}>
+        {/* Signup Form */}
+        <form onSubmit={handleSignup}>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{
+              display: "block",
+              fontWeight: "600",
+              marginBottom: "8px",
+              color: "#333",
+              fontSize: "14px"
+            }}>
+              Full Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your full name"
+              required
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "1px solid #ddd",
+                borderRadius: "6px",
+                fontSize: "14px",
+                boxSizing: "border-box",
+                fontFamily: "inherit"
+              }}
+              autoFocus
+            />
+          </div>
+
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{
+              display: "block",
+              fontWeight: "600",
+              marginBottom: "8px",
+              color: "#333",
+              fontSize: "14px"
+            }}>
+              Business Name
+            </label>
+            <input
+              type="text"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Enter your business name"
+              required
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "1px solid #ddd",
+                borderRadius: "6px",
+                fontSize: "14px",
+                boxSizing: "border-box",
+                fontFamily: "inherit"
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "15px" }}>
             <label style={{
               display: "block",
               fontWeight: "600",
@@ -118,11 +168,10 @@ export default function SellerLogin() {
                 boxSizing: "border-box",
                 fontFamily: "inherit"
               }}
-              autoFocus
             />
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: "25px" }}>
             <label style={{
               display: "block",
               fontWeight: "600",
@@ -136,7 +185,7 @@ export default function SellerLogin() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="Create a password"
               required
               style={{
                 width: "100%",
@@ -150,7 +199,7 @@ export default function SellerLogin() {
             />
           </div>
 
-          {/* Login Button */}
+          {/* Signup Button */}
           <button
             type="submit"
             disabled={loading}
@@ -169,7 +218,7 @@ export default function SellerLogin() {
             onMouseEnter={e => !loading && (e.target.style.background = "#c9860f")}
             onMouseLeave={e => !loading && (e.target.style.background = "var(--accent)")}
           >
-            {loading ? "⏳ Logging in..." : "🔓 Login as Seller"}
+            {loading ? "⏳ Registering..." : "📝 Register as Seller"}
           </button>
         </form>
 
@@ -180,9 +229,9 @@ export default function SellerLogin() {
           fontSize: "14px"
         }}>
           <p style={{ color: "#666", marginBottom: "10px" }}>
-            Don't have a seller account?{" "}
-            <Link to="/seller-signup" style={{ color: "#2C4F3E", fontWeight: "600", textDecoration: "none" }}>
-              Register here
+            Already have a seller account?{" "}
+            <Link to="/seller-login" style={{ color: "#2C4F3E", fontWeight: "600", textDecoration: "none" }}>
+              Login here
             </Link>
           </p>
         </div>
@@ -190,7 +239,7 @@ export default function SellerLogin() {
         {/* Divider */}
         <div style={{
           textAlign: "center",
-          margin: "25px 0",
+          margin: "20px 0",
           color: "#999",
           fontSize: "13px"
         }}>
@@ -223,24 +272,6 @@ export default function SellerLogin() {
         >
           ← Back to Home
         </button>
-
-        {/* Info Box */}
-        <div style={{
-          background: "#f0f8ff",
-          border: "1px solid #cce5ff",
-          padding: "12px",
-          borderRadius: "6px",
-          marginTop: "20px",
-          fontSize: "12px",
-          color: "#0066cc",
-          textAlign: "center"
-        }}>
-          <strong>Demo Sellers:</strong>
-          <div style={{ marginTop: "8px", fontSize: "11px" }}>
-            Super Admin: admin@example.com / admin123
-            <br />Regular Seller: seller@example.com / seller123
-          </div>
-        </div>
       </div>
     </div>
   );

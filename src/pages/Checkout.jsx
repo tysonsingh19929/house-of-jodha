@@ -3,8 +3,9 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
+import { api } from "../services/api";
 
-export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromCart, cartCount }) {
+export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromCart, cartCount, clearCart }) {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -46,16 +47,65 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
     }));
   };
 
-  const handlePlaceOrder = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!formData.fullName || !formData.email || !formData.address || !formData.cardNumber) {
-      alert("Please fill all required fields");
+      alert("Please fill all required shipping and payment fields");
       return;
     }
-    setOrderPlaced(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) {
+      alert("Please login first to place an order");
+      navigate("/login");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Create the order payload for the backend
+      const orderData = {
+        userId: currentUser.id || currentUser._id,
+        items: groupedItems.map(item => ({
+          productId: item.id || item._id, 
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity
+        })),
+        totalAmount: total,
+        status: "confirmed", // Caveman logic: Auto-confirm since it's dummy payment
+        paymentMethod: "card",
+        paymentStatus: "completed",
+        shippingAddress: {
+          name: formData.fullName,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zip,
+          country: "India" 
+        }
+      };
+
+      // Pretend to pass the card to a gateway and take 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      await api.createOrder(orderData);
+      
+      setOrderPlaced(true);
+      if (clearCart) clearCart();
+
+      setTimeout(() => {
+        navigate("/profile"); 
+      }, 3000);
+    } catch (err) {
+      alert("Failed to place order. " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (orderPlaced) {
@@ -297,22 +347,23 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
 
               <button
                 type="submit"
+                disabled={loading}
                 style={{
                   width: "100%",
                   padding: "15px",
-                  background: "#D4AF37",
+                  background: loading ? "#ccc" : "#D4AF37",
                   color: "#fff",
                   border: "none",
                   borderRadius: "4px",
                   fontSize: "16px",
                   fontWeight: "600",
-                  cursor: "pointer",
+                  cursor: loading ? "not-allowed" : "pointer",
                   transition: "all 0.3s"
                 }}
-                onMouseEnter={e => e.target.style.background = "#c9860f"}
-                onMouseLeave={e => e.target.style.background = "#D4AF37"}
+                onMouseEnter={e => !loading && (e.target.style.background = "#c9860f")}
+                onMouseLeave={e => !loading && (e.target.style.background = "#D4AF37")}
               >
-                Place Order
+                {loading ? "Processing Payment..." : "Place Order"}
               </button>
             </form>
           </div>

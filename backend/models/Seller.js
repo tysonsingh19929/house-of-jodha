@@ -26,9 +26,10 @@ const sellerSchema = new mongoose.Schema({
   state: String,
   zipCode: String,
   country: String,
-  verified: {
-    type: Boolean,
-    default: false
+  status: {
+    type: String,
+    enum: ['pending', 'active', 'suspended'],
+    default: 'pending'
   },
   createdAt: {
     type: Date,

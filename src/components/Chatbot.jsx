@@ -10,6 +10,7 @@ const buildApiUrl = (path) => {
 
 // Helper function to convert URLs in text to clickable links
 const makeLinksClickable = (text) => {
+  if (!text || typeof text !== 'string') return text;
   const urlRegex = /(https?:\/\/[^\s<>"{}|\\^`[\]]+)/g;
   const parts = text.split(urlRegex);
   return parts.map((part, index) => {

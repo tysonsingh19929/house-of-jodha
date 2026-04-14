@@ -18,7 +18,7 @@ export const seedSellers = async () => {
         password: 'admin123',
         businessName: 'Super Admin',
         role: 'admin',
-        verified: true
+        status: 'active'
       },
       {
         name: 'Priya Textiles',
@@ -26,7 +26,7 @@ export const seedSellers = async () => {
         password: 'seller123',
         businessName: 'Priya Textiles',
         role: 'seller',
-        verified: true
+        status: 'active'
       },
       {
         name: 'Elegant Wear',
@@ -34,7 +34,7 @@ export const seedSellers = async () => {
         password: 'seller456',
         businessName: 'Elegant Wear',
         role: 'seller',
-        verified: true
+        status: 'active'
       }
     ];
 

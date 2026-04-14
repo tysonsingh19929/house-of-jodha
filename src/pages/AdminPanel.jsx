@@ -143,6 +143,42 @@ export default function AdminPanel() {
     }
   };
 
+  const handleUpdateSellerStatus = async (id, status) => {
+    try {
+      const response = await fetch(`/api/sellers/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status })
+      });
+      if (response.ok) {
+        fetchSellers();
+      } else {
+        const errorData = await response.json();
+        alert("Error updating status: " + errorData.message);
+      }
+    } catch (error) {
+      alert("Error updating status: " + error.message);
+    }
+  };
+
+  const handleDeleteSeller = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this seller?")) return;
+
+    try {
+      const response = await fetch(`/api/sellers/${id}`, {
+        method: "DELETE"
+      });
+      if (response.ok) {
+        fetchSellers();
+      } else {
+        const errorData = await response.json();
+        alert("Error deleting seller: " + errorData.message);
+      }
+    } catch (error) {
+      alert("Error deleting seller: " + error.message);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("admin_token");
     navigate("/");
@@ -551,6 +587,8 @@ export default function AdminPanel() {
                       <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Name</th>
                       <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Email</th>
                       <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Products</th>
+                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Status</th>
+                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -559,6 +597,71 @@ export default function AdminPanel() {
                         <td style={{ padding: "10px", color: "#333" }}>{seller.name || "N/A"}</td>
                         <td style={{ padding: "10px", color: "#333" }}>{seller.email}</td>
                         <td style={{ padding: "10px", color: "#333" }}>{seller.productsCount || 0}</td>
+                        <td style={{ padding: "10px", color: "#333" }}>
+                          <span style={{
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            background: seller.status === "active" ? "#d4edda" : seller.status === "suspended" ? "#f8d7da" : "#fff3cd",
+                            color: seller.status === "active" ? "#155724" : seller.status === "suspended" ? "#721c24" : "#856404"
+                          }}>
+                            {seller.status || "pending"}
+                          </span>
+                        </td>
+                        <td style={{ padding: "10px", color: "#333", display: "flex", gap: "5px" }}>
+                          {seller.role !== "admin" && (
+                            <>
+                              {seller.status !== "active" && (
+                                <button
+                                  onClick={() => handleUpdateSellerStatus(seller._id, "active")}
+                                  style={{
+                                    padding: "6px 12px",
+                                    background: "#2ecc71",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    fontSize: "12px"
+                                  }}
+                                >
+                                  Activate
+                                </button>
+                              )}
+                              {seller.status === "active" && (
+                                <button
+                                  onClick={() => handleUpdateSellerStatus(seller._id, "suspended")}
+                                  style={{
+                                    padding: "6px 12px",
+                                    background: "#f39c12",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    fontSize: "12px"
+                                  }}
+                                >
+                                  Suspend
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleDeleteSeller(seller._id)}
+                                style={{
+                                  padding: "6px 12px",
+                                  background: "#e74c3c",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                  fontSize: "12px"
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
+                          {seller.role === "admin" && <span style={{ fontSize: "12px", color: "#888" }}>Admin</span>}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

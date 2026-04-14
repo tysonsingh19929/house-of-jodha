@@ -26,10 +26,44 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get single user by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update user by ID
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, phone, address, city, state, zipCode } = req.body;
+    
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, phone, address, city, state, zipCode },
+      { new: true }
+    ).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone, address, city, state, zipCode } = req.body;
     
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -43,7 +77,12 @@ router.post('/register', async (req, res) => {
     const user = new User({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      phone,
+      address,
+      city,
+      state,
+      zipCode
     });
     
     const savedUser = await user.save();

@@ -64,6 +64,14 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     
+    // Check if seller is approved
+    if (seller.role !== 'admin' && seller.status === 'pending') {
+      return res.status(403).json({ message: 'Your account is pending admin approval' });
+    }
+    if (seller.role !== 'admin' && seller.status === 'suspended') {
+      return res.status(403).json({ message: 'Your account has been suspended' });
+    }
+    
     res.json({
       message: 'Logged in successfully',
       seller: { 
@@ -71,12 +79,42 @@ router.post('/login', async (req, res) => {
         name: seller.name, 
         email: seller.email,
         role: seller.role,
-        businessName: seller.businessName
+        businessName: seller.businessName,
+        status: seller.status
       },
       isSuperAdmin: seller.role === 'admin'
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+// Update seller status (admin only - simplified without role middleware for now)
+router.put('/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['pending', 'active', 'suspended'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    
+    const seller = await Seller.findByIdAndUpdate(req.params.id, { status }, { new: true }).select('-password');
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+    
+    res.json(seller);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Delete seller (admin only - simplified)
+router.delete('/:id', async (req, res) => {
+  try {
+    const seller = await Seller.findByIdAndDelete(req.params.id);
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+    
+    res.json({ message: 'Seller deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
