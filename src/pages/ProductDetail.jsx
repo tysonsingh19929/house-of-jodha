@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import WhatsAppInquiryButton from "../components/WhatsAppInquiryButton.jsx";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -178,20 +178,44 @@ const styles = `
   }
 
   .pd-thumbnails {
-    display: flex; gap: 8px;
+    display: flex; gap: 8px; scrollbar-width: none;
   }
+  .pd-thumbnails::-webkit-scrollbar { display: none; }
   .pd-thumb {
-    flex: 1; aspect-ratio: 3/4;
+    flex: 0 0 calc(25% - 6px); aspect-ratio: 3/4;
     border-radius: 8px; overflow: hidden;
     border: 2px solid transparent;
-    cursor: pointer;
+    cursor: pointer; position: relative;
     transition: all 0.2s;
     background: var(--bg);
   }
   .pd-thumb.active { border-color: var(--rose); }
   .pd-thumb:not(.active):hover { border-color: var(--border); transform: translateY(-2px); }
   .pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
+  
+  .pd-swipe-gallery {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: 12px;
+    background: #000;
+    scroll-behavior: smooth;
+  }
+  .pd-swipe-gallery::-webkit-scrollbar { display: none; }
+  .pd-swipe-item {
+    flex: 0 0 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 0.75;
+  }
+  .pd-swipe-item img {
+    width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s;
+  }
+  .pd-swipe-item.zoomed img { transform: scale(1.35); cursor: zoom-out; }
+  
   /* ── INFO COLUMN ── */
   .pd-category-tag {
     display: inline-flex; align-items: center; gap: 5px;
@@ -542,6 +566,28 @@ export default function ProductDetail({
   }, [product]);
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const galleryRef = useRef(null);
+
+  const handleThumbnailClick = (index) => {
+    setActiveIndex(index);
+    setZoom(false);
+    if (galleryRef.current) {
+      galleryRef.current.scrollTo({
+        left: galleryRef.current.clientWidth * index,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleGalleryScroll = (e) => {
+    if (!galleryRef.current) return;
+    const scrollPos = e.target.scrollLeft;
+    const width = e.target.clientWidth;
+    const newIndex = Math.round(scrollPos / width);
+    if (newIndex !== activeIndex && newIndex >= 0 && newIndex < media.length) {
+      setActiveIndex(newIndex);
+    }
+  };
 
   useEffect(() => {
     if (product && product.sellerId) {
@@ -617,29 +663,41 @@ export default function ProductDetail({
       {/* Main Grid */}
       <div className="pd-main">
 
-        {/* ── LEFT: Image ── */}
-        <div style={{ minWidth: 0, width: "100%", maxWidth: "100%" }}>
-          {media.length > 0 && media[activeIndex].type === 'image' ? (
-            <div className={`pd-image-main${zoom ? " zoomed" : ""}`} onClick={() => setZoom(!zoom)}>
-              <img src={media[activeIndex].src} alt={product.name} loading="lazy" />
-              {discount > 0 && <div className="pd-discount-badge">−{discount}% OFF</div>}
-              <button className="pd-zoom-btn">{zoom ? <IconZoomOut /> : <IconZoomIn />}</button>
-            </div>
-          ) : (
-            media.length > 0 && (
-              <div className="pd-media-embed" style={{ width: "100%", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border)", backgroundColor: "#000", aspectRatio: media[activeIndex].src.includes("instagram.com") ? "auto" : "3/4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
-                {media[activeIndex].src.includes("instagram.com") ? (
-                  <iframe src={media[activeIndex].src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="480" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
-                ) : media[activeIndex].src.includes("youtube.com") || media[activeIndex].src.includes("youtu.be") ? (
-                   <iframe src={media[activeIndex].src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
-                ) : media[activeIndex].src.includes("vimeo.com") ? (
-                  <iframe src={media[activeIndex].src.replace("vimeo.com/", "player.vimeo.com/video/")} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
+        {/* ── LEFT: Image Gallery ── */}
+        <div style={{ minWidth: 0, width: "100%", maxWidth: "100%", position: "relative" }}>
+          
+          <div 
+            className="pd-swipe-gallery"
+            ref={galleryRef}
+            onScroll={handleGalleryScroll}
+          >
+            {media.map((item, i) => (
+              <div 
+                key={i} 
+                className={`pd-swipe-item${zoom && item.type === 'image' && i === activeIndex ? " zoomed" : ""}`} 
+                onClick={() => { if(item.type === 'image') setZoom(!zoom); }}
+              >
+                {item.type === 'image' ? (
+                  <img src={item.src} alt={`${product.name} - View ${i + 1}`} loading={i === 0 ? "eager" : "lazy"} />
                 ) : (
-                  <video src={media[activeIndex].src} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {item.src.includes("instagram.com") ? (
+                      <iframe src={item.src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="100%" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block", minHeight: "480px" }}></iframe>
+                    ) : item.src.includes("youtube.com") || item.src.includes("youtu.be") ? (
+                       <iframe src={item.src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
+                    ) : item.src.includes("vimeo.com") ? (
+                      <iframe src={item.src.replace("vimeo.com/", "player.vimeo.com/video/")} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
+                    ) : (
+                      <video src={item.src} controls autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+                    )}
+                  </div>
                 )}
               </div>
-            )
-          )}
+            ))}
+          </div>
+          
+          {discount > 0 && <div className="pd-discount-badge">−{discount}% OFF</div>}
+          <button className="pd-zoom-btn" onClick={() => setZoom(!zoom)}>{zoom ? <IconZoomOut /> : <IconZoomIn />}</button>
 
           {/* If data hasn't loaded yet, show an optimistic placeholder so layout doesn't shift */}
           {!dbProduct && (
@@ -654,23 +712,21 @@ export default function ProductDetail({
             <div 
               className="pd-thumbnails"
               style={{
-                display: "flex", gap: "8px", padding: "12px 16px", overflowX: "auto", minHeight: "80px",
-                WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none"
+                padding: "12px 0", minHeight: "80px", WebkitOverflowScrolling: "touch"
               }}
             >
               {media.map((item, i) => (
                 <div 
                   key={i} 
-                  className={`pd-thumbnail ${i === activeIndex ? "active" : ""}`}
-                  onClick={() => { setActiveIndex(i); setZoom(false); }}
-                  style={{ position: 'relative', cursor: 'pointer', flex: "0 0 calc(25% - 6px)" }}
+                  className={`pd-thumb ${i === activeIndex ? "active" : ""}`}
+                  onClick={() => handleThumbnailClick(i)}
                 >
-                  <img src={item.type === 'video' ? product.image : item.src} alt={`View ${i + 1}`} loading="lazy" style={{ opacity: item.type === 'video' ? 0.7 : 1 }} />
-                {item.type === 'video' && (
-                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '32px', height: '32px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  </div>
-                )}
+                  <img src={item.type === 'video' ? product.image : item.src} alt={`Thumbnail ${i + 1}`} loading="lazy" style={{ opacity: item.type === 'video' ? 0.7 : 1 }} />
+                  {item.type === 'video' && (
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '32px', height: '32px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
