@@ -385,24 +385,27 @@ const styles = `
     transform: translateY(-1px);
   }
 
-  /* Trust badges */
+  /* ── PREMIUM TRUST SECTION ── */
   .pd-trust {
-    margin-top: 20px; padding-top: 18px;
-    border-top: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 12px;
+    margin-top: 32px;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
   }
   .pd-trust-item {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 20px;
+    padding: 18px 4px;
+    border-bottom: 1px solid #f4f4f4;
   }
+  .pd-trust-item:last-child { border-bottom: none; }
   .pd-trust-icon {
-    width: 36px; height: 36px;
-    background: var(--gold-pale);
-    border-radius: 10px;
+    width: 28px; height: 28px;
+    color: #111;
     display: flex; align-items: center; justify-content: center;
-    color: var(--gold); flex-shrink: 0;
+    flex-shrink: 0;
   }
-  .pd-trust-title { font-size: 13px; font-weight: 600; color: var(--text); }
-  .pd-trust-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .pd-trust-icon svg { width: 22px; height: 22px; stroke-width: 1.2px; }
+  .pd-trust-title { font-size: 13px; font-weight: 600; color: #111; letter-spacing: 0.5px; text-transform: uppercase; }
+  .pd-trust-sub { font-size: 13px; color: #666; margin-top: 2px; }
 
   /* ── PRODUCT INFO SECTION ── */
   .pd-info-section {
