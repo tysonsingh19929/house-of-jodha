@@ -477,19 +477,29 @@ export default function ProductDetail({
   );
 
   const [dbProduct, setDbProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
-    fetch(`${apiUrl}/products`)
+    setLoading(true);
+    window.scrollTo(0, 0);
+
+    const minTimePromise = new Promise(resolve => setTimeout(resolve, 800));
+    
+    const fetchPromise = fetch(`${apiUrl}/products`)
       .then(res => {
         if (!res.ok) throw new Error("Network error");
         return res.json();
       })
       .then(data => {
-        // Fallback to name map because MongoDB stripped local IDs
         const match = data.find(p => p.id === parseInt(productId, 10)) || 
                       data.find(p => staticProduct && p.name === staticProduct.name);
         if (match) setDbProduct(match);
       })
       .catch(err => console.error("Error fetching product from DB:", err));
+
+    Promise.all([minTimePromise, fetchPromise]).finally(() => {
+      setLoading(false);
+    });
   }, [productId, apiUrl, staticProduct]);
 
   const product = dbProduct || staticProduct;
@@ -534,15 +544,6 @@ export default function ProductDetail({
   }, [product]);
 
   const [activeIndex, setActiveIndex] = useState(0);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    window.scrollTo(0, 0);
-    const timer = setTimeout(() => setLoading(false), 800); // 0.8s smooth skeleton loader
-    return () => clearTimeout(timer);
-  }, [productId]);
 
   useEffect(() => {
     if (product && product.sellerId) {
