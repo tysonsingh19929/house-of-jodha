@@ -33,6 +33,23 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  material: String,
+  fabricDetails: {
+    top: String,
+    bottom: String,
+    dupatta: String,
+    blouse: String,
+    saree: String
+  },
+  care: String,
+  embroidery: String,
+  deliveryType: String,
+  deliveryDays: String,
+  maxBustSize: String,
+  freeShipping: {
+    type: Boolean,
+    default: false
+  },
   sellerId: {
     type: String,
     required: true

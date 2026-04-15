@@ -25,8 +25,11 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: ""
+    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
+    material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
+    fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: ""
   });
+  const [imageUrlInput, setImageUrlInput] = useState("");
   
   const [imagePreviews, setImagePreviews] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -66,11 +69,6 @@ export default function AdminDashboard() {
 
   const canEditProduct = (product) => isSuperAdmin || product.sellerId === sellerId;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     files.forEach(file => {
@@ -81,6 +79,35 @@ export default function AdminDashboard() {
       };
       reader.readAsDataURL(file);
     });
+  };
+
+  const handleAddImageUrl = (isEdit = false) => {
+    if (!imageUrlInput) return;
+    
+    let optimizedUrl = imageUrlInput;
+    // Automatically apply image resizing & modern format proxy if not already applied
+    if (!imageUrlInput.includes('wsrv.nl')) {
+      optimizedUrl = `https://wsrv.nl/?url=${encodeURIComponent(imageUrlInput)}&w=1000&output=webp`;
+    }
+
+    if (isEdit) {
+      setEditImagePreviews(prev => [...prev, optimizedUrl]);
+      setEditFormData(prev => ({ ...prev, images: [...(prev.images || []), optimizedUrl] }));
+    } else {
+      setImagePreviews(prev => [...prev, optimizedUrl]);
+      setFormData(prev => ({ ...prev, images: [...prev.images, optimizedUrl] }));
+    }
+    setImageUrlInput("");
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
@@ -101,13 +128,24 @@ export default function AdminDashboard() {
           image: formData.images[0], images: formData.images, sellerId: sellerId, sellerName: sellerName,
           description: formData.description || "", stock: parseInt(formData.stock) || 0,
           videoUrl: formData.videoUrl || "",
-          occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : []
+          occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
+          material: formData.material, care: formData.care, embroidery: formData.embroidery,
+          deliveryType: formData.deliveryType, deliveryDays: formData.deliveryDays,
+          maxBustSize: formData.maxBustSize, freeShipping: formData.freeShipping,
+          fabricDetails: {
+            top: formData.fabricTop, bottom: formData.fabricBottom, dupatta: formData.fabricDupatta,
+            blouse: formData.fabricBlouse, saree: formData.fabricSaree
+          }
         })
       });
 
       if (!response.ok) throw new Error("Failed to add product");
 
-      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "" });
+      setFormData({ 
+        name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
+        material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
+        fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: ""
+      });
       setImagePreviews([]);
       fetchProducts();
       alert("Product added successfully!");
@@ -131,11 +169,6 @@ export default function AdminDashboard() {
     });
   };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData(prev => ({ ...prev, [name]: value }));
-  };
-
   const startEdit = (product) => {
     if (!canEditProduct(product)) { alert("You don't have permission to edit this product"); return; }
     setEditingId(product._id);
@@ -143,7 +176,16 @@ export default function AdminDashboard() {
     // Ensure images array exists even for old products
     const existingImages = product.images && product.images.length > 0 ? product.images : [product.image];
     
-    setEditFormData({ ...product, images: existingImages, occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || "") });
+    setEditFormData({ 
+      ...product, 
+      images: existingImages, 
+      occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || ""),
+      fabricTop: product.fabricDetails?.top || "",
+      fabricBottom: product.fabricDetails?.bottom || "",
+      fabricDupatta: product.fabricDetails?.dupatta || "",
+      fabricBlouse: product.fabricDetails?.blouse || "",
+      fabricSaree: product.fabricDetails?.saree || ""
+    });
     setEditImagePreviews(existingImages);
   };
 
@@ -166,7 +208,14 @@ export default function AdminDashboard() {
           image: editFormData.images[0], images: editFormData.images, description: editFormData.description || "",
           stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin,
           videoUrl: editFormData.videoUrl || "",
-          occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions
+          occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions,
+          material: editFormData.material, care: editFormData.care, embroidery: editFormData.embroidery,
+          deliveryType: editFormData.deliveryType, deliveryDays: editFormData.deliveryDays,
+          maxBustSize: editFormData.maxBustSize, freeShipping: editFormData.freeShipping,
+          fabricDetails: {
+            top: editFormData.fabricTop, bottom: editFormData.fabricBottom, dupatta: editFormData.fabricDupatta,
+            blouse: editFormData.fabricBlouse, saree: editFormData.fabricSaree
+          }
         })
       });
       if (!response.ok) { const error = await response.json(); throw new Error(error.message); }
@@ -464,6 +513,11 @@ export default function AdminDashboard() {
 
               <div style={{ marginBottom: "32px" }}>
                 <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Images *</label>
+
+                <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+                  <input type="text" placeholder="Add image by URL instead of uploading" value={imageUrlInput} onChange={e => setImageUrlInput(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }} />
+                  <button type="button" onClick={() => handleAddImageUrl(false)} style={{ padding: "10px 16px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>Add URL</button>
+                </div>
                 
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
                   {imagePreviews.map((src, index) => (
@@ -484,6 +538,53 @@ export default function AdminDashboard() {
                   <span style={{ fontSize: "15px", fontWeight: "600", color: "#475569" }}>Click to upload images</span>
                   <span style={{ fontSize: "13px", color: "#94a3b8", marginTop: "4px" }}>JPG, PNG or WEBP (You can select multiple)</span>
                 </label>
+              </div>
+
+              <div style={{ padding: "24px", backgroundColor: "#f8fafc", borderRadius: "12px", marginBottom: "24px", border: "1px solid #e2e8f0" }}>
+                <h4 style={{ margin: "0 0 16px 0", color: "#334155", fontSize: "16px" }}>Extended Product Details</h4>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Material / Fabric</label>
+                    <input type="text" name="material" value={formData.material || ""} onChange={handleChange} placeholder="e.g. Pure Tissue Silk" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Care Instructions</label>
+                    <input type="text" name="care" value={formData.care || ""} onChange={handleChange} placeholder="e.g. Dry Clean Only" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Embroidery/Details</label>
+                    <input type="text" name="embroidery" value={formData.embroidery || ""} onChange={handleChange} placeholder="e.g. Zardosi Handwork" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Max Standard Bust Size</label>
+                    <input type="text" name="maxBustSize" value={formData.maxBustSize || ""} onChange={handleChange} placeholder="e.g. 42 inches" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                </div>
+                
+                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
+                   <input type="text" name="fabricTop" value={formData.fabricTop || ""} onChange={handleChange} placeholder="Top / Kurta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricBottom" value={formData.fabricBottom || ""} onChange={handleChange} placeholder="Bottom / Skirt Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricDupatta" value={formData.fabricDupatta || ""} onChange={handleChange} placeholder="Dupatta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricBlouse" value={formData.fabricBlouse || ""} onChange={handleChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricSaree" value={formData.fabricSaree || ""} onChange={handleChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                </div>
+
+                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Shipping & Delivery</h5>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Delivery Type</label>
+                    <input type="text" name="deliveryType" value={formData.deliveryType || ""} onChange={handleChange} placeholder="e.g. Made to measure" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Delivery Time</label>
+                    <input type="text" name="deliveryDays" value={formData.deliveryDays || ""} onChange={handleChange} placeholder="e.g. 5-6 weeks" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                </div>
+                <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <input type="checkbox" id="freeShipping" name="freeShipping" checked={formData.freeShipping || false} onChange={handleChange} style={{ width: "16px", height: "16px", cursor: "pointer" }} />
+                  <label htmlFor="freeShipping" style={{ fontSize: "14px", color: "#475569", cursor: "pointer", fontWeight: "500" }}>Offer Free Shipping</label>
+                </div>
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -577,10 +678,15 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Images</label>
                   
+                  <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+                    <input type="text" placeholder="Add image by URL instead of uploading" value={imageUrlInput} onChange={e => setImageUrlInput(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }} />
+                    <button type="button" onClick={() => handleAddImageUrl(true)} style={{ padding: "10px 16px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>Add URL</button>
+                  </div>
+
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
                     {editImagePreviews.map((src, index) => (
                       <div key={index} style={{ position: "relative" }}>
-                        <img src={src} alt="Preview" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }} />
+                        <img src={src.includes('wsrv.nl') ? src : `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=cover`} alt="Preview" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }} />
                         <button type="button" onClick={() => {
                           const newPreviews = [...editImagePreviews]; newPreviews.splice(index, 1);
                           const newImages = [...editFormData.images]; newImages.splice(index, 1);
@@ -594,6 +700,53 @@ export default function AdminDashboard() {
                     <input type="file" accept="image/*" multiple onChange={handleEditImageUpload} style={{ display: "none" }} />
                     <span style={{ color: "#475569", fontWeight: "500" }}>Click here to add more images</span>
                   </label>
+                </div>
+              </div>
+
+              <div style={{ padding: "24px", backgroundColor: "#f8fafc", borderRadius: "12px", marginBottom: "24px", marginTop: "24px", border: "1px solid #e2e8f0" }}>
+                <h4 style={{ margin: "0 0 16px 0", color: "#334155", fontSize: "16px" }}>Extended Product Details</h4>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Material / Fabric</label>
+                    <input type="text" name="material" value={editFormData.material || ""} onChange={handleEditChange} placeholder="e.g. Pure Tissue Silk" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Care Instructions</label>
+                    <input type="text" name="care" value={editFormData.care || ""} onChange={handleEditChange} placeholder="e.g. Dry Clean Only" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Embroidery/Details</label>
+                    <input type="text" name="embroidery" value={editFormData.embroidery || ""} onChange={handleEditChange} placeholder="e.g. Zardosi Handwork" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Max Standard Bust Size</label>
+                    <input type="text" name="maxBustSize" value={editFormData.maxBustSize || ""} onChange={handleEditChange} placeholder="e.g. 42 inches" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                </div>
+                
+                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
+                   <input type="text" name="fabricTop" value={editFormData.fabricTop || ""} onChange={handleEditChange} placeholder="Top / Kurta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricBottom" value={editFormData.fabricBottom || ""} onChange={handleEditChange} placeholder="Bottom / Skirt" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricDupatta" value={editFormData.fabricDupatta || ""} onChange={handleEditChange} placeholder="Dupatta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricBlouse" value={editFormData.fabricBlouse || ""} onChange={handleEditChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                   <input type="text" name="fabricSaree" value={editFormData.fabricSaree || ""} onChange={handleEditChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                </div>
+
+                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Shipping & Delivery</h5>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Delivery Type</label>
+                    <input type="text" name="deliveryType" value={editFormData.deliveryType || ""} onChange={handleEditChange} placeholder="e.g. Made to measure" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Delivery Time</label>
+                    <input type="text" name="deliveryDays" value={editFormData.deliveryDays || ""} onChange={handleEditChange} placeholder="e.g. 5-6 weeks" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
+                  </div>
+                </div>
+                <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <input type="checkbox" id="editFreeShipping" name="freeShipping" checked={editFormData.freeShipping || false} onChange={handleEditChange} style={{ width: "16px", height: "16px", cursor: "pointer" }} />
+                  <label htmlFor="editFreeShipping" style={{ fontSize: "14px", color: "#475569", cursor: "pointer", fontWeight: "500" }}>Offer Free Shipping</label>
                 </div>
               </div>
 
