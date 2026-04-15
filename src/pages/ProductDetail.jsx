@@ -504,7 +504,11 @@ export default function ProductDetail({
     const images = product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []);
     const mediaArray = images.map(src => ({ type: 'image', src }));
     if (product.videoUrl) {
-      mediaArray.push({ type: 'video', src: product.videoUrl });
+      if (mediaArray.length > 0) {
+        mediaArray.splice(1, 0, { type: 'video', src: product.videoUrl });
+      } else {
+        mediaArray.push({ type: 'video', src: product.videoUrl });
+      }
     }
     return mediaArray;
   }, [product]);
@@ -605,9 +609,9 @@ export default function ProductDetail({
             </div>
           ) : (
             media.length > 0 && (
-              <div className="pd-media-embed" style={{ width: "100%", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border)", backgroundColor: "#000", aspectRatio: "3/4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+              <div className="pd-media-embed" style={{ width: "100%", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border)", backgroundColor: "#000", aspectRatio: media[activeIndex].src.includes("instagram.com") ? "auto" : "3/4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
                 {media[activeIndex].src.includes("instagram.com") ? (
-                  <iframe src={media[activeIndex].src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="800" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
+                  <iframe src={media[activeIndex].src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="480" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
                 ) : media[activeIndex].src.includes("youtube.com") || media[activeIndex].src.includes("youtu.be") ? (
                    <iframe src={media[activeIndex].src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
                 ) : media[activeIndex].src.includes("vimeo.com") ? (
@@ -619,15 +623,16 @@ export default function ProductDetail({
             )
           )}
 
-          <div className="pd-thumbnails">
-            {media.map((item, i) => (
-              <div 
-                key={i} 
-                className={`pd-thumb${activeIndex === i ? " active" : ""}`}
-                onClick={() => { setActiveIndex(i); setZoom(false); }}
-                style={{ position: 'relative', cursor: 'pointer' }}
-              >
-                <img src={product.image} alt={`View ${i + 1}`} loading="lazy" style={{ opacity: item.type === 'video' ? 0.7 : 1 }} />
+          {media.length > 1 && (
+            <div className="pd-thumbnails">
+              {media.map((item, i) => (
+                <div 
+                  key={i} 
+                  className={`pd-thumb${activeIndex === i ? " active" : ""}`}
+                  onClick={() => { setActiveIndex(i); setZoom(false); }}
+                  style={{ position: 'relative', cursor: 'pointer', flex: "0 0 calc(25% - 6px)" }}
+                >
+                  <img src={item.type === 'video' ? product.image : item.src} alt={`View ${i + 1}`} loading="lazy" style={{ opacity: item.type === 'video' ? 0.7 : 1 }} />
                 {item.type === 'video' && (
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '32px', height: '32px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -636,7 +641,8 @@ export default function ProductDetail({
               </div>
             ))}
           </div>
-        </div>
+        )}
+      </div>
 
         {/* ── RIGHT: Info ── */}
         <div>
