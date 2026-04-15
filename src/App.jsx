@@ -31,6 +31,7 @@ import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import WhatsAppButton from "./components/WhatsAppButton";
 import Chatbot from "./components/Chatbot";
+import { lazy, Suspense } from "react";
 
 function HomePage({
   cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
@@ -90,6 +91,8 @@ function FloatingWidgets() {
     </>
   );
 }
+
+const ProductDetail = lazy(() => import("./pages/ProductDetail.jsx"));
 
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
@@ -251,23 +254,25 @@ function App() {
         <Route
           path="/product/:productId"
           element={
-            <ProductDetail
-              cartOpen={cartOpen}
-              setCartOpen={setCartOpen}
-              addToCart={addToCart}
-              removeFromCart={removeFromCart}
-              cartItems={cartItems}
-              cartCount={cartCount}
-              wishlistOpen={wishlistOpen}
-              setWishlistOpen={setWishlistOpen}
-              wishlistItems={wishlistItems}
-              wishlistCount={wishlistCount}
-              addToWishlist={addToWishlist}
-              removeFromWishlist={removeFromWishlist}
-              isInWishlist={isInWishlist}
-              onCartClick={handleCartClick}
-              onWishlistClick={handleWishlistClick}
-            />
+            <Suspense fallback={<div style={{ padding: 40 }}>Loading product…</div>}>
+              <ProductDetail
+                cartOpen={cartOpen}
+                setCartOpen={setCartOpen}
+                addToCart={addToCart}
+                removeFromCart={removeFromCart}
+                cartItems={cartItems}
+                cartCount={cartCount}
+                wishlistOpen={wishlistOpen}
+                setWishlistOpen={setWishlistOpen}
+                wishlistItems={wishlistItems}
+                wishlistCount={wishlistCount}
+                addToWishlist={addToWishlist}
+                removeFromWishlist={removeFromWishlist}
+                isInWishlist={isInWishlist}
+                onCartClick={handleCartClick}
+                onWishlistClick={handleWishlistClick}
+              />
+            </Suspense>
           }
         />
         <Route
