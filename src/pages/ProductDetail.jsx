@@ -451,7 +451,11 @@ const styles = `
   .pd-feature-sub { font-size: 11px; color: var(--muted); }
 `;
 
-export default function ProductDetail(props) {
+export default function ProductDetail({ 
+  cartCount, onCartClick, wishlistCount, onWishlistClick, 
+  cartOpen, setCartOpen, cartItems, removeFromCart, 
+  wishlistOpen, setWishlistOpen, wishlistItems, removeFromWishlist, addToCart 
+}) {
   const { productId } = useParams();
   const navigate = useNavigate();
 
@@ -462,6 +466,7 @@ export default function ProductDetail(props) {
   const [activeThumb, setActiveThumb] = useState(0);
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);
+  const [sellerPhone, setSellerPhone] = useState(null);
 
   const product = useMemo(
     () => products.find(p => p.id === parseInt(productId, 10)),
@@ -488,6 +493,18 @@ export default function ProductDetail(props) {
     const timer = setTimeout(() => setLoading(false), 800); // 0.8s smooth skeleton loader
     return () => clearTimeout(timer);
   }, [productId]);
+
+  useEffect(() => {
+    if (product && product.sellerId) {
+      const apiUrl = import.meta.env.VITE_API_URL || '/api';
+      fetch(`${apiUrl}/sellers/${product.sellerId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.phone) setSellerPhone(data.phone);
+        })
+        .catch(err => console.error("Error fetching seller:", err));
+    }
+  }, [product]);
 
   if (loading) {
     return (
