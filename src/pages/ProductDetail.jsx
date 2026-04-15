@@ -454,7 +454,8 @@ const styles = `
 export default function ProductDetail({ 
   cartCount, onCartClick, wishlistCount, onWishlistClick, 
   cartOpen, setCartOpen, cartItems, removeFromCart, 
-  wishlistOpen, setWishlistOpen, wishlistItems, removeFromWishlist, addToCart 
+  wishlistOpen, setWishlistOpen, wishlistItems, removeFromWishlist, addToCart,
+  addToWishlist, isInWishlist
 }) {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -608,9 +609,9 @@ export default function ProductDetail({
                 {media[activeIndex].src.includes("instagram.com") ? (
                   <iframe src={media[activeIndex].src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="800" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
                 ) : media[activeIndex].src.includes("youtube.com") || media[activeIndex].src.includes("youtu.be") ? (
-                   <iframe src={media[activeIndex].src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" style={{ minHeight: "400px" }} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ display: "block" }}></iframe>
+                   <iframe src={media[activeIndex].src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
                 ) : media[activeIndex].src.includes("vimeo.com") ? (
-                  <iframe src={media[activeIndex].src.replace("vimeo.com/", "player.vimeo.com/video/")} width="100%" height="100%" style={{ minHeight: "400px" }} frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ display: "block" }}></iframe>
+                  <iframe src={media[activeIndex].src.replace("vimeo.com/", "player.vimeo.com/video/")} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
                 ) : (
                   <video src={media[activeIndex].src} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
                 )}
