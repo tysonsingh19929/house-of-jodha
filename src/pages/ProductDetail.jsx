@@ -207,6 +207,7 @@ const styles = `
     flex: 0 0 100%;
     min-width: 100%;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
     position: relative;
     display: flex; align-items: center; justify-content: center;
     aspect-ratio: 0.75;
