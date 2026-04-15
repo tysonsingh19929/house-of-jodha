@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   const [editingId, setEditingId] = useState(null);
   const [editFormData, setEditFormData] = useState(null);
   const [editImagePreviews, setEditImagePreviews] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
   const isSeller = localStorage.getItem("seller_authenticated") === "true";
@@ -90,6 +91,7 @@ export default function AdminDashboard() {
     }
 
     try {
+      setIsSaving(true);
       const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,19 +100,22 @@ export default function AdminDashboard() {
           price: parseInt(formData.price), originalPrice: parseInt(formData.originalPrice),
           image: formData.images[0], images: formData.images, sellerId: sellerId, sellerName: sellerName,
           description: formData.description || "", stock: parseInt(formData.stock) || 0,
+          videoUrl: formData.videoUrl || "",
           occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : []
         })
       });
 
       if (!response.ok) throw new Error("Failed to add product");
 
-      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "" });
+      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "" });
       setImagePreviews([]);
       fetchProducts();
       alert("Product added successfully!");
       setActiveTab("products");
     } catch (error) {
       alert("Error adding product: " + error.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -151,6 +156,7 @@ export default function AdminDashboard() {
       alert("Please fill all required fields"); return;
     }
     try {
+      setIsSaving(true);
       const response = await fetch(`${API_BASE_URL}/products/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -159,6 +165,7 @@ export default function AdminDashboard() {
           price: parseInt(editFormData.price), originalPrice: parseInt(editFormData.originalPrice),
           image: editFormData.images[0], images: editFormData.images, description: editFormData.description || "",
           stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin,
+          videoUrl: editFormData.videoUrl || "",
           occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions
         })
       });
@@ -166,6 +173,8 @@ export default function AdminDashboard() {
       cancelEdit(); fetchProducts(); alert("Product updated successfully!");
     } catch (error) {
       alert("Error updating product: " + error.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -478,8 +487,8 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button type="submit" style={{ padding: "12px 24px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: "pointer", transition: "background-color 0.2s" }} onMouseEnter={e => e.target.style.backgroundColor = "#1e293b"} onMouseLeave={e => e.target.style.backgroundColor = "#0f172a"}>
-                  Publish Product
+                <button type="submit" disabled={isSaving} style={{ padding: "12px 24px", backgroundColor: isSaving ? "#64748b" : "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSaving ? "not-allowed" : "pointer", transition: "background-color 0.2s" }} onMouseEnter={e => !isSaving && (e.target.style.backgroundColor = "#1e293b")} onMouseLeave={e => !isSaving && (e.target.style.backgroundColor = "#0f172a")}>
+                  {isSaving ? "Publishing..." : "Publish Product"}
                 </button>
               </div>
             </form>
@@ -589,8 +598,10 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", paddingTop: "24px", borderTop: "1px solid #e2e8f0" }}>
-                <button onClick={cancelEdit} style={{ padding: "12px 24px", backgroundColor: "#f1f5f9", color: "#475569", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: "pointer" }}>Cancel</button>
-                <button onClick={saveEdit} style={{ padding: "12px 24px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: "pointer" }}>Save Changes</button>
+                <button onClick={cancelEdit} disabled={isSaving} style={{ padding: "12px 24px", backgroundColor: "#f1f5f9", color: "#475569", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSaving ? "not-allowed" : "pointer" }}>Cancel</button>
+                <button onClick={saveEdit} disabled={isSaving} style={{ padding: "12px 24px", backgroundColor: isSaving ? "#64748b" : "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSaving ? "not-allowed" : "pointer" }}>
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </button>
               </div>
             </div>
           </div>

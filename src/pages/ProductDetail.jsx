@@ -483,9 +483,9 @@ export default function ProductDetail({
     setLoading(true);
     window.scrollTo(0, 0);
 
-    const minTimePromise = new Promise(resolve => setTimeout(resolve, 800));
+    const timer = setTimeout(() => setLoading(false), 800);
     
-    const fetchPromise = fetch(`${apiUrl}/products`)
+    fetch(`${apiUrl}/products`)
       .then(res => {
         if (!res.ok) throw new Error("Network error");
         return res.json();
@@ -497,9 +497,7 @@ export default function ProductDetail({
       })
       .catch(err => console.error("Error fetching product from DB:", err));
 
-    Promise.all([minTimePromise, fetchPromise]).finally(() => {
-      setLoading(false);
-    });
+    return () => clearTimeout(timer);
   }, [productId, apiUrl, staticProduct]);
 
   const product = dbProduct || staticProduct;
@@ -643,12 +641,27 @@ export default function ProductDetail({
             )
           )}
 
-          {media.length > 1 && (
-            <div className="pd-thumbnails">
+          {/* If data hasn't loaded yet, show an optimistic placeholder so layout doesn't shift */}
+          {!dbProduct && (
+            <div style={{ display: 'flex', gap: '8px', padding: '12px 16px', overflowX: 'auto', minHeight: '80px', backgroundColor: '#f8fafc', borderRadius: '12px', marginTop: '16px', opacity: 0.5 }}>
+              <div style={{ width: '60px', height: '60px', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+              <div style={{ width: '60px', height: '60px', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite', animationDelay: '0.2s' }}></div>
+              <div style={{ width: '60px', height: '60px', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite', animationDelay: '0.4s' }}></div>
+            </div>
+          )}
+          
+          {dbProduct && media.length > 1 && (
+            <div 
+              className="pd-thumbnails"
+              style={{
+                display: "flex", gap: "8px", padding: "12px 16px", overflowX: "auto", minHeight: "80px",
+                WebkitOverflowScrolling: "touch", scrollbarWidth: "none", msOverflowStyle: "none"
+              }}
+            >
               {media.map((item, i) => (
                 <div 
                   key={i} 
-                  className={`pd-thumb${activeIndex === i ? " active" : ""}`}
+                  className={`pd-thumbnail ${i === activeIndex ? "active" : ""}`}
                   onClick={() => { setActiveIndex(i); setZoom(false); }}
                   style={{ position: 'relative', cursor: 'pointer', flex: "0 0 calc(25% - 6px)" }}
                 >
@@ -658,11 +671,11 @@ export default function ProductDetail({
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                   </div>
                 )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* ── RIGHT: Info ── */}
         <div>
