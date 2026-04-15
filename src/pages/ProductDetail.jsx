@@ -478,14 +478,19 @@ export default function ProductDetail({
 
   const [dbProduct, setDbProduct] = useState(null);
   useEffect(() => {
-    fetch(`${apiUrl}/products/${productId}`)
+    fetch(`${apiUrl}/products`)
       .then(res => {
-        if (!res.ok) throw new Error("Not found");
+        if (!res.ok) throw new Error("Network error");
         return res.json();
       })
-      .then(data => setDbProduct(data))
+      .then(data => {
+        // Fallback to name map because MongoDB stripped local IDs
+        const match = data.find(p => p.id === parseInt(productId, 10)) || 
+                      data.find(p => staticProduct && p.name === staticProduct.name);
+        if (match) setDbProduct(match);
+      })
       .catch(err => console.error("Error fetching product from DB:", err));
-  }, [productId, apiUrl]);
+  }, [productId, apiUrl, staticProduct]);
 
   const product = dbProduct || staticProduct;
 
