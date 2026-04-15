@@ -26,7 +26,7 @@ export default function AdminPanel() {
   }, []);
 
   const [formData, setFormData] = useState({
-    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", occasions: ""
+    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", occasions: "", videoUrl: ""
   });
   const [editingProduct, setEditingProduct] = useState(null);
   const [editFormData, setEditFormData] = useState(null);
@@ -262,6 +262,10 @@ export default function AdminPanel() {
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Image *</label>
                   <input type="file" accept="image/*" onChange={handleImageChange} required style={{ display: "block", width: "100%", padding: "12px", border: "1px dashed #cbd5e1", borderRadius: "8px", backgroundColor: "#f8fafc", cursor: "pointer", fontSize: "14px" }} />
                 </div>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Video / Instagram Reel URL</label>
+                  <input type="text" placeholder="https://www.instagram.com/reel/..." value={formData.videoUrl} onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                </div>
               </div>
               
               <button type="submit" disabled={loading} style={{ width: isMobile ? "100%" : "auto", padding: "14px 28px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "background-color 0.2s" }} onMouseEnter={e => !loading && (e.target.style.backgroundColor = "#334155")} onMouseLeave={e => !loading && (e.target.style.backgroundColor = "#1e293b")}>
@@ -469,6 +473,8 @@ export default function AdminPanel() {
               <div>
                 <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Occasions</label>
                 <input type="text" placeholder="Cocktail, Sangeet" value={editFormData.occasions} onChange={e => setEditFormData({...editFormData, occasions: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                <label style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>Video / Instagram Reel URL</label>
+                <input type="text" value={editFormData.videoUrl || ""} onChange={e => setEditFormData({...editFormData, videoUrl: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
               </div>
               <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
                 <button type="submit" disabled={loading} style={{ flex: 1, padding: "12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>{loading ? "Saving..." : "Save Changes"}</button>

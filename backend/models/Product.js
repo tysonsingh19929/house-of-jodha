@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema({
   },
   description: String,
   image: String,
+  videoUrl: String,
   stock: {
     type: Number,
     default: 0

@@ -226,7 +226,6 @@ const styles = `
     margin-bottom: 4px;
   }
   .pd-price-current {
-    font-family: 'Cormorant Garamond', serif;
     font-size: 34px; font-weight: 700; color: var(--dark);
   }
   .pd-price-original {
@@ -470,9 +469,31 @@ export default function ProductDetail({
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
-    const found = products.find(p => p.id === parseInt(productId));
-    setProduct(found || null);
-    setLoading(false);
+    const fetchLiveProduct = async () => {
+      const fallback = products.find(p => p.id === parseInt(productId) || p.id === productId);
+      
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://house-of-jodha-backend.onrender.com/api'}/products`);
+        if (res.ok) {
+           const liveDb = await res.json();
+           // Try to find by Mongo ID or identically match the name from the local database
+           const liveMatch = liveDb.find(p => p._id === productId || (fallback && p.name === fallback.name));
+           
+           if (liveMatch) {
+              setProduct({ ...fallback, ...liveMatch, id: fallback?.id || liveMatch._id });
+              setLoading(false);
+              return;
+           }
+        }
+      } catch (e) {
+        console.error('Failed to sync live DB, using local fallback', e);
+      }
+      
+      setProduct(fallback || null);
+      setLoading(false);
+    };
+
+    fetchLiveProduct();
   }, [productId]);
 
   const handleAddToCart = () => {
@@ -552,6 +573,18 @@ export default function ProductDetail({
               </div>
             ))}
           </div>
+
+          {product.videoUrl && (
+            <div className="pd-media-embed" style={{ marginTop: "24px", width: "100%", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border)", backgroundColor: "#000" }}>
+              {product.videoUrl.includes("instagram.com") ? (
+                <iframe src={product.videoUrl.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="480" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
+              ) : product.videoUrl.includes("youtube.com") || product.videoUrl.includes("youtu.be") ? (
+                <iframe src={product.videoUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="315" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ display: "block" }}></iframe>
+              ) : (
+                <video src={product.videoUrl} controls style={{ width: "100%", maxHeight: "500px", display: "block", objectFit: "cover" }} />
+              )}
+            </div>
+          )}
         </div>
 
         {/* ── RIGHT: Info ── */}
@@ -692,39 +725,50 @@ export default function ProductDetail({
       </div>
 
       {/* Product Info Section */}
-      {product && (product.fabricDetails || product.care || product.embroidery || product.deliveryDays) && (
+      {product && (
         <div className="pd-info-section">
           <h2>Product Details</h2>
-          <div className="pd-info-grid">
-            {(product.fabricDetails || product.care) && (
-              <div className="pd-info-card">
-                <div className="pd-info-card-header">
-                  <IconThread />
-                  <span className="pd-info-card-title">Fabric & Care</span>
+          
+          {product.description && (
+            <p style={{ fontSize: "15px", color: "var(--text)", lineHeight: "1.6", marginBottom: "24px" }}>
+              {product.description}
+            </p>
+          )}
+
+          {(product.fabricDetails || product.care || product.embroidery || product.deliveryDays || product.material) && (
+            <div className="pd-info-grid">
+              {(product.fabricDetails || product.care || product.material) && (
+                <div className="pd-info-card">
+                  <div className="pd-info-card-header">
+                    <IconThread />
+                    <span className="pd-info-card-title">Fabric & Care</span>
+                  </div>
+                  {product.material && <p className="pd-info-row"><strong>Material:</strong> {product.material}</p>}
+                  {product.fabricDetails?.top && <p className="pd-info-row"><strong>Top:</strong> {product.fabricDetails.top}</p>}
+                  {product.fabricDetails?.bottom && <p className="pd-info-row"><strong>Bottom:</strong> {product.fabricDetails.bottom}</p>}
+                  {product.fabricDetails?.dupatta && <p className="pd-info-row"><strong>Dupatta:</strong> {product.fabricDetails.dupatta}</p>}
+                  {product.fabricDetails?.blouse && <p className="pd-info-row"><strong>Blouse:</strong> {product.fabricDetails.blouse}</p>}
+                  {product.fabricDetails?.saree && <p className="pd-info-row"><strong>Saree:</strong> {product.fabricDetails.saree}</p>}
+                  {product.care && <p className="pd-info-row" style={{ marginTop: "12px" }}><strong>Care:</strong> {product.care}</p>}
                 </div>
-                {product.fabricDetails?.top && <p className="pd-info-row"><strong>Top:</strong> {product.fabricDetails.top}</p>}
-                {product.fabricDetails?.bottom && <p className="pd-info-row"><strong>Bottom:</strong> {product.fabricDetails.bottom}</p>}
-                {product.fabricDetails?.dupatta && <p className="pd-info-row"><strong>Dupatta:</strong> {product.fabricDetails.dupatta}</p>}
-                {product.fabricDetails?.blouse && <p className="pd-info-row"><strong>Blouse:</strong> {product.fabricDetails.blouse}</p>}
-                {product.fabricDetails?.saree && <p className="pd-info-row"><strong>Saree:</strong> {product.fabricDetails.saree}</p>}
-                {product.care && <p className="pd-info-row" style={{ marginTop: "12px" }}><strong>Care:</strong> {product.care}</p>}
-              </div>
-            )}
-            {(product.embroidery || product.deliveryDays) && (
-              <div className="pd-info-card">
-                <div className="pd-info-card-header">
-                  <IconSparkle />
-                  <span className="pd-info-card-title">Embroidery & Delivery</span>
+              )}
+              
+              {(product.embroidery || product.deliveryDays) && (
+                <div className="pd-info-card">
+                  <div className="pd-info-card-header">
+                    <IconSparkle />
+                    <span className="pd-info-card-title">Embroidery & Delivery</span>
+                  </div>
+                  {product.embroidery && <p className="pd-info-row"><strong>Embellishments:</strong> {product.embroidery}</p>}
+                  {product.deliveryType && <p className="pd-info-row"><strong>Delivery Type:</strong> {product.deliveryType}</p>}
+                  {product.deliveryDays && <p className="pd-info-row"><strong>Delivery Time:</strong> {product.deliveryDays}</p>}
+                  {product.freeShipping && <p className="pd-info-row" style={{ color: "#16a34a", fontWeight: "600" }}><IconCheck /> Free Shipping Available</p>}
+                  {product.maxBustSize && <p className="pd-info-row"><strong>Max Standard Size:</strong> {product.maxBustSize} bust</p>}
+                  {product.customFitAvailable && <p className="pd-info-row" style={{ color: "#B8860B", fontWeight: "600" }}>✦ Custom Fit Available</p>}
                 </div>
-                {product.embroidery && <p className="pd-info-row"><strong>Embellishments:</strong> {product.embroidery}</p>}
-                {product.deliveryType && <p className="pd-info-row"><strong>Delivery Type:</strong> {product.deliveryType}</p>}
-                {product.deliveryDays && <p className="pd-info-row"><strong>Delivery Time:</strong> {product.deliveryDays}</p>}
-                {product.freeShipping && <p className="pd-info-row" style={{ color: "#16a34a", fontWeight: "600" }}><IconCheck /> Free Shipping Available</p>}
-                {product.maxBustSize && <p className="pd-info-row"><strong>Max Standard Size:</strong> {product.maxBustSize} bust</p>}
-                {product.customFitAvailable && <p className="pd-info-row" style={{ color: "#B8860B", fontWeight: "600" }}>✦ Custom Fit Available</p>}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
           {product.notes && (
             <div className="pd-info-note">
               <strong>Note:</strong> {product.notes}

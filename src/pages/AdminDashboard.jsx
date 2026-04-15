@@ -25,7 +25,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "", occasions: ""
+    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "", occasions: "", videoUrl: ""
   });
   
   const [imagePreview, setImagePreview] = useState(null);
@@ -410,6 +410,10 @@ export default function AdminDashboard() {
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
                   <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={formData.occasions} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
                 </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Video / Instagram Reel URL</label>
+                  <input type="text" placeholder="https://www.instagram.com/reel/..." name="videoUrl" value={formData.videoUrl || ""} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
+                </div>
               </div>
 
               <div style={{ marginBottom: "32px" }}>
@@ -506,9 +510,15 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
-                  <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={editFormData.occasions} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
+                    <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={editFormData.occasions} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Video / Instagram Reel URL</label>
+                    <input type="text" name="videoUrl" value={editFormData.videoUrl || ""} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
+                  </div>
                 </div>
 
                 <div>
