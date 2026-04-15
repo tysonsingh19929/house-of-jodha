@@ -618,7 +618,7 @@ export default function ProductDetail({
       <div className="pd-main">
 
         {/* ── LEFT: Image ── */}
-        <div>
+        <div style={{ minWidth: 0, width: "100%", maxWidth: "100%" }}>
           {media.length > 0 && media[activeIndex].type === 'image' ? (
             <div className={`pd-image-main${zoom ? " zoomed" : ""}`} onClick={() => setZoom(!zoom)}>
               <img src={media[activeIndex].src} alt={product.name} loading="lazy" />
