@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // Register seller
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, businessName } = req.body;
+    const { name, email, password, businessName, phone } = req.body;
     
     // Check if seller exists
     const existingSeller = await Seller.findOne({ email });
@@ -29,6 +29,7 @@ router.post('/register', async (req, res) => {
       email,
       password, // In production, hash this with bcrypt
       businessName,
+      phone,
       role: 'seller' // Default role
     });
     
@@ -41,7 +42,8 @@ router.post('/register', async (req, res) => {
         name: savedSeller.name, 
         email: savedSeller.email,
         role: savedSeller.role,
-        businessName: savedSeller.businessName
+        businessName: savedSeller.businessName,
+        phone: savedSeller.phone
       }
     });
   } catch (error) {
@@ -80,6 +82,7 @@ router.post('/login', async (req, res) => {
         email: seller.email,
         role: seller.role,
         businessName: seller.businessName,
+        phone: seller.phone,
         status: seller.status
       },
       isSuperAdmin: seller.role === 'admin'

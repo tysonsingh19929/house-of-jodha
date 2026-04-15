@@ -11,6 +11,7 @@ const buildApiUrl = (path) => {
 export default function SellerSignup() {
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,7 +29,7 @@ export default function SellerSignup() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name, businessName, email, password })
+        body: JSON.stringify({ name, businessName, phone, email, password })
       });
 
       const data = await response.json();
@@ -138,6 +139,34 @@ export default function SellerSignup() {
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
               placeholder="Enter your business name"
+              required
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "1px solid #ddd",
+                borderRadius: "6px",
+                fontSize: "14px",
+                boxSizing: "border-box",
+                fontFamily: "inherit"
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{
+              display: "block",
+              fontWeight: "600",
+              marginBottom: "8px",
+              color: "#333",
+              fontSize: "14px"
+            }}>
+              WhatsApp / Mobile Number
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter your WhatsApp number"
               required
               style={{
                 width: "100%",

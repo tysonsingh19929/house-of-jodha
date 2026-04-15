@@ -467,6 +467,7 @@ export default function ProductDetail({
   const [viewingCount] = useState(Math.floor(Math.random() * 30) + 10);
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [sellerPhone, setSellerPhone] = useState(null);
   const isMobile = window.innerWidth <= 768;
 
   const media = product ? [
@@ -489,6 +490,18 @@ export default function ProductDetail({
            
            if (liveMatch) {
               setProduct({ ...fallback, ...liveMatch, id: fallback?.id || liveMatch._id });
+              
+              // Dynamically fetch the seller's specific WhatsApp Number
+              if (liveMatch.sellerId) {
+                try {
+                   const sellerRes = await fetch(`${import.meta.env.VITE_API_URL || 'https://house-of-jodha-backend.onrender.com/api'}/sellers/${liveMatch.sellerId}`);
+                   if (sellerRes.ok) {
+                      const sellerInfo = await sellerRes.json();
+                      if (sellerInfo.phone) setSellerPhone(sellerInfo.phone);
+                   }
+                } catch(e) { console.error('Failed to get seller config', e); }
+              }
+
               setLoading(false);
               return;
            }
@@ -717,6 +730,7 @@ export default function ProductDetail({
           <WhatsAppInquiryButton
             message={`Hi! I'm interested in: ${product.name} — ₹${product.price}. Size: ${selectedSize}`}
             buttonStyle={{ width: "100%", padding: "12px 24px", marginTop: "0" }}
+            phoneNumber={sellerPhone || "9967670497"}
           />
 
           {/* Trust badges */}

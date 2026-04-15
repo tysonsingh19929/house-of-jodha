@@ -20,7 +20,10 @@ const sellerSchema = new mongoose.Schema({
     default: 'seller'
   },
   businessName: String,
-  phone: String,
+  phone: {
+    type: String,
+    required: true
+  },
   address: String,
   city: String,
   state: String,
