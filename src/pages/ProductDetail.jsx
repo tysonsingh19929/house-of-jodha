@@ -466,7 +466,15 @@ export default function ProductDetail({
   const [zoom, setZoom] = useState(false);
   const [viewingCount] = useState(Math.floor(Math.random() * 30) + 10);
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = window.innerWidth <= 768;
+
+  const media = product ? [
+    { type: 'image', src: product.image },
+    ...(product.videoUrl ? [{ type: 'video', src: product.videoUrl }] : [{ type: 'image', src: product.image }]),
+    { type: 'image', src: product.image },
+    { type: 'image', src: product.image }
+  ] : [];
 
   useEffect(() => {
     const fetchLiveProduct = async () => {
@@ -560,31 +568,43 @@ export default function ProductDetail({
 
         {/* ── LEFT: Image ── */}
         <div>
-          <div className={`pd-image-main${zoom ? " zoomed" : ""}`} onClick={() => setZoom(!zoom)}>
-            <img src={product.image} alt={product.name} loading="lazy" />
-            {discount > 0 && <div className="pd-discount-badge">−{discount}% OFF</div>}
-            <button className="pd-zoom-btn">{zoom ? <IconZoomOut /> : <IconZoomIn />}</button>
-          </div>
+          {media.length > 0 && media[activeIndex].type === 'image' ? (
+            <div className={`pd-image-main${zoom ? " zoomed" : ""}`} onClick={() => setZoom(!zoom)}>
+              <img src={media[activeIndex].src} alt={product.name} loading="lazy" />
+              {discount > 0 && <div className="pd-discount-badge">−{discount}% OFF</div>}
+              <button className="pd-zoom-btn">{zoom ? <IconZoomOut /> : <IconZoomIn />}</button>
+            </div>
+          ) : (
+            media.length > 0 && (
+              <div className="pd-media-embed" style={{ width: "100%", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border)", backgroundColor: "#000", aspectRatio: "3/4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px" }}>
+                {media[activeIndex].src.includes("instagram.com") ? (
+                  <iframe src={media[activeIndex].src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="800" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
+                ) : media[activeIndex].src.includes("youtube.com") || media[activeIndex].src.includes("youtu.be") ? (
+                   <iframe src={media[activeIndex].src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" style={{ minHeight: "400px" }} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ display: "block" }}></iframe>
+                ) : (
+                  <video src={media[activeIndex].src} controls style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+                )}
+              </div>
+            )
+          )}
 
           <div className="pd-thumbnails">
-            {[0, 1, 2, 3].map(i => (
-              <div key={i} className={`pd-thumb${i === 0 ? " active" : ""}`}>
-                <img src={product.image} alt={`View ${i + 1}`} loading="lazy" />
+            {media.map((item, i) => (
+              <div 
+                key={i} 
+                className={`pd-thumb${activeIndex === i ? " active" : ""}`}
+                onClick={() => { setActiveIndex(i); setZoom(false); }}
+                style={{ position: 'relative', cursor: 'pointer' }}
+              >
+                <img src={product.image} alt={`View ${i + 1}`} loading="lazy" style={{ opacity: item.type === 'video' ? 0.7 : 1 }} />
+                {item.type === 'video' && (
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '32px', height: '32px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                )}
               </div>
             ))}
           </div>
-
-          {product.videoUrl && (
-            <div className="pd-media-embed" style={{ marginTop: "24px", width: "100%", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--border)", backgroundColor: "#000" }}>
-              {product.videoUrl.includes("instagram.com") ? (
-                <iframe src={product.videoUrl.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="480" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block" }}></iframe>
-              ) : product.videoUrl.includes("youtube.com") || product.videoUrl.includes("youtu.be") ? (
-                <iframe src={product.videoUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="315" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ display: "block" }}></iframe>
-              ) : (
-                <video src={product.videoUrl} controls style={{ width: "100%", maxHeight: "500px", display: "block", objectFit: "cover" }} />
-              )}
-            </div>
-          )}
         </div>
 
         {/* ── RIGHT: Info ── */}
