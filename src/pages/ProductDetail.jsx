@@ -469,10 +469,23 @@ export default function ProductDetail({
   const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);
   const [sellerPhone, setSellerPhone] = useState(null);
 
-  const product = useMemo(
+  const staticProduct = useMemo(
     () => products.find(p => p.id === parseInt(productId, 10)),
     [productId]
   );
+
+  const [dbProduct, setDbProduct] = useState(null);
+  useEffect(() => {
+    fetch(`${apiUrl}/products/${productId}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then(data => setDbProduct(data))
+      .catch(err => console.error("Error fetching product from DB:", err));
+  }, [productId, apiUrl]);
+
+  const product = dbProduct || staticProduct;
 
   const discount = product && product.originalPrice > product.price 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
