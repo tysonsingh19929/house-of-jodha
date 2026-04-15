@@ -23,7 +23,6 @@ import AdminLogin from "./pages/AdminLogin";
 import SellerLogin from "./pages/SellerLogin";
 import SellerSignup from "./pages/SellerSignup";
 import QuickEdit from "./pages/QuickEdit";
-import ProductDetail from "./pages/ProductDetail";
 import SearchResults from "./pages/SearchResults";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
