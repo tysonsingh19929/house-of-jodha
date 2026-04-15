@@ -10,6 +10,10 @@ const productSchema = new mongoose.Schema({
     required: true,
     enum: ['Lehenga', 'Saree', 'Anarkali', 'Salwar Kameez', 'Gharara', 'Sharara']
   },
+  occasions: {
+    type: [String],
+    default: []
+  },
   price: {
     type: Number,
     required: true

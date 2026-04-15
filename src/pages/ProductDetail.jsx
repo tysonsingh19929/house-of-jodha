@@ -505,9 +505,7 @@ export default function ProductDetail({
   if (!product) return (
     <div style={{ textAlign: "center", padding: "100px 20px" }}>
       <h2>Product Not Found</h2>
-      <button onClick={() => navigate("/")} style={{ padding: "10px 24px", background: "#880E4F", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", marginTop: "20px" }}>
-        Back to Home
-      </button>
+      <button onClick={() => navigate("/")}>Back to Home</button>
     </div>
   );
 
@@ -659,6 +657,7 @@ export default function ProductDetail({
             <IconHeart filled={inWishlist} />
             {inWishlist ? "Saved to Wishlist" : "Add to Wishlist"}
           </button>
+
 
           <WhatsAppInquiryButton
             message={`Hi! I'm interested in: ${product.name} — ₹${product.price}. Size: ${selectedSize}`}

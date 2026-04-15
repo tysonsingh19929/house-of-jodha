@@ -13,12 +13,19 @@ const DollarSignIcon = () => <svg width="24" height="24" fill="none" stroke="cur
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, products, add_product, settings
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: ""
+    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "", occasions: ""
   });
   
   const [imagePreview, setImagePreview] = useState(null);
@@ -46,7 +53,7 @@ export default function AdminDashboard() {
       const url = isSuperAdmin 
         ? '/products'
         : `/products/seller/${sellerId}`;
-      const response = await fetch(buildApiUrl(url));
+      const response = await fetch(`${API_BASE_URL}${url}`);
       const data = await response.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -83,20 +90,21 @@ export default function AdminDashboard() {
     }
 
     try {
-      const response = await fetch(buildApiUrl("/products"), {
+      const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name, category: formData.category,
           price: parseInt(formData.price), originalPrice: parseInt(formData.originalPrice),
           image: formData.image, sellerId: sellerId, sellerName: sellerName,
-          description: formData.description || "", stock: parseInt(formData.stock) || 0
+          description: formData.description || "", stock: parseInt(formData.stock) || 0,
+          occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : []
         })
       });
 
       if (!response.ok) throw new Error("Failed to add product");
 
-      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "" });
+      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "", occasions: "" });
       setImagePreview(null);
       fetchProducts();
       alert("Product added successfully!");
@@ -126,7 +134,7 @@ export default function AdminDashboard() {
   const startEdit = (product) => {
     if (!canEditProduct(product)) { alert("You don't have permission to edit this product"); return; }
     setEditingId(product._id);
-    setEditFormData({ ...product });
+    setEditFormData({ ...product, occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || "") });
     setEditImagePreview(product.image);
   };
 
@@ -139,14 +147,15 @@ export default function AdminDashboard() {
       alert("Please fill all required fields"); return;
     }
     try {
-      const response = await fetch(buildApiUrl(`/products/${editingId}`), {
+      const response = await fetch(`${API_BASE_URL}/products/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: editFormData.name, category: editFormData.category,
           price: parseInt(editFormData.price), originalPrice: parseInt(editFormData.originalPrice),
           image: editFormData.image, description: editFormData.description || "",
-          stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin
+          stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin,
+          occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions
         })
       });
       if (!response.ok) { const error = await response.json(); throw new Error(error.message); }
@@ -160,7 +169,7 @@ export default function AdminDashboard() {
     if (!canEditProduct(product)) { alert("Permission denied"); return; }
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      const response = await fetch(buildApiUrl(`/products/${productId}`), {
+      const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sellerId: sellerId, isSuperAdmin: isSuperAdmin })
@@ -179,9 +188,9 @@ export default function AdminDashboard() {
   const totalValue = products.reduce((sum, p) => sum + (p.price * (p.stock || 1)), 0);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
+    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
       {/* Sidebar */}
-      <aside style={{ width: "260px", backgroundColor: "#1e293b", color: "#fff", display: "flex", flexDirection: "column" }}>
+      <aside style={{ width: isMobile ? "100%" : "260px", minHeight: isMobile ? "auto" : "100vh", backgroundColor: "#1e293b", color: "#fff", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
           <h2 style={{ margin: 0, fontSize: "20px", color: "#facc15", display: "flex", alignItems: "center", gap: "10px" }}>
             ✨ Seller Panel
@@ -189,25 +198,26 @@ export default function AdminDashboard() {
           <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#94a3b8" }}>{isSuperAdmin ? "Super Admin" : sellerName}</p>
         </div>
         
-        <nav style={{ flex: 1, padding: "20px 0" }}>
+        <nav style={{ flex: 1, padding: isMobile ? "10px" : "20px 0", display: isMobile ? "flex" : "block", flexWrap: "wrap", justifyContent: "space-around" }}>
           {[
             { id: "dashboard", icon: <HomeIcon />, label: "Dashboard" },
             { id: "products", icon: <PackageIcon />, label: "My Products" },
             { id: "add_product", icon: <PlusCircleIcon />, label: "Add Product" },
             { id: "settings", icon: <SettingsIcon />, label: "Settings" }
           ].map(item => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              style={{
-                width: "100%", display: "flex", alignItems: "center", gap: "12px", padding: "16px 24px",
-                backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
-                color: activeTab === item.id ? "#fff" : "#94a3b8",
-                border: "none", borderLeft: activeTab === item.id ? "4px solid #facc15" : "4px solid transparent",
-                cursor: "pointer", fontSize: "15px", fontWeight: "500", transition: "all 0.2s ease"
-              }}
-            >
-              {item.icon} {item.label}
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                style={{
+                  width: isMobile ? "auto" : "100%", display: "flex", alignItems: "center", gap: "12px", padding: isMobile ? "12px" : "16px 24px",
+                  backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
+                  color: activeTab === item.id ? "#fff" : "#94a3b8",
+                  border: "none", borderLeft: !isMobile && activeTab === item.id ? "4px solid #facc15" : "4px solid transparent",
+                  borderBottom: isMobile && activeTab === item.id ? "4px solid #facc15" : (isMobile ? "4px solid transparent" : "none"),
+                  cursor: "pointer", fontSize: isMobile ? "13px" : "15px", fontWeight: "500", transition: "all 0.2s ease"
+                }}
+              >
+                {item.icon} {!isMobile && item.label}
             </button>
           ))}
         </nav>
@@ -232,7 +242,7 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main style={{ flex: 1, padding: "32px", overflowY: "auto" }}>
+      <main style={{ flex: 1, padding: isMobile ? "16px" : "32px", overflowY: "auto", width: isMobile ? "100%" : "auto" }}>
         
         {/* DASHBOARD TAB */}
         {activeTab === "dashboard" && (
@@ -368,8 +378,8 @@ export default function AdminDashboard() {
           <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "800px" }}>
             <h1 style={{ margin: "0 0 32px", fontSize: "28px", color: "#0f172a" }}>Add New Product</h1>
             
-            <form onSubmit={handleSubmit} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: "32px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+            <form onSubmit={handleSubmit} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: isMobile ? "20px" : "32px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
                 <div style={{ gridColumn: "1 / -1" }}>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Name *</label>
                   <input type="text" name="name" value={formData.name} onChange={handleChange} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
@@ -395,6 +405,10 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Original Price (₹) *</label>
                   <input type="number" name="originalPrice" value={formData.originalPrice} onChange={handleChange} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
+                  <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={formData.occasions} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
                 </div>
               </div>
 
@@ -490,6 +504,11 @@ export default function AdminDashboard() {
                     <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Original Price (₹) *</label>
                     <input type="number" name="originalPrice" value={editFormData.originalPrice} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
                   </div>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
+                  <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={editFormData.occasions} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
                 </div>
 
                 <div>

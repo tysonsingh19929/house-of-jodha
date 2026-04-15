@@ -12,6 +12,7 @@ export default function OccasionPage({
 }) {
   const { occasion } = useParams();
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const isMobile = window.innerWidth <= 768;
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState({});
@@ -104,26 +105,42 @@ export default function OccasionPage({
   };
 
   useEffect(() => {
-    const localProducts = JSON.parse(localStorage.getItem("products") || "[]");
-    const all = localProducts.length ? localProducts : enhancedProductDatabase;
+    const fetchProducts = async () => {
+      let dbProducts = [];
+      try {
+        const res = await fetch(`${API_BASE_URL}/products`);
+        if (res.ok) dbProducts = await res.json();
+      } catch (e) {
+        console.error("Could not fetch DB products", e);
+      }
 
-    const filtered = all
-      .filter(p => {
-        const occasionMatch =
-          p.occasion?.toLowerCase() === occasionKey ||
-          (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
-        const categoryMatch = p.category?.toLowerCase() === occasionKey;
-        return occasionMatch || categoryMatch;
-      })
-      .map(p => {
-        const master = masterProducts.find(mp => mp.id === p.id);
-        return {
-          ...p,
-          image: master?.image || p.image,
-        };
-      });
+      // Combine local catalog + backend catalog perfectly
+      const all = [...masterProducts, ...enhancedProductDatabase, ...dbProducts];
+      
+      const filtered = all
+        .filter(p => {
+          const occasionMatch =
+            p.occasion?.toLowerCase() === occasionKey ||
+            (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
+          const categoryMatch = p.category?.toLowerCase() === occasionKey;
+          return occasionMatch || categoryMatch;
+        })
+        .map(p => {
+          const master = masterProducts.find(mp => mp.id === p.id || mp._id === p._id);
+          return {
+            ...p,
+            image: master?.image || p.image,
+            // Prioritize id, fallback to _id
+            id: p.id || p._id
+          };
+        });
 
-    setProducts(filtered);
+      // Simple deduplication based on ID
+      const unique = filtered.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+      setProducts(unique);
+    };
+
+    fetchProducts();
   }, [occasionKey]);
 
   const handleAddProduct = (e, product) => {

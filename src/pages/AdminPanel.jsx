@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { CrownIcon, SparklesIcon, TrashIcon } from "../components/Icons";
+
+const HomeIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
+const PackageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>;
+const UsersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+const OrdersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>;
+const StoreIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
 
 export default function AdminPanel() {
-  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
   const [activeTab, setActiveTab] = useState("dashboard");
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
@@ -11,117 +19,93 @@ export default function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [sellers, setSellers] = useState([]);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    originalPrice: "",
-    category: "Lehenga",
-    image: "",
-    description: ""
+    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", occasions: ""
   });
-
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [editFormData, setEditFormData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [editingId, setEditingId] = useState(null);
 
-  // Check admin access
   useEffect(() => {
     const adminToken = localStorage.getItem("admin_token");
-    if (!adminToken) {
-      navigate("/admin-login");
-    }
+    if (!adminToken) navigate("/admin-login");
   }, [navigate]);
 
-  // Fetch all data
   useEffect(() => {
-    fetchProducts();
-    fetchOrders();
-    fetchUsers();
-    fetchSellers();
+    fetchProducts(); fetchOrders(); fetchUsers(); fetchSellers();
   }, []);
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/products`);
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(Array.isArray(data) ? data : []);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+      const res = await fetch(`${API_BASE_URL}/products`);
+      if (res.ok) setProducts(await res.json());
+    } catch (e) { console.error(e); }
   };
-
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/orders`);
-      if (response.ok) {
-        const data = await response.json();
-        setOrders(Array.isArray(data) ? data : []);
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
+      const res = await fetch(`${API_BASE_URL}/orders`);
+      if (res.ok) setOrders(await res.json());
+    } catch (e) { console.error(e); }
   };
-
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/users`);
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(Array.isArray(data) ? data : []);
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
+      const res = await fetch(`${API_BASE_URL}/users`);
+      if (res.ok) setUsers(await res.json());
+    } catch (e) { console.error(e); }
   };
-
   const fetchSellers = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers`);
-      if (response.ok) {
-        const data = await response.json();
-        setSellers(Array.isArray(data) ? data : []);
-      }
-    } catch (error) {
-      console.error("Error fetching sellers:", error);
-    }
+      const res = await fetch(`${API_BASE_URL}/sellers`);
+      if (res.ok) setSellers(await res.json());
+    } catch (e) { console.error(e); }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setFormData({ ...formData, image: reader.result });
-      };
+      reader.onloadend = () => { setImagePreview(reader.result); setFormData({ ...formData, image: reader.result }); };
       reader.readAsDataURL(file);
     }
   };
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.price || !formData.image) {
-      alert("Please fill all fields");
-      return;
-    }
-
+    if (!formData.name || !formData.price || !formData.image) return alert("Please fill all fields");
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/products`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
+      const payload = { ...formData, occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [] };
+      const res = await fetch(`${API_BASE_URL}/products`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (res.ok) {
         alert("Product added successfully!");
-        setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "" });
-        setImagePreview(null);
+        setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", occasions: "" });
+        setImagePreview(null); fetchProducts();
+      }
+    } catch (e) { alert("Error adding product"); } finally { setLoading(false); }
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const payload = { ...editFormData, occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions };
+      const res = await fetch(`${API_BASE_URL}/products/${editingProduct._id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        setEditingProduct(null);
         fetchProducts();
+      } else {
+        alert("Failed to update product");
       }
     } catch (error) {
-      alert("Error adding product: " + error.message);
+      alert("Error updating product");
     } finally {
       setLoading(false);
     }
@@ -129,63 +113,27 @@ export default function AdminPanel() {
 
   const handleDeleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
-
     try {
-      const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-        method: "DELETE"
-      });
-
-      if (response.ok) {
-        alert("Product deleted!");
-        fetchProducts();
-      }
-    } catch (error) {
-      alert("Error deleting product: " + error.message);
-    }
+      const res = await fetch(`${API_BASE_URL}/products/${id}`, { method: "DELETE" });
+      if (res.ok) fetchProducts();
+    } catch (e) { alert("Error deleting product"); }
   };
 
   const handleUpdateSellerStatus = async (id, status) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers/${id}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status })
-      });
-      if (response.ok) {
-        fetchSellers();
-      } else {
-        const errorData = await response.json();
-        alert("Error updating status: " + errorData.message);
-      }
-    } catch (error) {
-      alert("Error updating status: " + error.message);
-    }
+      const res = await fetch(`${API_BASE_URL}/sellers/${id}/status`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+      res.ok ? fetchSellers() : alert("Error updating status");
+    } catch (error) { alert("Error updating status"); }
   };
 
   const handleDeleteSeller = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this seller?")) return;
-
+    if (!window.confirm("Delete this seller?")) return;
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers/${id}`, {
-        method: "DELETE"
-      });
-      if (response.ok) {
-        fetchSellers();
-      } else {
-        const errorData = await response.json();
-        alert("Error deleting seller: " + errorData.message);
-      }
-    } catch (error) {
-      alert("Error deleting seller: " + error.message);
-    }
+      const res = await fetch(`${API_BASE_URL}/sellers/${id}`, { method: "DELETE" });
+      res.ok ? fetchSellers() : alert("Error deleting seller");
+    } catch (e) { alert("Error deleting seller"); }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_token");
-    navigate("/");
-  };
-
-  // Dashboard Stats
   const stats = {
     totalProducts: products.length,
     totalOrders: orders.length,
@@ -194,506 +142,344 @@ export default function AdminPanel() {
     totalRevenue: orders.reduce((sum, order) => sum + (order.total || 0), 0)
   };
 
-  const panelStyle = {
-    minHeight: "100vh",
-    background: "#FAFAFA",
-    paddingTop: "64px",
-    paddingBottom: "40px",
-    fontFamily: "'Inter', sans-serif"
-  };
-
-  const containerStyle = {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: "20px"
-  };
-
-  const headerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "30px",
-    background: "linear-gradient(135deg, #1A1A1A, #2A2A2A)",
-    padding: "25px 35px",
-    borderRadius: "16px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-    color: "#D4AF37"
-  };
-
-  const tabBarStyle = {
-    display: "flex",
-    gap: "10px",
-    marginBottom: "30px",
-    background: "#fff",
-    padding: "16px",
-    borderRadius: "16px",
-    flexWrap: "wrap",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.02)",
-    border: "1px solid rgba(212,175,55,0.1)"
-  };
-
-  const tabButtonStyle = (isActive) => ({
-    padding: "10px 24px",
-    border: "none",
-    borderRadius: "30px",
-    background: isActive ? "linear-gradient(135deg, #D4AF37, #B8860B)" : "transparent",
-    color: isActive ? "#fff" : "#666",
-    cursor: "pointer",
-    fontWeight: "600",
-    fontSize: "14px",
-    transition: "all 0.3s ease",
-    boxShadow: isActive ? "0 4px 15px rgba(212,175,55,0.3)" : "none"
-  });
-
-  const cardStyle = {
-    background: "#fff",
-    padding: "30px",
-    borderRadius: "16px",
-    boxShadow: "0 8px 30px rgba(0,0,0,0.04)",
-    marginBottom: "24px",
-    border: "1px solid rgba(212,175,55,0.05)"
-  };
-
-  const statsGridStyle = {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "20px",
-    marginBottom: "30px"
-  };
-
-  const statCardStyle = {
-    background: "#fff",
-    padding: "30px 20px",
-    borderRadius: "16px",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.03)",
-    textAlign: "center",
-    border: "1px solid rgba(0,0,0,0.04)",
-    transition: "transform 0.3s ease",
-    cursor: "default"
-  };
-
-  const statNumberStyle = {
-    fontSize: "38px",
-    fontWeight: "800",
-    background: "linear-gradient(135deg, #D4AF37, #B8860B)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    marginBottom: "8px"
-  };
-
   return (
-    <div style={panelStyle}>
-      <div style={containerStyle}>
-        {/* Header */}
-        <div style={headerStyle}>
-          <div>
-            <h1 style={{ margin: "0", color: "#D4AF37", fontSize: "28px" }}>👑 Super Admin Console</h1>
-            <p style={{ margin: "5px 0 0 0", color: "#aaa", fontSize: "14px" }}>House of Jodha Headquarters</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: "10px 24px",
-              background: "transparent",
-              color: "#fff",
-              border: "1px solid #D4AF37",
-              borderRadius: "30px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={(e) => e.target.style.background = "rgba(212,175,55,0.1)"}
-            onMouseLeave={(e) => e.target.style.background = "transparent"}
-          >
-            Logout
-          </button>
+    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
+      
+      {/* Sidebar */}
+      <aside style={{ width: isMobile ? "100%" : "260px", minHeight: isMobile ? "auto" : "100vh", backgroundColor: "#1e293b", color: "#fff", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+          <h2 style={{ margin: 0, fontSize: "20px", color: "#facc15", display: "flex", alignItems: "center", gap: "10px" }}>
+            <CrownIcon size="24px" /> Super Admin
+          </h2>
+          <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#94a3b8" }}>Master Control Console</p>
         </div>
-
-        {/* Stats */}
-        {activeTab === "dashboard" && (
-          <div style={statsGridStyle}>
-            <div style={statCardStyle}>
-              <div style={statNumberStyle}>{stats.totalProducts}</div>
-              <div style={{ color: "#666", fontSize: "14px" }}>Total Products</div>
-            </div>
-            <div style={statCardStyle}>
-              <div style={statNumberStyle}>{stats.totalOrders}</div>
-              <div style={{ color: "#666", fontSize: "14px" }}>Total Orders</div>
-            </div>
-            <div style={statCardStyle}>
-              <div style={statNumberStyle}>{stats.totalUsers}</div>
-              <div style={{ color: "#666", fontSize: "14px" }}>Total Users</div>
-            </div>
-            <div style={statCardStyle}>
-              <div style={statNumberStyle}>{stats.totalSellers}</div>
-              <div style={{ color: "#666", fontSize: "14px" }}>Total Sellers</div>
-            </div>
-            <div style={statCardStyle}>
-              <div style={statNumberStyle}>₹{stats.totalRevenue.toLocaleString()}</div>
-              <div style={{ color: "#666", fontSize: "14px" }}>Total Revenue</div>
-            </div>
-          </div>
-        )}
-
-        {/* Tab Navigation */}
-        <div style={tabBarStyle}>
-          {["dashboard", "products", "orders", "users", "sellers"].map((tab) => (
+        
+        <nav style={{ flex: 1, padding: isMobile ? "10px" : "20px 0", display: isMobile ? "flex" : "block", flexWrap: "wrap", justifyContent: "space-around", overflowX: "auto" }}>
+          {[
+            { id: "dashboard", icon: <HomeIcon />, label: "Dashboard" },
+            { id: "products", icon: <PackageIcon />, label: "Products" },
+            { id: "orders", icon: <OrdersIcon />, label: "Orders" },
+            { id: "users", icon: <UsersIcon />, label: "Users" },
+            { id: "sellers", icon: <StoreIcon />, label: "Sellers" }
+          ].map(item => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={tabButtonStyle(activeTab === tab)}
+              key={item.id} onClick={() => setActiveTab(item.id)}
+              style={{
+                width: isMobile ? "auto" : "100%", display: "flex", alignItems: "center", gap: "12px", padding: isMobile ? "12px 16px" : "16px 24px",
+                backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
+                color: activeTab === item.id ? "#fff" : "#94a3b8",
+                border: "none", borderLeft: !isMobile && activeTab === item.id ? "4px solid #facc15" : "4px solid transparent",
+                borderBottom: isMobile && activeTab === item.id ? "4px solid #facc15" : (isMobile ? "4px solid transparent" : "none"),
+                cursor: "pointer", fontSize: isMobile ? "13px" : "15px", fontWeight: "500", transition: "all 0.2s ease", whiteSpace: "nowrap"
+              }}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {item.icon} {!isMobile && item.label}
             </button>
           ))}
+        </nav>
+
+        <div style={{ padding: "24px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <button onClick={() => { localStorage.removeItem("admin_token"); navigate("/"); }} style={{ width: "100%", padding: "12px", backgroundColor: "transparent", color: "#ef4444", border: "1px solid #ef4444", borderRadius: "8px", fontWeight: "600", cursor: "pointer", transition: "all 0.2s ease" }} onMouseEnter={e => e.target.style.backgroundColor = "rgba(239, 68, 68, 0.1)"} onMouseLeave={e => e.target.style.backgroundColor = "transparent"}>
+            Secure Logout
+          </button>
         </div>
+      </aside>
 
-        {/* Dashboard Tab */}
+      {/* Main Content */}
+      <main style={{ flex: 1, padding: isMobile ? "16px" : "32px", overflowY: "auto", width: isMobile ? "100%" : "auto" }}>
+        
+        {/* DASHBOARD TAB */}
         {activeTab === "dashboard" && (
-          <div style={cardStyle}>
-            <h2 style={{ color: "#1A1A1A", marginBottom: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
-              Welcome to the Command Center
-            </h2>
-            <p style={{ color: "#666", lineHeight: "1.6", margin: 0 }}>
-              Here you hold the keys to the entire boutique. Use the navigation above to securely audit products, track incoming orders, verify user registrations, and moderate seller accounts. 
-              All system metrics are tracked in real-time.
-            </p>
+          <div style={{ animation: "fadeIn 0.3s ease" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Overview Metrics</h1>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px", marginBottom: "32px" }}>
+              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #facc15" }}>
+                <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Revenue</p>
+                <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>₹{stats.totalRevenue.toLocaleString()}</h3>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #3b82f6" }}>
+                <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Products</p>
+                <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>{stats.totalProducts}</h3>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #10b981" }}>
+                <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Sellers</p>
+                <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>{stats.totalSellers}</h3>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #8b5cf6" }}>
+                <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Orders</p>
+                <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>{stats.totalOrders}</h3>
+              </div>
+            </div>
+            
+            <div style={{ backgroundColor: "#fff", padding: "32px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
+              <h2 style={{ margin: "0 0 16px", fontSize: "20px", color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
+                 Master Control Center
+              </h2>
+              <p style={{ color: "#64748b", lineHeight: "1.6", margin: 0 }}>
+                You have full operational access to House of Jodha. Manage external sellers, verify their product listings, track financial metrics, and monitor user accounts. Utilize the sidebar to navigate the master administrative portals.
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Products Tab */}
+        {/* PRODUCTS TAB */}
         {activeTab === "products" && (
-          <>
-            <div style={cardStyle}>
-              <h2 style={{ color: "#333", marginBottom: "20px" }}>Add New Product</h2>
-              <form onSubmit={handleAddProduct} style={{ display: "grid", gap: "15px" }}>
-                <input
-                  type="text"
-                  placeholder="Product Name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    fontSize: "14px"
-                  }}
-                />
-                <input
-                  type="number"
-                  placeholder="Price"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    fontSize: "14px"
-                  }}
-                />
-                <input
-                  type="number"
-                  placeholder="Original Price"
-                  value={formData.originalPrice}
-                  onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    fontSize: "14px"
-                  }}
-                />
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    fontSize: "14px"
-                  }}
-                >
-                  <option>Lehenga</option>
-                  <option>Saree</option>
-                  <option>Anarkali</option>
-                  <option>Salwar Kameez</option>
-                  <option>Gharara</option>
-                  <option>Sharara</option>
-                </select>
-                <textarea
-                  placeholder="Description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                    minHeight: "80px"
-                  }}
-                />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    fontSize: "14px"
-                  }}
-                />
-                {imagePreview && (
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      borderRadius: "6px"
-                    }}
-                  />
-                )}
-                  <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    padding: "14px",
-                    background: "linear-gradient(135deg, #D4AF37, #B8860B)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "6px",
-                    fontWeight: "700",
-                    cursor: loading ? "not-allowed" : "pointer",
-                    opacity: loading ? 0.6 : 1,
-                    transition: "opacity 0.2s"
-                  }}
-                >
-                  {loading ? "Adding Product..." : "✨ Add Master Product"}
-                </button>
-              </form>
-            </div>
+          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "1200px" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Product Management</h1>
+            
+            <form onSubmit={handleAddProduct} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: isMobile ? "20px" : "32px", marginBottom: "32px" }}>
+              <h2 style={{ margin: "0 0 20px", fontSize: "18px", color: "#1e293b" }}>Add Master Product</h2>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Name *</label>
+                  <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                </div>
+                
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Category</label>
+                  <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s", appearance: "none" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"}>
+                    <option>Lehenga</option><option>Saree</option><option>Anarkali</option><option>Salwar Kameez</option><option>Gharara</option><option>Sharara</option>
+                  </select>
+                </div>
 
-            <div style={cardStyle}>
-              <h2 style={{ color: "#1A1A1A", marginBottom: "20px" }}>Master Catalog ({products.length})</h2>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
-                  <thead>
-                    <tr style={{ background: "#FDFDFD", borderBottom: "2px solid #EAEAEA" }}>
-                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Name</th>
-                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Category</th>
-                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Price</th>
-                      <th style={{ textAlign: "left", padding: "16px", color: "#666", fontWeight: "600" }}>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products.map((product) => (
-                      <tr key={product._id} style={{ borderBottom: "1px solid #eee" }}>
-                        <td style={{ padding: "10px", color: "#333" }}>{product.name}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>{product.category}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>₹{product.price}</td>
-                        <td style={{ padding: "16px" }}>
-                          <button
-                            onClick={() => handleDeleteProduct(product._id)}
-                            style={{
-                              padding: "8px 16px",
-                              background: "#ff4757",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "4px",
-                              cursor: "pointer",
-                              fontSize: "12px",
-                              fontWeight: "600"
-                            }}
-                          >
-                            ✖ Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Listing Price (₹) *</label>
+                  <input type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
+                  <input type="text" placeholder="e.g. Cocktail, Reception, Wedding" value={formData.occasions} onChange={(e) => setFormData({ ...formData, occasions: e.target.value })} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Description</label>
+                  <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows="3" style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s", fontFamily: "inherit", resize: "vertical" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Image *</label>
+                  <input type="file" accept="image/*" onChange={handleImageChange} required style={{ display: "block", width: "100%", padding: "12px", border: "1px dashed #cbd5e1", borderRadius: "8px", backgroundColor: "#f8fafc", cursor: "pointer", fontSize: "14px" }} />
+                </div>
               </div>
-            </div>
-          </>
-        )}
+              
+              <button type="submit" disabled={loading} style={{ width: isMobile ? "100%" : "auto", padding: "14px 28px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "background-color 0.2s" }} onMouseEnter={e => !loading && (e.target.style.backgroundColor = "#334155")} onMouseLeave={e => !loading && (e.target.style.backgroundColor = "#1e293b")}>
+                <SparklesIcon size="18px" /> {loading ? "Saving..." : "Add Master Product"}
+              </button>
+            </form>
 
-        {/* Orders Tab */}
-        {activeTab === "orders" && (
-          <div style={cardStyle}>
-            <h2 style={{ color: "#333", marginBottom: "20px" }}>Orders ({orders.length})</h2>
-            {orders.length === 0 ? (
-              <p style={{ color: "#666" }}>No orders yet</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "2px solid #ddd" }}>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Order ID</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Customer</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Total</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((order) => (
-                      <tr key={order._id} style={{ borderBottom: "1px solid #eee" }}>
-                        <td style={{ padding: "10px", color: "#333" }}>{order._id?.slice(0, 8)}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>{order.customerName || "N/A"}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>₹{order.total || 0}</td>
-                        <td style={{ padding: "10px" }}>
-                          <span
-                            style={{
-                              padding: "4px 8px",
-                              background: "#f39c12",
-                              color: "#fff",
-                              borderRadius: "4px",
-                              fontSize: "12px"
-                            }}
-                          >
-                            {order.status || "Pending"}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+              <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "#1e293b", fontWeight: "600" }}>Live Master Catalog</h3>
               </div>
-            )}
-          </div>
-        )}
-
-        {/* Users Tab */}
-        {activeTab === "users" && (
-          <div style={cardStyle}>
-            <h2 style={{ color: "#333", marginBottom: "20px" }}>Users ({users.length})</h2>
-            {users.length === 0 ? (
-              <p style={{ color: "#666" }}>No users yet</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "2px solid #ddd" }}>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Name</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Email</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Phone</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user) => (
-                      <tr key={user._id} style={{ borderBottom: "1px solid #eee" }}>
-                        <td style={{ padding: "10px", color: "#333" }}>{user.fullName || "N/A"}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>{user.email}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>{user.phone || "N/A"}</td>
+              {products.length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No products added yet.</div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "700px" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Product</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Category</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Price</th>
+                        <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Sellers Tab */}
-        {activeTab === "sellers" && (
-          <div style={cardStyle}>
-            <h2 style={{ color: "#333", marginBottom: "20px" }}>Sellers ({sellers.length})</h2>
-            {sellers.length === 0 ? (
-              <p style={{ color: "#666" }}>No sellers yet</p>
-            ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "2px solid #ddd" }}>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Name</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Email</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Products</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Status</th>
-                      <th style={{ textAlign: "left", padding: "10px", color: "#333" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sellers.map((seller) => (
-                      <tr key={seller._id} style={{ borderBottom: "1px solid #eee" }}>
-                        <td style={{ padding: "10px", color: "#333" }}>{seller.name || "N/A"}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>{seller.email}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>{seller.productsCount || 0}</td>
-                        <td style={{ padding: "10px", color: "#333" }}>
-                          <span style={{
-                            padding: "4px 8px",
-                            borderRadius: "4px",
-                            fontSize: "12px",
-                            fontWeight: "bold",
-                            background: seller.status === "active" ? "#d4edda" : seller.status === "suspended" ? "#f8d7da" : "#fff3cd",
-                            color: seller.status === "active" ? "#155724" : seller.status === "suspended" ? "#721c24" : "#856404"
-                          }}>
-                            {seller.status || "pending"}
-                          </span>
-                        </td>
-                        <td style={{ padding: "10px", color: "#333", display: "flex", gap: "5px" }}>
-                          {seller.role !== "admin" && (
-                            <>
-                              {seller.status !== "active" && (
-                                <button
-                                  onClick={() => handleUpdateSellerStatus(seller._id, "active")}
-                                  style={{
-                                    padding: "6px 12px",
-                                    background: "#2ecc71",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                    fontSize: "12px"
-                                  }}
-                                >
-                                  Activate
-                                </button>
-                              )}
-                              {seller.status === "active" && (
-                                <button
-                                  onClick={() => handleUpdateSellerStatus(seller._id, "suspended")}
-                                  style={{
-                                    padding: "6px 12px",
-                                    background: "#f39c12",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                    fontSize: "12px"
-                                  }}
-                                >
-                                  Suspend
-                                </button>
-                              )}
-                              <button
-                                onClick={() => handleDeleteSeller(seller._id)}
-                                style={{
-                                  padding: "6px 12px",
-                                  background: "#e74c3c",
-                                  color: "#fff",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                  fontSize: "12px"
-                                }}
-                              >
-                                Delete
+                    </thead>
+                    <tbody>
+                      {products.map((p) => (
+                        <tr key={p._id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
+                          <td style={{ padding: "16px 24px" }}>
+                            <div style={{ fontWeight: "500", color: "#0f172a" }}>{p.name}</div>
+                          </td>
+                          <td style={{ padding: "16px 24px" }}>
+                            <span style={{ padding: "4px 10px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "100px", fontSize: "12px", fontWeight: "500" }}>{p.category}</span>
+                          </td>
+                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{p.price}</td>
+                          <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                              <button onClick={() => {
+                                setEditingProduct(p);
+                                setEditFormData({ ...p, occasions: Array.isArray(p.occasions) ? p.occasions.join(', ') : (p.occasions || "") });
+                              }} style={{ padding: "8px 12px", backgroundColor: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600" }}>
+                                ✎ Edit
                               </button>
-                            </>
-                          )}
-                          {seller.role === "admin" && <span style={{ fontSize: "12px", color: "#888" }}>Admin</span>}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                              <button onClick={() => handleDeleteProduct(p._id)} style={{ padding: "8px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fca5a5", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fee2e2"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fef2f2"}>
+                                <TrashIcon size="14px" /> Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         )}
-      </div>
+
+        {/* ORDERS TAB */}
+        {activeTab === "orders" && (
+          <div style={{ animation: "fadeIn 0.3s ease" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Global Orders</h1>
+            
+            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+              {orders.length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No active orders.</div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Order ID</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Customer</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Total</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders.map((o) => (
+                        <tr key={o._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <td style={{ padding: "16px 24px", fontWeight: "500", color: "#3b82f6" }}>#{o._id?.slice(0, 8)}</td>
+                          <td style={{ padding: "16px 24px", color: "#334155" }}>{o.customerName || "N/A"}</td>
+                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{o.total || 0}</td>
+                          <td style={{ padding: "16px 24px" }}>
+                            <span style={{ padding: "4px 10px", backgroundColor: "#fffbeb", color: "#d97706", borderRadius: "100px", fontSize: "12px", border: "1px solid #fde68a", fontWeight: "600" }}>{o.status || "Pending"}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* USERS TAB */}
+        {activeTab === "users" && (
+          <div style={{ animation: "fadeIn 0.3s ease" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Customer Database</h1>
+            
+            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+              {users.length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No registered users.</div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Name</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Email</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Phone</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((u) => (
+                        <tr key={u._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <td style={{ padding: "16px 24px", color: "#334155", fontWeight: "500" }}>{u.fullName || "N/A"}</td>
+                          <td style={{ padding: "16px 24px", color: "#64748b" }}>{u.email}</td>
+                          <td style={{ padding: "16px 24px", color: "#64748b" }}>{u.phone || "N/A"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* SELLERS TAB */}
+        {activeTab === "sellers" && (
+          <div style={{ animation: "fadeIn 0.3s ease" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Seller Verification</h1>
+            
+            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+              {sellers.length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No registered sellers.</div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Boutique Name</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Email</th>
+                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Products</th>
+                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                        <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sellers.map((s) => (
+                        <tr key={s._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>{s.name || "N/A"}{s.role === "admin" && " (Admin)"}</td>
+                          <td style={{ padding: "16px 24px", color: "#64748b" }}>{s.email}</td>
+                          <td style={{ padding: "16px 24px", color: "#334155", textAlign: "center", fontWeight: "600" }}>{s.productsCount || 0}</td>
+                          <td style={{ padding: "16px 24px", textAlign: "center" }}>
+                            <span style={{ padding: "4px 10px", borderRadius: "100px", fontSize: "12px", border: "1px solid", fontWeight: "600", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
+                              {s.status || "Pending"}
+                            </span>
+                          </td>
+                          <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                            {s.role !== "admin" && (
+                              <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                {s.status !== "active" && (
+                                  <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity="0.8"} onMouseLeave={e => e.currentTarget.style.opacity="1"}>Approve</button>
+                                )}
+                                {s.status === "active" && (
+                                  <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity="0.8"} onMouseLeave={e => e.currentTarget.style.opacity="1"}>Suspend</button>
+                                )}
+                                <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity="0.8"} onMouseLeave={e => e.currentTarget.style.opacity="1"}>Delete</button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </main>
+      
+      {/* Edit Modal Overlay */}
+      {editingProduct && editFormData && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ backgroundColor: "#fff", borderRadius: "16px", padding: "32px", width: "100%", maxWidth: "600px", maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
+            <h2 style={{ margin: "0 0 20px", fontSize: "20px", color: "#0f172a" }}>Edit Product</h2>
+            <form onSubmit={handleEditSubmit} style={{ display: "grid", gap: "16px" }}>
+              <div>
+                <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Product Name</label>
+                <input type="text" value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div>
+                  <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Price (₹)</label>
+                  <input type="number" value={editFormData.price} onChange={e => setEditFormData({...editFormData, price: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Original Price (₹)</label>
+                  <input type="number" value={editFormData.originalPrice} onChange={e => setEditFormData({...editFormData, originalPrice: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                </div>
+              </div>
+              <div>
+                <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Occasions</label>
+                <input type="text" placeholder="Cocktail, Sangeet" value={editFormData.occasions} onChange={e => setEditFormData({...editFormData, occasions: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+              </div>
+              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                <button type="submit" disabled={loading} style={{ flex: 1, padding: "12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>{loading ? "Saving..." : "Save Changes"}</button>
+                <button type="button" onClick={() => setEditingProduct(null)} style={{ flex: 1, padding: "12px", backgroundColor: "#f1f5f9", color: "#475569", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
     </div>
   );
 }

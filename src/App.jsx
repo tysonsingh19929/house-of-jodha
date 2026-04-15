@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import { initializeProductsInStorage } from "./utils/initializeProducts";
 import Navbar from "./components/Navbar";
@@ -72,6 +72,22 @@ function HomePage({
       <About />
       <Footer />
     </div>
+  );
+}
+
+function FloatingWidgets() {
+  const location = useLocation();
+  const hiddenRoutes = ["/admin-dashboard", "/seller-login", "/seller-signup", "/admin-login", "/admin"];
+  
+  if (hiddenRoutes.includes(location.pathname)) {
+    return null;
+  }
+  
+  return (
+    <>
+      <WhatsAppButton />
+      <Chatbot />
+    </>
   );
 }
 
@@ -327,8 +343,7 @@ function App() {
   } 
 />
       </Routes>
-      <WhatsAppButton />
-      <Chatbot />
+      <FloatingWidgets />
     </BrowserRouter>
   );
 }
