@@ -468,6 +468,8 @@ export default function ProductDetail({
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);
   const [sellerPhone, setSellerPhone] = useState(null);
+  
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   const staticProduct = useMemo(
     () => products.find(p => p.id === parseInt(productId, 10)),
@@ -539,7 +541,6 @@ export default function ProductDetail({
 
   useEffect(() => {
     if (product && product.sellerId) {
-      const apiUrl = import.meta.env.VITE_API_URL || '/api';
       fetch(`${apiUrl}/sellers/${product.sellerId}`)
         .then(res => res.json())
         .then(data => {
