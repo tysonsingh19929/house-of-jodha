@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import WhatsAppInquiryButton from "../components/WhatsAppInquiryButton.jsx";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -451,103 +451,43 @@ const styles = `
   .pd-feature-sub { font-size: 11px; color: var(--muted); }
 `;
 
-export default function ProductDetail({
-  cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount,
-  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist,
-  onCartClick, onWishlistClick
-}) {
+export default function ProductDetail(props) {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1);
+
   const [selectedSize, setSelectedSize] = useState("M");
-  const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [zoom, setZoom] = useState(false);
-  const [viewingCount] = useState(Math.floor(Math.random() * 30) + 10);
+  const [activeThumb, setActiveThumb] = useState(0);
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [sellerPhone, setSellerPhone] = useState(null);
-  const isMobile = window.innerWidth <= 768;
+  const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);
 
-  const media = product ? [
-    { type: 'image', src: product.image },
-    ...(product.videoUrl ? [{ type: 'video', src: product.videoUrl }] : [{ type: 'image', src: product.image }]),
-    { type: 'image', src: product.image },
-    { type: 'image', src: product.image }
-  ] : [];
-
-  useEffect(() => {
-    const fetchLiveProduct = async () => {
-      const fallback = products.find(p => p.id === parseInt(productId) || p.id === productId);
-      
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://house-of-jodha-backend.onrender.com/api'}/products`);
-        if (res.ok) {
-           const liveDb = await res.json();
-           // Try to find by Mongo ID or identically match the name from the local database
-           const liveMatch = liveDb.find(p => p._id === productId || (fallback && p.name === fallback.name));
-           
-           if (liveMatch) {
-              setProduct({ ...fallback, ...liveMatch, id: fallback?.id || liveMatch._id });
-              
-              // Dynamically fetch the seller's specific WhatsApp Number
-              if (liveMatch.sellerId) {
-                try {
-                   const sellerRes = await fetch(`${import.meta.env.VITE_API_URL || 'https://house-of-jodha-backend.onrender.com/api'}/sellers/${liveMatch.sellerId}`);
-                   if (sellerRes.ok) {
-                      const sellerInfo = await sellerRes.json();
-                      if (sellerInfo.phone) setSellerPhone(sellerInfo.phone);
-                   }
-                } catch(e) { console.error('Failed to get seller config', e); }
-              }
-
-              setLoading(false);
-              return;
-           }
-        }
-      } catch (e) {
-        console.error('Failed to sync live DB, using local fallback', e);
-      }
-      
-      setProduct(fallback || null);
-      setLoading(false);
-    };
-
-    fetchLiveProduct();
-  }, [productId]);
-
-  const handleAddToCart = () => {
-    if (!product || !addToCart) return;
-    const qty = Math.max(1, Math.min(parseInt(quantity) || 1, 99));
-    for (let i = 0; i < qty; i++) addToCart({ ...product, size: selectedSize });
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
-    setQuantity(1);
-  };
-
-  const handleBuyNow = () => {
-    if (!product || !addToCart) return;
-    const qty = Math.max(1, Math.min(parseInt(quantity) || 1, 99));
-    for (let i = 0; i < qty; i++) addToCart({ ...product, size: selectedSize });
-    setQuantity(1);
-    navigate("/checkout");
-  };
-
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const discount = product ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
-  const inWishlist = isInWishlist && product && isInWishlist(product.id);
-
-  if (loading) return (
-    <div style={{ textAlign: "center", padding: "120px 20px", fontSize: "15px", color: "#999", fontFamily: "'DM Sans', sans-serif" }}>
-      Loading…
-    </div>
+  const product = useMemo(
+    () => products.find(p => p.id === parseInt(productId, 10)),
+    [productId]
   );
 
+  const media = useMemo(() => {
+    if (!product) return [];
+    const images = product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []);
+    const mediaArray = images.map(src => ({ type: 'image', src }));
+    if (product.videoUrl) {
+      mediaArray.push({ type: 'video', src: product.videoUrl });
+    }
+    return mediaArray;
+  }, [product]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [productId]);
+
   if (!product) return (
-    <div style={{ textAlign: "center", padding: "100px 20px" }}>
-      <h2>Product Not Found</h2>
-      <button onClick={() => navigate("/")}>Back to Home</button>
+    <div style={{ textAlign: "center", padding: "100px 20px", fontFamily: "'DM Sans', sans-serif" }}>
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", marginBottom: "16px" }}>Product Not Found</h2>
+      <button onClick={() => navigate("/")} style={{ padding: "10px 22px", cursor: "pointer" }}>← Back to Home</button>
     </div>
   );
 

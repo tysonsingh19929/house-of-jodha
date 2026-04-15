@@ -25,13 +25,13 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "", occasions: "", videoUrl: ""
+    name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: ""
   });
   
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editFormData, setEditFormData] = useState(null);
-  const [editImagePreview, setEditImagePreview] = useState(null);
+  const [editImagePreviews, setEditImagePreviews] = useState([]);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
   const isSeller = localStorage.getItem("seller_authenticated") === "true";
@@ -71,21 +71,21 @@ export default function AdminDashboard() {
   };
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setFormData(prev => ({ ...prev, image: reader.result }));
+        setImagePreviews(prev => [...prev, reader.result]);
+        setFormData(prev => ({ ...prev, images: [...prev.images, reader.result] }));
       };
       reader.readAsDataURL(file);
-    }
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.price || !formData.originalPrice || !formData.image) {
-      alert("Please fill all required fields");
+    if (!formData.name || !formData.price || !formData.originalPrice || formData.images.length === 0) {
+      alert("Please fill all required fields and upload at least one image");
       return;
     }
 
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           name: formData.name, category: formData.category,
           price: parseInt(formData.price), originalPrice: parseInt(formData.originalPrice),
-          image: formData.image, sellerId: sellerId, sellerName: sellerName,
+          image: formData.images[0], images: formData.images, sellerId: sellerId, sellerName: sellerName,
           description: formData.description || "", stock: parseInt(formData.stock) || 0,
           occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : []
         })
@@ -104,8 +104,8 @@ export default function AdminDashboard() {
 
       if (!response.ok) throw new Error("Failed to add product");
 
-      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", stock: "", occasions: "" });
-      setImagePreview(null);
+      setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "" });
+      setImagePreviews([]);
       fetchProducts();
       alert("Product added successfully!");
       setActiveTab("products");
@@ -115,15 +115,15 @@ export default function AdminDashboard() {
   };
 
   const handleEditImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setEditImagePreview(reader.result);
-        setEditFormData(prev => ({ ...prev, image: reader.result }));
+        setEditImagePreviews(prev => [...prev, reader.result]);
+        setEditFormData(prev => ({ ...prev, images: [...(prev.images || []), reader.result] }));
       };
       reader.readAsDataURL(file);
-    }
+    });
   };
 
   const handleEditChange = (e) => {
@@ -134,12 +134,16 @@ export default function AdminDashboard() {
   const startEdit = (product) => {
     if (!canEditProduct(product)) { alert("You don't have permission to edit this product"); return; }
     setEditingId(product._id);
-    setEditFormData({ ...product, occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || "") });
-    setEditImagePreview(product.image);
+    
+    // Ensure images array exists even for old products
+    const existingImages = product.images && product.images.length > 0 ? product.images : [product.image];
+    
+    setEditFormData({ ...product, images: existingImages, occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || "") });
+    setEditImagePreviews(existingImages);
   };
 
   const cancelEdit = () => {
-    setEditingId(null); setEditFormData(null); setEditImagePreview(null);
+    setEditingId(null); setEditFormData(null); setEditImagePreviews([]);
   };
 
   const saveEdit = async () => {
@@ -153,7 +157,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           name: editFormData.name, category: editFormData.category,
           price: parseInt(editFormData.price), originalPrice: parseInt(editFormData.originalPrice),
-          image: editFormData.image, description: editFormData.description || "",
+          image: editFormData.images[0], images: editFormData.images, description: editFormData.description || "",
           stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin,
           occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions
         })
@@ -450,20 +454,27 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ marginBottom: "32px" }}>
-                <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Image *</label>
-                {imagePreview ? (
-                  <div style={{ display: "flex", gap: "20px", alignItems: "flex-end" }}>
-                    <img src={imagePreview} alt="Preview" style={{ width: "160px", height: "160px", objectFit: "cover", borderRadius: "12px", border: "2px solid #e2e8f0" }} />
-                    <button type="button" onClick={() => { setImagePreview(null); setFormData(prev => ({ ...prev, image: "" })); }} style={{ padding: "8px 16px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}>Remove Image</button>
-                  </div>
-                ) : (
-                  <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "12px", cursor: "pointer", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = "#94a3b8"} onMouseLeave={e => e.currentTarget.style.borderColor = "#cbd5e1"}>
-                    <input type="file" accept="image/*" onChange={handleImageUpload} required style={{ display: "none" }} />
-                    <div style={{ color: "#94a3b8", marginBottom: "12px" }}><PlusCircleIcon /></div>
-                    <span style={{ fontSize: "15px", fontWeight: "600", color: "#475569" }}>Click to upload image</span>
-                    <span style={{ fontSize: "13px", color: "#94a3b8", marginTop: "4px" }}>JPG, PNG or WEBP (Max 5MB)</span>
-                  </label>
-                )}
+                <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Images *</label>
+                
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
+                  {imagePreviews.map((src, index) => (
+                    <div key={index} style={{ position: "relative" }}>
+                      <img src={src} alt="Preview" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "12px", border: "2px solid #e2e8f0" }} />
+                      <button type="button" onClick={() => {
+                        const newPreviews = [...imagePreviews]; newPreviews.splice(index, 1);
+                        const newImages = [...formData.images]; newImages.splice(index, 1);
+                        setImagePreviews(newPreviews); setFormData(prev => ({ ...prev, images: newImages }));
+                      }} style={{ position: "absolute", top: "-8px", right: "-8px", width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "bold", padding: 0 }}>&times;</button>
+                    </div>
+                  ))}
+                </div>
+
+                <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "12px", cursor: "pointer", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = "#94a3b8"} onMouseLeave={e => e.currentTarget.style.borderColor = "#cbd5e1"}>
+                  <input type="file" accept="image/*" multiple onChange={handleImageUpload} style={{ display: "none" }} />
+                  <div style={{ color: "#94a3b8", marginBottom: "12px" }}><PlusCircleIcon /></div>
+                  <span style={{ fontSize: "15px", fontWeight: "600", color: "#475569" }}>Click to upload images</span>
+                  <span style={{ fontSize: "13px", color: "#94a3b8", marginTop: "4px" }}>JPG, PNG or WEBP (You can select multiple)</span>
+                </label>
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -555,18 +566,25 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Image</label>
-                  {editImagePreview ? (
-                    <div style={{ display: "flex", gap: "16px", alignItems: "flex-end" }}>
-                      <img src={editImagePreview} alt="Preview" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }} />
-                      <button type="button" onClick={() => { setEditImagePreview(null); setEditFormData(prev => ({ ...prev, image: "" })); }} style={{ padding: "8px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>Change Image</button>
-                    </div>
-                  ) : (
-                    <label style={{ display: "block", padding: "20px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "8px", textAlign: "center", cursor: "pointer" }}>
-                      <input type="file" accept="image/*" onChange={handleEditImageUpload} style={{ display: "none" }} />
-                      <span style={{ color: "#475569", fontWeight: "500" }}>Click to upload new image</span>
-                    </label>
-                  )}
+                  <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Images</label>
+                  
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
+                    {editImagePreviews.map((src, index) => (
+                      <div key={index} style={{ position: "relative" }}>
+                        <img src={src} alt="Preview" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }} />
+                        <button type="button" onClick={() => {
+                          const newPreviews = [...editImagePreviews]; newPreviews.splice(index, 1);
+                          const newImages = [...editFormData.images]; newImages.splice(index, 1);
+                          setEditImagePreviews(newPreviews); setEditFormData(prev => ({ ...prev, images: newImages }));
+                        }} style={{ position: "absolute", top: "-6px", right: "-6px", width: "20px", height: "20px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold", padding: 0 }}>&times;</button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <label style={{ display: "block", padding: "20px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "8px", textAlign: "center", cursor: "pointer" }}>
+                    <input type="file" accept="image/*" multiple onChange={handleEditImageUpload} style={{ display: "none" }} />
+                    <span style={{ color: "#475569", fontWeight: "500" }}>Click here to add more images</span>
+                  </label>
                 </div>
               </div>
 
