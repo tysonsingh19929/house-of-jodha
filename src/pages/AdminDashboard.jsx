@@ -325,43 +325,76 @@ export default function AdminDashboard() {
               {loading ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>Loading products...</div>
               ) : products.length > 0 ? (
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                      <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Product</th>
-                      <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Category</th>
-                      <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Price</th>
-                      <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                isMobile ? (
+                  <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
                     {products.map(product => (
-                      <tr key={product._id} style={{ borderBottom: "1px solid #e2e8f0", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
-                        <td style={{ padding: "16px 24px", display: "flex", alignItems: "center", gap: "16px" }}>
-                          <img src={product.image} alt={product.name} style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
-                          <div>
-                            <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a" }}>{product.name}</p>
-                            {isSuperAdmin && <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>Seller: {product.sellerName}</p>}
-                          </div>
-                        </td>
-                        <td style={{ padding: "16px 24px" }}>
-                          <span style={{ padding: "4px 12px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "20px", fontSize: "13px", fontWeight: "500" }}>{product.category}</span>
-                        </td>
-                        <td style={{ padding: "16px 24px", fontWeight: "600", color: "#0f172a" }}>₹{product.price.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                          {canEditProduct(product) ? (
-                            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                              <button onClick={() => startEdit(product)} style={{ padding: "6px 12px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Edit</button>
-                              <button onClick={() => deleteProduct(product._id, product)} style={{ padding: "6px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Delete</button>
+                      <div key={product._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px", backgroundColor: "#f8fafc" }}>
+                        <div style={{ display: "flex", gap: "12px" }}>
+                          <img src={product.image} alt={product.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</p>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ fontSize: "12px", color: "#64748b", padding: "2px 8px", backgroundColor: "#e2e8f0", borderRadius: "12px" }}>{product.category}</span>
+                              <span style={{ fontWeight: "700", color: "#3b82f6", fontSize: "14px" }}>₹{product.price.toLocaleString('en-IN')}</span>
                             </div>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: "8px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
+                          {canEditProduct(product) ? (
+                            <>
+                              <button onClick={() => startEdit(product)} style={{ flex: 1, padding: "10px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                                ✎ Edit
+                              </button>
+                              <button onClick={() => deleteProduct(product._id, product)} style={{ flex: 1, padding: "10px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                                🗑️ Delete
+                              </button>
+                            </>
                           ) : (
-                            <span style={{ fontSize: "13px", color: "#94a3b8" }}>View Only</span>
+                             <span style={{ fontSize: "13px", color: "#94a3b8", flex: 1, textAlign: "center", padding: "10px" }}>View Only</span>
                           )}
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                ) : (
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Product</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Category</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Price</th>
+                        <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products.map(product => (
+                        <tr key={product._id} style={{ borderBottom: "1px solid #e2e8f0", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
+                          <td style={{ padding: "16px 24px", display: "flex", alignItems: "center", gap: "16px" }}>
+                            <img src={product.image} alt={product.name} style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
+                            <div>
+                              <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a" }}>{product.name}</p>
+                              {isSuperAdmin && <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>Seller: {product.sellerName}</p>}
+                            </div>
+                          </td>
+                          <td style={{ padding: "16px 24px" }}>
+                            <span style={{ padding: "4px 12px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "20px", fontSize: "13px", fontWeight: "500" }}>{product.category}</span>
+                          </td>
+                          <td style={{ padding: "16px 24px", fontWeight: "600", color: "#0f172a" }}>₹{product.price.toLocaleString('en-IN')}</td>
+                          <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                            {canEditProduct(product) ? (
+                              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                                <button onClick={() => startEdit(product)} style={{ padding: "6px 12px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Edit</button>
+                                <button onClick={() => deleteProduct(product._id, product)} style={{ padding: "6px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Delete</button>
+                              </div>
+                            ) : (
+                              <span style={{ fontSize: "13px", color: "#94a3b8" }}>View Only</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )
               ) : (
                 <div style={{ padding: "60px", textAlign: "center" }}>
                   <div style={{ display: "inline-flex", padding: "20px", backgroundColor: "#f8fafc", borderRadius: "50%", color: "#94a3b8", marginBottom: "16px" }}><PackageIcon /></div>
