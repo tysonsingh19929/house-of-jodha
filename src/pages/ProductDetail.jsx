@@ -480,9 +480,42 @@ export default function ProductDetail(props) {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
+    setLoading(true);
     window.scrollTo(0, 0);
+    const timer = setTimeout(() => setLoading(false), 800); // 0.8s smooth skeleton loader
+    return () => clearTimeout(timer);
   }, [productId]);
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#fff" }}>
+        <Navbar cartCount={0} wishlistCount={0} />
+        <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "24px" }}>
+          {/* Outer rotating ring */}
+          <div style={{ position: "relative", width: "64px", height: "64px" }}>
+            <div style={{ position: "absolute", inset: 0, border: "3px solid #fdf8ee", borderRadius: "50%" }}></div>
+            <div style={{ position: "absolute", inset: 0, border: "3px solid transparent", borderTopColor: "#B8860B", borderRightColor: "#B8860B", borderRadius: "50%", animation: "spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite" }}></div>
+            {/* Inner pulsing jewel */}
+            <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "24px", height: "24px", backgroundColor: "var(--rose)", borderRadius: "50%", animation: "pulse 1.5s ease-in-out infinite", opacity: 0.8, boxShadow: "0 0 16px rgba(136, 14, 79, 0.4)" }}></div>
+          </div>
+          
+          <div style={{ textAlign: "center", animation: "fadeIn 0.5s ease-out" }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", color: "var(--dark)", letterSpacing: "1px" }}>Curating Your Style</h3>
+            <p style={{ margin: 0, color: "var(--muted)", fontSize: "13px", letterSpacing: "0.5px", textTransform: "uppercase" }}>Loading exquisite details...</p>
+          </div>
+        </div>
+
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.4; } }
+          @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        `}} />
+      </div>
+    );
+  }
 
   if (!product) return (
     <div style={{ textAlign: "center", padding: "100px 20px", fontFamily: "'DM Sans', sans-serif" }}>
