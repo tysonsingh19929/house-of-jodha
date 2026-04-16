@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   const [formData, setFormData] = useState({
     name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
     material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
-    fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: ""
+    fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: ""
   });
   const [imageUrlInput, setImageUrlInput] = useState("");
   
@@ -129,6 +129,8 @@ export default function AdminDashboard() {
           description: formData.description || "", stock: parseInt(formData.stock) || 0,
           videoUrl: formData.videoUrl || "",
           occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
+          colors: formData.colors ? formData.colors.split(',').map(s => s.trim()) : [],
+          sizes: formData.sizes || [],
           material: formData.material, care: formData.care, embroidery: formData.embroidery,
           deliveryType: formData.deliveryType, deliveryDays: formData.deliveryDays,
           maxBustSize: formData.maxBustSize, freeShipping: formData.freeShipping,
@@ -144,7 +146,7 @@ export default function AdminDashboard() {
       setFormData({ 
         name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
         material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
-        fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: ""
+        fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: ""
       });
       setImagePreviews([]);
       fetchProducts();
@@ -180,6 +182,8 @@ export default function AdminDashboard() {
       ...product, 
       images: existingImages, 
       occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || ""),
+      colors: Array.isArray(product.colors) ? product.colors.join(', ') : (product.colors || ""),
+      sizes: Array.isArray(product.sizes) ? product.sizes : [],
       fabricTop: product.fabricDetails?.top || "",
       fabricBottom: product.fabricDetails?.bottom || "",
       fabricDupatta: product.fabricDetails?.dupatta || "",
@@ -209,6 +213,8 @@ export default function AdminDashboard() {
           stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin,
           videoUrl: editFormData.videoUrl || "",
           occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions,
+          colors: typeof editFormData.colors === 'string' ? editFormData.colors.split(',').map(s => s.trim()) : editFormData.colors,
+          sizes: editFormData.sizes || [],
           material: editFormData.material, care: editFormData.care, embroidery: editFormData.embroidery,
           deliveryType: editFormData.deliveryType, deliveryDays: editFormData.deliveryDays,
           maxBustSize: editFormData.maxBustSize, freeShipping: editFormData.freeShipping,
@@ -248,6 +254,22 @@ export default function AdminDashboard() {
   // Calculate some mock metrics for the dashboard
   const totalProducts = products.length;
   const totalValue = products.reduce((sum, p) => sum + (p.price * (p.stock || 1)), 0);
+
+  const availableSizes = ["FS", "XS", "S", "M", "L", "XL", "XXL", "Custom"];
+
+  const toggleSize = (size, isEdit = false) => {
+    if (isEdit) {
+      setEditFormData(prev => {
+        const sizes = prev.sizes || [];
+        return { ...prev, sizes: sizes.includes(size) ? sizes.filter(s => s !== size) : [...sizes, size] };
+      });
+    } else {
+      setFormData(prev => {
+        const sizes = prev.sizes || [];
+        return { ...prev, sizes: sizes.includes(size) ? sizes.filter(s => s !== size) : [...sizes, size] };
+      });
+    }
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
@@ -506,6 +528,21 @@ export default function AdminDashboard() {
                   <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={formData.occasions} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
                 </div>
                 <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Colors (Comma Separated)</label>
+                  <input type="text" placeholder="Red, Rose Gold, Midnight Blue" name="colors" value={formData.colors || ""} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Sizes</label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {availableSizes.map(size => {
+                      const isSelected = (formData.sizes || []).includes(size);
+                      return (
+                        <button type="button" key={size} onClick={() => toggleSize(size, false)} style={{ padding: "6px 12px", border: isSelected ? "2px solid #0f172a" : "1px solid #cbd5e1", borderRadius: "6px", backgroundColor: isSelected ? "#0f172a" : "#fff", color: isSelected ? "#fff" : "#475569", fontWeight: "600", cursor: "pointer", outline: "none" }}>{size}</button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Video / Instagram Reel URL</label>
                   <input type="text" placeholder="https://www.instagram.com/reel/..." name="videoUrl" value={formData.videoUrl || ""} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
                 </div>
@@ -664,10 +701,28 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
                     <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={editFormData.occasions} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Colors (Comma Separated)</label>
+                    <input type="text" placeholder="Red, Rose Gold, Midnight Blue" name="colors" value={editFormData.colors || ""} onChange={handleEditChange} style={{ width: "100%", padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px" }} />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Sizes</label>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {availableSizes.map(size => {
+                        const isSelected = (editFormData.sizes || []).includes(size);
+                        return (
+                          <button type="button" key={size} onClick={() => toggleSize(size, true)} style={{ padding: "6px 12px", border: isSelected ? "2px solid #0f172a" : "1px solid #cbd5e1", borderRadius: "6px", backgroundColor: isSelected ? "#0f172a" : "#fff", color: isSelected ? "#fff" : "#475569", fontWeight: "600", cursor: "pointer", outline: "none" }}>{size}</button>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div>
                     <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Video / Instagram Reel URL</label>

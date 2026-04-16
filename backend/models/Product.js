@@ -46,6 +46,14 @@ const productSchema = new mongoose.Schema({
   deliveryType: String,
   deliveryDays: String,
   maxBustSize: String,
+  colors: {
+    type: [String],
+    default: []
+  },
+  sizes: {
+    type: [String],
+    default: []
+  },
   freeShipping: {
     type: Boolean,
     default: false

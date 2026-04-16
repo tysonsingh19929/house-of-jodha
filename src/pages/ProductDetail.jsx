@@ -488,7 +488,8 @@ export default function ProductDetail({
   const { productId } = useParams();
   const navigate = useNavigate();
 
-  const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [zoom, setZoom] = useState(false);
@@ -531,10 +532,11 @@ export default function ProductDetail({
   const product = dbProduct || staticProduct;
 
   const discount = product && product.originalPrice > product.price 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
-    : 0;
+    const sizes = product?.sizes?.length > 0 
+    ? product.sizes 
+    : (product ? ["XS", "S", "M", "L", "XL", "XXL"] : []);
   
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  const colors = product?.colors || [];
   
   const inWishlist = product ? isInWishlist(product.id) : false;
 
@@ -594,13 +596,25 @@ export default function ProductDetail({
   };
 
   useEffect(() => {
-    if (product && product.sellerId) {
-      fetch(`${apiUrl}/sellers/${product.sellerId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.phone) setSellerPhone(data.phone);
-        })
-        .catch(err => console.error("Error fetching seller:", err));
+    if (product) {
+      if (product.sizes?.length > 0 && !selectedSize) {
+        setSelectedSize(product.sizes[0]);
+      } else if (!selectedSize) {
+        setSelectedSize("M");
+      }
+      
+      if (product.colors?.length > 0 && !selectedColor) {
+        setSelectedColor(product.colors[0]);
+      }
+      
+      if (product.sellerId) {
+        fetch(`${apiUrl}/sellers/${product.sellerId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.phone) setSellerPhone(data.phone);
+          })
+          .catch(err => console.error("Error fetching seller:", err));
+      }
     }
   }, [product]);
 
@@ -774,6 +788,34 @@ export default function ProductDetail({
               <p className="pd-social-sub">Don't miss out — limited stock available</p>
             </div>
           </div>
+
+          {/* Color */}
+          {colors.length > 0 && (
+            <div style={{ marginBottom: "20px" }}>
+              <div className="pd-section-label">Select Color</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                {colors.map(color => (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "20px",
+                      border: selectedColor === color ? "2px solid #0f172a" : "1px solid #cbd5e1",
+                      backgroundColor: selectedColor === color ? "#0f172a" : "#fff",
+                      color: selectedColor === color ? "#fff" : "#475569",
+                      fontWeight: "600",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Size */}
           <div>
