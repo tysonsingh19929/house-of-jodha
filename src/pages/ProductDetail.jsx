@@ -701,7 +701,7 @@ export default function ProductDetail({
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {item.src.includes("instagram.com") ? (
-                      <iframe src={item.src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="100%" frameBorder="0" scrolling="no" allowTransparency="true" style={{ display: "block", minHeight: "480px" }}></iframe>
+                      <iframe src={item.src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="100%" frameBorder="0" scrolling="no" allowtransparency="true" style={{ display: "block", minHeight: "480px" }}></iframe>
                     ) : item.src.includes("youtube.com") || item.src.includes("youtu.be") ? (
                        <iframe src={item.src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
                     ) : item.src.includes("vimeo.com") ? (

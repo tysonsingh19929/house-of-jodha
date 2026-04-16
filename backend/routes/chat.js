@@ -137,7 +137,7 @@ router.post('/message', async (req, res) => {
       const genAI = new GoogleGenerativeAI(apiKey);
 
       const model = genAI.getGenerativeModel({
-        model: 'gemini-3.0-flash',
+        model: 'gemini-1.5-flash',
         systemInstruction: getSystemInstruction(dynamicProductsStr)
       });
 
