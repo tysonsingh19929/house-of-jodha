@@ -27,7 +27,8 @@ export default function AdminDashboard() {
   const [formData, setFormData] = useState({
     name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
     material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
-    fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: ""
+    fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: "",
+    metalType: "", gemstones: "", weight: "", plating: ""
   });
   const [imageUrlInput, setImageUrlInput] = useState("");
   
@@ -36,7 +37,7 @@ export default function AdminDashboard() {
   const [editFormData, setEditFormData] = useState(null);
   const [editImagePreviews, setEditImagePreviews] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
-  const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
+  const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara", "Necklaces", "Earrings", "Rings", "Bracelets", "Bridal Sets"];
 
   const isSeller = localStorage.getItem("seller_authenticated") === "true";
   const sellerId = localStorage.getItem("seller_id");
@@ -134,6 +135,7 @@ export default function AdminDashboard() {
           material: formData.material, care: formData.care, embroidery: formData.embroidery,
           deliveryType: formData.deliveryType, deliveryDays: formData.deliveryDays,
           maxBustSize: formData.maxBustSize, freeShipping: formData.freeShipping,
+          metalType: formData.metalType, gemstones: formData.gemstones, weight: formData.weight, plating: formData.plating,
           fabricDetails: {
             top: formData.fabricTop, bottom: formData.fabricBottom, dupatta: formData.fabricDupatta,
             blouse: formData.fabricBlouse, saree: formData.fabricSaree
@@ -146,7 +148,8 @@ export default function AdminDashboard() {
       setFormData({ 
         name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
         material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
-        fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: ""
+        fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: "",
+        metalType: "", gemstones: "", weight: "", plating: ""
       });
       setImagePreviews([]);
       fetchProducts();
@@ -188,7 +191,11 @@ export default function AdminDashboard() {
       fabricBottom: product.fabricDetails?.bottom || "",
       fabricDupatta: product.fabricDetails?.dupatta || "",
       fabricBlouse: product.fabricDetails?.blouse || "",
-      fabricSaree: product.fabricDetails?.saree || ""
+      fabricSaree: product.fabricDetails?.saree || "",
+      metalType: product.metalType || "",
+      gemstones: product.gemstones || "",
+      weight: product.weight || "",
+      plating: product.plating || ""
     });
     setEditImagePreviews(existingImages);
   };
@@ -218,6 +225,7 @@ export default function AdminDashboard() {
           material: editFormData.material, care: editFormData.care, embroidery: editFormData.embroidery,
           deliveryType: editFormData.deliveryType, deliveryDays: editFormData.deliveryDays,
           maxBustSize: editFormData.maxBustSize, freeShipping: editFormData.freeShipping,
+          metalType: editFormData.metalType, gemstones: editFormData.gemstones, weight: editFormData.weight, plating: editFormData.plating,
           fabricDetails: {
             top: editFormData.fabricTop, bottom: editFormData.fabricBottom, dupatta: editFormData.fabricDupatta,
             blouse: editFormData.fabricBlouse, saree: editFormData.fabricSaree
@@ -255,7 +263,12 @@ export default function AdminDashboard() {
   const totalProducts = products.length;
   const totalValue = products.reduce((sum, p) => sum + (p.price * (p.stock || 1)), 0);
 
-  const availableSizes = ["FS", "XS", "S", "M", "L", "XL", "XXL", "Custom"];
+  const isJewelleryCategory = (cat) => ['Necklaces', 'Earrings', 'Rings', 'Bracelets', 'Bridal Sets'].includes(cat);
+  const getAvailableSizes = (cat) => {
+    if (cat === 'Rings') return ["5", "6", "7", "8", "9", "10", "Adjustable"];
+    if (isJewelleryCategory(cat)) return ["Free Size"];
+    return ["FS", "XS", "S", "M", "L", "XL", "XXL", "Custom"];
+  };
 
   const toggleSize = (size, isEdit = false) => {
     if (isEdit) {
@@ -534,7 +547,7 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Sizes</label>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                    {availableSizes.map(size => {
+                    {getAvailableSizes(formData.category).map(size => {
                       const isSelected = (formData.sizes || []).includes(size);
                       return (
                         <button type="button" key={size} onClick={() => toggleSize(size, false)} style={{ padding: "6px 12px", border: isSelected ? "2px solid #0f172a" : "1px solid #cbd5e1", borderRadius: "6px", backgroundColor: isSelected ? "#0f172a" : "#fff", color: isSelected ? "#fff" : "#475569", fontWeight: "600", cursor: "pointer", outline: "none" }}>{size}</button>
@@ -598,14 +611,28 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 
-                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
-                   <input type="text" name="fabricTop" value={formData.fabricTop || ""} onChange={handleChange} placeholder="Top / Kurta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricBottom" value={formData.fabricBottom || ""} onChange={handleChange} placeholder="Bottom / Skirt Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricDupatta" value={formData.fabricDupatta || ""} onChange={handleChange} placeholder="Dupatta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricBlouse" value={formData.fabricBlouse || ""} onChange={handleChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricSaree" value={formData.fabricSaree || ""} onChange={handleChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                </div>
+                {!isJewelleryCategory(formData.category) ? (
+                  <>
+                    <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
+                       <input type="text" name="fabricTop" value={formData.fabricTop || ""} onChange={handleChange} placeholder="Top / Kurta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricBottom" value={formData.fabricBottom || ""} onChange={handleChange} placeholder="Bottom / Skirt Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricDupatta" value={formData.fabricDupatta || ""} onChange={handleChange} placeholder="Dupatta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricBlouse" value={formData.fabricBlouse || ""} onChange={handleChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricSaree" value={formData.fabricSaree || ""} onChange={handleChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Jewellery Attributes</h5>
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px" }}>
+                       <input type="text" name="metalType" value={formData.metalType || ""} onChange={handleChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="gemstones" value={formData.gemstones || ""} onChange={handleChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="plating" value={formData.plating || ""} onChange={handleChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="weight" value={formData.weight || ""} onChange={handleChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                    </div>
+                  </>
+                )}
 
                 <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Shipping & Delivery</h5>
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
@@ -716,7 +743,7 @@ export default function AdminDashboard() {
                   <div>
                     <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Sizes</label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                      {availableSizes.map(size => {
+                      {getAvailableSizes(editFormData.category).map(size => {
                         const isSelected = (editFormData.sizes || []).includes(size);
                         return (
                           <button type="button" key={size} onClick={() => toggleSize(size, true)} style={{ padding: "6px 12px", border: isSelected ? "2px solid #0f172a" : "1px solid #cbd5e1", borderRadius: "6px", backgroundColor: isSelected ? "#0f172a" : "#fff", color: isSelected ? "#fff" : "#475569", fontWeight: "600", cursor: "pointer", outline: "none" }}>{size}</button>
@@ -779,14 +806,28 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 
-                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
-                   <input type="text" name="fabricTop" value={editFormData.fabricTop || ""} onChange={handleEditChange} placeholder="Top / Kurta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricBottom" value={editFormData.fabricBottom || ""} onChange={handleEditChange} placeholder="Bottom / Skirt" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricDupatta" value={editFormData.fabricDupatta || ""} onChange={handleEditChange} placeholder="Dupatta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricBlouse" value={editFormData.fabricBlouse || ""} onChange={handleEditChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                   <input type="text" name="fabricSaree" value={editFormData.fabricSaree || ""} onChange={handleEditChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                </div>
+                {!isJewelleryCategory(editFormData.category) ? (
+                  <>
+                    <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
+                       <input type="text" name="fabricTop" value={editFormData.fabricTop || ""} onChange={handleEditChange} placeholder="Top / Kurta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricBottom" value={editFormData.fabricBottom || ""} onChange={handleEditChange} placeholder="Bottom / Skirt" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricDupatta" value={editFormData.fabricDupatta || ""} onChange={handleEditChange} placeholder="Dupatta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricBlouse" value={editFormData.fabricBlouse || ""} onChange={handleEditChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="fabricSaree" value={editFormData.fabricSaree || ""} onChange={handleEditChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Jewellery Attributes</h5>
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px" }}>
+                       <input type="text" name="metalType" value={editFormData.metalType || ""} onChange={handleEditChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="gemstones" value={editFormData.gemstones || ""} onChange={handleEditChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="plating" value={editFormData.plating || ""} onChange={handleEditChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                       <input type="text" name="weight" value={editFormData.weight || ""} onChange={handleEditChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                    </div>
+                  </>
+                )}
 
                 <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Shipping & Delivery</h5>
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>

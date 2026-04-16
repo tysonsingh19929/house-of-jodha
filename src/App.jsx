@@ -28,7 +28,6 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
-import WhatsAppButton from "./components/WhatsAppButton";
 import Chatbot from "./components/Chatbot";
 import { lazy, Suspense } from "react";
 
@@ -85,7 +84,6 @@ function FloatingWidgets() {
   
   return (
     <>
-      <WhatsAppButton />
       <Chatbot />
     </>
   );

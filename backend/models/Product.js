@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Lehenga', 'Saree', 'Anarkali', 'Salwar Kameez', 'Gharara', 'Sharara']
+    enum: ['Lehenga', 'Saree', 'Anarkali', 'Salwar Kameez', 'Gharara', 'Sharara', 'Necklaces', 'Earrings', 'Rings', 'Bracelets', 'Bridal Sets']
   },
   occasions: {
     type: [String],
@@ -41,6 +41,12 @@ const productSchema = new mongoose.Schema({
     blouse: String,
     saree: String
   },
+  // Jewellery Specific Fields
+  metalType: String,
+  gemstones: String,
+  weight: String,
+  plating: String,
+  
   care: String,
   embroidery: String,
   deliveryType: String,
