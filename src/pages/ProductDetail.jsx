@@ -493,6 +493,7 @@ export default function ProductDetail({
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [zoom, setZoom] = useState(false);
+  const [playingVideo, setPlayingVideo] = useState({});
   const [activeThumb, setActiveThumb] = useState(0);
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);

@@ -186,14 +186,25 @@ router.post('/message', async (req, res) => {
       responseText = result.response.text();
     } catch (geminiError) {
       console.error('Gemini API Error:', geminiError.message);
-      // Fallback to demo response if Gemini fails
-      const userMsg = message.toLowerCase();
-      if (userMsg.includes('lehenga')) {
-        responseText = "I'm currently experiencing high traffic, love, but I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr our Parrot Green Floral Printed Lehenga - ₹7,700 → https://house-of-jodha.vercel.app/product/14";
-      } else if (userMsg.includes('saree')) {
-        responseText = "I'm currently experiencing high traffic, love, but I highly recommend our Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nOr our Pre-draped Royal Purple Satin Saree - ₹8,900 → https://house-of-jodha.vercel.app/product/3";
-      } else {
+      
+      const errorMessage = geminiError.message || "";
+      const isExpiredKey = errorMessage.includes('API key expired') || errorMessage.includes('API_KEY_INVALID') || errorMessage.includes('400');
+      const isRateLimit = errorMessage.includes('429') || errorMessage.includes('Too Many Requests');
+
+      if (isExpiredKey) {
+        responseText = "Apologies, love, my connection seems to have a configuration issue (API Key Expired). Please notify the store administrator to update the API key in the settings. Meanwhile, I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11";
+      } else if (isRateLimit) {
         responseText = "Apologies, love, I am receiving too many requests right now. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nClick the links to view them!";
+      } else {
+        // Fallback to demo response if Gemini fails for other reasons
+        const userMsg = message.toLowerCase();
+        if (userMsg.includes('lehenga')) {
+          responseText = "I'm currently experiencing some technical difficulties, love, but I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr our Parrot Green Floral Printed Lehenga - ₹7,700 → https://house-of-jodha.vercel.app/product/14";
+        } else if (userMsg.includes('saree')) {
+          responseText = "I'm currently experiencing some technical difficulties, love, but I highly recommend our Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nOr our Pre-draped Royal Purple Satin Saree - ₹8,900 → https://house-of-jodha.vercel.app/product/3";
+        } else {
+          responseText = "Apologies, love, my system is currently unavailable. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nClick the links to view them!";
+        }
       }
     }
 
