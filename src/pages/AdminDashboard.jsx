@@ -549,6 +549,9 @@ export default function AdminDashboard() {
                         <div style={{ display: "flex", gap: "8px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
                           {canEditProduct(product) ? (
                             <>
+                              <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ flex: 1, padding: "10px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                                👁️ Preview
+                              </button>
                               <button onClick={() => startEdit(product)} style={{ flex: 1, padding: "10px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
                                 ✎ Edit
                               </button>
@@ -557,7 +560,9 @@ export default function AdminDashboard() {
                               </button>
                             </>
                           ) : (
-                            <span style={{ fontSize: "13px", color: "#94a3b8", flex: 1, textAlign: "center", padding: "10px" }}>View Only</span>
+                            <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ flex: 1, padding: "10px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                              👁️ Preview
+                            </button>
                           )}
                         </div>
                       </div>
@@ -590,11 +595,15 @@ export default function AdminDashboard() {
                           <td style={{ padding: "16px 24px", textAlign: "right" }}>
                             {canEditProduct(product) ? (
                               <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                                <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ padding: "6px 12px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Preview</button>
                                 <button onClick={() => startEdit(product)} style={{ padding: "6px 12px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Edit</button>
                                 <button onClick={() => deleteProduct(product._id, product)} style={{ padding: "6px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Delete</button>
                               </div>
                             ) : (
-                              <span style={{ fontSize: "13px", color: "#94a3b8" }}>View Only</span>
+                              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", alignItems: "center" }}>
+                                <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ padding: "6px 12px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Preview</button>
+                                <span style={{ fontSize: "13px", color: "#94a3b8", marginLeft: "4px" }}>View Only</span>
+                              </div>
                             )}
                           </td>
                         </tr>
