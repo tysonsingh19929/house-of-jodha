@@ -24,8 +24,19 @@ export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
     }
 
     try {
-      await forgotPassword(email);
-      setSuccess("Password reset email sent! Check your inbox.");
+      const resp = await forgotPassword(email);
+      if (resp.devResetLink) {
+        setSuccess(
+          <span>
+            Dev Mode:{' '}
+            <a href={resp.devResetLink} style={{ textDecoration: "underline", fontWeight: "bold" }}>
+              Click here to manually reset your password
+            </a>
+          </span>
+        );
+      } else {
+        setSuccess("Password reset email sent! Check your inbox.");
+      }
     } catch (err) {
       setError(err.message);
     } finally {

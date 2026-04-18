@@ -38,6 +38,7 @@ export default function AdminDashboard() {
   const [editImagePreviews, setEditImagePreviews] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [sellerProfile, setSellerProfile] = useState({ name: "", businessName: "", phone: "", email: "" });
+  const [countryCode, setCountryCode] = useState("+91");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara", "Necklaces", "Earrings", "Rings", "Bracelets", "Bridal Sets"];
 
@@ -61,10 +62,20 @@ export default function AdminDashboard() {
       const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}`);
       if (response.ok) {
         const data = await response.json();
+        let pNum = data.phone || "";
+        let cCode = "+91";
+        if (pNum.startsWith('+')) {
+            const match = pNum.match(/^(\+\d{1,4})\s?(.*)$/);
+            if (match) {
+                cCode = match[1];
+                pNum = match[2];
+            }
+        }
+        setCountryCode(cCode);
         setSellerProfile({
           name: data.name || "",
           businessName: data.businessName || "",
-          phone: data.phone || "",
+          phone: pNum,
           email: data.email || ""
         });
       }
@@ -81,10 +92,14 @@ export default function AdminDashboard() {
   const saveSellerProfile = async () => {
     try {
       setIsSavingProfile(true);
+      const payload = {
+          ...sellerProfile,
+          phone: `${countryCode}${sellerProfile.phone}`
+      };
       const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sellerProfile)
+        body: JSON.stringify(payload)
       });
       if (!response.ok) throw new Error("Failed to update profile");
       alert("Profile updated successfully!");
@@ -818,7 +833,21 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Phone Number</label>
-                      <input type="text" name="phone" value={sellerProfile.phone} onChange={handleProfileChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <select 
+                          value={countryCode} 
+                          onChange={(e) => setCountryCode(e.target.value)} 
+                          style={{ padding: "12px 8px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#475569", outline: "none", width: "100px", cursor: "pointer", transition: "border-color 0.2s" }}
+                          onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+                        >
+                          <option value="+91">+91 (IN)</option>
+                          <option value="+1">+1 (US/CA)</option>
+                          <option value="+44">+44 (UK)</option>
+                          <option value="+61">+61 (AU)</option>
+                          <option value="+971">+971 (AE)</option>
+                        </select>
+                        <input type="tel" name="phone" value={sellerProfile.phone} onChange={handleProfileChange} style={{ flex: 1, padding: "12px 16px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                      </div>
                     </div>
                     <div style={{ marginTop: "16px" }}>
                       <button onClick={saveSellerProfile} disabled={isSavingProfile} style={{ padding: "12px 24px", backgroundColor: isSavingProfile ? "#64748b" : "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSavingProfile ? "not-allowed" : "pointer", transition: "background-color 0.2s" }}>

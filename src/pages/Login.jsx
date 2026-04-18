@@ -22,6 +22,17 @@ const PhoneIcon = () => (
   </svg>
 );
 
+const EyeIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+  </svg>
+);
+const EyeOffIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+);
+
 export default function Login({ cartOpen, setCartOpen, cartCount }) {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
@@ -29,6 +40,7 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const showToast = (message) => {
     setToast({ show: true, message });
@@ -143,9 +155,14 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
             <div style={{ marginBottom: "28px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                 <label className="user-label" style={{ marginBottom: 0 }}>Password</label>
-                <Link to="/signup" style={{ fontSize: "13px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#c49a27"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
+                <Link to="/forgot-password" style={{ fontSize: "13px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#c49a27"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
               </div>
-              <input type="password" name="password" value={formData.password} onChange={handleInputChange} className="user-input" placeholder="••••••••" />
+              <div style={{ position: "relative" }}>
+                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleInputChange} className="user-input" placeholder="••••••••" style={{ paddingRight: "40px" }} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "#888", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
             </div>
 
             <button type="submit" disabled={loading} className="user-btn">

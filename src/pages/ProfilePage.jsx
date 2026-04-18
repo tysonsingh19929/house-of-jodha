@@ -28,9 +28,19 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
 
   const handleEdit = () => {
     setIsEditing(true);
+    let pNum = user?.phone || "";
+    let cCode = "+91";
+    if (pNum.startsWith('+')) {
+      const match = pNum.match(/^(\+\d{1,4})\s?(.*)$/);
+      if (match) {
+         cCode = match[1];
+         pNum = match[2];
+      }
+    }
     setFormData({
       name: user?.name || "",
-      phone: user?.phone || "",
+      countryCode: cCode,
+      phone: pNum,
       address: user?.address || "",
       city: user?.city || "",
       state: user?.state || "",
@@ -41,7 +51,8 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const updatedUser = await api.updateUser(user._id || user.id, formData);
+      const payload = { ...formData, phone: formData.phone ? `${formData.countryCode || "+91"}${formData.phone}` : "" };
+      const updatedUser = await api.updateUser(user._id || user.id, payload);
       setUser(updatedUser);
       setIsEditing(false);
       const currentLoc = JSON.parse(localStorage.getItem("currentUser"));
@@ -150,7 +161,21 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
                 <div>
                   <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Phone</label>
                   {isEditing ? (
-                    <input name="phone" value={formData.phone} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <select 
+                        name="countryCode"
+                        value={formData.countryCode || "+91"} 
+                        onChange={handleChange} 
+                        style={{ padding: "10px 8px", border: "1px solid #ddd", borderRadius: "4px", backgroundColor: "#f9f9f9", cursor: "pointer", width: "100px" }}
+                      >
+                        <option value="+91">+91 (IN)</option>
+                        <option value="+1">+1 (US/CA)</option>
+                        <option value="+44">+44 (UK)</option>
+                        <option value="+61">+61 (AU)</option>
+                        <option value="+971">+971 (AE)</option>
+                      </select>
+                      <input name="phone" value={formData.phone} onChange={handleChange} placeholder="9876543210" style={{ flex: 1, padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }} />
+                    </div>
                   ) : (
                     <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.phone || "Not provided"}</p>
                   )}

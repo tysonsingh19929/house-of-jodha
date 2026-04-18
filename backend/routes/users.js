@@ -170,16 +170,32 @@ router.post('/forgot-password', async (req, res) => {
     const resetToken = jwt.sign({ userId: account._id, accountType }, JWT_SECRET, { expiresIn: '1h' });
     
     // Send email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Password Reset',
-      html: `<p>Click <a href="${process.env.FRONTEND_URL}/reset-password?token=${resetToken}">here</a> to reset your password.</p>`
-    };
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+    let emailSent = false;
     
-    await transporter.sendMail(mailOptions);
+    try {
+      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: 'Password Reset',
+          html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`
+        };
+        await transporter.sendMail(mailOptions);
+        emailSent = true;
+      }
+    } catch (mailError) {
+      console.warn("Email sending failed or skipped:", mailError);
+    }
     
-    res.json({ message: 'Password reset email sent' });
+    if (emailSent) {
+      res.json({ message: 'Password reset email sent' });
+    } else {
+      res.json({ 
+        message: 'Dev mode: Email skipped, use link to reset',
+        devResetLink: resetUrl
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
