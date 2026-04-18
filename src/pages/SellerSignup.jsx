@@ -12,6 +12,7 @@ export default function SellerSignup() {
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,12 +32,13 @@ export default function SellerSignup() {
     }
 
     try {
+      const fullPhone = `${countryCode}${phone}`;
       const response = await fetch(buildApiUrl('/sellers/register'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name, businessName, phone, email, password })
+        body: JSON.stringify({ name, businessName, phone: fullPhone, email, password })
       });
 
       const data = await response.json();
@@ -154,14 +156,29 @@ export default function SellerSignup() {
 
           <div style={{ marginBottom: "16px" }}>
             <label className="auth-label">WhatsApp / Phone</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter your mobile number"
-              required
-              className="auth-input"
-            />
+            <div style={{ display: "flex", gap: "8px" }}>
+              <select
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                className="auth-input"
+                style={{ width: "110px", padding: "14px 8px", cursor: "pointer" }}
+              >
+                <option value="+91">+91 (IN)</option>
+                <option value="+1">+1 (US/CA)</option>
+                <option value="+44">+44 (UK)</option>
+                <option value="+61">+61 (AU)</option>
+                <option value="+971">+971 (AE)</option>
+              </select>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Ex. 90000 00000"
+                required
+                className="auth-input"
+                style={{ flex: 1 }}
+              />
+            </div>
           </div>
 
           <div style={{ marginBottom: "16px" }}>
