@@ -103,27 +103,54 @@ export default function OccasionPage({
     tips: "Dress to impress!", icon: "👗", pattern: ""
   };
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const localProducts = JSON.parse(localStorage.getItem("products") || "[]");
-    const all = localProducts.length ? localProducts : enhancedProductDatabase;
+    setLoading(true);
+    window.scrollTo(0, 0);
 
-    const filtered = all
-      .filter(p => {
-        const occasionMatch =
-          p.occasion?.toLowerCase() === occasionKey ||
-          (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
-        const categoryMatch = p.category?.toLowerCase() === occasionKey;
-        return occasionMatch || categoryMatch;
+    const apiUrl = import.meta.env.VITE_API_URL || '/api';
+    
+    // Fetch products that match this occasion or category from our new optimized endpoint
+    fetch(`${apiUrl}/products/search?q=${encodeURIComponent(occasionKey)}`)
+      .then(res => res.json())
+      .then(data => {
+        const fetchedProducts = Array.isArray(data) ? data : [];
+        
+        // Map database products to the required UI component interface 
+        const mappedProducts = fetchedProducts.map(p => {
+          // Fallback to static master if image is somehow missing
+          const master = masterProducts.find(mp => mp.id === p.id);
+          return {
+            ...p,
+            id: p._id || p.id,
+            image: p.image || master?.image || masterProducts[0].image
+          };
+        });
+        
+        // Also merge any local static products that aren't in the DB yet, for robustness
+        const localStatic = enhancedProductDatabase.filter(p => {
+          const occasionMatch = p.occasion?.toLowerCase() === occasionKey || 
+                                (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
+          const categoryMatch = p.category?.toLowerCase() === occasionKey;
+          return occasionMatch || categoryMatch;
+        });
+
+        // Filter out duplicates (DB products overwrite static ones)
+        const combined = [...mappedProducts];
+        localStatic.forEach(sp => {
+          if (!combined.some(cp => cp.id === sp.id || cp.name === sp.name)) {
+            combined.push(sp);
+          }
+        });
+
+        setProducts(combined);
+        setLoading(false);
       })
-      .map(p => {
-        const master = masterProducts.find(mp => mp.id === p.id);
-        return {
-          ...p,
-          image: master?.image || p.image,
-        };
+      .catch(err => {
+        console.error("Collection fetch error:", err);
+        setLoading(false);
       });
-
-    setProducts(filtered);
   }, [occasionKey]);
 
   const handleAddProduct = (e, product) => {

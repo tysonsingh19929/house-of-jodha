@@ -45,7 +45,7 @@ router.get('/search', async (req, res) => {
     const { q } = req.query;
     if (!q) return res.json([]);
     
-    // Search across name, category, color, material, description
+    // Search across name, category, color, material, description, and occasions array
     const regex = new RegExp(q, "i");
     const products = await Product.find({
       $or: [
@@ -53,7 +53,8 @@ router.get('/search', async (req, res) => {
         { category: regex },
         { color: regex },
         { material: regex },
-        { description: regex }
+        { description: regex },
+        { occasions: regex }
       ]
     });
     res.json(products);
