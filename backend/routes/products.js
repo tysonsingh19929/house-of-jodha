@@ -19,7 +19,7 @@ const productsData = [
 // 1. GET ALL PRODUCTS
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().sort({ _id: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -32,7 +32,7 @@ router.get('/occasion/:occasionName', async (req, res) => {
     const { occasionName } = req.params;
     const products = await Product.find({ 
       occasion: { $regex: new RegExp(occasionName, "i") } 
-    });
+    }).sort({ _id: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -56,7 +56,7 @@ router.get('/search', async (req, res) => {
         { description: regex },
         { occasions: regex }
       ]
-    });
+    }).sort({ _id: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -95,7 +95,7 @@ router.get('/:id', async (req, res) => {
 // GET BY SELLER ID
 router.get('/seller/:sellerId', async (req, res) => {
   try {
-    const products = await Product.find({ sellerId: req.params.sellerId });
+    const products = await Product.find({ sellerId: req.params.sellerId }).sort({ _id: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });

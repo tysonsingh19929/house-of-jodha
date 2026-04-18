@@ -114,11 +114,12 @@ router.post('/message', async (req, res) => {
       }
 
       // Fetch up to 5 matching products, but ONLY grab name, price, and ID. No heavy images!
-      let products = await Product.find(query).select('name price _id').limit(5);
+      let products = await Product.find(query).sort({ _id: -1 }).select('name price _id').limit(5);
       
       // If we didn't find enough, fetch some random ones (again, only small data)
       if (products.length < 5) {
           const additionalProducts = await Product.find({ _id: { $nin: products.map(p => p._id) } })
+              .sort({ _id: -1 })
               .select('name price _id')
               .limit(5 - products.length);
           products = [...products, ...additionalProducts];
