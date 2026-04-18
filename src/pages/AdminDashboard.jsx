@@ -37,6 +37,8 @@ export default function AdminDashboard() {
   const [editFormData, setEditFormData] = useState(null);
   const [editImagePreviews, setEditImagePreviews] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [sellerProfile, setSellerProfile] = useState({ name: "", businessName: "", phone: "", email: "" });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara", "Necklaces", "Earrings", "Rings", "Bracelets", "Bridal Sets"];
 
   const isSeller = localStorage.getItem("seller_authenticated") === "true";
@@ -49,8 +51,52 @@ export default function AdminDashboard() {
       navigate("/seller-login");
     } else {
       fetchProducts();
+      fetchSellerProfile();
     }
   }, [isSeller, navigate]);
+
+  const fetchSellerProfile = async () => {
+    if (isSuperAdmin) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setSellerProfile({
+          name: data.name || "",
+          businessName: data.businessName || "",
+          phone: data.phone || "",
+          email: data.email || ""
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching seller profile:", error);
+    }
+  };
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setSellerProfile(prev => ({ ...prev, [name]: value }));
+  };
+
+  const saveSellerProfile = async () => {
+    try {
+      setIsSavingProfile(true);
+      const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sellerProfile)
+      });
+      if (!response.ok) throw new Error("Failed to update profile");
+      alert("Profile updated successfully!");
+      if (sellerProfile.name) {
+        localStorage.setItem("seller_name", sellerProfile.name);
+      }
+    } catch (error) {
+      alert("Error updating profile: " + error.message);
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -740,11 +786,6 @@ export default function AdminDashboard() {
               <h3 style={{ margin: "0 0 20px", color: "#0f172a" }}>Profile Information</h3>
               <div style={{ display: "grid", gap: "16px" }}>
                 <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Store/Seller Name</label>
-                  <input type="text" value={sellerName} disabled style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#64748b", outline: "none", cursor: "not-allowed" }} />
-                  <p style={{ margin: "6px 0 0", fontSize: "12px", color: "#94a3b8" }}>Contact administrator to change store name.</p>
-                </div>
-                <div>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Seller ID</label>
                   <input type="text" value={sellerId} disabled style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#64748b", outline: "none", cursor: "not-allowed" }} />
                 </div>
@@ -752,6 +793,31 @@ export default function AdminDashboard() {
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Role</label>
                   <input type="text" value={isSuperAdmin ? "Super Admin" : "Seller"} disabled style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#64748b", outline: "none", cursor: "not-allowed" }} />
                 </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Email Address</label>
+                  <input type="text" value={sellerProfile.email} disabled style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#64748b", outline: "none", cursor: "not-allowed" }} />
+                </div>
+                {!isSuperAdmin && (
+                  <>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Full Name</label>
+                      <input type="text" name="name" value={sellerProfile.name} onChange={handleProfileChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Business Name</label>
+                      <input type="text" name="businessName" value={sellerProfile.businessName} onChange={handleProfileChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Phone Number</label>
+                      <input type="text" name="phone" value={sellerProfile.phone} onChange={handleProfileChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+                    </div>
+                    <div style={{ marginTop: "16px" }}>
+                      <button onClick={saveSellerProfile} disabled={isSavingProfile} style={{ padding: "12px 24px", backgroundColor: isSavingProfile ? "#64748b" : "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSavingProfile ? "not-allowed" : "pointer", transition: "background-color 0.2s" }}>
+                        {isSavingProfile ? "Saving..." : "Save Changes"}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

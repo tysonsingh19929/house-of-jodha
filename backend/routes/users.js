@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import User from '../models/User.js';
+import Seller from '../models/Seller.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
@@ -153,13 +154,20 @@ router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
     
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+    let account = await User.findOne({ email });
+    let accountType = 'user';
+    
+    if (!account) {
+      account = await Seller.findOne({ email });
+      accountType = 'seller';
+    }
+    
+    if (!account) {
+      return res.status(400).json({ message: 'Account not found with this email' });
     }
     
     // Generate reset token
-    const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    const resetToken = jwt.sign({ userId: account._id, accountType }, JWT_SECRET, { expiresIn: '1h' });
     
     // Send email
     const mailOptions = {
@@ -183,16 +191,22 @@ router.post('/reset-password', async (req, res) => {
     const { token, newPassword } = req.body;
     
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.userId);
     
-    if (!user) {
+    let account;
+    if (decoded.accountType === 'seller') {
+      account = await Seller.findById(decoded.userId);
+    } else {
+      account = await User.findById(decoded.userId);
+    }
+    
+    if (!account) {
       return res.status(400).json({ message: 'Invalid token' });
     }
     
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
+    account.password = hashedPassword;
+    await account.save();
     
     res.json({ message: 'Password reset successful' });
   } catch (error) {

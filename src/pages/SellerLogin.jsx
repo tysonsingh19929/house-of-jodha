@@ -140,6 +140,7 @@ export default function SellerLogin() {
           <div style={{ marginBottom: "32px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
               <label className="auth-label" style={{ marginBottom: 0 }}>Password</label>
+              <Link to="/forgot-password" style={{ fontSize: "12px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", letterSpacing: "0.5px" }} onMouseEnter={e => e.target.style.color = "#fed053"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
             </div>
             <input
               type="password"

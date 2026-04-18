@@ -84,9 +84,33 @@ export const api = {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     return res.json();
+  },
+
+  forgotPassword: async (email) => {
+    const res = await fetch(`${API_BASE_URL}/users/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Something went wrong');
+    return data;
+  },
+
+  resetPassword: async (token, newPassword) => {
+    const res = await fetch(`${API_BASE_URL}/users/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, newPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Something went wrong');
+    return data;
   }
 };
 
 export const login = api.login;
 export const signup = api.register;
+export const forgotPassword = api.forgotPassword;
+export const resetPassword = api.resetPassword;
 export default api;
