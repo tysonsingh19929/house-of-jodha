@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import WhatsAppInquiryButton from "../components/WhatsAppInquiryButton.jsx";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
