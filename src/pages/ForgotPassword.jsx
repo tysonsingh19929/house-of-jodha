@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { forgotPassword, api } from "../services/api";
@@ -8,6 +8,9 @@ export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type");
+  const isSeller = type === "seller";
+
+  const isMobile = window.innerWidth <= 768;
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -26,9 +29,9 @@ export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
     }
 
     try {
-      const resp = type === "seller" ? await api.sellerForgotPassword(email) : await forgotPassword(email);
+      const resp = isSeller ? await api.sellerForgotPassword(email) : await forgotPassword(email);
       if (resp.devResetLink) {
-        const link = type === "seller" && !resp.devResetLink.includes("type=seller")
+        const link = isSeller && !resp.devResetLink.includes("type=seller")
           ? `${resp.devResetLink}&type=seller`
           : resp.devResetLink;
         setSuccess(
@@ -49,59 +52,76 @@ export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar cartOpen={cartOpen} setCartOpen={setCartOpen} cartCount={cartCount} />
+  if (isSeller) {
+    return (
+      <div style={{
+        minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+        background: "#0a0f0d", backgroundImage: "radial-gradient(circle at 50% 0%, #1e3a29 0%, #0a0f0d 60%)",
+        padding: "20px", fontFamily: "'Inter', sans-serif", position: "relative", overflow: "hidden"
+      }}>
+        <div style={{ position: "absolute", top: "-150px", left: "-100px", width: "400px", height: "400px", background: "#D4AF37", filter: "blur(150px)", opacity: "0.15", borderRadius: "50%", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "-200px", right: "-100px", width: "500px", height: "500px", background: "#2C4F3E", filter: "blur(200px)", opacity: "0.4", borderRadius: "50%", pointerEvents: "none" }} />
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h2 className="text-2xl font-bold text-center mb-6">Forgot Password</h2>
+        <div style={{
+          background: "rgba(20, 30, 25, 0.6)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
+          borderRadius: "24px", padding: "48px 40px", boxShadow: "0 24px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+          border: "1px solid rgba(255,255,255,0.08)", maxWidth: "420px", width: "100%", position: "relative", zIndex: 1
+        }}>
+          <div style={{ textAlign: "center", marginBottom: "40px" }}>
+            <h1 style={{ color: "#fff", fontSize: "28px", fontWeight: "700", margin: "0 0 8px 0" }}>Forgot Password</h1>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "15px", margin: "0" }}>Enter your email to receive a reset link</p>
+          </div>
 
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-              {success}
-            </div>
-          )}
+          {error && <div style={{ background: "rgba(255, 59, 48, 0.1)", color: "#ff4d4d", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px" }}>{error}</div>}
+          {success && <div style={{ background: "rgba(52, 199, 89, 0.1)", color: "#34d399", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px" }}>{success}</div>}
 
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-                placeholder="Enter your email"
-                required
-              />
+            <div style={{ marginBottom: "32px" }}>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "rgba(255,255,255,0.7)", marginBottom: "8px", textTransform: "uppercase" }}>Email Address</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Ex: boutique@jodha.com" required style={{ width: "100%", padding: "16px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", fontSize: "15px", color: "#fff", outline: "none", boxSizing: "border-box" }} autoFocus />
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-pink-600 text-white py-2 px-4 rounded-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-50"
-            >
-              {loading ? "Sending..." : "Send Reset Email"}
+            <button type="submit" disabled={loading} style={{ width: "100%", padding: "16px", background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}>
+              {loading ? "Sending..." : "Send Reset Link"}
             </button>
           </form>
 
-          <div className="text-center mt-4">
-            <Link to={type === "seller" ? "/seller-login" : "/login"} className="text-pink-600 hover:text-pink-800">
-              Back to Login
-            </Link>
+          <div style={{ marginTop: "40px" }}>
+            <button onClick={() => navigate("/seller-login")} style={{ width: "100%", padding: "14px", background: "transparent", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", fontSize: "14px", fontWeight: "600", cursor: "pointer" }}>← Back to Login</button>
           </div>
         </div>
       </div>
+    );
+  }
 
+  return (
+    <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
+      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      <div style={{ flex: "1", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "20px" : "40px", position: "relative" }}>
+        <div style={{ width: "100%", maxWidth: "440px", background: "#ffffff", padding: isMobile ? "30px 24px" : "48px", borderRadius: "24px", boxShadow: "0 20px 60px rgba(0,0,0,0.04)", border: "1px solid rgba(212,175,55,0.1)", position: "relative", zIndex: 1 }}>
+
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <h1 style={{ fontSize: isMobile ? "28px" : "32px", marginBottom: "8px", color: "#1a1a1a", fontWeight: "700" }}>Forgot Password</h1>
+            <p style={{ fontSize: "15px", color: "#666", margin: 0 }}>Enter your email to reset your password.</p>
+          </div>
+
+          {error && <div style={{ background: "#fff5f5", color: "#e03131", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px" }}>{error}</div>}
+          {success && <div style={{ background: "#f4fdf8", color: "#099268", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px" }}>{success}</div>}
+
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: "28px" }}>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "#666", marginBottom: "8px", textTransform: "uppercase" }}>Email Address</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="hello@example.com" autoFocus required style={{ width: "100%", padding: "14px 16px", background: "#fafafa", border: "1px solid #eaeaea", borderRadius: "12px", fontSize: "15px", color: "#1a1a1a", outline: "none", boxSizing: "border-box" }} />
+            </div>
+            <button type="submit" disabled={loading} style={{ width: "100%", padding: "16px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}>
+              {loading ? "Sending..." : "Send Reset Link"}
+            </button>
+          </form>
+
+          <div style={{ marginTop: "24px" }}>
+            <button onClick={() => navigate("/login")} style={{ width: "100%", padding: "14px", background: "transparent", color: "#666", border: "1px solid #eaeaea", borderRadius: "12px", fontSize: "14px", fontWeight: "600", cursor: "pointer" }}>← Back to Login</button>
+          </div>
+        </div>
+      </div>
       <Footer />
     </div>
   );
