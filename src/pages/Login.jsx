@@ -155,7 +155,6 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
             <div style={{ marginBottom: "28px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                 <label className="user-label" style={{ marginBottom: 0 }}>Password</label>
-                <Link to="/forgot-password" style={{ fontSize: "13px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#c49a27"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
               </div>
               <div style={{ position: "relative" }}>
                 <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleInputChange} className="user-input" placeholder="••••••••" style={{ paddingRight: "40px" }} />
@@ -168,6 +167,10 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
             <button type="submit" disabled={loading} className="user-btn">
               {loading ? "Authenticating..." : "Sign In to Account"}
             </button>
+
+            <div style={{ textAlign: "center", marginTop: "16px" }}>
+              <Link to="/forgot-password" style={{ fontSize: "14px", color: "#666", textDecoration: "none", fontWeight: "600", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#D4AF37"} onMouseLeave={e => e.target.style.color = "#666"}>Forgot Password?</Link>
+            </div>
           </form>
 
           <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: "#aaa" }}>

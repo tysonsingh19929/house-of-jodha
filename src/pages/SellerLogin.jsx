@@ -152,7 +152,6 @@ export default function SellerLogin() {
           <div style={{ marginBottom: "32px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
               <label className="auth-label" style={{ marginBottom: 0 }}>Password</label>
-              <Link to="/forgot-password?type=seller" style={{ fontSize: "12px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", letterSpacing: "0.5px" }} onMouseEnter={e => e.target.style.color = "#fed053"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
             </div>
             <div style={{ position: "relative" }}>
               <input
@@ -173,6 +172,10 @@ export default function SellerLogin() {
           <button type="submit" disabled={loading} className="auth-btn">
             {loading ? "Authenticating..." : "Access Dashboard"}
           </button>
+
+          <div style={{ textAlign: "center", marginTop: "16px" }}>
+            <Link to="/forgot-password?type=seller" style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)", textDecoration: "none", fontWeight: "600", letterSpacing: "0.5px", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#fed053"} onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.6)"}>Forgot Password?</Link>
+          </div>
         </form>
 
         <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
