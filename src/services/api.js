@@ -4,7 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 export const api = {
   // Products
   getProducts: async (category = null) => {
-    const url = category && category !== 'All' 
+    const url = category && category !== 'All'
       ? `${API_BASE_URL}/products?category=${category}`
       : `${API_BASE_URL}/products`;
     const res = await fetch(url);
@@ -47,7 +47,7 @@ export const api = {
     const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE_URL}/users/${id}`, {
       method: 'PUT',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
@@ -61,7 +61,7 @@ export const api = {
     const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE_URL}/orders/create`, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
@@ -99,6 +99,28 @@ export const api = {
 
   resetPassword: async (token, newPassword) => {
     const res = await fetch(`${API_BASE_URL}/users/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, newPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Something went wrong');
+    return data;
+  },
+
+  sellerForgotPassword: async (email) => {
+    const res = await fetch(`${API_BASE_URL}/sellers/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Something went wrong');
+    return data;
+  },
+
+  sellerResetPassword: async (token, newPassword) => {
+    const res = await fetch(`${API_BASE_URL}/sellers/reset-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, newPassword })

@@ -112,11 +112,11 @@ export default function SellerLogin() {
           .auth-link { color: #D4AF37; text-decoration: none; font-weight: 600; transition: color 0.2s; }
           .auth-link:hover { color: #fed053; }
         `}</style>
-        
+
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
           <div style={{ width: "64px", height: "64px", background: "linear-gradient(135deg, #D4AF37, #AA8A2A)", borderRadius: "16px", margin: "0 auto 20px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 25px rgba(212, 175, 55, 0.4)" }}>
-            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
           </div>
           <h1 style={{ color: "#fff", fontSize: "28px", fontWeight: "700", margin: "0 0 8px 0", letterSpacing: "-0.5px" }}>
             Seller Portal
@@ -129,7 +129,7 @@ export default function SellerLogin() {
         {/* Error Message */}
         {error && (
           <div style={{ background: "rgba(255, 59, 48, 0.1)", border: "1px solid rgba(255, 59, 48, 0.3)", color: "#ff4d4d", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px", fontWeight: "500", display: "flex", alignItems: "center", gap: "10px" }}>
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
             {error}
           </div>
         )}
@@ -152,7 +152,7 @@ export default function SellerLogin() {
           <div style={{ marginBottom: "32px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
               <label className="auth-label" style={{ marginBottom: 0 }}>Password</label>
-              <Link to="/forgot-password" style={{ fontSize: "12px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", letterSpacing: "0.5px" }} onMouseEnter={e => e.target.style.color = "#fed053"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
+              <Link to="/forgot-password?type=seller" style={{ fontSize: "12px", color: "#D4AF37", textDecoration: "none", fontWeight: "600", letterSpacing: "0.5px" }} onMouseEnter={e => e.target.style.color = "#fed053"} onMouseLeave={e => e.target.style.color = "#D4AF37"}>Forgot?</Link>
             </div>
             <div style={{ position: "relative" }}>
               <input
