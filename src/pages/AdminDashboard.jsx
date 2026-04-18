@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Icons (Lucide React style SVGs)
-const HomeIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
-const PackageIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>;
-const PlusCircleIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>;
-const SettingsIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
-const LogOutIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
-const ActivityIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
-const UsersIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-const DollarSignIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
+const HomeIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
+const PackageIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21" /><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>;
+const PlusCircleIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>;
+const SettingsIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>;
+const LogOutIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>;
+const ActivityIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>;
+const UsersIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
+const DollarSignIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>;
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
     metalType: "", gemstones: "", weight: "", plating: ""
   });
   const [imageUrlInput, setImageUrlInput] = useState("");
-  
+
   const [imagePreviews, setImagePreviews] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editFormData, setEditFormData] = useState(null);
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const url = isSuperAdmin 
+      const url = isSuperAdmin
         ? '/products'
         : `/products/seller/${sellerId}`;
       const response = await fetch(`${API_BASE_URL}${url}`);
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
 
           // Compress to WebP at 70% quality (cuts ~10MB to ~150KB)
           const compressedDataUrl = canvas.toDataURL("image/webp", 0.7);
-          
+
           setImagePreviews(prev => [...prev, compressedDataUrl]);
           setFormData(prev => ({ ...prev, images: [...prev.images, compressedDataUrl] }));
         };
@@ -108,10 +108,12 @@ export default function AdminDashboard() {
 
   const handleAddImageUrl = (isEdit = false) => {
     if (!imageUrlInput) return;
-    
+
     let optimizedUrl = imageUrlInput;
-    // Automatically apply image resizing & modern format proxy if not already applied
-    if (!imageUrlInput.includes('wsrv.nl')) {
+    const isVideo = imageUrlInput.includes("instagram.com") || imageUrlInput.includes("youtube.com") || imageUrlInput.includes("youtu.be") || imageUrlInput.includes("vimeo.com") || imageUrlInput.match(/\.(mp4|webm|ogg)$/i);
+
+    // Automatically apply image resizing & modern format proxy ONLY for actual images
+    if (!isVideo && !imageUrlInput.includes('wsrv.nl')) {
       optimizedUrl = `https://wsrv.nl/?url=${encodeURIComponent(imageUrlInput)}&w=1000&output=webp`;
     }
 
@@ -144,15 +146,22 @@ export default function AdminDashboard() {
 
     try {
       setIsSaving(true);
+
+      let finalImages = [...formData.images];
+      let cleanVideoUrl = formData.videoUrl ? formData.videoUrl.trim() : "";
+      if (cleanVideoUrl && !finalImages.includes(cleanVideoUrl)) {
+        finalImages.splice(1, 0, cleanVideoUrl); // Insert video right after the main cover image
+      }
+
       const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name, category: formData.category,
           price: parseInt(formData.price), originalPrice: parseInt(formData.originalPrice),
-          image: formData.images[0], images: formData.images, sellerId: sellerId, sellerName: sellerName,
+          image: finalImages[0], images: finalImages, sellerId: sellerId, sellerName: sellerName,
           description: formData.description || "", stock: parseInt(formData.stock) || 0,
-          videoUrl: formData.videoUrl || "",
+          videoUrl: cleanVideoUrl,
           occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
           colors: formData.colors ? formData.colors.split(',').map(s => s.trim()) : [],
           sizes: formData.sizes || [],
@@ -169,7 +178,7 @@ export default function AdminDashboard() {
 
       if (!response.ok) throw new Error("Failed to add product");
 
-      setFormData({ 
+      setFormData({
         name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
         material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
         fabricTop: "", fabricBottom: "", fabricDupatta: "", fabricBlouse: "", fabricSaree: "", sizes: [], colors: "",
@@ -213,7 +222,7 @@ export default function AdminDashboard() {
 
           // Compress to WebP at 70% quality
           const compressedDataUrl = canvas.toDataURL("image/webp", 0.7);
-          
+
           setEditImagePreviews(prev => [...prev, compressedDataUrl]);
           setEditFormData(prev => ({ ...prev, images: [...(prev.images || []), compressedDataUrl] }));
         };
@@ -225,13 +234,13 @@ export default function AdminDashboard() {
   const startEdit = (product) => {
     if (!canEditProduct(product)) { alert("You don't have permission to edit this product"); return; }
     setEditingId(product._id);
-    
+
     // Ensure images array exists even for old products
     const existingImages = product.images && product.images.length > 0 ? product.images : [product.image];
-    
-    setEditFormData({ 
-      ...product, 
-      images: existingImages, 
+
+    setEditFormData({
+      ...product,
+      images: existingImages,
       occasions: Array.isArray(product.occasions) ? product.occasions.join(', ') : (product.occasions || ""),
       colors: Array.isArray(product.colors) ? product.colors.join(', ') : (product.colors || ""),
       sizes: Array.isArray(product.sizes) ? product.sizes : [],
@@ -258,15 +267,22 @@ export default function AdminDashboard() {
     }
     try {
       setIsSaving(true);
+
+      let finalImages = [...editFormData.images];
+      let cleanVideoUrl = editFormData.videoUrl ? editFormData.videoUrl.trim() : "";
+      if (cleanVideoUrl && !finalImages.includes(cleanVideoUrl)) {
+        finalImages.splice(1, 0, cleanVideoUrl); // Insert video right after the main cover image
+      }
+
       const response = await fetch(`${API_BASE_URL}/products/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: editFormData.name, category: editFormData.category,
           price: parseInt(editFormData.price), originalPrice: parseInt(editFormData.originalPrice),
-          image: editFormData.images[0], images: editFormData.images, description: editFormData.description || "",
+          image: finalImages[0], images: finalImages, description: editFormData.description || "",
           stock: editFormData.stock || 0, sellerId: sellerId, isSuperAdmin: isSuperAdmin,
-          videoUrl: editFormData.videoUrl || "",
+          videoUrl: cleanVideoUrl,
           occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions,
           colors: typeof editFormData.colors === 'string' ? editFormData.colors.split(',').map(s => s.trim()) : editFormData.colors,
           sizes: editFormData.sizes || [],
@@ -342,7 +358,7 @@ export default function AdminDashboard() {
           </h2>
           <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#94a3b8" }}>{isSuperAdmin ? "Super Admin" : sellerName}</p>
         </div>
-        
+
         <nav style={{ flex: 1, padding: isMobile ? "10px" : "20px 0", display: isMobile ? "flex" : "block", flexWrap: "wrap", justifyContent: "space-around" }}>
           {[
             { id: "dashboard", icon: <HomeIcon />, label: "Dashboard" },
@@ -350,19 +366,19 @@ export default function AdminDashboard() {
             { id: "add_product", icon: <PlusCircleIcon />, label: "Add Product" },
             { id: "settings", icon: <SettingsIcon />, label: "Settings" }
           ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                style={{
-                  width: isMobile ? "auto" : "100%", display: "flex", alignItems: "center", gap: "12px", padding: isMobile ? "12px" : "16px 24px",
-                  backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
-                  color: activeTab === item.id ? "#fff" : "#94a3b8",
-                  border: "none", borderLeft: !isMobile && activeTab === item.id ? "4px solid #facc15" : "4px solid transparent",
-                  borderBottom: isMobile && activeTab === item.id ? "4px solid #facc15" : (isMobile ? "4px solid transparent" : "none"),
-                  cursor: "pointer", fontSize: isMobile ? "13px" : "15px", fontWeight: "500", transition: "all 0.2s ease"
-                }}
-              >
-                {item.icon} {!isMobile && item.label}
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              style={{
+                width: isMobile ? "auto" : "100%", display: "flex", alignItems: "center", gap: "12px", padding: isMobile ? "12px" : "16px 24px",
+                backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
+                color: activeTab === item.id ? "#fff" : "#94a3b8",
+                border: "none", borderLeft: !isMobile && activeTab === item.id ? "4px solid #facc15" : "4px solid transparent",
+                borderBottom: isMobile && activeTab === item.id ? "4px solid #facc15" : (isMobile ? "4px solid transparent" : "none"),
+                cursor: "pointer", fontSize: isMobile ? "13px" : "15px", fontWeight: "500", transition: "all 0.2s ease"
+              }}
+            >
+              {item.icon} {!isMobile && item.label}
             </button>
           ))}
         </nav>
@@ -388,13 +404,13 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main style={{ flex: 1, padding: isMobile ? "16px" : "32px", overflowY: "auto", width: isMobile ? "100%" : "auto" }}>
-        
+
         {/* DASHBOARD TAB */}
         {activeTab === "dashboard" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <h1 style={{ margin: "0 0 8px", fontSize: "28px", color: "#0f172a" }}>Welcome back, {sellerName}! 👋</h1>
             <p style={{ color: "#64748b", marginBottom: "32px" }}>Here's what's happening with your store today.</p>
-            
+
             {/* Stat Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px", marginBottom: "40px" }}>
               <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
@@ -406,7 +422,7 @@ export default function AdminDashboard() {
                   <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>{totalProducts}</h3>
                 </div>
               </div>
-              
+
               <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
                 <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#f0fdf4", color: "#22c55e", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <DollarSignIcon />
@@ -458,7 +474,7 @@ export default function AdminDashboard() {
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
               <h1 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>My Products</h1>
-              <button 
+              <button
                 onClick={() => setActiveTab("add_product")}
                 style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#facc15", color: "#000", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer", boxShadow: "0 2px 4px rgba(250, 204, 21, 0.3)" }}
               >
@@ -495,7 +511,7 @@ export default function AdminDashboard() {
                               </button>
                             </>
                           ) : (
-                             <span style={{ fontSize: "13px", color: "#94a3b8", flex: 1, textAlign: "center", padding: "10px" }}>View Only</span>
+                            <span style={{ fontSize: "13px", color: "#94a3b8", flex: 1, textAlign: "center", padding: "10px" }}>View Only</span>
                           )}
                         </div>
                       </div>
@@ -555,7 +571,7 @@ export default function AdminDashboard() {
         {activeTab === "add_product" && (
           <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "800px" }}>
             <h1 style={{ margin: "0 0 32px", fontSize: "28px", color: "#0f172a" }}>Add New Product</h1>
-            
+
             <form onSubmit={handleSubmit} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: isMobile ? "20px" : "32px" }}>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
                 <div style={{ gridColumn: "1 / -1" }}>
@@ -616,18 +632,25 @@ export default function AdminDashboard() {
                   <input type="text" placeholder="Add image by URL instead of uploading" value={imageUrlInput} onChange={e => setImageUrlInput(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }} />
                   <button type="button" onClick={() => handleAddImageUrl(false)} style={{ padding: "10px 16px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>Add URL</button>
                 </div>
-                
+
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
-                  {imagePreviews.map((src, index) => (
-                    <div key={index} style={{ position: "relative" }}>
-                      <img src={src} alt="Preview" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "12px", border: "2px solid #e2e8f0" }} />
-                      <button type="button" onClick={() => {
-                        const newPreviews = [...imagePreviews]; newPreviews.splice(index, 1);
-                        const newImages = [...formData.images]; newImages.splice(index, 1);
-                        setImagePreviews(newPreviews); setFormData(prev => ({ ...prev, images: newImages }));
-                      }} style={{ position: "absolute", top: "-8px", right: "-8px", width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "bold", padding: 0 }}>&times;</button>
-                    </div>
-                  ))}
+                  {imagePreviews.map((src, index) => {
+                    const isVideo = src.includes("instagram.com") || src.match(/\.(mp4|webm|ogg)$/i) || src.includes("youtube.com") || src.includes("youtu.be");
+                    return (
+                      <div key={index} style={{ position: "relative" }}>
+                        {isVideo ? (
+                          <div style={{ width: "120px", height: "120px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontSize: "12px", fontWeight: "600", textAlign: "center", padding: "8px" }}>Video/Reel Added</div>
+                        ) : (
+                          <img src={src} alt="Preview" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "12px", border: "2px solid #e2e8f0" }} />
+                        )}
+                        <button type="button" onClick={() => {
+                          const newPreviews = [...imagePreviews]; newPreviews.splice(index, 1);
+                          const newImages = [...formData.images]; newImages.splice(index, 1);
+                          setImagePreviews(newPreviews); setFormData(prev => ({ ...prev, images: newImages }));
+                        }} style={{ position: "absolute", top: "-8px", right: "-8px", width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "bold", padding: 0 }}>&times;</button>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "12px", cursor: "pointer", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = "#94a3b8"} onMouseLeave={e => e.currentTarget.style.borderColor = "#cbd5e1"}>
@@ -658,26 +681,26 @@ export default function AdminDashboard() {
                     <input type="text" name="maxBustSize" value={formData.maxBustSize || ""} onChange={handleChange} placeholder="e.g. 42 inches" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
                   </div>
                 </div>
-                
+
                 {!isJewelleryCategory(formData.category) ? (
                   <>
                     <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
                     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
-                       <input type="text" name="fabricTop" value={formData.fabricTop || ""} onChange={handleChange} placeholder="Top / Kurta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricBottom" value={formData.fabricBottom || ""} onChange={handleChange} placeholder="Bottom / Skirt Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricDupatta" value={formData.fabricDupatta || ""} onChange={handleChange} placeholder="Dupatta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricBlouse" value={formData.fabricBlouse || ""} onChange={handleChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricSaree" value={formData.fabricSaree || ""} onChange={handleChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricTop" value={formData.fabricTop || ""} onChange={handleChange} placeholder="Top / Kurta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricBottom" value={formData.fabricBottom || ""} onChange={handleChange} placeholder="Bottom / Skirt Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricDupatta" value={formData.fabricDupatta || ""} onChange={handleChange} placeholder="Dupatta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricBlouse" value={formData.fabricBlouse || ""} onChange={handleChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricSaree" value={formData.fabricSaree || ""} onChange={handleChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
                     </div>
                   </>
                 ) : (
                   <>
                     <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Jewellery Attributes</h5>
                     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px" }}>
-                       <input type="text" name="metalType" value={formData.metalType || ""} onChange={handleChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="gemstones" value={formData.gemstones || ""} onChange={handleChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="plating" value={formData.plating || ""} onChange={handleChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="weight" value={formData.weight || ""} onChange={handleChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="metalType" value={formData.metalType || ""} onChange={handleChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="gemstones" value={formData.gemstones || ""} onChange={handleChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="plating" value={formData.plating || ""} onChange={handleChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="weight" value={formData.weight || ""} onChange={handleChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
                     </div>
                   </>
                 )}
@@ -712,7 +735,7 @@ export default function AdminDashboard() {
         {activeTab === "settings" && (
           <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "600px" }}>
             <h1 style={{ margin: "0 0 32px", fontSize: "28px", color: "#0f172a" }}>Account Settings</h1>
-            
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: "32px", marginBottom: "24px" }}>
               <h3 style={{ margin: "0 0 20px", color: "#0f172a" }}>Profile Information</h3>
               <div style={{ display: "grid", gap: "16px" }}>
@@ -744,7 +767,7 @@ export default function AdminDashboard() {
               <h2 style={{ margin: 0, fontSize: "20px", color: "#0f172a" }}>Edit Product</h2>
               <button onClick={cancelEdit} style={{ background: "none", border: "none", fontSize: "24px", color: "#94a3b8", cursor: "pointer", padding: "4px" }}>&times;</button>
             </div>
-            
+
             <div style={{ padding: "32px" }}>
               <div style={{ display: "grid", gap: "20px", marginBottom: "24px" }}>
                 <div>
@@ -807,23 +830,30 @@ export default function AdminDashboard() {
 
                 <div>
                   <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Images</label>
-                  
+
                   <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
                     <input type="text" placeholder="Add image by URL instead of uploading" value={imageUrlInput} onChange={e => setImageUrlInput(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }} />
                     <button type="button" onClick={() => handleAddImageUrl(true)} style={{ padding: "10px 16px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>Add URL</button>
                   </div>
 
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
-                    {editImagePreviews.map((src, index) => (
-                      <div key={index} style={{ position: "relative" }}>
-                        <img src={src.includes('wsrv.nl') ? src : `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=cover`} alt="Preview" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }} />
-                        <button type="button" onClick={() => {
-                          const newPreviews = [...editImagePreviews]; newPreviews.splice(index, 1);
-                          const newImages = [...editFormData.images]; newImages.splice(index, 1);
-                          setEditImagePreviews(newPreviews); setEditFormData(prev => ({ ...prev, images: newImages }));
-                        }} style={{ position: "absolute", top: "-6px", right: "-6px", width: "20px", height: "20px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold", padding: 0 }}>&times;</button>
-                      </div>
-                    ))}
+                    {editImagePreviews.map((src, index) => {
+                      const isVideo = src.includes("instagram.com") || src.match(/\.(mp4|webm|ogg)$/i) || src.includes("youtube.com") || src.includes("youtu.be");
+                      return (
+                        <div key={index} style={{ position: "relative" }}>
+                          {isVideo ? (
+                            <div style={{ width: "100px", height: "100px", borderRadius: "8px", border: "1px solid #e2e8f0", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontSize: "12px", fontWeight: "600", textAlign: "center", padding: "4px" }}>Video/Reel</div>
+                          ) : (
+                            <img src={src.includes('wsrv.nl') ? src : `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=cover`} alt="Preview" style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }} />
+                          )}
+                          <button type="button" onClick={() => {
+                            const newPreviews = [...editImagePreviews]; newPreviews.splice(index, 1);
+                            const newImages = [...editFormData.images]; newImages.splice(index, 1);
+                            setEditImagePreviews(newPreviews); setEditFormData(prev => ({ ...prev, images: newImages }));
+                          }} style={{ position: "absolute", top: "-6px", right: "-6px", width: "20px", height: "20px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold", padding: 0 }}>&times;</button>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <label style={{ display: "block", padding: "20px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "8px", textAlign: "center", cursor: "pointer" }}>
@@ -853,26 +883,26 @@ export default function AdminDashboard() {
                     <input type="text" name="maxBustSize" value={editFormData.maxBustSize || ""} onChange={handleEditChange} placeholder="e.g. 42 inches" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
                   </div>
                 </div>
-                
+
                 {!isJewelleryCategory(editFormData.category) ? (
                   <>
                     <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
                     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
-                       <input type="text" name="fabricTop" value={editFormData.fabricTop || ""} onChange={handleEditChange} placeholder="Top / Kurta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricBottom" value={editFormData.fabricBottom || ""} onChange={handleEditChange} placeholder="Bottom / Skirt" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricDupatta" value={editFormData.fabricDupatta || ""} onChange={handleEditChange} placeholder="Dupatta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricBlouse" value={editFormData.fabricBlouse || ""} onChange={handleEditChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="fabricSaree" value={editFormData.fabricSaree || ""} onChange={handleEditChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricTop" value={editFormData.fabricTop || ""} onChange={handleEditChange} placeholder="Top / Kurta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricBottom" value={editFormData.fabricBottom || ""} onChange={handleEditChange} placeholder="Bottom / Skirt" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricDupatta" value={editFormData.fabricDupatta || ""} onChange={handleEditChange} placeholder="Dupatta" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricBlouse" value={editFormData.fabricBlouse || ""} onChange={handleEditChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="fabricSaree" value={editFormData.fabricSaree || ""} onChange={handleEditChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
                     </div>
                   </>
                 ) : (
                   <>
                     <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Jewellery Attributes</h5>
                     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px" }}>
-                       <input type="text" name="metalType" value={editFormData.metalType || ""} onChange={handleEditChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="gemstones" value={editFormData.gemstones || ""} onChange={handleEditChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="plating" value={editFormData.plating || ""} onChange={handleEditChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                       <input type="text" name="weight" value={editFormData.weight || ""} onChange={handleEditChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="metalType" value={editFormData.metalType || ""} onChange={handleEditChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="gemstones" value={editFormData.gemstones || ""} onChange={handleEditChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="plating" value={editFormData.plating || ""} onChange={handleEditChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
+                      <input type="text" name="weight" value={editFormData.weight || ""} onChange={handleEditChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
                     </div>
                   </>
                 )}
@@ -906,7 +936,8 @@ export default function AdminDashboard() {
       )}
 
       {/* Basic Keyframes for animations */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       `}} />

@@ -9,13 +9,22 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Edit State
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [isSaving, setIsSaving] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.history.pushState(null, null, window.location.pathname);
+    const handleBackButton = () => {
+      navigate("/");
+    };
+    window.addEventListener("popstate", handleBackButton);
+    return () => window.removeEventListener("popstate", handleBackButton);
+  }, [navigate]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -61,7 +70,7 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
         // Fetch fresh user data and their order history
         const userData = await api.getUser(storedUser.id || storedUser._id);
         const userOrders = await api.getUserOrders(storedUser.id || storedUser._id);
-        
+
         setUser(userData);
         setOrders(userOrders);
       } catch (err) {
@@ -79,9 +88,9 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
   return (
     <div style={{ paddingTop: "80px", minHeight: "100vh", background: "#fcfaf8" }}>
       <Navbar cartCount={cartCount} onCartClick={onCartClick} wishlistCount={wishlistCount} onWishlistClick={onWishlistClick} />
-      
+
       <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "20px", display: "flex", gap: "30px", flexDirection: window.innerWidth < 768 ? "column" : "row" }}>
-        
+
         {/* SIDEBAR NAVIGATION */}
         <div style={{ flex: "1", background: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 2px 10px rgba(0,0,0,0.05)", height: "fit-content" }}>
           <h2 style={{ fontSize: "20px", marginBottom: "20px", color: "#1a1a1a" }}>Account</h2>
@@ -100,7 +109,7 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
                 {tab === "profile" ? "Personal Info" : tab === "orders" ? "My Orders" : "Shipping Address"}
               </button>
             ))}
-            <button 
+            <button
               onClick={() => { localStorage.removeItem("currentUser"); navigate("/"); }}
               style={{ textAlign: "left", padding: "12px", color: "#d32f2f", border: "none", background: "none", cursor: "pointer", fontWeight: "600" }}
             >
@@ -111,7 +120,7 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
 
         {/* MAIN CONTENT AREA */}
         <div style={{ flex: "3", background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
-          
+
           {activeTab === "profile" && (
             <section>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -136,7 +145,7 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
                 </div>
                 <div>
                   <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Email Address</label>
-                  <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.email} <span style={{fontSize: '11px', color: '#999', fontWeight: 'normal'}}>(cannot be changed)</span></p>
+                  <p style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>{user?.email} <span style={{ fontSize: '11px', color: '#999', fontWeight: 'normal' }}>(cannot be changed)</span></p>
                 </div>
                 <div>
                   <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Phone</label>

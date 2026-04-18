@@ -57,9 +57,9 @@ const getImageForProduct = (category, index) => {
   return urls ? urls[index % urls.length] : imageDatabase.lehenga[0];
 };
 
-export default function SearchResults({ 
+export default function SearchResults({
   cartOpen, setCartOpen, addToCart, removeFromCart, cartItems, cartCount,
-  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist 
+  wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -68,12 +68,14 @@ export default function SearchResults({
   const [addedProducts, setAddedProducts] = useState({});
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   useEffect(() => {
     setLoading(true);
-    
+
     if (!query.trim()) {
       setAllProducts([]);
       setLoading(false);
@@ -94,6 +96,7 @@ export default function SearchResults({
 
   const handleSearch = (searchTerm) => {
     setSearchParams({ q: searchTerm });
+    setCurrentPage(1);
   };
 
   const handleAddProduct = (product) => {
@@ -130,10 +133,13 @@ export default function SearchResults({
     });
   }, [allProducts]);
 
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   return (
     <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>
-      <Navbar 
-        cartCount={cartCount} 
+      <Navbar
+        cartCount={cartCount}
         onCartClick={() => setCartOpen(!cartOpen)}
         wishlistCount={wishlistCount}
         onWishlistClick={() => setWishlistOpen(!wishlistOpen)}
@@ -142,7 +148,7 @@ export default function SearchResults({
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
       )}
       {wishlistOpen && (
-        <Wishlist 
+        <Wishlist
           items={wishlistItems} onRemove={removeFromWishlist}
           onClose={() => setWishlistOpen(false)} onAddToCart={addToCart}
         />
@@ -156,175 +162,209 @@ export default function SearchResults({
             Search Results
           </h1>
           <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", margin: 0 }}>
-            {query ? `Showing ${filteredProducts.length} result${filteredProducts.length !== 1 ? "s" : ""} for "${query}"` : "Enter a search term"}
+            {loading ? "Searching our collections..." : (query ? `Showing ${filteredProducts.length} result${filteredProducts.length !== 1 ? "s" : ""} for "${query}"` : "Enter a search term")}
           </p>
         </div>
 
-        {filteredProducts.length > 0 ? (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-            gap: "12px", width: "100%"
-          }}>
-            {filteredProducts.map((product) => {
-              const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-              return (
-                <div
-                  key={product.id}
-                  style={{
-                    background: "#fff", border: "1px solid #eee",
-                    borderRadius: "8px", overflow: "hidden",
-                    transition: "all 0.2s", position: "relative",
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.boxShadow = "0 4px 16px rgba(194,24,91,0.15)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.borderColor = "#E91E63";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.borderColor = "#eee";
-                  }}
-                >
-                  {/* Image — clickable */}
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{
+              display: "inline-block", width: "40px", height: "40px",
+              border: "3px solid #f3f3f3", borderTop: "3px solid #D4AF37",
+              borderRadius: "50%", animation: "spin 1s linear infinite"
+            }} />
+            <p style={{ marginTop: "16px", color: "#666" }}>Finding the perfect pieces...</p>
+            <style dangerouslySetInnerHTML={{ __html: "@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }" }} />
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          <>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+              gap: "12px", width: "100%"
+            }}>
+              {paginatedProducts.map((product) => {
+                const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+                return (
                   <div
-                    onClick={() => navigate(`/product/${product.id}`)}
+                    key={product.id}
                     style={{
-                      position: "relative", width: "100%",
-                      aspectRatio: "1", overflow: "hidden",
-                      background: "#f5f5f5", cursor: "pointer",
+                      background: "#fff", border: "1px solid #eee",
+                      borderRadius: "8px", overflow: "hidden",
+                      transition: "all 0.2s", position: "relative",
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.boxShadow = "0 4px 16px rgba(194,24,91,0.15)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.borderColor = "#E91E63";
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.borderColor = "#eee";
                     }}
                   >
-                    <img
-                      src={product.image} alt={product.name}
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                    {discount > 0 && (
-                      <div style={{
-                        position: "absolute", top: "8px", left: "8px",
-                        background: "#C2185B", color: "#fff",
-                        padding: "3px 8px", borderRadius: "3px",
-                        fontSize: "10px", fontWeight: "700",
-                      }}>
-                        {discount}% OFF
-                      </div>
-                    )}
-                    {/* Wishlist */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (isInWishlist && isInWishlist(product.id)) removeFromWishlist(product.id);
-                        else addToWishlist(product);
-                      }}
+                    {/* Image — clickable */}
+                    <div
+                      onClick={() => navigate(`/product/${product.id}`)}
                       style={{
-                        position: "absolute", top: "8px", right: "8px",
-                        background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
-                        border: "none", width: "32px", height: "32px",
-                        borderRadius: "50%", cursor: "pointer", fontSize: "16px",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)", transition: "all 0.2s",
-                        color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
+                        position: "relative", width: "100%",
+                        aspectRatio: "1", overflow: "hidden",
+                        background: "#f5f5f5", cursor: "pointer",
                       }}
-                      onMouseEnter={e => e.currentTarget.style.transform = "scale(1.2)"}
-                      onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
                     >
-                      {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
-                    </button>
-                  </div>
-
-                  {/* Info */}
-                  <div
-                    onClick={() => navigate(`/product/${product.id}`)}
-                    style={{ padding: isMobile ? "8px 8px 4px" : "12px 12px 6px", cursor: "pointer" }}
-                  >
-                    <h3 style={{
-                      fontSize: isMobile ? "12px" : "13px", fontWeight: "600",
-                      color: "#333", margin: "0 0 4px 0",
-                      minHeight: isMobile ? "32px" : "35px",
-                      overflow: "hidden", display: "-webkit-box",
-                      WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-                    }}>
-                      {product.name}
-                    </h3>
-                    <p style={{ fontSize: isMobile ? "10px" : "11px", color: "#999", margin: "0 0 5px 0" }}>
-                      {product.category} • {product.material}
-                    </p>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                      <span style={{ fontSize: isMobile ? "13px" : "14px", fontWeight: "700", color: "#880E4F" }}>
-                        ₹{product.price.toLocaleString()}
-                      </span>
-                      <span style={{ fontSize: isMobile ? "10px" : "11px", color: "#bbb", textDecoration: "line-through" }}>
-                        ₹{product.originalPrice.toLocaleString()}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: isMobile ? "10px" : "11px", color: "#666", marginBottom: "8px" }}>
-                      ⭐ {product.rating} ({product.reviews} reviews)
-                    </div>
-                  </div>
-
-                  {/* Add to Cart / Quantity Controls */}
-                  <div style={{ padding: isMobile ? "0 8px 10px" : "0 12px 12px" }}>
-                    {addedProducts[product.id] ? (
-                      <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleDecrease(product); }}
-                          style={{
-                            flex: 1, padding: isMobile ? "5px" : "7px",
-                            background: "linear-gradient(135deg, #E91E63, #C2185B)",
-                            color: "#fff", border: "none", borderRadius: "3px",
-                            cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                          }}
-                        >−</button>
-                        <span style={{
-                          flex: 1, textAlign: "center",
-                          fontSize: isMobile ? "12px" : "13px",
-                          fontWeight: "700", color: "#C2185B",
+                      <img
+                        src={product.image} alt={product.name}
+                        loading="lazy"
+                        decoding="async"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                      {discount > 0 && (
+                        <div style={{
+                          position: "absolute", top: "8px", left: "8px",
+                          background: "#C2185B", color: "#fff",
+                          padding: "3px 8px", borderRadius: "3px",
+                          fontSize: "10px", fontWeight: "700",
                         }}>
-                          {addedProducts[product.id]}
-                        </span>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleIncrease(product); }}
-                          style={{
-                            flex: 1, padding: isMobile ? "5px" : "7px",
-                            background: "linear-gradient(135deg, #E91E63, #C2185B)",
-                            color: "#fff", border: "none", borderRadius: "3px",
-                            cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                          }}
-                        >+</button>
-                      </div>
-                    ) : (
+                          {discount}% OFF
+                        </div>
+                      )}
+                      {/* Wishlist */}
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleAddProduct(product); }}
-                        style={{
-                          width: "100%", padding: isMobile ? "7px" : "9px",
-                          fontSize: isMobile ? "11px" : "12px",
-                          background: "linear-gradient(90deg, #E91E63, #C2185B)",
-                          color: "#fff", border: "none", borderRadius: "3px",
-                          cursor: "pointer", fontWeight: "700", transition: "opacity 0.2s",
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isInWishlist && isInWishlist(product.id)) removeFromWishlist(product.id);
+                          else addToWishlist(product);
                         }}
-                        onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
-                        onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                        style={{
+                          position: "absolute", top: "8px", right: "8px",
+                          background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
+                          border: "none", width: "32px", height: "32px",
+                          borderRadius: "50%", cursor: "pointer", fontSize: "16px",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)", transition: "all 0.2s",
+                          color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.transform = "scale(1.2)"}
+                        onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
                       >
-                        Add to Cart
+                        {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
                       </button>
-                    )}
+                    </div>
 
-                    <WhatsAppInquiryButton
-                      message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
-                      buttonStyle={{
-                        width: "100%",
-                        padding: isMobile ? "7px" : "9px",
-                        fontSize: isMobile ? "11px" : "12px",
-                        marginTop: "6px",
-                      }}
-                    />
+                    {/* Info */}
+                    <div
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      style={{ padding: isMobile ? "8px 8px 4px" : "12px 12px 6px", cursor: "pointer" }}
+                    >
+                      <h3 style={{
+                        fontSize: isMobile ? "12px" : "13px", fontWeight: "600",
+                        color: "#333", margin: "0 0 4px 0",
+                        minHeight: isMobile ? "32px" : "35px",
+                        overflow: "hidden", display: "-webkit-box",
+                        WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                      }}>
+                        {product.name}
+                      </h3>
+                      <p style={{ fontSize: isMobile ? "10px" : "11px", color: "#999", margin: "0 0 5px 0" }}>
+                        {product.category} • {product.material}
+                      </p>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                        <span style={{ fontSize: isMobile ? "13px" : "14px", fontWeight: "700", color: "#880E4F" }}>
+                          ₹{product.price.toLocaleString()}
+                        </span>
+                        <span style={{ fontSize: isMobile ? "10px" : "11px", color: "#bbb", textDecoration: "line-through" }}>
+                          ₹{product.originalPrice.toLocaleString()}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: isMobile ? "10px" : "11px", color: "#666", marginBottom: "8px" }}>
+                        ⭐ {product.rating} ({product.reviews} reviews)
+                      </div>
+                    </div>
+
+                    {/* Add to Cart / Quantity Controls */}
+                    <div style={{ padding: isMobile ? "0 8px 10px" : "0 12px 12px" }}>
+                      {addedProducts[product.id] ? (
+                        <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDecrease(product); }}
+                            style={{
+                              flex: 1, padding: isMobile ? "5px" : "7px",
+                              background: "linear-gradient(135deg, #E91E63, #C2185B)",
+                              color: "#fff", border: "none", borderRadius: "3px",
+                              cursor: "pointer", fontWeight: "700", fontSize: "14px",
+                            }}
+                          >−</button>
+                          <span style={{
+                            flex: 1, textAlign: "center",
+                            fontSize: isMobile ? "12px" : "13px",
+                            fontWeight: "700", color: "#C2185B",
+                          }}>
+                            {addedProducts[product.id]}
+                          </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleIncrease(product); }}
+                            style={{
+                              flex: 1, padding: isMobile ? "5px" : "7px",
+                              background: "linear-gradient(135deg, #E91E63, #C2185B)",
+                              color: "#fff", border: "none", borderRadius: "3px",
+                              cursor: "pointer", fontWeight: "700", fontSize: "14px",
+                            }}
+                          >+</button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleAddProduct(product); }}
+                          style={{
+                            width: "100%", padding: isMobile ? "7px" : "9px",
+                            fontSize: isMobile ? "11px" : "12px",
+                            background: "linear-gradient(90deg, #E91E63, #C2185B)",
+                            color: "#fff", border: "none", borderRadius: "3px",
+                            cursor: "pointer", fontWeight: "700", transition: "opacity 0.2s",
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+                          onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                        >
+                          Add to Cart
+                        </button>
+                      )}
+
+                      <WhatsAppInquiryButton
+                        message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                        buttonStyle={{
+                          width: "100%",
+                          padding: isMobile ? "7px" : "9px",
+                          fontSize: isMobile ? "11px" : "12px",
+                          marginTop: "6px",
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+            {totalPages > 1 && (
+              <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "32px", width: "100%" }}>
+                <button
+                  onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  disabled={currentPage === 1}
+                  style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #ddd", background: currentPage === 1 ? "#f9f9f9" : "#fff", color: currentPage === 1 ? "#aaa" : "#333", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "600" }}
+                >
+                  Previous
+                </button>
+                <span style={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#666", fontWeight: "500" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #ddd", background: currentPage === totalPages ? "#f9f9f9" : "#fff", color: currentPage === totalPages ? "#aaa" : "#333", cursor: currentPage === totalPages ? "not-allowed" : "pointer", fontWeight: "600" }}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         ) : query ? (
           <div style={{ textAlign: "center", padding: "40px 20px", color: "#999" }}>
             <p style={{ fontSize: "16px", marginBottom: "20px" }}>No products found for "{query}"</p>

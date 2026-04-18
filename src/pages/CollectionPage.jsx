@@ -5,10 +5,11 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { products as masterProducts } from "../data/products.js";
 import { enhancedProductDatabase } from "../data/enhancedProductDatabase.js";
+import imageDatabase from "../data/imageDatabase.js";
 
-export default function OccasionPage({ 
+export default function OccasionPage({
   cartCount, onCartClick, onAddToCart, onRemoveProduct, cartItems = [],
-  wishlistItems, setWishlistOpen, addToWishlist, removeFromWishlist, isInWishlist 
+  wishlistItems, setWishlistOpen, addToWishlist, removeFromWishlist, isInWishlist
 }) {
   const { occasion } = useParams();
   const navigate = useNavigate();
@@ -110,13 +111,13 @@ export default function OccasionPage({
     window.scrollTo(0, 0);
 
     const apiUrl = import.meta.env.VITE_API_URL || '/api';
-    
+
     // Fetch products that match this occasion or category from our new optimized endpoint
     fetch(`${apiUrl}/products/search?q=${encodeURIComponent(occasionKey)}`)
       .then(res => res.json())
       .then(data => {
         const fetchedProducts = Array.isArray(data) ? data : [];
-        
+
         // Map database products to the required UI component interface 
         const mappedProducts = fetchedProducts.map(p => {
           // Fallback to static master if image is somehow missing
@@ -127,11 +128,11 @@ export default function OccasionPage({
             image: p.image || master?.image || masterProducts[0].image
           };
         });
-        
+
         // Also merge any local static products that aren't in the DB yet, for robustness
         const localStatic = enhancedProductDatabase.filter(p => {
-          const occasionMatch = p.occasion?.toLowerCase() === occasionKey || 
-                                (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
+          const occasionMatch = p.occasion?.toLowerCase() === occasionKey ||
+            (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
           const categoryMatch = p.category?.toLowerCase() === occasionKey;
           return occasionMatch || categoryMatch;
         });
@@ -144,7 +145,19 @@ export default function OccasionPage({
           }
         });
 
-        setProducts(combined);
+        // Clean up emoji images so they actually load
+        const sanitized = combined.map(p => {
+          let img = p.image;
+          if (!img || img.length < 10 || (!img.startsWith("http") && !img.startsWith("data:") && !img.startsWith("/"))) {
+            const catKey = p.category?.toLowerCase() === "salwar kameez" ? "salwarKameez" : p.category?.toLowerCase();
+            const urls = imageDatabase?.[catKey] || imageDatabase?.lehenga || [];
+            const numId = typeof p.id === 'number' ? p.id : parseInt(String(p.id).replace(/\D/g, ''), 10) || 0;
+            img = urls.length > 0 ? urls[numId % urls.length] : "";
+          }
+          return { ...p, image: img };
+        });
+
+        setProducts(sanitized);
         setLoading(false);
       })
       .catch(err => {
@@ -413,7 +426,7 @@ export default function OccasionPage({
 
                   {/* IMAGE */}
                   <div className="occ-img-wrap">
-                    <img src={product.image} alt={product.name} className="occ-img" loading="lazy" />
+                    <img src={product.image} alt={product.name} className="occ-img" loading="lazy" decoding="async" />
                     {discount > 0 && (
                       <span className="occ-discount">{discount}% OFF</span>
                     )}

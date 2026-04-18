@@ -1,9 +1,14 @@
+import { useState } from "react";
+
 export default function Newsletter() {
   const isMobile = window.innerWidth <= 768;
+  const [toast, setToast] = useState(false);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    alert("Thank you for subscribing! Check your email for exclusive offers.");
+    setToast(true);
+    setTimeout(() => setToast(false), 4000);
+    e.target.reset();
   };
 
   return (
@@ -13,13 +18,29 @@ export default function Newsletter() {
       textAlign: "center",
       borderBottom: "1px solid #e5e4e7"
     }}>
+      <style>{`
+      @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    `}</style>
+      {toast && (
+        <div style={{
+          position: "fixed", bottom: "30px", left: "50%", transform: "translateX(-50%)",
+          background: "#08060d", color: "#fff", padding: "14px 24px",
+          borderRadius: "30px", boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+          animation: "slideUp 0.3s ease", fontWeight: "500", fontSize: "14px",
+          zIndex: 9999, border: "1px solid rgba(212,175,55,0.3)",
+          whiteSpace: "nowrap"
+        }}>
+          ✨ Thank you for subscribing! Check your email for exclusive offers.
+        </div>
+      )}
+
       <h2 style={{ fontSize: isMobile ? "24px" : "32px", marginBottom: "15px", color: "#08060d" }}>
         Join Our Community
       </h2>
       <p style={{ fontSize: isMobile ? "14px" : "16px", color: "#666", marginBottom: "25px" }}>
         Get exclusive offers, new arrivals, and fashion tips delivered to your inbox
       </p>
-      
+
       <form onSubmit={handleSubscribe} style={{
         display: "flex",
         gap: isMobile ? "8px" : "10px",

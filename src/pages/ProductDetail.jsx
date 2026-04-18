@@ -7,71 +7,72 @@ import Cart from "../components/Cart";
 import Wishlist from "../components/Wishlist";
 import SizeChart from "../components/SizeChart";
 import { products } from "../data/products.js";
+import imageDatabase from "../data/imageDatabase.js";
 
 // SVG Icons
 const IconTruck = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+    <rect x="1" y="3" width="15" height="13" rx="1" /><path d="M16 8h4l3 5v3h-7V8z" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
   </svg>
 );
 const IconReturn = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" />
   </svg>
 );
 const IconLock = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
   </svg>
 );
 const IconUsers = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
 );
 const IconZoomIn = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+    <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
   </svg>
 );
 const IconZoomOut = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
+    <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="8" y1="11" x2="14" y2="11" />
   </svg>
 );
 const IconRuler = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21.3 8.7 8.7 21.3c-1 1-2.5 1-3.4 0l-2.6-2.6c-1-1-1-2.5 0-3.4L15.3 2.7c1-1 2.5-1 3.4 0l2.6 2.6c1 1 1 2.5 0 3.4z"/><path d="m7.5 10.5 2 2"/><path d="m10.5 7.5 2 2"/><path d="m13.5 4.5 2 2"/><path d="m4.5 13.5 2 2"/>
+    <path d="M21.3 8.7 8.7 21.3c-1 1-2.5 1-3.4 0l-2.6-2.6c-1-1-1-2.5 0-3.4L15.3 2.7c1-1 2.5-1 3.4 0l2.6 2.6c1 1 1 2.5 0 3.4z" /><path d="m7.5 10.5 2 2" /><path d="m10.5 7.5 2 2" /><path d="m13.5 4.5 2 2" /><path d="m4.5 13.5 2 2" />
   </svg>
 );
 const IconHeart = ({ filled }) => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill={filled ? "#E91E63" : "none"} stroke={filled ? "#E91E63" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
   </svg>
 );
 const IconCheck = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 const IconTag = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" /><line x1="7" y1="7" x2="7.01" y2="7" />
   </svg>
 );
 const IconStar = ({ filled }) => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill={filled ? "#F59E0B" : "none"} stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
 const IconThread = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12"/><path d="M12 8v4l3 3"/>
+    <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12" /><path d="M12 8v4l3 3" />
   </svg>
 );
 const IconSparkle = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/><path d="M5 3l.75 2.25L8 6l-2.25.75L5 9l-.75-2.25L2 6l2.25-.75z"/><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75z"/>
+    <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z" /><path d="M5 3l.75 2.25L8 6l-2.25.75L5 9l-.75-2.25L2 6l2.25-.75z" /><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75z" />
   </svg>
 );
 
@@ -479,9 +480,9 @@ const styles = `
   .pd-feature-sub { font-size: 11px; color: var(--muted); }
 `;
 
-export default function ProductDetail({ 
-  cartCount, onCartClick, wishlistCount, onWishlistClick, 
-  cartOpen, setCartOpen, cartItems, removeFromCart, 
+export default function ProductDetail({
+  cartCount, onCartClick, wishlistCount, onWishlistClick,
+  cartOpen, setCartOpen, cartItems, removeFromCart,
   wishlistOpen, setWishlistOpen, wishlistItems, removeFromWishlist, addToCart,
   addToWishlist, isInWishlist
 }) {
@@ -498,7 +499,7 @@ export default function ProductDetail({
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);
   const [sellerPhone, setSellerPhone] = useState(null);
-  
+
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   const staticProduct = useMemo(
@@ -508,7 +509,7 @@ export default function ProductDetail({
 
   const [dbProduct, setDbProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     setLoading(true);
     window.scrollTo(0, 0);
@@ -532,16 +533,47 @@ export default function ProductDetail({
 
   }, [productId, apiUrl]);
 
-  // Use dbProduct if it exists, otherwise fall back to staticProduct
-  const product = dbProduct || staticProduct;
 
-  const discount = product && product.originalPrice > product.price 
-    const sizes = product?.sizes?.length > 0 
-    ? product.sizes 
+  const product = useMemo(() => {
+    const base = dbProduct || staticProduct;
+    if (!base) return null;
+
+    const catKey = base.category?.toLowerCase() === "salwar kameez" ? "salwarKameez" : base.category?.toLowerCase() || "lehenga";
+    const urls = imageDatabase?.[catKey] || imageDatabase?.lehenga || [];
+    const numId = typeof (base.id || base._id) === 'number' ? (base.id || base._id) : parseInt(String(base.id || base._id).replace(/\D/g, ''), 10) || 0;
+
+    let img = base.image;
+    if (!img || img.length < 10 || (!img.startsWith("http") && !img.startsWith("data:") && !img.startsWith("/"))) {
+      img = urls.length > 0 ? urls[numId % urls.length] : "";
+    }
+
+    let imgs = base.images && base.images.length > 0 ? base.images : [];
+    imgs = imgs.map(src => (!src || src.length < 10 || (!src.startsWith("http") && !src.startsWith("data:") && !src.startsWith("/"))) ? img : src);
+
+    // Generate a robust 4-image gallery for static products if none exists
+    if (imgs.length === 0 || (imgs.length === 1 && imgs[0] === img)) {
+      if (urls.length > 3) {
+        imgs = [img, urls[(numId + 1) % urls.length], urls[(numId + 2) % urls.length], urls[(numId + 3) % urls.length]];
+      } else {
+        imgs = [img];
+      }
+    }
+
+    let video = base.videoUrl;
+    if (!video && !dbProduct) {
+      video = "https://cdn.pixabay.com/video/2020/05/24/40058-424750106_tiny.mp4"; // Sample fashion video
+    }
+
+    return { ...base, image: img, images: imgs, videoUrl: video };
+  }, [dbProduct, staticProduct]);
+
+  const discount = product && product.originalPrice > product.price
+  const sizes = product?.sizes?.length > 0
+    ? product.sizes
     : (product ? ["XS", "S", "M", "L", "XL", "XXL"] : []);
-  
+
   const colors = product?.colors || [];
-  
+
   const inWishlist = product ? isInWishlist(product._id || product.id) : false;
 
   const handleAddToCart = () => {
@@ -557,19 +589,49 @@ export default function ProductDetail({
 
   const IconCheck = () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 6L9 17l-5-5"/>
+      <path d="M20 6L9 17l-5-5" />
     </svg>
   );
 
   const media = useMemo(() => {
     if (!product) return [];
     const images = product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []);
-    const mediaArray = images.map(src => ({ type: 'image', src }));
+
+    const mediaArray = images.map(src => {
+      let cleanSrc = src;
+      if (typeof src === 'string') {
+        // Un-proxy if the user pasted a video URL into the image field by mistake
+        if (src.includes('wsrv.nl') && src.includes('url=')) {
+          try { cleanSrc = decodeURIComponent(src.split('url=')[1].split('&')[0]); } catch (e) { }
+        }
+        // Extract URL if user pasted an entire iframe tag
+        if (cleanSrc.includes('<iframe') && cleanSrc.includes('src=')) {
+          const match = cleanSrc.match(/src=["']([^"']+)["']/);
+          if (match) cleanSrc = match[1];
+        }
+      }
+
+      if (typeof cleanSrc === 'string' && (cleanSrc.includes("instagram.com") || cleanSrc.includes("youtube.com") || cleanSrc.includes("youtu.be") || cleanSrc.includes("vimeo.com") || cleanSrc.match(/\.(mp4|webm|ogg)$/i))) {
+        return { type: 'video', src: cleanSrc };
+      }
+      return { type: 'image', src };
+    });
+
     if (product.videoUrl) {
-      if (mediaArray.length > 0) {
-        mediaArray.splice(1, 0, { type: 'video', src: product.videoUrl });
-      } else {
-        mediaArray.push({ type: 'video', src: product.videoUrl });
+      let cleanVid = product.videoUrl;
+      if (cleanVid.includes('wsrv.nl') && cleanVid.includes('url=')) {
+        try { cleanVid = decodeURIComponent(cleanVid.split('url=')[1].split('&')[0]); } catch (e) { }
+      }
+      if (cleanVid.includes('<iframe') && cleanVid.includes('src=')) {
+        const match = cleanVid.match(/src=["']([^"']+)["']/);
+        if (match) cleanVid = match[1];
+      }
+      if (!mediaArray.some(m => m.src === cleanVid)) {
+        if (mediaArray.length > 0) {
+          mediaArray.splice(1, 0, { type: 'video', src: cleanVid });
+        } else {
+          mediaArray.push({ type: 'video', src: cleanVid });
+        }
       }
     }
     return mediaArray;
@@ -606,11 +668,11 @@ export default function ProductDetail({
       } else if (!selectedSize) {
         setSelectedSize("M");
       }
-      
+
       if (product.colors?.length > 0 && !selectedColor) {
         setSelectedColor(product.colors[0]);
       }
-      
+
       if (product.sellerId) {
         fetch(`${apiUrl}/sellers/${product.sellerId}`)
           .then(res => res.json())
@@ -634,14 +696,15 @@ export default function ProductDetail({
             {/* Inner pulsing jewel */}
             <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "24px", height: "24px", backgroundColor: "var(--rose)", borderRadius: "50%", animation: "pulse 1.5s ease-in-out infinite", opacity: 0.8, boxShadow: "0 0 16px rgba(136, 14, 79, 0.4)" }}></div>
           </div>
-          
+
           <div style={{ textAlign: "center", animation: "fadeIn 0.5s ease-out" }}>
             <h3 style={{ margin: "0 0 8px", fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", color: "var(--dark)", letterSpacing: "1px" }}>Curating Your Style</h3>
             <p style={{ margin: 0, color: "var(--muted)", fontSize: "13px", letterSpacing: "0.5px", textTransform: "uppercase" }}>Loading exquisite details...</p>
           </div>
         </div>
 
-        <style dangerouslySetInnerHTML={{__html: `
+        <style dangerouslySetInnerHTML={{
+          __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
           @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.4; } }
           @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -687,70 +750,82 @@ export default function ProductDetail({
 
         {/* ── LEFT: Image Gallery ── */}
         <div style={{ minWidth: 0, width: "100%", maxWidth: "100%", position: "relative" }}>
-          
-          <div 
+
+          <div
             className="pd-swipe-gallery"
             ref={galleryRef}
             onScroll={handleGalleryScroll}
           >
             {media.map((item, i) => (
-              <div 
-                key={i} 
-                className={`pd-swipe-item${zoom && item.type === 'image' && i === activeIndex ? " zoomed" : ""}`} 
-                onClick={() => { if(item.type === 'image') setZoom(!zoom); }}
+              <div
+                key={i}
+                className={`pd-swipe-item${zoom && item.type === 'image' && i === activeIndex ? " zoomed" : ""}`}
+                onClick={() => { if (item.type === 'image') setZoom(!zoom); }}
               >
                 {item.type === 'image' ? (
-                  <img src={item.src} alt={`${product.name} - View ${i + 1}`} loading={i === 0 ? "eager" : "lazy"} />
+                  <img src={item.src} alt={`${product.name} - View ${i + 1}`} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} decoding="async" />
                 ) : (
-                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", backgroundColor: "#000" }}>
+
+                    {/* Custom Player Smart Routing */}
                     {item.src.includes("instagram.com") ? (
-                      <iframe src={item.src.split('?')[0].replace(/\/$/, '') + "/embed"} width="100%" height="100%" frameBorder="0" scrolling="no" allowtransparency="true" style={{ display: "block", minHeight: "480px" }}></iframe>
+                      <div style={{ width: "100%", height: "100%", position: "relative" }}>
+                        <iframe src={item.src.split('?')[0].replace(/\/$/, '') + (item.src.includes('/embed') ? "" : "/embed")} width="100%" height="100%" frameBorder="0" scrolling="no" allowTransparency="true" allow="encrypted-media" loading="lazy" style={{ display: "block", minHeight: "480px" }}></iframe>
+                      </div>
                     ) : item.src.includes("youtube.com") || item.src.includes("youtu.be") ? (
-                       <iframe src={item.src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
+                      <iframe src={item.src.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/") + "?autoplay=0&rel=0"} width="100%" height="100%" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen loading="lazy" style={{ minHeight: "400px", display: "block" }}></iframe>
                     ) : item.src.includes("vimeo.com") ? (
-                      <iframe src={item.src.replace("vimeo.com/", "player.vimeo.com/video/")} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen style={{ minHeight: "400px", display: "block" }}></iframe>
+                      <iframe src={item.src.replace("vimeo.com/", "player.vimeo.com/video/")} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen loading="lazy" style={{ minHeight: "400px", display: "block" }}></iframe>
                     ) : (
-                      <video src={item.src} controls autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+                      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                        <video src={item.src} poster={product.image} controls autoPlay={false} preload="none" playsInline style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", cursor: "pointer" }}
+                          onClick={(e) => { e.target.paused ? e.target.play() : e.target.pause(); }}
+                          onPlay={() => setPlayingVideo(prev => ({ ...prev, [i]: true }))}
+                          onPause={() => setPlayingVideo(prev => ({ ...prev, [i]: false }))}
+                        />
+                        {!playingVideo[i] && (
+                          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '72px', height: '72px', backgroundColor: 'rgba(212,175,55,0.9)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', pointerEvents: 'none', zIndex: 10, boxShadow: '0 4px 15px rgba(0,0,0,0.3)' }}>
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 )}
               </div>
             ))}
           </div>
-          
-          {discount > 0 && <div className="pd-discount-badge">−{discount}% OFF</div>}
-          <button className="pd-zoom-btn" onClick={() => setZoom(!zoom)}>{zoom ? <IconZoomOut /> : <IconZoomIn />}</button>
 
-          {/* If data hasn't loaded yet, show an optimistic placeholder so layout doesn't shift */}
-          {!dbProduct && (
-            <div style={{ display: 'flex', gap: '8px', padding: '12px 16px', overflowX: 'auto', minHeight: '80px', backgroundColor: '#f8fafc', borderRadius: '12px', marginTop: '16px', opacity: 0.5 }}>
-              <div style={{ width: '60px', height: '60px', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
-              <div style={{ width: '60px', height: '60px', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite', animationDelay: '0.2s' }}></div>
-              <div style={{ width: '60px', height: '60px', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite', animationDelay: '0.4s' }}></div>
-            </div>
-          )}
-          
-          {dbProduct && media.length > 1 && (
-            <div 
+          {discount > 0 && <div className="pd-discount-badge" style={{ zIndex: 20 }}>−{discount}% OFF</div>}
+          <button className="pd-zoom-btn" style={{ zIndex: 20 }} onClick={() => setZoom(!zoom)}>{zoom ? <IconZoomOut /> : <IconZoomIn />}</button>
+
+          {media.length > 1 && (
+            <div
               className="pd-thumbnails"
               style={{
                 padding: "12px 0", minHeight: "80px", WebkitOverflowScrolling: "touch"
               }}
             >
-              {media.map((item, i) => (
-                <div 
-                  key={i} 
-                  className={`pd-thumb ${i === activeIndex ? "active" : ""}`}
-                  onClick={() => handleThumbnailClick(i)}
-                >
-                  <img src={item.type === 'video' ? product.image : item.src} alt={`Thumbnail ${i + 1}`} loading="lazy" style={{ opacity: item.type === 'video' ? 0.7 : 1 }} />
-                  {item.type === 'video' && (
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '32px', height: '32px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                    </div>
-                  )}
-                </div>
-              ))}
+              {media.map((item, i) => {
+                const isVid = item.type === 'video';
+                const thumbSrc = isVid
+                  ? (product.image && !product.image.includes('instagram.com') && !product.image.match(/\.(mp4|webm|ogg)$/i) ? product.image : "https://images.pexels.com/photos/15344877/pexels-photo-15344877.jpeg?auto=compress&w=200")
+                  : item.src;
+                return (
+                  <div
+                    key={i}
+                    className={`pd-thumb ${i === activeIndex ? "active" : ""}`}
+                    onClick={() => handleThumbnailClick(i)}
+                  >
+                    <img src={thumbSrc} alt={`Thumbnail ${i + 1}`} loading="lazy" decoding="async" style={{ opacity: isVid ? 0.7 : 1 }} />
+                    {isVid && (
+                      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '32px', height: '32px', backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -768,7 +843,7 @@ export default function ProductDetail({
           {/* Rating */}
           <div className="pd-rating">
             <div className="pd-stars">
-              {[1,2,3,4,5].map(i => <IconStar key={i} filled={i <= 5} />)}
+              {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 5} />)}
             </div>
             <span style={{ fontSize: "13px", fontWeight: "600", color: "#F59E0B" }}>4.8</span>
             <span className="pd-review-count">({product.reviews || 324} reviews)</span>
@@ -925,7 +1000,7 @@ export default function ProductDetail({
       {product && (
         <div className="pd-info-section">
           <h2>Product Details</h2>
-          
+
           {product.description && (
             <p style={{ fontSize: "15px", color: "var(--text)", lineHeight: "1.6", marginBottom: "24px" }}>
               {product.description}
@@ -949,7 +1024,7 @@ export default function ProductDetail({
                   {product.care && <p className="pd-info-row" style={{ marginTop: "12px" }}><strong>Care:</strong> {product.care}</p>}
                 </div>
               )}
-              
+
               {(product.embroidery || product.deliveryDays) && (
                 <div className="pd-info-card">
                   <div className="pd-info-card-header">

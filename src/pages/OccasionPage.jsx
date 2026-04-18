@@ -5,10 +5,11 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { products as masterProducts } from "../data/products.js";
 import { enhancedProductDatabase } from "../data/enhancedProductDatabase.js";
+import imageDatabase from "../data/imageDatabase.js";
 
-export default function OccasionPage({ 
+export default function OccasionPage({
   cartCount, onCartClick, onAddToCart, onRemoveProduct, cartItems = [],
-  wishlistItems, setWishlistOpen, addToWishlist, removeFromWishlist, isInWishlist 
+  wishlistItems, setWishlistOpen, addToWishlist, removeFromWishlist, isInWishlist
 }) {
   const { occasion } = useParams();
   const navigate = useNavigate();
@@ -116,7 +117,7 @@ export default function OccasionPage({
 
       // Combine local catalog + backend catalog perfectly
       const all = [...masterProducts, ...enhancedProductDatabase, ...dbProducts];
-      
+
       const filtered = all
         .filter(p => {
           const occasionMatch =
@@ -137,7 +138,20 @@ export default function OccasionPage({
 
       // Simple deduplication based on ID
       const unique = filtered.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
-      setProducts(unique);
+
+      // Clean up emoji images so they actually load
+      const sanitized = unique.map(p => {
+        let img = p.image;
+        if (!img || img.length < 10 || (!img.startsWith("http") && !img.startsWith("data:") && !img.startsWith("/"))) {
+          const catKey = p.category?.toLowerCase() === "salwar kameez" ? "salwarKameez" : p.category?.toLowerCase();
+          const urls = imageDatabase?.[catKey] || imageDatabase?.lehenga || [];
+          const numId = typeof p.id === 'number' ? p.id : parseInt(String(p.id).replace(/\D/g, ''), 10) || 0;
+          img = urls.length > 0 ? urls[numId % urls.length] : "";
+        }
+        return { ...p, image: img };
+      });
+
+      setProducts(sanitized);
     };
 
     fetchProducts();
@@ -403,7 +417,7 @@ export default function OccasionPage({
 
                   {/* IMAGE */}
                   <div className="occ-img-wrap">
-                    <img src={product.image} alt={product.name} className="occ-img" loading="lazy" />
+                    <img src={product.image} alt={product.name} className="occ-img" loading="lazy" decoding="async" />
                     {discount > 0 && (
                       <span className="occ-discount">{discount}% OFF</span>
                     )}

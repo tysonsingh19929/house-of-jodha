@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cart from "../components/Cart";
@@ -9,6 +9,21 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "", type: "error" });
+
+  const showToast = (message, type = "error") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
+  };
+
+  useEffect(() => {
+    window.history.pushState(null, null, window.location.pathname);
+    const handleBackButton = () => {
+      navigate("/");
+    };
+    window.addEventListener("popstate", handleBackButton);
+    return () => window.removeEventListener("popstate", handleBackButton);
+  }, [navigate]);
 
   // Group items by id
   const groupedItems = cartItems.reduce((acc, item) => {
@@ -52,13 +67,13 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!formData.fullName || !formData.email || !formData.address || !formData.cardNumber) {
-      alert("Please fill all required shipping and payment fields");
+      showToast("Please fill all required shipping and payment fields", "error");
       return;
     }
 
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (!currentUser) {
-      alert("Please login first to place an order");
+      showToast("Please login first to place an order", "error");
       navigate("/login");
       return;
     }
@@ -70,7 +85,7 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
       const orderData = {
         userId: currentUser.id || currentUser._id,
         items: groupedItems.map(item => ({
-          productId: item.id || item._id, 
+          productId: item.id || item._id,
           name: item.name,
           price: item.price,
           quantity: item.quantity
@@ -86,23 +101,23 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
           city: formData.city,
           state: formData.state,
           zipCode: formData.zip,
-          country: "India" 
+          country: "India"
         }
       };
 
       // Pretend to pass the card to a gateway and take 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       await api.createOrder(orderData);
-      
+
       setOrderPlaced(true);
       if (clearCart) clearCart();
 
       setTimeout(() => {
-        navigate("/profile"); 
+        navigate("/profile");
       }, 3000);
     } catch (err) {
-      alert("Failed to place order. " + err.message);
+      showToast("Failed to place order: " + err.message, "error");
     } finally {
       setLoading(false);
     }
@@ -133,9 +148,50 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
     );
   }
 
+  if (cartItems.length === 0) {
+    return (
+      <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: "64px", marginBottom: "16px", opacity: 0.5 }}>🛒</div>
+            <h2 style={{ fontSize: "24px", color: "#333", marginBottom: "12px", fontWeight: "600" }}>Your checkout is empty</h2>
+            <p style={{ color: "#666", marginBottom: "24px" }}>Add some beautiful items to your cart before proceeding to checkout.</p>
+            <button onClick={() => navigate("/")} style={{
+              background: "#D4AF37", color: "#fff", border: "none", padding: "12px 30px", fontSize: "16px", borderRadius: "4px", cursor: "pointer", fontWeight: "600"
+            }}>
+              Return to Shop
+            </button>
+          </div>
+        </div>
+        {cartOpen && (
+          <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
+        )}
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>
+      <style>{`
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+      `}</style>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div style={{
+          position: "fixed", top: "100px", right: "20px", zIndex: 9999,
+          background: toast.type === "error" ? "#e74c3c" : "#2ecc71",
+          color: "#fff", padding: "14px 24px", borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          animation: "slideInRight 0.3s ease", fontWeight: "500", fontSize: "14px"
+        }}>
+          {toast.message}
+        </div>
+      )}
+
       {cartOpen && (
         <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
       )}
