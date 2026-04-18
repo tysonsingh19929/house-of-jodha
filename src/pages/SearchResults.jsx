@@ -72,17 +72,25 @@ export default function SearchResults({
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   useEffect(() => {
-    fetch(`${apiUrl}/products`)
+    setLoading(true);
+    
+    if (!query.trim()) {
+      setAllProducts([]);
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${apiUrl}/products/search?q=${encodeURIComponent(query)}`)
       .then(res => res.json())
       .then(data => {
         setAllProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
-        console.error("Error fetching products:", err);
+        console.error("Error fetching matching products:", err);
         setLoading(false);
       });
-  }, [apiUrl]);
+  }, [apiUrl, query]);
 
   const handleSearch = (searchTerm) => {
     setSearchParams({ q: searchTerm });
@@ -115,38 +123,12 @@ export default function SearchResults({
   };
 
   const filteredProducts = useMemo(() => {
-    if (!query.trim()) return [];
-    const searchTerm = query.toLowerCase();
-    
-    return allProducts
-      .filter(product => {
-        const name = product.name || "";
-        const category = product.category || "";
-        const material = product.material || "";
-        const color = product.color || product.colors?.join(" ") || "";
-        const description = product.description || "";
-        const occasions = Array.isArray(product.occasions) ? product.occasions.map(o => o.toLowerCase()).join(" ") : "";
-        
-        return (
-          name.toLowerCase().includes(searchTerm) ||
-          category.toLowerCase().includes(searchTerm) ||
-          material.toLowerCase().includes(searchTerm) ||
-          color.toLowerCase().includes(searchTerm) ||
-          description.toLowerCase().includes(searchTerm) ||
-          occasions.includes(searchTerm)
-        );
-      })
-      .map((product) => {
-        const categoryProducts = allProducts.filter(p => p.category === product.category);
-        const productIndex = categoryProducts.findIndex(p => (p._id || p.id) === (product._id || product.id));
-        
-        // Use database image if it's a URL, otherwise fallback to static mapping
-        const hasValidDbImage = product.image && product.image.length > 10 && (product.image.includes('http') || product.image.includes('data:image'));
-        const image = hasValidDbImage ? product.image : getImageForProduct(product.category, productIndex);
-        
-        return { ...product, id: product._id || product.id, image };
-      });
-  }, [query, allProducts]);
+    return allProducts.map((product) => {
+      // Just ensure backward compatibility with old hardcoded logic
+      const idToUse = product._id || product.id;
+      return { ...product, id: idToUse, image: product.image || imageDatabase.lehenga[0] };
+    });
+  }, [allProducts]);
 
   return (
     <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>

@@ -513,23 +513,26 @@ export default function ProductDetail({
     setLoading(true);
     window.scrollTo(0, 0);
 
-    const timer = setTimeout(() => setLoading(false), 800);
-    
-    fetch(`${apiUrl}/products`)
+    // If it's a legacy static ID (e.g., small integer), allow the static product as a fallback
+    // But still prioritize checking the DB.
+    // We fetch the specific product to avoid downloading all products (especially base64 images).
+    fetch(`${apiUrl}/products/${productId}`)
       .then(res => {
-        if (!res.ok) throw new Error("Network error");
+        if (!res.ok) throw new Error("Product not found in DB");
         return res.json();
       })
       .then(data => {
-        const match = data.find(p => (p._id && p._id === productId) || (p.id && p.id === parseInt(productId, 10))) || 
-                      data.find(p => staticProduct && p.name === staticProduct.name);
-        if (match) setDbProduct(match);
+        if (data) setDbProduct(data);
+        setLoading(false);
       })
-      .catch(err => console.error("Error fetching product from DB:", err));
+      .catch(err => {
+        console.warn("DB fetch failed, relying on static data if available:", err);
+        setLoading(false); // Finished checking DB
+      });
 
-    return () => clearTimeout(timer);
-  }, [productId, apiUrl, staticProduct]);
+  }, [productId, apiUrl]);
 
+  // Use dbProduct if it exists, otherwise fall back to staticProduct
   const product = dbProduct || staticProduct;
 
   const discount = product && product.originalPrice > product.price 

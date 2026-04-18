@@ -39,6 +39,29 @@ router.get('/occasion/:occasionName', async (req, res) => {
   }
 });
 
+// 2.5 GET BY SEARCH QUERY (To massively reduce payload sizes vs fetching all)
+router.get('/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) return res.json([]);
+    
+    // Search across name, category, color, material, description
+    const regex = new RegExp(q, "i");
+    const products = await Product.find({
+      $or: [
+        { name: regex },
+        { category: regex },
+        { color: regex },
+        { material: regex },
+        { description: regex }
+      ]
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // 3. GET BY ID (For the Detail Page)
 router.get('/:id', async (req, res) => {
   try {
