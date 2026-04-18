@@ -133,7 +133,7 @@ function App() {
       console.log(`Cart updated. Total items: ${updatedItems.length}`);
       return updatedItems;
     });
-    setWishlistItems((prevWishlist) => prevWishlist.filter(item => item.id !== product.id));
+    setWishlistItems((prevWishlist) => prevWishlist.filter(item => (item.id || item._id) !== (product.id || product._id)));
   };
 
   const removeFromCart = (index) => {
@@ -141,20 +141,20 @@ function App() {
   };
 
   const removeProductFromCart = (productId) => {
-    setCartItems(cartItems.filter(item => item.id !== productId));
+    setCartItems(cartItems.filter(item => item.id !== productId && item._id !== productId));
   };
 
   const addToWishlist = (product) => {
-    const isAlreadyInWishlist = wishlistItems.some(item => item.id === product.id);
+    const isAlreadyInWishlist = wishlistItems.some(item => (item.id || item._id) === (product.id || product._id));
     if (!isAlreadyInWishlist) setWishlistItems([...wishlistItems, product]);
   };
 
   const removeFromWishlist = (productId) => {
-    setWishlistItems(wishlistItems.filter(item => item.id !== productId));
+    setWishlistItems(wishlistItems.filter(item => item.id !== productId && item._id !== productId));
   };
 
   const isInWishlist = (productId) => {
-    return wishlistItems.some(item => item.id === productId);
+    return wishlistItems.some(item => item.id === productId || item._id === productId);
   };
 
   const cartCount = cartItems.length;

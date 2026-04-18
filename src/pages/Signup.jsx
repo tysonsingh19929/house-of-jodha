@@ -74,137 +74,132 @@ export default function Signup({ cartOpen, setCartOpen, cartCount }) {
   };
 
   return (
-    <div style={{ background: "#fcfaf8", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
       <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
 
-      <div style={{ flex: "1", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "20px" : "40px" }}>
+      <div style={{ flex: "1", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", padding: isMobile ? "20px" : "40px", position: "relative", overflow: "hidden" }}>
+        {/* Soft floating background orbs */}
+        <div style={{ position: "absolute", top: "0", left: "0", right: "0", bottom: "0", overflow: "hidden", pointerEvents: "none" }}>
+          <div style={{ position: "absolute", top: "-10%", left: "10%", width: "500px", height: "500px", background: "radial-gradient(circle, rgba(212,175,55,0.06) 0%, rgba(250,250,250,0) 70%)" }} />
+          <div style={{ position: "absolute", bottom: "-10%", right: "10%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(0,0,0,0.03) 0%, rgba(250,250,250,0) 70%)" }} />
+        </div>
+
         <div style={{
-          width: "100%", maxWidth: "480px", background: "#fff", padding: isMobile ? "30px 20px" : "40px",
-          borderRadius: "16px", border: "1px solid rgba(212, 175, 55, 0.2)",
-          boxShadow: "0 10px 40px rgba(0,0,0,0.06)", position: "relative", overflow: "hidden"
+          width: "100%", maxWidth: "480px", background: "#ffffff", padding: isMobile ? "30px 24px" : "48px",
+          borderRadius: "24px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02)",
+          position: "relative", zIndex: 1, border: "1px solid rgba(212,175,55,0.1)",
+          animation: "slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
         }}>
-          {/* Subtle gold glow behind header */}
-          <div style={{ position: "absolute", top: "-50px", left: "50%", transform: "translateX(-50%)", width: "100px", height: "100px", background: "#D4AF37", filter: "blur(70px)", opacity: "0.2", zIndex: 0 }} />
+          <style>{`
+            @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+            .user-input { width: 100%; padding: 14px 16px; background: #fafafa; border: 1px solid #eaeaea; border-radius: 12px; font-size: 14px; color: #1a1a1a; outline: none; transition: all 0.3s ease; box-sizing: border-box; }
+            .user-input:focus { border-color: #D4AF37; background: #fff; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
+            .user-input::placeholder { color: #aaa; }
+            .user-label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 8px; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; }
+            .user-btn { width: 100%; padding: 16px; background: #1a1a1a; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 12px rgba(26,26,26,0.15); display: flex; align-items: center; justify-content: center; gap: 10px; }
+            .user-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,26,26,0.25); background: #333; }
+            .user-btn:active:not(:disabled) { transform: translateY(1px); }
+            .user-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+            .provider-btn { width: 100%; padding: 14px; background: #fff; color: #1a1a1a; border: 1px solid #eaeaea; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; alignItems: center; justify-content: center; gap: 12px; }
+            .provider-btn:hover { background: #fafafa; border-color: #ddd; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+          `}</style>
 
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <h1 style={{ fontSize: isMobile ? "28px" : "32px", marginBottom: "8px", color: "#1a1a1a", textAlign: "center", fontWeight: "700", letterSpacing: "-0.5px" }}>
-              Join the House
-            </h1>
-            <p style={{ fontSize: "15px", color: "#666", textAlign: "center", marginBottom: "32px", lineHeight: "1.5" }}>
-              Unlock exclusive collections, personalized styling, and fast checkouts.
-            </p>
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <h1 style={{ fontSize: isMobile ? "28px" : "32px", marginBottom: "8px", color: "#1a1a1a", fontWeight: "700", letterSpacing: "-0.5px" }}>Join the House</h1>
+            <p style={{ fontSize: "15px", color: "#666", lineHeight: "1.5", margin: 0 }}>Unlock exclusive collections and seamless styling experiences.</p>
+          </div>
 
-            {error && <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", color: "#721c24", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>{error}</div>}
-            {success && <div style={{ background: "#d4edda", border: "1px solid #c3e6cb", color: "#155724", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>{success}</div>}
+          {error && <div style={{ background: "#fff5f5", border: "1px solid #ffe3e3", color: "#e03131", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px", fontWeight: "500", display: "flex", alignItems: "center", gap: "10px" }}>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            {error}
+          </div>}
+          
+          {success && <div style={{ background: "#f4fdf8", border: "1px solid #d3f9e8", color: "#099268", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px", fontWeight: "500", display: "flex", alignItems: "center", gap: "10px" }}>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+            {success}
+          </div>}
 
-            {/* Omnichannel Buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
-              <button 
-                onClick={() => handlePendingAuth('WhatsApp')}
-                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", width: "100%", padding: "14px", background: "#25D366", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 14px rgba(37, 211, 102, 0.3)" }}
-                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-              >
+          {!showEmailForm ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", animation: "slideUp 0.4s ease" }}>
+              <button onClick={() => handlePendingAuth('WhatsApp')} className="provider-btn" style={{ color: "#25D366" }}>
                 <WhatsAppIcon /> Continue with WhatsApp
               </button>
-
-              <button 
-                onClick={() => handlePendingAuth('Instagram')}
-                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", width: "100%", padding: "14px", background: "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 14px rgba(220, 39, 67, 0.3)" }}
-                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-              >
+              <button onClick={() => handlePendingAuth('Instagram')} className="provider-btn" style={{ color: "#E1306C" }}>
                 <InstagramIcon /> Continue with Instagram
               </button>
-
-              <button 
-                onClick={() => handlePendingAuth('Mobile OTP')}
-                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", width: "100%", padding: "14px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer", transition: "all 0.2s", boxShadow: "0 4px 14px rgba(26, 26, 26, 0.2)" }}
-                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-              >
+              <button onClick={() => handlePendingAuth('Mobile OTP')} className="provider-btn">
                 <PhoneIcon /> Sign up with Mobile OTP
               </button>
-            </div>
 
-            <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: "#999" }}>
-              <div style={{ flex: 1, height: "1px", background: "#eee" }}></div>
-              <span style={{ padding: "0 15px", fontSize: "14px", fontWeight: "500" }}>OR</span>
-              <div style={{ flex: 1, height: "1px", background: "#eee" }}></div>
-            </div>
+              <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: "#aaa" }}>
+                <div style={{ flex: 1, height: "1px", background: "#f0f0f0" }} />
+                <span style={{ padding: "0 16px", fontSize: "12px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "1px" }}>OR</span>
+                <div style={{ flex: 1, height: "1px", background: "#f0f0f0" }} />
+              </div>
 
-            {!showEmailForm ? (
-              <button 
-                onClick={() => setShowEmailForm(true)}
-                style={{ width: "100%", padding: "14px", background: "#fff", color: "#333", border: "1px solid #ddd", borderRadius: "12px", fontSize: "15px", fontWeight: "600", cursor: "pointer", transition: "all 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.background = "#fafafa"}
-                onMouseLeave={e => e.currentTarget.style.background = "#fff"}
-              >
-                Sign up with Email
+              <button onClick={() => setShowEmailForm(true)} className="user-btn" style={{ background: "#D4AF37", boxShadow: "0 4px 15px rgba(212,175,55,0.3)" }} onMouseLeave={e => e.target.style.background = "#D4AF37"} onMouseEnter={e => e.target.style.background = "#c49a27"}>
+                Continue with Email
               </button>
-            ) : (
-              <form onSubmit={handleSignup} style={{ animation: "fadeIn 0.3s ease" }}>
-                <div style={{ display: "grid", gap: "16px", marginBottom: "24px" }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "#444", textTransform: "uppercase", letterSpacing: "0.5px" }}>Full Name</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                  </div>
-                  
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "#444", textTransform: "uppercase", letterSpacing: "0.5px" }}>Email</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "#444", textTransform: "uppercase", letterSpacing: "0.5px" }}>Phone</label>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                    <div>
-                      <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "#444", textTransform: "uppercase", letterSpacing: "0.5px" }}>Password</label>
-                      <input type="password" name="password" value={formData.password} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "#444", textTransform: "uppercase", letterSpacing: "0.5px" }}>Confirm</label>
-                      <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ display: "grid", gap: "16px", marginBottom: "24px", paddingTop: "20px", borderTop: "1px solid #eee" }}>
-                  <p style={{ fontSize: "13px", color: "#999", margin: 0 }}>Shipping Information (Optional)</p>
-                  <div>
-                    <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "#444", textTransform: "uppercase", letterSpacing: "0.5px" }}>Address</label>
-                    <input type="text" name="address" value={formData.address} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "12px" }}>
-                    <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                    <input type="text" name="state" placeholder="State" value={formData.state} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                    <input type="text" name="zipCode" placeholder="ZIP" value={formData.zipCode} onChange={handleInputChange} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", outline: "none" }} onFocus={e => e.target.style.borderColor = "#D4AF37"} onBlur={e => e.target.style.borderColor = "#ddd"} />
-                  </div>
-                </div>
-
-                <button
-                  type="submit" disabled={loading}
-                  style={{ width: "100%", padding: "16px", background: loading ? "#ccc" : "#D4AF37", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", transition: "all 0.3s" }}
-                  onMouseEnter={e => !loading && (e.target.style.background = "#c49a27")}
-                  onMouseLeave={e => !loading && (e.target.style.background = "#D4AF37")}
-                >
-                  {loading ? "Creating Account..." : "Create Account"}
-                </button>
-              </form>
-            )}
-
-            <div style={{ marginTop: "32px", textAlign: "center" }}>
-              <p style={{ fontSize: "14px", color: "#666", margin: "0" }}>
-                Already have an account? <Link to="/login" style={{ color: "#D4AF37", textDecoration: "none", fontWeight: "600" }}>Log in here</Link>
-              </p>
             </div>
+          ) : (
+            <form onSubmit={handleSignup} style={{ animation: "slideUp 0.4s ease" }}>
+              <div style={{ display: "grid", gap: "16px", marginBottom: "24px" }}>
+                <div>
+                  <label className="user-label">Full Name</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="user-input" placeholder="Jane Doe" autoFocus />
+                </div>
+                <div>
+                  <label className="user-label">Email Address</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="user-input" placeholder="hello@example.com" />
+                </div>
+                <div>
+                  <label className="user-label">Phone Number</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="user-input" placeholder="+91 90000 00000" />
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div>
+                    <label className="user-label">Password</label>
+                    <input type="password" name="password" value={formData.password} onChange={handleInputChange} className="user-input" placeholder="••••••••" />
+                  </div>
+                  <div>
+                    <label className="user-label">Confirm</label>
+                    <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} className="user-input" placeholder="••••••••" />
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "16px", marginBottom: "24px", paddingTop: "24px", borderTop: "1px solid #f0f0f0" }}>
+                <p style={{ fontSize: "13px", color: "#888", margin: 0, fontWeight: "500" }}>Shipping Information (Optional)</p>
+                <div>
+                  <label className="user-label">Street Address</label>
+                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="user-input" placeholder="House No, Street Area..." />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "12px" }}>
+                  <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleInputChange} className="user-input" />
+                  <input type="text" name="state" placeholder="State" value={formData.state} onChange={handleInputChange} className="user-input" />
+                  <input type="text" name="zipCode" placeholder="ZIP Core" value={formData.zipCode} onChange={handleInputChange} className="user-input" />
+                </div>
+              </div>
+
+              <button type="submit" disabled={loading} className="user-btn">
+                {loading ? "Creating Profile..." : "Create Account"}
+              </button>
+              
+              <button type="button" onClick={() => setShowEmailForm(false)} style={{ width: "100%", padding: "14px", background: "transparent", color: "#666", border: "none", fontSize: "14px", fontWeight: "600", cursor: "pointer", marginTop: "12px", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#333"} onMouseLeave={e => e.target.style.color = "#666"}>
+                ← View other signup options
+              </button>
+            </form>
+          )}
+
+          <div style={{ marginTop: "32px", textAlign: "center", paddingTop: "24px", borderTop: "1px solid #f0f0f0" }}>
+            <p style={{ fontSize: "14px", color: "#666", margin: "0", fontWeight: "500" }}>
+              Already a member? <Link to="/login" style={{ color: "#1a1a1a", textDecoration: "none", fontWeight: "700", borderBottom: "2px solid #D4AF37", paddingBottom: "2px", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#D4AF37"} onMouseLeave={e => e.target.style.color = "#1a1a1a"}>Log in here</Link>
+            </p>
           </div>
         </div>
       </div>
-      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
       <Footer />
     </div>
   );

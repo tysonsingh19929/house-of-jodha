@@ -50,29 +50,11 @@ function SearchBar({ onSearch, initialQuery }) {
   );
 }
 
-const allProducts = [
-  { id: 1, name: "Beige Gold Tissue Silk Embroidered Lehenga Set", price: 25600, originalPrice: 30800, description: "Elegant beige and gold tissue silk lehenga with intricate embroidery work.", category: "Lehenga", material: "Tissue Silk", color: "Beige & Gold", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 2200, stock: 5 },
-  { id: 11, name: "Red Silk Hand Embroidered Bridal Lehenga", price: 32000, originalPrice: 40000, description: "Luxurious red silk bridal lehenga with hand embroidered details and mirror work.", category: "Lehenga", material: "Silk", color: "Red", occasions: ["Wedding", "Bridal"], rating: 4.5, reviews: 1800, stock: 3 },
-  { id: 12, name: "Blush Pink Tissue Silk Embroidered Bridal Lehenga", price: 27000, originalPrice: 32900, description: "Soft blush pink bridal lehenga with tissue silk and embroidered choli.", category: "Lehenga", material: "Tissue Silk", color: "Blush Pink", occasions: ["Wedding", "Bridal"], rating: 4.4, reviews: 1950, stock: 4 },
-  { id: 13, name: "Maroon Tissue Silk Bridal Lehenga Choli Set", price: 29000, originalPrice: 36000, description: "Deep maroon bridal lehenga with ornate embroidery and matching choli.", category: "Lehenga", material: "Tissue Silk", color: "Maroon", occasions: ["Wedding", "Bridal"], rating: 4.3, reviews: 1700, stock: 3 },
-  { id: 14, name: "Parrot Green Floral Printed Lehenga Set", price: 7700, originalPrice: 10500, description: "Vibrant parrot green lehenga with floral prints and light embroidery.", category: "Lehenga", material: "Cotton Silk", color: "Parrot Green", occasions: ["Festival", "Celebration"], rating: 4.2, reviews: 2100, stock: 6 },
-  { id: 3, name: "Pre-draped Royal Purple Satin Saree", price: 8900, originalPrice: 10500, description: "Beautiful pre-draped saree in royal purple satin, perfect for any celebration.", category: "Saree", material: "Satin", color: "Royal Purple", occasions: ["Festival", "Party"], rating: 4.1, reviews: 1600, stock: 7 },
-  { id: 22, name: "Gold Sequined Silk Bridal Saree", price: 21000, originalPrice: 27000, description: "Luxurious gold sequined silk saree with blouse.", category: "Saree", material: "Silk", color: "Gold", occasions: ["Wedding", "Bridal"], rating: 4.6, reviews: 2300, stock: 4 },
-  { id: 23, name: "Ivory & Gold Embroidered Bridal Saree", price: 18000, originalPrice: 23000, description: "Elegant ivory saree with gold embroidery and beadwork.", category: "Saree", material: "Silk", color: "Ivory & Gold", occasions: ["Wedding", "Bridal"], rating: 4.5, reviews: 2050, stock: 3 },
-  { id: 4, name: "Designer Anarkali Suit - Midnight Blue", price: 16800, originalPrice: 19800, description: "Beautiful midnight blue anarkali suit with embroidered yoke and hem.", category: "Anarkali", material: "Georgette", color: "Midnight Blue", occasions: ["Wedding", "Festival"], rating: 4.4, reviews: 1900, stock: 7 },
-  { id: 31, name: "Indigo Blue Georgette Embroidered Anarkali With Dupatta", price: 14000, originalPrice: 16900, description: "Stunning indigo blue anarkali with traditional embroidery and matching dupatta.", category: "Anarkali", material: "Georgette", color: "Indigo Blue", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 1750, stock: 5 },
-  { id: 5, name: "Salwar Kameez - Emerald Green", price: 7500, originalPrice: 9000, description: "Classic emerald green salwar kameez with traditional embroidery.", category: "Salwar Kameez", material: "Cotton Silk", color: "Emerald Green", occasions: ["Daily", "Festival"], rating: 4.0, reviews: 1500, stock: 10 },
-  { id: 40, name: "Navy Blue Crepe Silk Printed & Embroidered Indowestern Top & Palazzo Set", price: 9000, originalPrice: 11100, description: "Contemporary indowestern top with palazzo pants.", category: "Salwar Kameez", material: "Crepe Silk", color: "Navy Blue", occasions: ["Party", "Celebration"], rating: 4.2, reviews: 1650, stock: 8 },
-  { id: 2, name: "Ivory Chinon Silk Gharara Set", price: 11500, originalPrice: 13500, description: "Sophisticated ivory chinon silk gharara with intricate embroidery.", category: "Gharara", material: "Chinon Silk", color: "Ivory", occasions: ["Wedding", "Bridal"], rating: 4.4, reviews: 1850, stock: 3 },
-  { id: 49, name: "Pink Purple Georgette Embroidered Gharara Set", price: 9500, originalPrice: 12000, description: "Beautiful pink purple gharara with stunning embroidery work.", category: "Gharara", material: "Georgette", color: "Pink Purple", occasions: ["Wedding", "Festival"], rating: 4.3, reviews: 1700, stock: 5 },
-  { id: 6, name: "Sharara Suit - Wine Red", price: 12500, originalPrice: 15000, description: "Glamorous wine red sharara suit with embroidered details.", category: "Sharara", material: "Silk", color: "Wine Red", occasions: ["Wedding", "Festival"], rating: 4.5, reviews: 2000, stock: 5 },
-  { id: 56, name: "Pink Purple Georgette Embroidered Sharara Suit Set", price: 6100, originalPrice: 10000, description: "Elegant pink purple sharara with beautiful embroidery and matching dupatta.", category: "Sharara", material: "Georgette", color: "Pink Purple", occasions: ["Festival", "Party"], rating: 4.2, reviews: 1600, stock: 6 }
-];
-
 const getImageForProduct = (category, index) => {
+  if (!category) return imageDatabase.lehenga[0];
   const categoryKey = category === "Salwar Kameez" ? "salwarKameez" : category.toLowerCase();
   const urls = imageDatabase[categoryKey] || imageDatabase.lehenga;
-  return urls[index % urls.length];
+  return urls ? urls[index % urls.length] : imageDatabase.lehenga[0];
 };
 
 export default function SearchResults({ 
@@ -84,55 +66,87 @@ export default function SearchResults({
   const isMobile = window.innerWidth <= 768;
   const query = searchParams.get("q") || "";
   const [addedProducts, setAddedProducts] = useState({});
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
+
+  useEffect(() => {
+    fetch(`${apiUrl}/products`)
+      .then(res => res.json())
+      .then(data => {
+        setAllProducts(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching products:", err);
+        setLoading(false);
+      });
+  }, [apiUrl]);
 
   const handleSearch = (searchTerm) => {
     setSearchParams({ q: searchTerm });
   };
 
   const handleAddProduct = (product) => {
-    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
+    const idToUse = product._id || product.id;
+    setAddedProducts(prev => ({ ...prev, [idToUse]: (prev[idToUse] || 0) + 1 }));
     addToCart(product);
   };
 
   const handleIncrease = (product) => {
-    setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
+    const idToUse = product._id || product.id;
+    setAddedProducts(prev => ({ ...prev, [idToUse]: (prev[idToUse] || 0) + 1 }));
     addToCart(product);
   };
 
   const handleDecrease = (product) => {
+    const idToUse = product._id || product.id;
     setAddedProducts(prev => {
-      const newQty = Math.max(0, (prev[product.id] || 0) - 1);
+      const newQty = Math.max(0, (prev[idToUse] || 0) - 1);
       if (newQty === 0) {
         const updated = { ...prev };
-        delete updated[product.id];
-        removeFromCart(cartItems.findIndex(i => i.id === product.id));
+        delete updated[idToUse];
+        removeFromCart(cartItems.findIndex(i => (i._id || i.id) === idToUse));
         return updated;
       }
-      return { ...prev, [product.id]: newQty };
+      return { ...prev, [idToUse]: newQty };
     });
   };
 
   const filteredProducts = useMemo(() => {
     if (!query.trim()) return [];
     const searchTerm = query.toLowerCase();
+    
     return allProducts
       .filter(product => {
+        const name = product.name || "";
+        const category = product.category || "";
+        const material = product.material || "";
+        const color = product.color || product.colors?.join(" ") || "";
+        const description = product.description || "";
+        const occasions = Array.isArray(product.occasions) ? product.occasions.map(o => o.toLowerCase()).join(" ") : "";
+        
         return (
-          product.name.toLowerCase().includes(searchTerm) ||
-          product.category.toLowerCase().includes(searchTerm) ||
-          product.material.toLowerCase().includes(searchTerm) ||
-          product.color.toLowerCase().includes(searchTerm) ||
-          product.description.toLowerCase().includes(searchTerm) ||
-          product.occasions.map(o => o.toLowerCase()).join(" ").includes(searchTerm)
+          name.toLowerCase().includes(searchTerm) ||
+          category.toLowerCase().includes(searchTerm) ||
+          material.toLowerCase().includes(searchTerm) ||
+          color.toLowerCase().includes(searchTerm) ||
+          description.toLowerCase().includes(searchTerm) ||
+          occasions.includes(searchTerm)
         );
       })
       .map((product) => {
         const categoryProducts = allProducts.filter(p => p.category === product.category);
-        const productIndex = categoryProducts.findIndex(p => p.id === product.id);
-        const image = getImageForProduct(product.category, productIndex);
-        return { ...product, image };
+        const productIndex = categoryProducts.findIndex(p => (p._id || p.id) === (product._id || product.id));
+        
+        // Use database image if it's a URL, otherwise fallback to static mapping
+        const hasValidDbImage = product.image && product.image.length > 10 && (product.image.includes('http') || product.image.includes('data:image'));
+        const image = hasValidDbImage ? product.image : getImageForProduct(product.category, productIndex);
+        
+        return { ...product, id: product._id || product.id, image };
       });
-  }, [query]);
+  }, [query, allProducts]);
 
   return (
     <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>

@@ -42,7 +42,25 @@ router.get('/occasion/:occasionName', async (req, res) => {
 // 3. GET BY ID (For the Detail Page)
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findOne({ id: req.params.id });
+    const { id } = req.params;
+    let product;
+
+    // Check if it is a valid MongoDB ObjectId
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      product = await Product.findById(id);
+    }
+
+    // Fallback: check manual id
+    if (!product) {
+      const idNum = parseInt(id, 10);
+      if (!isNaN(idNum)) {
+        product = await Product.findOne({ id: idNum });
+      } else {
+        // Last resort fallback
+        product = await Product.findOne({ id });
+      }
+    }
+
     if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json(product);
   } catch (error) {

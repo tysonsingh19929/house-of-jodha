@@ -521,7 +521,7 @@ export default function ProductDetail({
         return res.json();
       })
       .then(data => {
-        const match = data.find(p => p.id === parseInt(productId, 10)) || 
+        const match = data.find(p => (p._id && p._id === productId) || (p.id && p.id === parseInt(productId, 10))) || 
                       data.find(p => staticProduct && p.name === staticProduct.name);
         if (match) setDbProduct(match);
       })
@@ -539,7 +539,7 @@ export default function ProductDetail({
   
   const colors = product?.colors || [];
   
-  const inWishlist = product ? isInWishlist(product.id) : false;
+  const inWishlist = product ? isInWishlist(product._id || product.id) : false;
 
   const handleAddToCart = () => {
     addToCart(product);

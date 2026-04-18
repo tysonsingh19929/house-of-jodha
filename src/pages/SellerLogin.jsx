@@ -62,191 +62,114 @@ export default function SellerLogin() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #2C4F3E 0%, #3d6b52 100%)",
-      padding: "20px"
+      background: "#0a0f0d", // Dark luxury background
+      backgroundImage: "radial-gradient(circle at 50% 0%, #1e3a29 0%, #0a0f0d 60%)",
+      padding: "20px",
+      fontFamily: "'Inter', sans-serif",
+      position: "relative",
+      overflow: "hidden"
     }}>
+      {/* Decorative Blur Backgrounds */}
+      <div style={{ position: "absolute", top: "-150px", left: "-100px", width: "400px", height: "400px", background: "#D4AF37", filter: "blur(150px)", opacity: "0.15", borderRadius: "50%", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "-200px", right: "-100px", width: "500px", height: "500px", background: "#2C4F3E", filter: "blur(200px)", opacity: "0.4", borderRadius: "50%", pointerEvents: "none" }} />
+
       <div style={{
-        background: "#fff",
-        borderRadius: "12px",
-        padding: "40px",
-        boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
-        maxWidth: "400px",
-        width: "100%"
+        background: "rgba(20, 30, 25, 0.6)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        borderRadius: "24px",
+        padding: "48px 40px",
+        boxShadow: "0 24px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        maxWidth: "420px",
+        width: "100%",
+        position: "relative",
+        zIndex: 1,
+        animation: "slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)"
       }}>
+        <style>{`
+          @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+          .auth-input { width: 100%; padding: 16px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 15px; color: #fff; outline: none; transition: all 0.3s ease; box-sizing: border-box; }
+          .auth-input:focus { border-color: #D4AF37; background: rgba(0,0,0,0.4); box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1); }
+          .auth-input::placeholder { color: rgba(255,255,255,0.4); }
+          .auth-label { display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+          .auth-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+          .auth-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); }
+          .auth-btn:active:not(:disabled) { transform: translateY(1px); }
+          .auth-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+          .auth-link { color: #D4AF37; text-decoration: none; font-weight: 600; transition: color 0.2s; }
+          .auth-link:hover { color: #fed053; }
+        `}</style>
+        
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          <h1 style={{ color: "#2C4F3E", fontSize: "28px", margin: "0 0 10px 0" }}>
-            🔐 Seller Login
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <div style={{ width: "64px", height: "64px", background: "linear-gradient(135deg, #D4AF37, #AA8A2A)", borderRadius: "16px", margin: "0 auto 20px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 25px rgba(212, 175, 55, 0.4)" }}>
+            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h1 style={{ color: "#fff", fontSize: "28px", fontWeight: "700", margin: "0 0 8px 0", letterSpacing: "-0.5px" }}>
+            Seller Portal
           </h1>
-          <p style={{ color: "#666", fontSize: "14px", margin: "0" }}>
-            Access the product management dashboard
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "15px", margin: "0" }}>
+            Login to manage your luxury boutique
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div style={{
-            background: "#ffe0e0",
-            border: "1px solid #ff6b6b",
-            color: "#d32f2f",
-            padding: "12px",
-            borderRadius: "6px",
-            marginBottom: "20px",
-            fontSize: "13px",
-            fontWeight: "600"
-          }}>
-            ⚠️ {error}
+          <div style={{ background: "rgba(255, 59, 48, 0.1)", border: "1px solid rgba(255, 59, 48, 0.3)", color: "#ff4d4d", padding: "14px", borderRadius: "12px", marginBottom: "24px", fontSize: "14px", fontWeight: "500", display: "flex", alignItems: "center", gap: "10px" }}>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {error}
           </div>
         )}
 
         {/* Login Form */}
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              fontWeight: "600",
-              marginBottom: "8px",
-              color: "#333",
-              fontSize: "14px"
-            }}>
-              Email
-            </label>
+            <label className="auth-label">Email Address</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Ex: boutique@jodha.com"
               required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                fontSize: "14px",
-                boxSizing: "border-box",
-                fontFamily: "inherit"
-              }}
+              className="auth-input"
               autoFocus
             />
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              fontWeight: "600",
-              marginBottom: "8px",
-              color: "#333",
-              fontSize: "14px"
-            }}>
-              Password
-            </label>
+          <div style={{ marginBottom: "32px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <label className="auth-label" style={{ marginBottom: 0 }}>Password</label>
+            </div>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="Enter your secure password"
               required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                fontSize: "14px",
-                boxSizing: "border-box",
-                fontFamily: "inherit"
-              }}
+              className="auth-input"
             />
           </div>
 
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              fontSize: "15px",
-              fontWeight: "600",
-              background: loading ? "#ccc" : "var(--accent)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: loading ? "not-allowed" : "pointer",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={e => !loading && (e.target.style.background = "#c9860f")}
-            onMouseLeave={e => !loading && (e.target.style.background = "var(--accent)")}
-          >
-            {loading ? "⏳ Logging in..." : "🔓 Login as Seller"}
+          <button type="submit" disabled={loading} className="auth-btn">
+            {loading ? "Authenticating..." : "Access Dashboard"}
           </button>
         </form>
 
-        {/* Links */}
-        <div style={{
-          textAlign: "center",
-          marginTop: "20px",
-          fontSize: "14px"
-        }}>
-          <p style={{ color: "#666", marginBottom: "10px" }}>
-            Don't have a seller account?{" "}
-            <Link to="/seller-signup" style={{ color: "#2C4F3E", fontWeight: "600", textDecoration: "none" }}>
-              Register here
-            </Link>
-          </p>
+        <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
+          New to House of Jodha?{" "}
+          <Link to="/seller-signup" className="auth-link">Apply to Sell</Link>
         </div>
 
-        {/* Divider */}
-        <div style={{
-          textAlign: "center",
-          margin: "25px 0",
-          color: "#999",
-          fontSize: "13px"
-        }}>
-          or
-        </div>
-
-        {/* Back Button */}
-        <button
-          onClick={() => navigate("/")}
-          style={{
-            width: "100%",
-            padding: "12px",
-            fontSize: "15px",
-            fontWeight: "600",
-            background: "#f5f5f5",
-            color: "#333",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            cursor: "pointer",
-            transition: "all 0.2s"
-          }}
-          onMouseEnter={e => {
-            e.target.style.background = "#eee";
-            e.target.style.borderColor = "#ccc";
-          }}
-          onMouseLeave={e => {
-            e.target.style.background = "#f5f5f5";
-            e.target.style.borderColor = "#ddd";
-          }}
-        >
-          ← Back to Home
-        </button>
-
-        {/* Info Box */}
-        <div style={{
-          background: "#f0f8ff",
-          border: "1px solid #cce5ff",
-          padding: "12px",
-          borderRadius: "6px",
-          marginTop: "20px",
-          fontSize: "12px",
-          color: "#0066cc",
-          textAlign: "center"
-        }}>
-          <strong>Demo Sellers:</strong>
-          <div style={{ marginTop: "8px", fontSize: "11px" }}>
-            Regular Seller: seller@example.com / seller123
-          </div>
+        <div style={{ marginTop: "40px" }}>
+          <button
+            onClick={() => navigate("/")}
+            style={{ width: "100%", padding: "14px", background: "transparent", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", fontSize: "14px", fontWeight: "600", cursor: "pointer", transition: "all 0.2s" }}
+            onMouseEnter={e => { e.target.style.background = "rgba(255,255,255,0.05)"; e.target.style.color = "#fff"; }}
+            onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = "rgba(255,255,255,0.5)"; }}
+          >
+            ← Return to Main Store
+          </button>
         </div>
       </div>
     </div>

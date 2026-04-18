@@ -80,12 +80,22 @@ export default function AdminPanel() {
     if (!formData.name || !formData.price || !formData.image) return alert("Please fill all fields");
     try {
       setLoading(true);
-      const payload = { ...formData, occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [] };
+      const payload = { 
+        ...formData, 
+        price: parseInt(formData.price, 10),
+        originalPrice: parseInt(formData.originalPrice || formData.price, 10),
+        occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
+        sellerId: "admin",
+        sellerName: "House of Jodha"
+      };
       const res = await fetch(`${API_BASE_URL}/products`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (res.ok) {
         alert("Product added successfully!");
         setFormData({ name: "", price: "", originalPrice: "", category: "Lehenga", image: "", description: "", occasions: "" });
         setImagePreview(null); fetchProducts();
+      } else {
+        const err = await res.json();
+        alert("Error adding product: " + err.message);
       }
     } catch (e) { alert("Error adding product"); } finally { setLoading(false); }
   };
