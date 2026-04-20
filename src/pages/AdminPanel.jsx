@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CrownIcon, SparklesIcon, TrashIcon } from "../components/Icons";
 
-const HomeIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
-const PackageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>;
-const UsersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-const OrdersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>;
-const StoreIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
+const HomeIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
+const PackageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" /></svg>;
+const UsersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
+const OrdersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path d="M8 10h.01" /><path d="M8 14h.01" /></svg>;
+const StoreIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>;
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -33,8 +33,29 @@ export default function AdminPanel() {
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
+    window.history.replaceState({ tab: activeTab }, "", window.location.pathname);
+    const handlePopState = (e) => {
+      if (e.state && e.state.tab) {
+        setActiveTab(e.state.tab);
+      } else {
+        navigate("/");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
+
+  const handleTabChange = (tab) => {
+    if (tab !== activeTab) {
+      window.history.pushState({ tab }, "", window.location.pathname);
+      setActiveTab(tab);
+    }
+  };
+
+  useEffect(() => {
     const adminToken = localStorage.getItem("admin_token");
-    if (!adminToken) navigate("/admin-login");
+    if (!adminToken) navigate("/admin-login", { replace: true });
   }, [navigate]);
 
   useEffect(() => {
@@ -100,7 +121,7 @@ export default function AdminPanel() {
 
           // Compress to WebP at 70% quality (cuts 10MB to ~150KB)
           const compressedDataUrl = canvas.toDataURL("image/webp", 0.7);
-          
+
           setImagePreview(compressedDataUrl);
           setFormData(prev => ({ ...prev, image: compressedDataUrl }));
         };
@@ -114,8 +135,8 @@ export default function AdminPanel() {
     if (!formData.name || !formData.price || !formData.image) return alert("Please fill all fields");
     try {
       setLoading(true);
-      const payload = { 
-        ...formData, 
+      const payload = {
+        ...formData,
         price: parseInt(formData.price, 10),
         originalPrice: parseInt(formData.originalPrice || formData.price, 10),
         occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
@@ -188,7 +209,7 @@ export default function AdminPanel() {
 
   return (
     <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
-      
+
       {/* Sidebar */}
       <aside style={{ width: isMobile ? "100%" : "260px", minHeight: isMobile ? "auto" : "100vh", backgroundColor: "#1e293b", color: "#fff", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
@@ -197,7 +218,7 @@ export default function AdminPanel() {
           </h2>
           <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#94a3b8" }}>Master Control Console</p>
         </div>
-        
+
         <nav style={{ flex: 1, padding: isMobile ? "10px" : "20px 0", display: isMobile ? "flex" : "block", flexWrap: "wrap", justifyContent: "space-around", overflowX: "auto" }}>
           {[
             { id: "dashboard", icon: <HomeIcon />, label: "Dashboard" },
@@ -207,7 +228,7 @@ export default function AdminPanel() {
             { id: "sellers", icon: <StoreIcon />, label: "Sellers" }
           ].map(item => (
             <button
-              key={item.id} onClick={() => setActiveTab(item.id)}
+              key={item.id} onClick={() => handleTabChange(item.id)}
               style={{
                 width: isMobile ? "auto" : "100%", display: "flex", alignItems: "center", gap: "12px", padding: isMobile ? "12px 16px" : "16px 24px",
                 backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
@@ -231,12 +252,12 @@ export default function AdminPanel() {
 
       {/* Main Content */}
       <main style={{ flex: 1, padding: isMobile ? "16px" : "32px", overflowY: "auto", width: isMobile ? "100%" : "auto" }}>
-        
+
         {/* DASHBOARD TAB */}
         {activeTab === "dashboard" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Overview Metrics</h1>
-            
+
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px", marginBottom: "32px" }}>
               <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #facc15" }}>
                 <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Revenue</p>
@@ -255,10 +276,10 @@ export default function AdminPanel() {
                 <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>{stats.totalOrders}</h3>
               </div>
             </div>
-            
+
             <div style={{ backgroundColor: "#fff", padding: "32px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
               <h2 style={{ margin: "0 0 16px", fontSize: "20px", color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
-                 Master Control Center
+                Master Control Center
               </h2>
               <p style={{ color: "#64748b", lineHeight: "1.6", margin: 0 }}>
                 You have full operational access to House of Jodha. Manage external sellers, verify their product listings, track financial metrics, and monitor user accounts. Utilize the sidebar to navigate the master administrative portals.
@@ -271,7 +292,7 @@ export default function AdminPanel() {
         {activeTab === "products" && (
           <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "1200px" }}>
             <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Product Management</h1>
-            
+
             <form onSubmit={handleAddProduct} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: isMobile ? "20px" : "32px", marginBottom: "32px" }}>
               <h2 style={{ margin: "0 0 20px", fontSize: "18px", color: "#1e293b" }}>Add Master Product</h2>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
@@ -279,7 +300,7 @@ export default function AdminPanel() {
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Name *</label>
                   <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
                 </div>
-                
+
                 <div>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Category</label>
                   <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s", appearance: "none" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"}>
@@ -311,7 +332,7 @@ export default function AdminPanel() {
                   <input type="text" placeholder="https://www.instagram.com/reel/..." value={formData.videoUrl} onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
                 </div>
               </div>
-              
+
               <button type="submit" disabled={loading} style={{ width: isMobile ? "100%" : "auto", padding: "14px 28px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "background-color 0.2s" }} onMouseEnter={e => !loading && (e.target.style.backgroundColor = "#334155")} onMouseLeave={e => !loading && (e.target.style.backgroundColor = "#1e293b")}>
                 <SparklesIcon size="18px" /> {loading ? "Saving..." : "Add Master Product"}
               </button>
@@ -371,7 +392,7 @@ export default function AdminPanel() {
         {activeTab === "orders" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Global Orders</h1>
-            
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {orders.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No active orders.</div>
@@ -409,7 +430,7 @@ export default function AdminPanel() {
         {activeTab === "users" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Customer Database</h1>
-            
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {users.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No registered users.</div>
@@ -443,7 +464,7 @@ export default function AdminPanel() {
         {activeTab === "sellers" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Seller Verification</h1>
-            
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {sellers.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No registered sellers.</div>
@@ -474,12 +495,12 @@ export default function AdminPanel() {
                             {s.role !== "admin" && (
                               <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                 {s.status !== "active" && (
-                                  <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity="0.8"} onMouseLeave={e => e.currentTarget.style.opacity="1"}>Approve</button>
+                                  <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Approve</button>
                                 )}
                                 {s.status === "active" && (
-                                  <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity="0.8"} onMouseLeave={e => e.currentTarget.style.opacity="1"}>Suspend</button>
+                                  <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
                                 )}
-                                <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity="0.8"} onMouseLeave={e => e.currentTarget.style.opacity="1"}>Delete</button>
+                                <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
                               </div>
                             )}
                           </td>
@@ -493,7 +514,7 @@ export default function AdminPanel() {
           </div>
         )}
       </main>
-      
+
       {/* Edit Modal Overlay */}
       {editingProduct && editFormData && (
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.75)", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
@@ -502,23 +523,23 @@ export default function AdminPanel() {
             <form onSubmit={handleEditSubmit} style={{ display: "grid", gap: "16px" }}>
               <div>
                 <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Product Name</label>
-                <input type="text" value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                <input type="text" value={editFormData.name} onChange={e => setEditFormData({ ...editFormData, name: e.target.value })} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div>
                   <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Price (₹)</label>
-                  <input type="number" value={editFormData.price} onChange={e => setEditFormData({...editFormData, price: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                  <input type="number" value={editFormData.price} onChange={e => setEditFormData({ ...editFormData, price: e.target.value })} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
                 </div>
                 <div>
                   <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Original Price (₹)</label>
-                  <input type="number" value={editFormData.originalPrice} onChange={e => setEditFormData({...editFormData, originalPrice: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                  <input type="number" value={editFormData.originalPrice} onChange={e => setEditFormData({ ...editFormData, originalPrice: e.target.value })} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
                 </div>
               </div>
               <div>
                 <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Occasions</label>
-                <input type="text" placeholder="Cocktail, Sangeet" value={editFormData.occasions} onChange={e => setEditFormData({...editFormData, occasions: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                <input type="text" placeholder="Cocktail, Sangeet" value={editFormData.occasions} onChange={e => setEditFormData({ ...editFormData, occasions: e.target.value })} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
                 <label style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>Video / Instagram Reel URL</label>
-                <input type="text" value={editFormData.videoUrl || ""} onChange={e => setEditFormData({...editFormData, videoUrl: e.target.value})} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
+                <input type="text" value={editFormData.videoUrl || ""} onChange={e => setEditFormData({ ...editFormData, videoUrl: e.target.value })} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px" }} />
               </div>
               <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
                 <button type="submit" disabled={loading} style={{ flex: 1, padding: "12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>{loading ? "Saving..." : "Save Changes"}</button>

@@ -57,6 +57,10 @@ export default function ResetPassword({ cartOpen, setCartOpen, cartCount }) {
       setError("Password must be at least 6 characters");
       return false;
     }
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(formData.newPassword)) {
+      setError("Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character");
+      return false;
+    }
     if (formData.newPassword !== formData.confirmPassword) {
       setError("Passwords do not match");
       return false;

@@ -8,6 +8,7 @@ const PlusCircleIcon = () => <svg width="20" height="20" fill="none" stroke="cur
 const SettingsIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>;
 const LogOutIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>;
 const ActivityIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>;
+const OrdersIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path d="M8 10h.01" /><path d="M8 14h.01" /></svg>;
 const UsersIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
 const DollarSignIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>;
 
@@ -21,8 +22,9 @@ export default function AdminDashboard() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, products, add_product, settings
+  const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, products, add_product, orders, settings
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
@@ -48,11 +50,34 @@ export default function AdminDashboard() {
   const isSuperAdmin = localStorage.getItem("is_super_admin") === "true";
 
   useEffect(() => {
+    // Replace initial state so the first back press can be properly detected
+    window.history.replaceState({ tab: activeTab }, "", window.location.pathname);
+    const handlePopState = (e) => {
+      if (e.state && e.state.tab) {
+        setActiveTab(e.state.tab);
+      } else {
+        navigate("/");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
+
+  const handleTabChange = (tab) => {
+    if (tab !== activeTab) {
+      window.history.pushState({ tab }, "", window.location.pathname);
+      setActiveTab(tab);
+    }
+  };
+
+  useEffect(() => {
     if (!isSeller) {
-      navigate("/seller-login");
+      navigate("/seller-login", { replace: true });
     } else {
       fetchProducts();
       fetchSellerProfile();
+      fetchOrders();
     }
   }, [isSeller, navigate]);
 
@@ -64,12 +89,13 @@ export default function AdminDashboard() {
         const data = await response.json();
         let pNum = data.phone || "";
         let cCode = "+91";
-        if (pNum.startsWith('+')) {
-            const match = pNum.match(/^(\+\d{1,4})\s?(.*)$/);
-            if (match) {
-                cCode = match[1];
-                pNum = match[2];
-            }
+        const knownCodes = ["+971", "+91", "+44", "+61", "+1"];
+        for (let code of knownCodes) {
+          if (pNum.startsWith(code)) {
+            cCode = code;
+            pNum = pNum.substring(code.length).trim();
+            break;
+          }
         }
         setCountryCode(cCode);
         setSellerProfile({
@@ -93,8 +119,8 @@ export default function AdminDashboard() {
     try {
       setIsSavingProfile(true);
       const payload = {
-          ...sellerProfile,
-          phone: `${countryCode}${sellerProfile.phone}`
+        ...sellerProfile,
+        phone: `${countryCode}${sellerProfile.phone}`
       };
       const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}`, {
         method: "PUT",
@@ -126,6 +152,19 @@ export default function AdminDashboard() {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const url = isSuperAdmin ? '/orders' : `/orders/seller/${sellerId}`;
+      const response = await fetch(`${API_BASE_URL}${url}`);
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
     }
   };
 
@@ -248,7 +287,7 @@ export default function AdminDashboard() {
       setImagePreviews([]);
       fetchProducts();
       alert("Product added successfully!");
-      setActiveTab("products");
+      handleTabChange("products");
     } catch (error) {
       alert("Error adding product: " + error.message);
     } finally {
@@ -384,9 +423,11 @@ export default function AdminDashboard() {
 
   if (!isSeller) return null;
 
-  // Calculate some mock metrics for the dashboard
+  // Calculate metrics for the dashboard
   const totalProducts = products.length;
-  const totalValue = products.reduce((sum, p) => sum + (p.price * (p.stock || 1)), 0);
+  const totalValue = products.reduce((sum, p) => sum + (p.price * (parseInt(p.stock) || 0)), 0);
+  const totalOrders = orders.length;
+  const totalSales = orders.reduce((sum, o) => sum + (o.totalAmount || o.total || 0), 0);
 
   const isJewelleryCategory = (cat) => ['Necklaces', 'Earrings', 'Rings', 'Bracelets', 'Bridal Sets'].includes(cat);
   const getAvailableSizes = (cat) => {
@@ -425,11 +466,12 @@ export default function AdminDashboard() {
             { id: "dashboard", icon: <HomeIcon />, label: "Dashboard" },
             { id: "products", icon: <PackageIcon />, label: "My Products" },
             { id: "add_product", icon: <PlusCircleIcon />, label: "Add Product" },
+            { id: "orders", icon: <OrdersIcon />, label: "Orders" },
             { id: "settings", icon: <SettingsIcon />, label: "Settings" }
           ].map(item => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => handleTabChange(item.id)}
               style={{
                 width: isMobile ? "auto" : "100%", display: "flex", alignItems: "center", gap: "12px", padding: isMobile ? "12px" : "16px 24px",
                 backgroundColor: activeTab === item.id ? "rgba(255,255,255,0.1)" : "transparent",
@@ -495,12 +537,22 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
+                <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#fffbeb", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <OrdersIcon />
+                </div>
+                <div>
+                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Total Orders</p>
+                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>{totalOrders}</h3>
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
                 <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#fef2f2", color: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <ActivityIcon />
                 </div>
                 <div>
-                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Store Views</p>
-                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>1,248</h3>
+                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Total Sales</p>
+                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>₹{totalSales.toLocaleString('en-IN')}</h3>
                 </div>
               </div>
             </div>
@@ -509,7 +561,7 @@ export default function AdminDashboard() {
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                 <h3 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>Recently Added Products</h3>
-                <button onClick={() => setActiveTab("products")} style={{ background: "none", border: "none", color: "#3b82f6", fontWeight: "600", cursor: "pointer" }}>View All</button>
+                <button onClick={() => handleTabChange("products")} style={{ background: "none", border: "none", color: "#3b82f6", fontWeight: "600", cursor: "pointer" }}>View All</button>
               </div>
               {products.length > 0 ? (
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "16px" }}>
@@ -536,7 +588,7 @@ export default function AdminDashboard() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
               <h1 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>My Products</h1>
               <button
-                onClick={() => setActiveTab("add_product")}
+                onClick={() => handleTabChange("add_product")}
                 style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", backgroundColor: "#facc15", color: "#000", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer", boxShadow: "0 2px 4px rgba(250, 204, 21, 0.3)" }}
               >
                 <PlusCircleIcon /> Add New
@@ -801,6 +853,54 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* ORDERS TAB */}
+        {activeTab === "orders" && (
+          <div style={{ animation: "fadeIn 0.3s ease" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+              <h1 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>My Orders</h1>
+            </div>
+
+            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+              {loading ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>Loading orders...</div>
+              ) : orders.length > 0 ? (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Order ID</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Customer</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Date</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Total</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders.map(order => (
+                        <tr key={order._id} style={{ borderBottom: "1px solid #e2e8f0", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
+                          <td style={{ padding: "16px 24px", fontWeight: "600", color: "#3b82f6" }}>#{order._id?.slice(0, 8) || Math.random().toString(36).substr(2, 8)}</td>
+                          <td style={{ padding: "16px 24px", color: "#0f172a" }}>{order.customerName || order.shippingAddress?.name || "Guest"}</td>
+                          <td style={{ padding: "16px 24px", color: "#64748b" }}>{new Date(order.createdAt || Date.now()).toLocaleDateString()}</td>
+                          <td style={{ padding: "16px 24px", fontWeight: "600", color: "#0f172a" }}>₹{(order.totalAmount || order.total || 0).toLocaleString('en-IN')}</td>
+                          <td style={{ padding: "16px 24px" }}>
+                            <span style={{ padding: "4px 10px", backgroundColor: order.status === 'delivered' ? "#dcfce7" : (order.status === 'cancelled' || order.status === 'returned' ? "#fee2e2" : "#fef9c3"), color: order.status === 'delivered' ? "#166534" : (order.status === 'cancelled' || order.status === 'returned' ? "#991b1b" : "#854d0e"), borderRadius: "100px", fontSize: "12px", fontWeight: "600", textTransform: "capitalize" }}>{order.status || "Processing"}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div style={{ padding: "60px", textAlign: "center" }}>
+                  <div style={{ display: "inline-flex", padding: "20px", backgroundColor: "#f8fafc", borderRadius: "50%", color: "#94a3b8", marginBottom: "16px" }}><OrdersIcon /></div>
+                  <h3 style={{ margin: "0 0 8px", color: "#0f172a" }}>No orders yet</h3>
+                  <p style={{ margin: 0, color: "#64748b" }}>When customers place orders for your products, they will appear here.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* SETTINGS TAB */}
         {activeTab === "settings" && (
           <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "600px" }}>
@@ -834,9 +934,9 @@ export default function AdminDashboard() {
                     <div>
                       <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Phone Number</label>
                       <div style={{ display: "flex", gap: "8px" }}>
-                        <select 
-                          value={countryCode} 
-                          onChange={(e) => setCountryCode(e.target.value)} 
+                        <select
+                          value={countryCode}
+                          onChange={(e) => setCountryCode(e.target.value)}
                           style={{ padding: "12px 8px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#475569", outline: "none", width: "100px", cursor: "pointer", transition: "border-color 0.2s" }}
                           onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"}
                         >

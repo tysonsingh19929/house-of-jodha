@@ -36,7 +36,7 @@ export default function AdminLogin() {
       if (email === "admin@jodha.com" && password === "admin123") {
         localStorage.setItem("admin_token", "admin_" + Date.now());
         localStorage.setItem("admin_email", email);
-        navigate("/admin");
+        navigate("/admin", { replace: true });
       } else {
         setError("Invalid credentials");
       }
@@ -157,7 +157,7 @@ export default function AdminLogin() {
 
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => window.history.length > 2 ? navigate(-1) : navigate("/")}
             style={{
               background: "none",
               border: "none",
@@ -168,7 +168,7 @@ export default function AdminLogin() {
               fontWeight: "500"
             }}
           >
-            Back to Home
+            Go Back
           </button>
         </div>
       </div>

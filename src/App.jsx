@@ -26,10 +26,13 @@ import QuickEdit from "./pages/QuickEdit";
 import SearchResults from "./pages/SearchResults";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import Chatbot from "./components/Chatbot";
 import { lazy, Suspense } from "react";
+import SellerStorefront from "./pages/SellerStorefront";
 
 function HomePage({
   cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
@@ -77,11 +80,11 @@ function HomePage({
 function FloatingWidgets() {
   const location = useLocation();
   const hiddenRoutes = ["/admin-dashboard", "/seller-login", "/seller-signup", "/admin-login", "/admin"];
-  
+
   if (hiddenRoutes.includes(location.pathname)) {
     return null;
   }
-  
+
   return (
     <>
       <Chatbot />
@@ -92,6 +95,7 @@ function FloatingWidgets() {
 const ProductDetail = lazy(() => import("./pages/ProductDetail.jsx"));
 
 function App() {
+  const [subdomain, setSubdomain] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [wishlistOpen, setWishlistOpen] = useState(false);
@@ -99,6 +103,14 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    const host = window.location.hostname;
+    const parts = host.split('.');
+    if (parts.length >= 3 && parts[0] !== 'www') {
+      setSubdomain(parts[0]);
+    } else if (parts.length === 2 && parts[1] === 'localhost') {
+      setSubdomain(parts[0]); // Handles local testing like 'priya.localhost'
+    }
+
     initializeProductsInStorage();
     const user = localStorage.getItem("currentUser");
     if (user) setCurrentUser(JSON.parse(user));
@@ -159,6 +171,38 @@ function App() {
 
   const cartCount = cartItems.length;
   const wishlistCount = wishlistItems.length;
+
+  // If accessed via a seller subdomain, render the isolated Storefront Router
+  if (subdomain) {
+    return (
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<SellerStorefront subdomain={subdomain} cartCount={cartCount} onCartClick={handleCartClick} />} />
+          <Route
+            path="/product/:productId"
+            element={
+              <Suspense fallback={<div style={{ padding: 40 }}>Loading product…</div>}>
+                <ProductDetail
+                  cartOpen={cartOpen} setCartOpen={setCartOpen}
+                  addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} cartCount={cartCount}
+                  wishlistOpen={wishlistOpen} setWishlistOpen={setWishlistOpen} wishlistItems={wishlistItems} wishlistCount={wishlistCount}
+                  addToWishlist={addToWishlist} removeFromWishlist={removeFromWishlist} isInWishlist={isInWishlist}
+                  onCartClick={handleCartClick} onWishlistClick={handleWishlistClick}
+                />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={<Checkout cartOpen={cartOpen} setCartOpen={setCartOpen} cartItems={cartItems} removeFromCart={removeFromCart} cartCount={cartCount} onCartClick={handleCartClick} clearCart={() => setCartItems([])} />}
+          />
+          <Route path="*" element={<div style={{ textAlign: "center", padding: "100px" }}><h2>Page Not Found</h2><a href={`http://${window.location.hostname.replace(`${subdomain}.`, '')}`}>Return to Main Marketplace</a></div>} />
+        </Routes>
+        <FloatingWidgets />
+      </BrowserRouter>
+    );
+  }
 
   return (
     <BrowserRouter>
@@ -319,7 +363,28 @@ function App() {
             />
           }
         />
-      
+
+        <Route
+          path="/forgot-password"
+          element={
+            <ForgotPassword
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              cartCount={cartCount}
+            />
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ResetPassword
+              cartOpen={cartOpen}
+              setCartOpen={setCartOpen}
+              cartCount={cartCount}
+            />
+          }
+        />
+
         <Route
           path="/signup"
           element={
@@ -333,17 +398,17 @@ function App() {
         />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminPanel />} />
-        <Route 
-  path="/profile" 
-  element={
-    <ProfilePage 
-      cartCount={cartCount} 
-      onCartClick={handleCartClick} 
-      wishlistCount={wishlistCount} 
-      onWishlistClick={handleWishlistClick}
-    />
-  } 
-/>
+        <Route
+          path="/profile"
+          element={
+            <ProfilePage
+              cartCount={cartCount}
+              onCartClick={handleCartClick}
+              wishlistCount={wishlistCount}
+              onWishlistClick={handleWishlistClick}
+            />
+          }
+        />
       </Routes>
       <FloatingWidgets />
     </BrowserRouter>

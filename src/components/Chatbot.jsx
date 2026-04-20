@@ -100,6 +100,11 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot-container" ref={containerRef}>
+      <style>{`
+        .orb-glow {
+          animation-duration: 8s !important; /* Slow and soothing RGB rotation */
+        }
+      `}</style>
       <button
         className={`chatbot-toggle ${isOpen ? 'open' : ''}`}
         onClick={toggleChat}
@@ -107,12 +112,12 @@ const Chatbot = () => {
       >
         <span className="orb-glow" />
         {isOpen ? (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ zIndex: 100, position: "relative" }}>
             <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" style={{ zIndex: 100, position: "relative", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
           </svg>
         )}
       </button>
@@ -121,14 +126,9 @@ const Chatbot = () => {
         <div className="chatbot-window">
           <div className="chatbot-header">
             <div className="chatbot-avatar">
-              <img
-                src="/ishani-avatar.png"
-                alt="Ishani"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='%23d4af37'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
-                }}
-              />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#D4AF37" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ zIndex: 10, position: "relative" }}>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+              </svg>
             </div>
             <div className="chatbot-title">
               <h3>Ishani</h3>
@@ -146,7 +146,9 @@ const Chatbot = () => {
               <div key={index} className={`message-wrapper ${message.role}`}>
                 {message.role === 'model' && (
                   <div className="message-avatar">
-                    <img src="/ishani-avatar.png" alt="Ishani" onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }} />
+                    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="#D4AF37" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                    </svg>
                   </div>
                 )}
                 <div className={`message-bubble ${message.role}`}>{makeLinksClickable(message.text)}</div>
@@ -154,7 +156,11 @@ const Chatbot = () => {
             ))}
             {isTyping && (
               <div className="message-wrapper model">
-                <div className="message-avatar" />
+                <div className="message-avatar">
+                  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="#D4AF37" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ zIndex: 10, position: "relative" }}>
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                  </svg>
+                </div>
                 <div className="message-bubble model typing">
                   <span className="dot" /><span className="dot" /><span className="dot" />
                 </div>

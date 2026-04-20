@@ -30,11 +30,12 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
     setIsEditing(true);
     let pNum = user?.phone || "";
     let cCode = "+91";
-    if (pNum.startsWith('+')) {
-      const match = pNum.match(/^(\+\d{1,4})\s?(.*)$/);
-      if (match) {
-         cCode = match[1];
-         pNum = match[2];
+    const knownCodes = ["+971", "+91", "+44", "+61", "+1"];
+    for (let code of knownCodes) {
+      if (pNum.startsWith(code)) {
+        cCode = code;
+        pNum = pNum.substring(code.length).trim();
+        break;
       }
     }
     setFormData({
@@ -162,10 +163,10 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
                   <label style={{ fontSize: "12px", color: "#999", display: "block", marginBottom: "5px" }}>Phone</label>
                   {isEditing ? (
                     <div style={{ display: "flex", gap: "8px" }}>
-                      <select 
+                      <select
                         name="countryCode"
-                        value={formData.countryCode || "+91"} 
-                        onChange={handleChange} 
+                        value={formData.countryCode || "+91"}
+                        onChange={handleChange}
                         style={{ padding: "10px 8px", border: "1px solid #ddd", borderRadius: "4px", backgroundColor: "#f9f9f9", cursor: "pointer", width: "100px" }}
                       >
                         <option value="+91">+91 (IN)</option>

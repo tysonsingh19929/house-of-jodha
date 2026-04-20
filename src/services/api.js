@@ -128,6 +128,13 @@ export const api = {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Something went wrong');
     return data;
+  },
+
+  getSellerStore: async (slug) => {
+    const res = await fetch(`${API_BASE_URL}/sellers/store/${slug}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Store not found');
+    return data;
   }
 };
 

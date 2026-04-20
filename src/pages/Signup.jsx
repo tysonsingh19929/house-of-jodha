@@ -79,6 +79,7 @@ export default function Signup({ cartOpen, setCartOpen, cartCount }) {
     if (!formData.phone.trim()) return setError("Phone number is required"), false;
     if (!formData.password) return setError("Password is required"), false;
     if (formData.password.length < 6) return setError("Password must be at least 6 characters"), false;
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(formData.password)) return setError("Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"), false;
     if (formData.password !== formData.confirmPassword) return setError("Passwords do not match"), false;
     return true;
   };
