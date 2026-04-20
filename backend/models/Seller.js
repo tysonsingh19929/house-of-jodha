@@ -24,6 +24,11 @@ const sellerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  slug: {
+    type: String,
+    unique: true,
+    sparse: true // Allows multiple documents to have a null slug, but unique if it exists
+  },
   address: String,
   city: String,
   state: String,

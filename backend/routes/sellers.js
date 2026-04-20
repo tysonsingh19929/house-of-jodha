@@ -166,8 +166,9 @@ router.get('/:id', async (req, res) => {
 // Update seller profile
 router.put('/:id', async (req, res) => {
   try {
-    const { name, businessName } = req.body;
+    const { name, businessName, ...otherData } = req.body;
     const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const updatePayload = { name, businessName, ...otherData };
 
     if (name) {
       const existingName = await Seller.findOne({ _id: { $ne: req.params.id }, name: { $regex: new RegExp(`^${escapeRegex(name)}$`, 'i') } });
@@ -176,9 +177,17 @@ router.put('/:id', async (req, res) => {
     if (businessName) {
       const existingBusiness = await Seller.findOne({ _id: { $ne: req.params.id }, businessName: { $regex: new RegExp(`^${escapeRegex(businessName)}$`, 'i') } });
       if (existingBusiness) return res.status(400).json({ message: 'Business name already taken. Please choose a unique business name.' });
+
+      // Also update the slug if business name changes
+      const newSlug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      const existingSlug = await Seller.findOne({ _id: { $ne: req.params.id }, slug: newSlug });
+      if (existingSlug) {
+        return res.status(400).json({ message: 'Business name results in a duplicate store URL. Please choose another.' });
+      }
+      updatePayload.slug = newSlug;
     }
 
-    const seller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true }).select('-password');
+    const seller = await Seller.findByIdAndUpdate(req.params.id, updatePayload, { new: true }).select('-password');
     res.json(seller);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -499,7 +499,7 @@ export default function AdminPanel() {
                     <tbody>
                       {sellers.map((s) => (
                         <tr key={s._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>{s.name || "N/A"}{s.role === "admin" && " (Admin)"}</td>
+                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>{s.businessName || s.name || "N/A"}{s.role === "admin" && " (Admin)"}</td>
                           <td style={{ padding: "16px 24px", color: "#64748b" }}>{s.email}</td>
                           <td style={{ padding: "16px 24px", color: "#334155", textAlign: "center", fontWeight: "600" }}>{s.productsCount || 0}</td>
                           <td style={{ padding: "16px 24px", textAlign: "center" }}>
