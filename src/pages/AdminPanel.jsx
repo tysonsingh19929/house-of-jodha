@@ -18,6 +18,7 @@ export default function AdminPanel() {
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
   const [sellers, setSellers] = useState([]);
+  const [sellerFilter, setSellerFilter] = useState("All");
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -340,10 +341,22 @@ export default function AdminPanel() {
 
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
-                <h3 style={{ margin: 0, fontSize: "16px", color: "#1e293b", fontWeight: "600" }}>Live Master Catalog</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+                  <h3 style={{ margin: 0, fontSize: "16px", color: "#1e293b", fontWeight: "600" }}>Live Master Catalog</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b" }}>Filter by Seller:</label>
+                    <select value={sellerFilter} onChange={e => setSellerFilter(e.target.value)} style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none" }}>
+                      <option value="All">All Products</option>
+                      <option value="admin">House of Jodha (Admin)</option>
+                      {sellers.filter(s => s.role !== 'admin').map(s => (
+                        <option key={s._id} value={s._id}>{s.businessName || s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
-              {products.length === 0 ? (
-                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No products added yet.</div>
+              {products.filter(p => sellerFilter === "All" || p.sellerId === sellerFilter).length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No products found for this selection.</div>
               ) : (
                 <div style={{ overflowX: "auto" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "700px" }}>
@@ -351,12 +364,13 @@ export default function AdminPanel() {
                       <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
                         <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Product</th>
                         <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Category</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Seller</th>
                         <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Price</th>
                         <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {products.map((p) => (
+                      {products.filter(p => sellerFilter === "All" || p.sellerId === sellerFilter).map((p) => (
                         <tr key={p._id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
                           <td style={{ padding: "16px 24px" }}>
                             <div style={{ fontWeight: "500", color: "#0f172a" }}>{p.name}</div>
@@ -364,6 +378,7 @@ export default function AdminPanel() {
                           <td style={{ padding: "16px 24px" }}>
                             <span style={{ padding: "4px 10px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "100px", fontSize: "12px", fontWeight: "500" }}>{p.category}</span>
                           </td>
+                          <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "House of Jodha"}</td>
                           <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{p.price}</td>
                           <td style={{ padding: "16px 24px", textAlign: "right" }}>
                             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
@@ -476,6 +491,7 @@ export default function AdminPanel() {
                         <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Boutique Name</th>
                         <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Email</th>
                         <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Products</th>
+                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Storefront</th>
                         <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
                         <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Actions</th>
                       </tr>
@@ -486,6 +502,13 @@ export default function AdminPanel() {
                           <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>{s.name || "N/A"}{s.role === "admin" && " (Admin)"}</td>
                           <td style={{ padding: "16px 24px", color: "#64748b" }}>{s.email}</td>
                           <td style={{ padding: "16px 24px", color: "#334155", textAlign: "center", fontWeight: "600" }}>{s.productsCount || 0}</td>
+                          <td style={{ padding: "16px 24px", textAlign: "center" }}>
+                            {s.slug ? (
+                              <a href={`${window.location.protocol}//${s.slug}.${window.location.host.replace(/^www\./, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: "#3b82f6", textDecoration: "underline", fontSize: "13px", fontWeight: "500" }}>Visit Store ↗</a>
+                            ) : (
+                              <span style={{ color: "#94a3b8", fontSize: "13px" }}>N/A</span>
+                            )}
+                          </td>
                           <td style={{ padding: "16px 24px", textAlign: "center" }}>
                             <span style={{ padding: "4px 10px", borderRadius: "100px", fontSize: "12px", border: "1px solid", fontWeight: "600", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
                               {s.status || "Pending"}

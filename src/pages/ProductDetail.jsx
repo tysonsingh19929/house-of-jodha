@@ -550,13 +550,8 @@ export default function ProductDetail({
     let imgs = base.images && base.images.length > 0 ? base.images : [];
     imgs = imgs.map(src => (!src || src.length < 10 || (!src.startsWith("http") && !src.startsWith("data:") && !src.startsWith("/"))) ? img : src);
 
-    // Generate a robust 4-image gallery for static products if none exists
-    if (imgs.length === 0 || (imgs.length === 1 && imgs[0] === img)) {
-      if (urls.length > 3) {
-        imgs = [img, urls[(numId + 1) % urls.length], urls[(numId + 2) % urls.length], urls[(numId + 3) % urls.length]];
-      } else {
-        imgs = [img];
-      }
+    if (imgs.length === 0) {
+      imgs = [img];
     }
 
     let video = base.videoUrl;
