@@ -104,11 +104,15 @@ function App() {
 
   useEffect(() => {
     const host = window.location.hostname;
-    const parts = host.split('.');
-    if (parts.length >= 3 && parts[0] !== 'www') {
-      setSubdomain(parts[0]);
-    } else if (parts.length === 2 && parts[1] === 'localhost') {
-      setSubdomain(parts[0]); // Handles local testing like 'priya.localhost'
+    // Ignore IP addresses (e.g., 192.168.x.x) so mobile testing works natively
+    const isIpAddress = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(host);
+    if (!isIpAddress && host !== 'localhost') {
+      const parts = host.split('.');
+      if (parts.length >= 3 && parts[0] !== 'www') {
+        setSubdomain(parts[0]);
+      } else if (parts.length === 2 && parts[1] === 'localhost') {
+        setSubdomain(parts[0]); // Handles local testing like 'priya.localhost'
+      }
     }
 
     initializeProductsInStorage();
