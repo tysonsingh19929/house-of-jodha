@@ -30,8 +30,8 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     background: "none",
     border: "none",
     color: "#555",
-    width: "40px",
-    height: "40px",
+    width: "34px",
+    height: "34px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -44,6 +44,16 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
   };
 
   const navItems = [
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      ),
+      label: "Search",
+      path: "/search",
+    },
     {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -122,7 +132,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "0 16px",
+          padding: "0 8px",
           background: "rgba(255,255,255,0.97)",
           backdropFilter: "blur(12px)",
           boxShadow: "0 1px 0 rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.06)",
@@ -141,6 +151,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               ...iconBtnStyle,
               borderRadius: "10px",
               color: menuOpen ? "#B8860B" : "#444",
+              marginLeft: "-4px",
             }}
             title="Menu"
           >
@@ -165,7 +176,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             style={{
               cursor: "pointer",
               fontFamily: "Georgia, 'Times New Roman', serif",
-              fontSize: "15px",
+              fontSize: window.innerWidth <= 380 ? "13px" : "15px",
               fontWeight: "bold",
               letterSpacing: "2px",
               textTransform: "uppercase",
@@ -181,12 +192,20 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
           </span>
         </div>
 
-        {/* RIGHT: Profile + Wishlist + Cart */}
+        {/* RIGHT: Search + Profile + Wishlist + Cart */}
         <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+
+          {/* SEARCH */}
+          <button onClick={() => navigate("/search")} style={iconBtnStyle} title="Search">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
 
           {/* PROFILE */}
           <button onClick={handleProfileClick} style={iconBtnStyle} title={currentUser ? "My Profile" : "Login"}>
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
@@ -194,7 +213,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
 
           {/* WISHLIST */}
           <button onClick={onWishlistClick} style={iconBtnStyle} title="Wishlist">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
             {wishlistCount > 0 && <span style={badgeStyle}>{wishlistCount}</span>}
@@ -202,7 +221,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
 
           {/* CART */}
           <button onClick={onCartClick} style={iconBtnStyle} title="Cart">
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 0 1-8 0" />
@@ -224,8 +243,8 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               {navItems.map((item, i) => (
                 <div
                   key={item.label}
-                  onClick={() => { 
-                    setMenuOpen(false); 
+                  onClick={() => {
+                    setMenuOpen(false);
                     if (item.path.startsWith("/#")) {
                       navigate(item.path);
                       setTimeout(() => {
