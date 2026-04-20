@@ -107,11 +107,19 @@ function App() {
     // Ignore IP addresses (e.g., 192.168.x.x) so mobile testing works natively
     const isIpAddress = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(host);
     if (!isIpAddress && host !== 'localhost') {
-      const parts = host.split('.');
-      if (parts.length >= 3 && parts[0] !== 'www') {
-        setSubdomain(parts[0]);
-      } else if (parts.length === 2 && parts[1] === 'localhost') {
-        setSubdomain(parts[0]); // Handles local testing like 'priya.localhost'
+      // Vercel domains already have 3 parts (app-name.vercel.app), so we need to check specifically
+      if (host.endsWith('vercel.app')) {
+        const parts = host.split('.');
+        if (parts.length >= 4 && parts[0] !== 'www') {
+          setSubdomain(parts[0]);
+        }
+      } else {
+        const parts = host.split('.');
+        if (parts.length >= 3 && parts[0] !== 'www') {
+          setSubdomain(parts[0]);
+        } else if (parts.length === 2 && parts[1] === 'localhost') {
+          setSubdomain(parts[0]); // Handles local testing like 'priya.localhost'
+        }
       }
     }
 
