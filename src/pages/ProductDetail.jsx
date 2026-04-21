@@ -454,6 +454,41 @@ const styles = `
     margin-top: 20px; max-width: 1400px; margin: 20px auto 0;
   }
 
+  /* ── REVIEWS SECTION ── */
+  .pd-reviews-section {
+    background: #fff;
+    padding: 40px 56px;
+    border-top: 1px solid var(--border);
+  }
+  @media (max-width: 768px) { .pd-reviews-section { padding: 24px 16px; } }
+  .pd-reviews-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 600;
+    color: var(--dark); margin: 0 0 28px 0;
+  }
+  .pd-review-form {
+    background: var(--bg);
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+  .pd-review-input {
+    width: 100%; padding: 12px; border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 16px; font-family: inherit; font-size: 14px;
+    outline: none; box-sizing: border-box;
+  }
+  .pd-review-input:focus { border-color: var(--gold); }
+  .pd-review-submit {
+    background: var(--dark); color: #fff; border: none; padding: 12px 24px;
+    border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+  }
+  .pd-review-submit:hover { background: #2d0014; }
+  .pd-review-card {
+    padding: 20px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px;
+    background: var(--bg);
+  }
+
   /* ── BOTTOM FEATURES STRIP ── */
   .pd-features-strip {
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -499,6 +534,8 @@ export default function ProductDetail({
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const [viewingCount] = useState(() => Math.floor(Math.random() * 28) + 12);
   const [sellerPhone, setSellerPhone] = useState(null);
+  const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, comment: "" });
+  const [submittedReviews, setSubmittedReviews] = useState([]);
 
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -654,6 +691,20 @@ export default function ProductDetail({
     if (newIndex !== activeIndex && newIndex >= 0 && newIndex < media.length) {
       setActiveIndex(newIndex);
     }
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!reviewForm.name.trim() || !reviewForm.comment.trim()) return;
+    const newReview = {
+      id: Date.now(),
+      name: reviewForm.name,
+      rating: reviewForm.rating,
+      comment: reviewForm.comment,
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    };
+    setSubmittedReviews([newReview, ...submittedReviews]);
+    setReviewForm({ name: "", rating: 5, comment: "" });
   };
 
   useEffect(() => {
@@ -1044,7 +1095,74 @@ export default function ProductDetail({
         </div>
       )}
 
+      {/* Reviews Section */}
+      {product && (
+        <div className="pd-reviews-section">
+          <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+            <h2>Customer Reviews</h2>
 
+            <div className="pd-review-form">
+              <h3 style={{ fontSize: "16px", marginBottom: "16px", color: "var(--dark)" }}>Write a Review</h3>
+              <form onSubmit={handleReviewSubmit}>
+                <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+                  <div style={{ flex: "1 1 200px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--muted)" }}>Name</label>
+                    <input type="text" className="pd-review-input" style={{ margin: 0 }} value={reviewForm.name} onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })} required placeholder="Your Name" />
+                  </div>
+                  <div style={{ flex: "1 1 200px" }}>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--muted)" }}>Rating</label>
+                    <select className="pd-review-input" style={{ margin: 0 }} value={reviewForm.rating} onChange={e => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}>
+                      <option value={5}>5 Stars</option>
+                      <option value={4}>4 Stars</option>
+                      <option value={3}>3 Stars</option>
+                      <option value={2}>2 Stars</option>
+                      <option value={1}>1 Star</option>
+                    </select>
+                  </div>
+                </div>
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--muted)" }}>Review</label>
+                <textarea className="pd-review-input" rows="4" value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required placeholder="What did you think about this product?"></textarea>
+                <button type="submit" className="pd-review-submit">Submit Review</button>
+              </form>
+            </div>
+
+            <div className="pd-review-list">
+              {submittedReviews.map(review => (
+                <div key={review.id} className="pd-review-card">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                    <span style={{ fontWeight: "600", color: "var(--dark)" }}>{review.name}</span>
+                    <span style={{ fontSize: "12px", color: "var(--muted)" }}>{review.date}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
+                    {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= review.rating} />)}
+                  </div>
+                  <p style={{ fontSize: "14px", color: "var(--sub)", margin: 0, lineHeight: "1.6" }}>{review.comment}</p>
+                </div>
+              ))}
+              <div className="pd-review-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <span style={{ fontWeight: "600", color: "var(--dark)" }}>Aisha K.</span>
+                  <span style={{ fontSize: "12px", color: "var(--muted)" }}>12 Oct 2023</span>
+                </div>
+                <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
+                  {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 5} />)}
+                </div>
+                <p style={{ fontSize: "14px", color: "var(--sub)", margin: 0, lineHeight: "1.6" }}>Beautiful outfit! The quality is amazing and it looks exactly as shown in the pictures. Highly recommended!</p>
+              </div>
+              <div className="pd-review-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <span style={{ fontWeight: "600", color: "var(--dark)" }}>Priya S.</span>
+                  <span style={{ fontSize: "12px", color: "var(--muted)" }}>05 Nov 2023</span>
+                </div>
+                <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
+                  {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 4} />)}
+                </div>
+                <p style={{ fontSize: "14px", color: "var(--sub)", margin: 0, lineHeight: "1.6" }}>Very satisfied with my purchase. The stitching is perfect, though delivery took a bit longer than expected.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <SizeChart isOpen={sizeChartOpen} onClose={() => setSizeChartOpen(false)} />
       <Footer />

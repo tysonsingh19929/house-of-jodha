@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import WhatsAppInquiryButton from "../components/WhatsAppInquiryButton.jsx";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -10,17 +10,49 @@ import imageDatabase from "../data/imageDatabase.js";
 function SearchBar({ onSearch, initialQuery }) {
   const [searchTerm, setSearchTerm] = useState(initialQuery || "");
   const [isFocused, setIsFocused] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef(null);
   const isMobile = window.innerWidth <= 768;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      onSearch(searchTerm);
+  const commonKeywords = [
+    "Lehenga", "Bridal Lehenga", "Saree", "Silk Saree", "Anarkali",
+    "Salwar Kameez", "Gharara", "Sharara", "Embroidered", "Tissue Silk",
+    "Floral Printed", "Midnight Blue", "Emerald Green", "Rose Pink", "Wine Red"
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.trim()) {
+      const filtered = commonKeywords.filter(kw => kw.toLowerCase().includes(value.toLowerCase()));
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSubmit = (e, query = searchTerm) => {
+    if (e) e.preventDefault();
+    if (query.trim()) {
+      onSearch(query);
+      setShowSuggestions(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{
+    <form ref={wrapperRef} onSubmit={(e) => handleSubmit(e)} style={{
       position: "relative",
       maxWidth: "640px",
       margin: "0 auto 40px auto",
@@ -40,9 +72,10 @@ function SearchBar({ onSearch, initialQuery }) {
           type="text"
           placeholder="Discover your next outfit..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setIsFocused(true)}
+          onChange={handleInputChange}
+          onFocus={() => { setIsFocused(true); if (searchTerm.trim()) setShowSuggestions(true); }}
           onBlur={() => setIsFocused(false)}
+          autoComplete="off"
           style={{
             flex: 1, padding: isMobile ? "10px 12px" : "12px 16px", fontSize: isMobile ? "14px" : "16px",
             border: "none", outline: "none", background: "transparent",
@@ -63,6 +96,26 @@ function SearchBar({ onSearch, initialQuery }) {
           Search
         </button>
       </div>
+      {showSuggestions && suggestions.length > 0 && (
+        <ul style={{
+          position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0,
+          background: "#fff", borderRadius: "16px", boxShadow: "0 12px 32px rgba(0,0,0,0.1)",
+          border: "1px solid #eaeaea", listStyle: "none", padding: "8px 0", margin: 0,
+          zIndex: 1000, maxHeight: "240px", overflowY: "auto", textAlign: "left"
+        }}>
+          {suggestions.map((s, i) => (
+            <li
+              key={i}
+              onClick={() => { setSearchTerm(s); handleSubmit(null, s); }}
+              style={{ padding: "12px 20px", cursor: "pointer", fontSize: "14px", color: "#333", borderBottom: i < suggestions.length - 1 ? "1px solid #f5f5f5" : "none", transition: "background 0.2s" }}
+              onMouseEnter={(e) => e.currentTarget.style.background = "#f9f9f9"}
+              onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+            >
+              {s}
+            </li>
+          ))}
+        </ul>
+      )}
     </form>
   );
 }

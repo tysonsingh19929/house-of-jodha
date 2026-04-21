@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import WhatsAppInquiryButton from "./WhatsAppInquiryButton.jsx";
 import { products } from "../data/products.js";
@@ -11,6 +11,15 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const [searchQuery, setSearchQuery] = useState("");
   const [addedProducts, setAddedProducts] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchWrapperRef = useRef(null);
+
+  const commonKeywords = [
+    "Lehenga", "Bridal Lehenga", "Saree", "Silk Saree", "Anarkali",
+    "Salwar Kameez", "Gharara", "Sharara", "Embroidered", "Tissue Silk",
+    "Floral Printed", "Midnight Blue", "Emerald Green", "Rose Pink", "Wine Red"
+  ];
 
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
   const allProducts = [...products, ...customProducts];
@@ -39,11 +48,34 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     });
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (value.trim()) {
+      const filtered = commonKeywords.filter(kw => kw.toLowerCase().includes(value.toLowerCase()));
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSearchSubmit = (e, query = searchQuery) => {
+    if (e) e.preventDefault();
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setSearchQuery("");
+      setShowSuggestions(false);
     }
   };
 
@@ -131,7 +163,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       `}</style>
 
       {/* Search Bar — navigates to /search */}
-      <form onSubmit={handleSearchSubmit} style={{ maxWidth: "600px", margin: isMobile ? "0 auto 32px auto" : "0 auto 40px auto" }}>
+      <form ref={searchWrapperRef} onSubmit={(e) => handleSearchSubmit(e)} style={{ position: "relative", maxWidth: "600px", margin: isMobile ? "0 auto 32px auto" : "0 auto 40px auto" }}>
         <div style={{
           display: "flex", alignItems: "center",
           background: "#fff", borderRadius: "20px",
@@ -146,7 +178,9 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
             id="productSearch"
             placeholder="Discover collections, styles, or colors..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
+            onFocus={() => { if (searchQuery.trim()) setShowSuggestions(true); }}
+            autoComplete="off"
             style={{
               flex: 1, border: "none", background: "transparent",
               fontSize: isMobile ? "14px" : "15px",
@@ -169,6 +203,26 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
             </button>
           )}
         </div>
+        {showSuggestions && suggestions.length > 0 && (
+          <ul style={{
+            position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0,
+            background: "#fff", borderRadius: "16px", boxShadow: "0 12px 32px rgba(0,0,0,0.1)",
+            border: "1px solid #eaeaea", listStyle: "none", padding: "8px 0", margin: 0,
+            zIndex: 1000, maxHeight: "240px", overflowY: "auto", textAlign: "left"
+          }}>
+            {suggestions.map((s, i) => (
+              <li
+                key={i}
+                onClick={() => { setSearchQuery(s); handleSearchSubmit(null, s); }}
+                style={{ padding: "12px 20px", cursor: "pointer", fontSize: "14px", color: "#333", borderBottom: i < suggestions.length - 1 ? "1px solid #f5f5f5" : "none", transition: "background 0.2s" }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "#f9f9f9"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+              >
+                {s}
+              </li>
+            ))}
+          </ul>
+        )}
       </form>
 
       {/* Section Header */}
