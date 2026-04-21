@@ -60,8 +60,8 @@ const IconTag = () => (
     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" /><line x1="7" y1="7" x2="7.01" y2="7" />
   </svg>
 );
-const IconStar = ({ filled }) => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill={filled ? "#F59E0B" : "none"} stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const IconStar = ({ filled, size = "13" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "#F59E0B" : "none"} stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
@@ -457,37 +457,69 @@ const styles = `
   /* ── REVIEWS SECTION ── */
   .pd-reviews-section {
     background: #fff;
-    padding: 40px 56px;
+    padding: 80px 56px;
     border-top: 1px solid var(--border);
   }
-  @media (max-width: 768px) { .pd-reviews-section { padding: 24px 16px; } }
-  .pd-reviews-section h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px; font-weight: 600;
-    color: var(--dark); margin: 0 0 28px 0;
+  @media (max-width: 768px) { .pd-reviews-section { padding: 40px 20px; } }
+  .pd-reviews-header {
+    text-align: center;
+    margin-bottom: 48px;
   }
-  .pd-review-form {
+  .pd-reviews-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 600;
+    color: var(--dark); margin: 0 0 12px 0;
+  }
+  .pd-reviews-header p { color: var(--muted); font-size: 15px; margin: 0; }
+
+  .pd-reviews-container {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 350px 1fr; gap: 60px;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .pd-reviews-container { grid-template-columns: 1fr; gap: 40px; } }
+
+  .pd-review-form-wrap {
     background: var(--bg);
-    padding: 24px;
-    border-radius: 12px;
-    margin-bottom: 32px;
-    border: 1px solid var(--border);
+    padding: 32px;
+    border-radius: 20px;
+    border: 1px solid var(--border); position: sticky; top: 100px;
   }
   .pd-review-input {
-    width: 100%; padding: 12px; border: 1px solid var(--border);
-    border-radius: 8px; margin-bottom: 16px; font-family: inherit; font-size: 14px;
-    outline: none; box-sizing: border-box;
+    width: 100%; padding: 14px 16px; border: 1.5px solid transparent; background: #fff;
+    border-radius: 12px; margin-bottom: 16px; font-family: inherit; font-size: 14px;
+    outline: none; box-sizing: border-box; transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
   }
-  .pd-review-input:focus { border-color: var(--gold); }
+  .pd-review-input:focus { border-color: var(--gold); box-shadow: 0 4px 12px rgba(184, 134, 11, 0.1); }
   .pd-review-submit {
-    background: var(--dark); color: #fff; border: none; padding: 12px 24px;
-    border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+    width: 100%; background: var(--dark); color: #fff; border: none; padding: 16px;
+    border-radius: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s; font-size: 13px; margin-top: 8px;
   }
-  .pd-review-submit:hover { background: #2d0014; }
+  .pd-review-submit:hover { background: #2d0014; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(26,0,16,0.2); }
+  .pd-interactive-stars { display: flex; gap: 6px; margin-bottom: 24px; cursor: pointer; }
+  .pd-interactive-star { transition: transform 0.2s; }
+  .pd-interactive-star:hover { transform: scale(1.15); }
+
+  .pd-review-list { display: flex; flex-direction: column; gap: 24px; }
   .pd-review-card {
-    padding: 20px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px;
-    background: var(--bg);
+    padding: 32px; border: 1px solid var(--border); border-radius: 20px;
+    background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.02); transition: all 0.3s;
   }
+  .pd-review-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); border-color: #e2d8c3; }
+  .pd-review-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .pd-review-avatar-wrap { display: flex; align-items: center; gap: 16px; }
+  .pd-review-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-pale), #f4e8c1);
+    color: var(--gold); display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700;
+  }
+  .pd-review-meta h4 { margin: 0 0 4px 0; font-size: 16px; color: var(--dark); font-weight: 700; }
+  .pd-review-verified { font-size: 12px; color: #16a34a; display: flex; align-items: center; gap: 4px; font-weight: 600; }
+  .pd-review-date { font-size: 13px; color: var(--muted); }
+  .pd-review-text { font-size: 15px; color: #444; line-height: 1.8; margin: 16px 0 0 0; font-style: italic; }
 
   /* ── BOTTOM FEATURES STRIP ── */
   .pd-features-strip {
@@ -536,6 +568,7 @@ export default function ProductDetail({
   const [sellerPhone, setSellerPhone] = useState(null);
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, comment: "" });
   const [submittedReviews, setSubmittedReviews] = useState([]);
+  const [hoverRating, setHoverRating] = useState(0);
 
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -1098,66 +1131,115 @@ export default function ProductDetail({
       {/* Reviews Section */}
       {product && (
         <div className="pd-reviews-section">
-          <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+          <div className="pd-reviews-header">
             <h2>Customer Reviews</h2>
+            <p>Real feedback from our beautiful clients</p>
+          </div>
 
-            <div className="pd-review-form">
-              <h3 style={{ fontSize: "16px", marginBottom: "16px", color: "var(--dark)" }}>Write a Review</h3>
+          <div className="pd-reviews-container">
+            {/* Left Column: Form */}
+            <div className="pd-review-form-wrap">
+              <h3 style={{ fontSize: "20px", marginBottom: "8px", color: "var(--dark)", fontFamily: "'Cormorant Garamond', serif" }}>Share Your Experience</h3>
+              <p style={{ fontSize: "13px", color: "var(--muted)", marginBottom: "24px" }}>Your review helps us maintain our quality.</p>
+
               <form onSubmit={handleReviewSubmit}>
-                <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
-                  <div style={{ flex: "1 1 200px" }}>
-                    <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--muted)" }}>Name</label>
-                    <input type="text" className="pd-review-input" style={{ margin: 0 }} value={reviewForm.name} onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })} required placeholder="Your Name" />
-                  </div>
-                  <div style={{ flex: "1 1 200px" }}>
-                    <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--muted)" }}>Rating</label>
-                    <select className="pd-review-input" style={{ margin: 0 }} value={reviewForm.rating} onChange={e => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}>
-                      <option value={5}>5 Stars</option>
-                      <option value={4}>4 Stars</option>
-                      <option value={3}>3 Stars</option>
-                      <option value={2}>2 Stars</option>
-                      <option value={1}>1 Star</option>
-                    </select>
-                  </div>
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "12px", color: "var(--dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Rating</label>
+                <div className="pd-interactive-stars" onMouseLeave={() => setHoverRating(0)}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <div
+                      key={star}
+                      className="pd-interactive-star"
+                      onMouseEnter={() => setHoverRating(star)}
+                      onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                    >
+                      <IconStar filled={star <= (hoverRating || reviewForm.rating)} size="28" />
+                    </div>
+                  ))}
                 </div>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--muted)" }}>Review</label>
-                <textarea className="pd-review-input" rows="4" value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required placeholder="What did you think about this product?"></textarea>
+
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "8px", color: "var(--dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Your Name</label>
+                <input type="text" className="pd-review-input" value={reviewForm.name} onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })} required placeholder="Enter your full name" />
+
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "8px", color: "var(--dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Your Review</label>
+                <textarea className="pd-review-input" rows="4" value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required placeholder="Tell us what you loved about this piece..."></textarea>
+
                 <button type="submit" className="pd-review-submit">Submit Review</button>
               </form>
             </div>
 
+            {/* Right Column: List */}
             <div className="pd-review-list">
               {submittedReviews.map(review => (
                 <div key={review.id} className="pd-review-card">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <span style={{ fontWeight: "600", color: "var(--dark)" }}>{review.name}</span>
-                    <span style={{ fontSize: "12px", color: "var(--muted)" }}>{review.date}</span>
+                  <div className="pd-review-card-header">
+                    <div className="pd-review-avatar-wrap">
+                      <div className="pd-review-avatar">
+                        {review.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="pd-review-meta">
+                        <h4>{review.name}</h4>
+                        <span className="pd-review-verified">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="#16a34a" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ borderRadius: "50%" }}>
+                            <circle cx="12" cy="12" r="10" fill="#16a34a" stroke="none" />
+                            <path d="M9 12l2 2 4-4" stroke="#fff" />
+                          </svg>
+                          Verified Buyer
+                        </span>
+                      </div>
+                    </div>
+                    <span className="pd-review-date">{review.date}</span>
                   </div>
-                  <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
-                    {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= review.rating} />)}
+                  <div style={{ display: "flex", gap: "3px" }}>
+                    {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= review.rating} size="16" />)}
                   </div>
-                  <p style={{ fontSize: "14px", color: "var(--sub)", margin: 0, lineHeight: "1.6" }}>{review.comment}</p>
+                  <p className="pd-review-text">"{review.comment}"</p>
                 </div>
               ))}
+
               <div className="pd-review-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <span style={{ fontWeight: "600", color: "var(--dark)" }}>Aisha K.</span>
-                  <span style={{ fontSize: "12px", color: "var(--muted)" }}>12 Oct 2023</span>
+                <div className="pd-review-card-header">
+                  <div className="pd-review-avatar-wrap">
+                    <div className="pd-review-avatar">A</div>
+                    <div className="pd-review-meta">
+                      <h4>Aisha K.</h4>
+                      <span className="pd-review-verified">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#16a34a" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ borderRadius: "50%" }}>
+                          <circle cx="12" cy="12" r="10" fill="#16a34a" stroke="none" />
+                          <path d="M9 12l2 2 4-4" stroke="#fff" />
+                        </svg>
+                        Verified Buyer
+                      </span>
+                    </div>
+                  </div>
+                  <span className="pd-review-date">12 Oct 2023</span>
                 </div>
-                <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
-                  {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 5} />)}
+                <div style={{ display: "flex", gap: "3px" }}>
+                  {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 5} size="16" />)}
                 </div>
-                <p style={{ fontSize: "14px", color: "var(--sub)", margin: 0, lineHeight: "1.6" }}>Beautiful outfit! The quality is amazing and it looks exactly as shown in the pictures. Highly recommended!</p>
+                <p className="pd-review-text">"Beautiful outfit! The quality is amazing and it looks exactly as shown in the pictures. The fabric feels very premium and luxurious. Highly recommended!"</p>
               </div>
+
               <div className="pd-review-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <span style={{ fontWeight: "600", color: "var(--dark)" }}>Priya S.</span>
-                  <span style={{ fontSize: "12px", color: "var(--muted)" }}>05 Nov 2023</span>
+                <div className="pd-review-card-header">
+                  <div className="pd-review-avatar-wrap">
+                    <div className="pd-review-avatar">P</div>
+                    <div className="pd-review-meta">
+                      <h4>Priya S.</h4>
+                      <span className="pd-review-verified">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#16a34a" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ borderRadius: "50%" }}>
+                          <circle cx="12" cy="12" r="10" fill="#16a34a" stroke="none" />
+                          <path d="M9 12l2 2 4-4" stroke="#fff" />
+                        </svg>
+                        Verified Buyer
+                      </span>
+                    </div>
+                  </div>
+                  <span className="pd-review-date">05 Nov 2023</span>
                 </div>
-                <div style={{ display: "flex", gap: "2px", marginBottom: "12px" }}>
-                  {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 4} />)}
+                <div style={{ display: "flex", gap: "3px" }}>
+                  {[1, 2, 3, 4, 5].map(i => <IconStar key={i} filled={i <= 4} size="16" />)}
                 </div>
-                <p style={{ fontSize: "14px", color: "var(--sub)", margin: 0, lineHeight: "1.6" }}>Very satisfied with my purchase. The stitching is perfect, though delivery took a bit longer than expected.</p>
+                <p className="pd-review-text">"Very satisfied with my purchase. The stitching is perfect and it fits me like a glove. Delivery took a bit longer than expected but the dress is worth the wait."</p>
               </div>
             </div>
           </div>
