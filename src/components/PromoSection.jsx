@@ -3,38 +3,34 @@ export default function PromoSection() {
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, #D4AF37 0%, #c9a633 100%)",
-      color: "#fff",
-      padding: isMobile ? "28px 16px" : "50px 40px",
+      background: "#0a0f0d",
+      backgroundImage: "radial-gradient(circle at 50% -100%, rgba(212, 175, 55, 0.15) 0%, #0a0f0d 100%)",
+      color: "#D4AF37",
+      padding: isMobile ? "12px 16px" : "14px 40px",
       textAlign: "center",
-      borderBottom: "none",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
+      borderBottom: "1px solid rgba(212,175,55,0.15)",
+      fontFamily: "'Inter', sans-serif"
     }}>
-      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-        <h2 style={{
-          fontSize: isMobile ? "22px" : "32px",
-          marginBottom: "16px",
-          margin: "0 0 16px 0",
+      <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "center", justifyContent: "center", gap: isMobile ? "6px" : "16px" }}>
+        <span style={{
+          fontSize: isMobile ? "11px" : "13px",
           fontWeight: "700",
-          letterSpacing: "0.5px",
-          textShadow: "none",
-          opacity: "1",
-          color: "#fff",
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+          letterSpacing: "1px",
+          textTransform: "uppercase",
+          display: "flex", alignItems: "center", gap: "6px",
+          color: "#fff"
         }}>
-          ✨ SPECIAL OFFER ✨
-        </h2>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+          Special Offer
+        </span>
         <p style={{
-          fontSize: isMobile ? "14px" : "17px",
+          fontSize: isMobile ? "12px" : "14px",
           margin: "0",
           fontWeight: "500",
-          letterSpacing: "0.3px",
-          lineHeight: "1.6",
-          opacity: "1",
-          color: "rgba(255,255,255,0.95)",
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+          letterSpacing: "0.5px",
+          color: "rgba(255,255,255,0.8)"
         }}>
-          SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <span style={{ fontSize: isMobile ? "15px" : "18px", color: "#fff", fontWeight: "700", letterSpacing: "0.5px" }}>SRINGAR5</span>
+          SALE UP TO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <span style={{ color: "#D4AF37", fontWeight: "700", padding: "2px 8px", background: "rgba(212,175,55,0.1)", borderRadius: "4px", marginLeft: "4px" }}>SRINGAR5</span>
         </p>
       </div>
     </div>

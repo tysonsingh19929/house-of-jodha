@@ -10,29 +10,31 @@ export default function Features() {
 
   return (
     <div style={{
-      background: "#880E4F",
+      background: "#0a0f0d",
+      backgroundImage: "radial-gradient(circle at 50% 0%, #1e3a29 0%, #0a0f0d 70%)",
       padding: isMobile ? "40px 20px" : "64px 40px",
-      borderTop: "3px solid transparent",
-      borderImage: "linear-gradient(90deg,#FFD54F,#E91E63,#F9A825,#F48FB1,#FFD54F) 1",
+      borderTop: "1px solid rgba(212,175,55,0.1)",
+      borderBottom: "1px solid rgba(212,175,55,0.1)",
       position: "relative",
       overflow: "hidden",
+      fontFamily: "'Inter', sans-serif"
     }}>
       {/* Subtle background glow */}
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
-        background: "radial-gradient(circle at 50% 0%, rgba(233,30,99,0.3) 0%, transparent 60%)",
+        background: "radial-gradient(circle at 50% 50%, rgba(212,175,55,0.05) 0%, transparent 70%)",
       }} />
 
       <h2 style={{
-        fontFamily: "'Georgia', 'Times New Roman', serif",
+        fontFamily: "'Cormorant Garamond', serif",
         textAlign: "center",
-        marginBottom: isMobile ? "28px" : "44px",
-        fontSize: isMobile ? "26px" : "34px",
+        marginBottom: isMobile ? "32px" : "54px",
+        fontSize: isMobile ? "32px" : "42px",
         color: "#fff",
         position: "relative",
       }}>
         Why Choose{" "}
-        <span style={{ color: "#FFD54F", fontStyle: "italic" }}>The Sringar House?</span>
+        <span style={{ color: "#D4AF37", fontStyle: "italic" }}>The Sringar House?</span>
       </h2>
 
       <div style={{
@@ -48,29 +50,30 @@ export default function Features() {
             key={idx}
             style={{
               textAlign: "center",
-              padding: isMobile ? "20px 14px" : "28px 20px",
-              background: "rgba(255,255,255,0.07)",
-              borderRadius: "8px",
-              border: "1px solid rgba(255,213,79,0.2)",
-              transition: "all 0.25s",
+              padding: isMobile ? "24px 16px" : "32px 24px",
+              background: "rgba(20, 30, 25, 0.4)",
+              backdropFilter: "blur(12px)",
+              borderRadius: "16px",
+              border: "1px solid rgba(212,175,55,0.1)",
+              transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.12)";
-              e.currentTarget.style.borderColor = "rgba(255,213,79,0.5)";
-              e.currentTarget.style.transform = "translateY(-3px)";
+              e.currentTarget.style.background = "rgba(212,175,55,0.05)";
+              e.currentTarget.style.borderColor = "rgba(212,175,55,0.3)";
+              e.currentTarget.style.transform = "translateY(-5px)";
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.07)";
-              e.currentTarget.style.borderColor = "rgba(255,213,79,0.2)";
+              e.currentTarget.style.background = "rgba(20, 30, 25, 0.4)";
+              e.currentTarget.style.borderColor = "rgba(212,175,55,0.1)";
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >
-            <div style={{ fontSize: isMobile ? "28px" : "36px", marginBottom: "12px" }}>
+            <div style={{ fontSize: isMobile ? "28px" : "36px", marginBottom: "16px", filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))" }}>
               {feature.icon}
             </div>
             <h3 style={{
               marginBottom: "8px",
-              color: "#FFD54F",
+              color: "#D4AF37",
               fontWeight: "700",
               fontSize: isMobile ? "13px" : "15px",
             }}>

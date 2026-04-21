@@ -3,28 +3,29 @@ export default function About() {
 
   return (
     <div id="about" style={{
-      padding: isMobile ? "40px 15px" : "60px 30px",
-      background: "#fff",
-      borderBottom: "1px solid var(--border)"
+      padding: isMobile ? "60px 20px" : "100px 40px",
+      background: "#FAFAFA",
+      fontFamily: "'Inter', sans-serif"
     }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", textAlign: "center", marginBottom: "16px", fontSize: isMobile ? "32px" : "46px", color: "#1a1a1a", fontWeight: "700" }}>
           About The Sringar House
         </h2>
+        <div style={{ width: "60px", height: "2px", background: "#D4AF37", margin: "0 auto 40px auto" }} />
 
-        <div style={{ fontSize: isMobile ? "14px" : "16px", lineHeight: "1.8", color: "#333", marginBottom: isMobile ? "20px" : "30px" }}>
+        <div style={{ fontSize: isMobile ? "15px" : "17px", lineHeight: "1.9", color: "#555", marginBottom: isMobile ? "20px" : "30px", textAlign: "justify" }}>
           <p>
-            <strong>The Sringar House</strong> is an honest attempt to make every woman across the globe shine the brightest inside and out. We intend to dress up the fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses.
+            <strong style={{ color: "#1a1a1a" }}>The Sringar House</strong> is an honest attempt to make every woman across the globe shine the brightest inside and out. We intend to dress up the fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses.
           </p>
 
           <p>
             From traditional Saris, Anarkali Suits, Salwar Kameez, Lehengas, Shararas to modern Indo-Western fusion wear, we have it all available for our lovely ladies. Our beautiful Indian ethnic wear is sourced from skilled artisans across India and delivered to your doorstep.
           </p>
 
-          <h3 style={{ marginTop: isMobile ? "20px" : "30px", marginBottom: isMobile ? "12px" : "15px", color: "#08060d", fontSize: isMobile ? "16px" : "18px" }}>
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", marginTop: isMobile ? "40px" : "50px", marginBottom: "16px", color: "#1a1a1a", fontSize: isMobile ? "24px" : "28px", fontWeight: "600", textAlign: "center" }}>
             Our Commitment
           </h3>
-          <ul style={{ lineHeight: "1.8", fontSize: isMobile ? "13px" : "15px", paddingLeft: isMobile ? "20px" : "25px" }}>
+          <ul style={{ lineHeight: "2", fontSize: isMobile ? "15px" : "16px", paddingLeft: isMobile ? "20px" : "25px", margin: "0 auto", maxWidth: "600px", color: "#555" }}>
             <li>Varied choices ranging from minimal embellishments to elaborate, gorgeous designs</li>
             <li>Bespoke, made-to-measure, boutique-style stitching tailored to your body</li>
             <li>Premium quality fabrics and exquisite craftsmanship</li>
@@ -32,7 +33,7 @@ export default function About() {
             <li>Exceptional customer service and support</li>
           </ul>
 
-          <h3 style={{ marginTop: isMobile ? "20px" : "30px", marginBottom: isMobile ? "12px" : "15px", color: "#08060d", fontSize: isMobile ? "16px" : "18px" }}>
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", marginTop: isMobile ? "40px" : "50px", marginBottom: "16px", color: "#1a1a1a", fontSize: isMobile ? "24px" : "28px", fontWeight: "600", textAlign: "center" }}>
             The Art of Indian Ethnic Wear
           </h3>
           <p>

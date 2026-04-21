@@ -70,27 +70,86 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   };
 
   return (
-    <div id="products" style={{ padding: isMobile ? "24px 12px" : "48px 28px", background: "#FFF0F6" }}>
+    <div id="products" style={{ padding: isMobile ? "40px 16px" : "80px 40px", background: "#FAFAFA", fontFamily: "'Inter', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+        .pc-card {
+          background: #fff; border-radius: 16px; overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          border: 1px solid rgba(212, 175, 55, 0.1);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+          display: flex; flex-direction: column; height: 100%;
+        }
+        .pc-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+          border-color: rgba(212, 175, 55, 0.3);
+        }
+        .pc-img-wrap {
+          position: relative; width: 100%; aspect-ratio: 3/4;
+          overflow: hidden; background: #f8f8f8; cursor: pointer;
+        }
+        .pc-img {
+          width: 100%; height: 100%; object-fit: cover;
+          transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pc-card:hover .pc-img { transform: scale(1.07); }
+        .pc-btn {
+          width: 100%; padding: 12px; background: #1a1a1a; color: #fff;
+          border: none; border-radius: 10px; font-size: 13px; font-weight: 600;
+          cursor: pointer; transition: all 0.2s ease; display: flex;
+          align-items: center; justify-content: center; gap: 6px;
+        }
+        .pc-btn:hover { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .pc-qty-btn {
+          flex: 1; padding: 10px; background: #f5f5f5; color: #1a1a1a;
+          border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+          font-size: 16px; transition: all 0.2s ease;
+        }
+        .pc-qty-btn:hover { background: #eaeaea; }
+        .pc-badge {
+          position: absolute; top: 12px; left: 12px; background: #1a1a1a; color: #D4AF37;
+          padding: 6px 12px; border-radius: 30px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(212,175,55,0.3); z-index: 2;
+        }
+        .pc-wish {
+          position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+          border-radius: 50%; background: rgba(255,255,255,0.9); border: none;
+          display: flex; align-items: center; justify-content: center; cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #ccc; backdrop-filter: blur(4px);
+        }
+        .pc-wish:hover { transform: scale(1.1); background: #fff; color: #e03131; }
+        .pc-wish.active { color: #e03131; }
+        @media (max-width: 768px) {
+          .pc-card { border-radius: 12px; }
+          .pc-btn { padding: 8px; font-size: 11px; border-radius: 8px; gap: 4px; }
+          .pc-qty-btn { padding: 6px; font-size: 14px; }
+          .pc-badge { padding: 4px 8px; font-size: 9px; top: 8px; left: 8px; }
+          .pc-wish { width: 30px; height: 30px; top: 8px; right: 8px; }
+        }
+      `}</style>
 
       {/* Search Bar — navigates to /search */}
-      <form onSubmit={handleSearchSubmit} style={{ marginBottom: isMobile ? "24px" : "32px" }}>
+      <form onSubmit={handleSearchSubmit} style={{ maxWidth: "600px", margin: isMobile ? "0 auto 32px auto" : "0 auto 40px auto" }}>
         <div style={{
           display: "flex", alignItems: "center",
           background: "#fff", borderRadius: "20px",
-          padding: "10px 16px", border: "1px solid #e0e0e0",
-          gap: "8px",
+          padding: "8px 8px 8px 20px", border: "1px solid #eaeaea",
+          gap: "8px", boxShadow: "0 8px 24px rgba(0,0,0,0.04)",
+          transition: "all 0.3s ease"
         }}>
-          <span style={{ fontSize: "14px", color: "#999" }}>🔍</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
           <input
             type="text"
             name="productSearch"
             id="productSearch"
-            placeholder="Search for brands and products"
+            placeholder="Discover collections, styles, or colors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               flex: 1, border: "none", background: "transparent",
-              fontSize: isMobile ? "13px" : "14px",
+              fontSize: isMobile ? "14px" : "15px",
               outline: "none", color: "#666", fontFamily: "inherit",
             }}
           />
@@ -98,13 +157,15 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
             <button
               type="submit"
               style={{
-                background: "#E91E63", color: "#fff",
+                background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff",
                 border: "none", borderRadius: "12px",
-                padding: "4px 12px", fontSize: "12px",
-                fontWeight: "600", cursor: "pointer",
+                padding: "8px 20px", fontSize: "13px",
+                fontWeight: "600", cursor: "pointer", transition: "transform 0.2s"
               }}
+              onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
             >
-              Go
+              Search
             </button>
           )}
         </div>
@@ -113,21 +174,21 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       {/* Section Header */}
       <div style={{ textAlign: "center", marginBottom: isMobile ? "20px" : "32px" }}>
         <h2 style={{
-          fontFamily: "'Georgia', 'Times New Roman', serif",
-          fontSize: isMobile ? "26px" : "36px",
-          fontWeight: "700", color: "#880E4F", margin: "0 0 6px",
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: isMobile ? "32px" : "42px",
+          fontWeight: "700", color: "#1a1a1a", margin: "0 0 8px",
         }}>
           Our Collections
         </h2>
-        <p style={{ color: "#9C4070", fontSize: isMobile ? "13px" : "14px", margin: 0 }}>
+        <p style={{ color: "#666", fontSize: isMobile ? "14px" : "16px", margin: 0 }}>
           Handpicked pieces for every occasion
         </p>
       </div>
 
       {/* Category Filter Pills */}
       <div style={{
-        display: "flex", gap: "8px",
-        marginBottom: isMobile ? "16px" : "28px",
+        display: "flex", gap: "10px",
+        marginBottom: isMobile ? "24px" : "40px",
         justifyContent: "center", flexWrap: "wrap",
       }}>
         {categories.map(cat => (
@@ -135,77 +196,43 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
             key={cat}
             onClick={() => handleCategoryChange(cat)}
             style={{
-              padding: isMobile ? "7px 14px" : "9px 20px",
-              fontSize: isMobile ? "11px" : "13px",
+              padding: isMobile ? "8px 16px" : "10px 24px",
+              fontSize: isMobile ? "12px" : "14px",
               background: selectedCategory === cat
-                ? "linear-gradient(135deg, #E91E63, #C2185B)" : "#fff",
-              color: selectedCategory === cat ? "#fff" : "#C2185B",
-              border: selectedCategory === cat ? "none" : "1.5px solid #F48FB1",
-              borderRadius: "20px", cursor: "pointer", fontWeight: "600",
-              transition: "all 0.2s",
-              boxShadow: selectedCategory === cat ? "0 2px 12px rgba(233,30,99,0.35)" : "none",
+                ? "#1a1a1a" : "#fff",
+              color: selectedCategory === cat ? "#D4AF37" : "#666",
+              border: selectedCategory === cat ? "1px solid #1a1a1a" : "1px solid #eaeaea",
+              borderRadius: "30px", cursor: "pointer", fontWeight: "600",
+              transition: "all 0.3s ease",
+              boxShadow: selectedCategory === cat ? "0 4px 15px rgba(0,0,0,0.1)" : "none",
             }}
+            onMouseEnter={e => { if (selectedCategory !== cat) e.currentTarget.style.borderColor = "#D4AF37"; }}
+            onMouseLeave={e => { if (selectedCategory !== cat) e.currentTarget.style.borderColor = "#eaeaea"; }}
           >
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Count badge */}
-      <div style={{
-        background: "#FCE4EC", border: "1px solid #F48FB1",
-        borderRadius: "4px", padding: isMobile ? "8px 12px" : "10px 16px",
-        marginBottom: isMobile ? "16px" : "24px",
-        fontSize: isMobile ? "12px" : "13px",
-        fontWeight: "600", textAlign: "center", color: "#880E4F",
-      }}>
-        ✨ {filteredProducts.length} {selectedCategory} products available
-      </div>
-
       {/* Product Grid */}
       <div style={{
         display: "grid",
         gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-        gap: isMobile ? "12px" : "16px",
-        width: "100%",
+        gap: isMobile ? "12px" : "24px", width: "100%", maxWidth: "1200px", margin: "0 auto"
       }}>
         {paginatedProducts.map((product) => {
-          const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+          const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
           return (
-            <div
-              key={product.id}
-              onClick={() => navigate(`/product/${product.id}`)}
-              style={{
-                background: "#fff", borderRadius: "8px",
-                overflow: "hidden", cursor: "pointer",
-                border: "1px solid rgba(244,143,177,0.25)",
-                transition: "all 0.25s", position: "relative",
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow = "0 12px 32px rgba(194,24,91,0.18)";
-                e.currentTarget.style.borderColor = "#E91E63";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-                e.currentTarget.style.borderColor = "rgba(244,143,177,0.25)";
-              }}
-            >
+            <div key={product.id} className="pc-card">
               {/* Image Container */}
-              <div style={{
-                background: "linear-gradient(135deg, #FCE4EC 0%, #FFF0F6 100%)",
-                aspectRatio: "1 / 1",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                position: "relative", overflow: "hidden",
-              }}>
+              <div className="pc-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
                 {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
                   <img
                     src={product.image}
                     alt={product.name}
+                    className="pc-img"
                     loading="lazy"
                     decoding="async"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 ) : (
                   <span style={{ fontSize: isMobile ? "48px" : "60px" }}>{product.image}</span>
@@ -213,18 +240,14 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
                 {/* Discount Badge */}
                 {discount > 0 && (
-                  <div style={{
-                    position: "absolute", top: "8px", left: "8px",
-                    background: "#C2185B", color: "#fff",
-                    fontSize: "10px", fontWeight: "700",
-                    padding: "3px 8px", borderRadius: "3px",
-                  }}>
+                  <div className="pc-badge">
                     {discount}% OFF
                   </div>
                 )}
 
                 {/* Wishlist */}
                 <button
+                  className={`pc-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (isInWishlist && isInWishlist(product.id)) {
@@ -233,59 +256,38 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                       addToWishlist(product);
                     }
                   }}
-                  style={{
-                    position: "absolute", top: "8px", right: "8px",
-                    background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
-                    border: "none", width: "32px", height: "32px",
-                    borderRadius: "50%", cursor: "pointer", fontSize: "16px",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)", transition: "all 0.2s",
-                    color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.2)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
                   title={isInWishlist && isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                 >
-                  {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill={isInWishlist && isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
                 </button>
               </div>
 
               {/* Product Info */}
-              <div style={{ padding: isMobile ? "8px 10px 10px" : "10px 12px 12px" }}>
-                <div style={{
-                  fontSize: "9px", color: "#E91E63",
-                  textTransform: "uppercase", fontWeight: "700",
-                  letterSpacing: "1px", marginBottom: "3px",
-                }}>
-                  {product.category}
-                </div>
-
+              <div onClick={() => navigate(`/product/${product.id}`)} style={{ padding: isMobile ? "12px" : "16px", cursor: "pointer", flex: 1, display: "flex", flexDirection: "column" }}>
                 <h3 style={{
-                  fontSize: isMobile ? "11px" : "13px",
-                  fontWeight: "600", color: "#1A0010",
-                  marginBottom: "4px", lineHeight: "1.4",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
+                  fontSize: isMobile ? "13px" : "15px", fontWeight: "600",
+                  color: "#1a1a1a", margin: "0 0 4px 0",
+                  overflow: "hidden", display: "-webkit-box",
+                  WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                  lineHeight: "1.4"
                 }}>
                   {product.name}
                 </h3>
+                <p style={{ fontSize: isMobile ? "11px" : "12px", color: "#888", margin: "0 0 10px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "500" }}>
+                  {product.category}
+                </p>
 
-                <div style={{ fontSize: isMobile ? "11px" : "12px", marginBottom: "5px", color: "#E91E63" }}>
-                  ⭐ 4.3 <span style={{ color: "#bbb", fontSize: "10px" }}>(2.2k)</span>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: isMobile ? "8px" : "10px" }}>
-                  <span style={{ fontSize: isMobile ? "14px" : "16px", fontWeight: "700", color: "#880E4F" }}>
-                    ₹{product.price}
+                <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
+                  <span style={{ fontSize: isMobile ? "15px" : "16px", fontWeight: "700", color: "#D4AF37" }}>
+                    ₹{product.price.toLocaleString()}
                   </span>
-                  <span style={{ fontSize: isMobile ? "10px" : "12px", color: "#bbb", textDecoration: "line-through" }}>
-                    ₹{product.originalPrice}
-                  </span>
-                  <span style={{ fontSize: "10px", fontWeight: "700", color: "#E91E63" }}>
-                    ({discount}%)
-                  </span>
+                  {product.originalPrice > product.price && (
+                    <span style={{ fontSize: isMobile ? "12px" : "13px", color: "#aaa", textDecoration: "line-through", fontWeight: "500" }}>
+                      ₹{product.originalPrice.toLocaleString()}
+                    </span>
+                  )}
                 </div>
 
                 {/* Add to Cart / Quantity Controls */}
@@ -293,43 +295,28 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                   <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
                     <button
                       onClick={e => { e.stopPropagation(); handleDecreaseQuantity(product); }}
-                      style={{
-                        flex: 1, padding: isMobile ? "5px" : "7px",
-                        background: "linear-gradient(135deg,#E91E63,#C2185B)",
-                        color: "#fff", border: "none", borderRadius: "3px",
-                        cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                      }}
+                      className="pc-qty-btn"
                     >−</button>
                     <span style={{
                       flex: 1, textAlign: "center",
-                      fontSize: isMobile ? "12px" : "13px",
-                      fontWeight: "700", color: "#C2185B",
+                      fontSize: "14px",
+                      fontWeight: "700", color: "#1a1a1a",
                     }}>
                       {addedProducts[product.id]}
                     </span>
                     <button
                       onClick={e => { e.stopPropagation(); handleIncreaseQuantity(product); }}
-                      style={{
-                        flex: 1, padding: isMobile ? "5px" : "7px",
-                        background: "linear-gradient(135deg,#E91E63,#C2185B)",
-                        color: "#fff", border: "none", borderRadius: "3px",
-                        cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                      }}
+                      className="pc-qty-btn"
                     >+</button>
                   </div>
                 ) : (
                   <button
                     onClick={e => { e.stopPropagation(); handleAddProduct(product); }}
-                    style={{
-                      width: "100%", padding: isMobile ? "7px" : "9px",
-                      fontSize: isMobile ? "11px" : "12px",
-                      background: "linear-gradient(90deg, #E91E63, #C2185B)",
-                      color: "#fff", border: "none", borderRadius: "3px",
-                      cursor: "pointer", fontWeight: "700", transition: "opacity 0.2s",
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
-                    onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                    className="pc-btn"
                   >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
                     Add to Cart
                   </button>
                 )}
@@ -338,9 +325,14 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                   message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
                   buttonStyle={{
                     width: "100%",
-                    padding: isMobile ? "7px" : "9px",
+                    padding: isMobile ? "8px" : "10px",
                     fontSize: isMobile ? "11px" : "12px",
-                    marginTop: "6px",
+                    marginTop: isMobile ? "6px" : "8px",
+                    background: "#fff",
+                    border: "1px solid #eaeaea",
+                    color: "#1a1a1a",
+                    borderRadius: "10px",
+                    boxShadow: "none"
                   }}
                 />
               </div>
@@ -351,49 +343,54 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
       {totalPages > 1 && (
         <div style={{
-          display: "flex",
-          flexWrap: "wrap",
+          display: "flex", flexWrap: "wrap",
           justifyContent: "center",
-          gap: isMobile ? "8px" : "10px",
-          marginTop: "18px",
+          gap: isMobile ? "8px" : "12px",
+          marginTop: "40px",
           alignItems: "center",
         }}>
+          <button
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            style={{
+              padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea",
+              background: currentPage === 1 ? "#f9f9f9" : "#fff", color: currentPage === 1 ? "#aaa" : "#1a1a1a",
+              cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s"
+            }}
+          >
+            Previous
+          </button>
+
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
             <button
               key={page}
               onClick={() => handlePageChange(page)}
               style={{
-                width: isMobile ? "32px" : "38px",
-                height: isMobile ? "32px" : "38px",
-                borderRadius: "50%",
-                border: page === currentPage ? "none" : "1.5px solid #F48FB1",
-                background: page === currentPage
-                  ? "linear-gradient(135deg, #E91E63, #C2185B)" : "#fff",
-                color: page === currentPage ? "#fff" : "#C2185B",
+                width: isMobile ? "36px" : "42px", height: isMobile ? "36px" : "42px",
+                borderRadius: "8px", border: "none",
+                background: page === currentPage ? "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)" : "transparent",
+                color: page === currentPage ? "#fff" : "#666",
                 cursor: "pointer", fontWeight: "700",
-                fontSize: isMobile ? "12px" : "13px",
+                fontSize: "14px",
                 transition: "all 0.2s",
-                boxShadow: page === currentPage ? "0 2px 10px rgba(233,30,99,0.35)" : "none",
               }}
+              onMouseEnter={e => { if (page !== currentPage) e.currentTarget.style.background = "#eaeaea"; }}
+              onMouseLeave={e => { if (page !== currentPage) e.currentTarget.style.background = "transparent"; }}
             >
               {page}
             </button>
           ))}
 
           <button
-            onClick={() => handlePageChange(currentPage + 1)}
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
             style={{
-              padding: isMobile ? "7px 14px" : "9px 18px",
-              fontSize: isMobile ? "12px" : "13px",
-              background: currentPage === totalPages ? "#f5f5f5" : "linear-gradient(135deg, #E91E63, #C2185B)",
-              color: currentPage === totalPages ? "#bbb" : "#fff",
-              border: "none", borderRadius: "20px",
-              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-              fontWeight: "600", transition: "all 0.2s",
+              padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea",
+              background: currentPage === totalPages ? "#f9f9f9" : "#fff", color: currentPage === totalPages ? "#aaa" : "#1a1a1a",
+              cursor: currentPage === totalPages ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s"
             }}
           >
-            Next →
+            Next
           </button>
         </div>
       )}

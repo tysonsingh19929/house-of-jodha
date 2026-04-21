@@ -47,12 +47,13 @@ export default function Footer() {
 
   return (
     <div style={{
-      background: "#08060d",
+      background: "#0a0f0d",
       color: "#fff",
-      padding: isMobile ? "30px 15px 20px" : "50px 30px 30px"
+      padding: isMobile ? "40px 20px 20px" : "80px 40px 30px",
+      fontFamily: "'Inter', sans-serif"
     }}>
       <div style={{
-        maxWidth: "1126px",
+        maxWidth: "1200px",
         margin: "0 auto",
         display: "grid",
         gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
@@ -60,16 +61,16 @@ export default function Footer() {
         marginBottom: isMobile ? "25px" : "40px"
       }}>
         <div>
-          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "#D4AF37" }}>
+          <h4 style={{ fontFamily: "'Cormorant Garamond', serif", marginBottom: isMobile ? "16px" : "24px", fontSize: isMobile ? "24px" : "28px", fontWeight: "700", color: "#D4AF37", letterSpacing: "1px" }}>
             The Sringar House
           </h4>
-          <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: "1.6", opacity: "0.9", margin: "0" }}>
+          <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: "1.8", color: "rgba(255,255,255,0.7)", margin: "0" }}>
             Exquisite Indian ethnic wear designed for the modern woman. Handpicked, carefully curated, and tailored to perfection.
           </p>
         </div>
 
         <div>
-          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Shopping</h4>
+          <h4 style={{ marginBottom: isMobile ? "15px" : "24px", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase" }}>Shopping</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
             <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleShoppingClick("New Arrivals")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>New Arrivals</a></li>
             <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleShoppingClick("Best Sellers")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Best Sellers</a></li>
@@ -79,7 +80,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Collection</h4>
+          <h4 style={{ marginBottom: isMobile ? "15px" : "24px", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase" }}>Collection</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
             <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleCollectionClick("Lehenga")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Lehenga</a></li>
             <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handleCollectionClick("Saree")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Saree</a></li>
@@ -89,7 +90,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Policies</h4>
+          <h4 style={{ marginBottom: isMobile ? "15px" : "24px", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase" }}>Policies</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
             <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handlePolicyClick("Privacy Policy")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Privacy Policy</a></li>
             <li style={{ marginBottom: "8px", cursor: "pointer" }}><a onClick={() => handlePolicyClick("Shipping Info")} style={{ color: "#ccc", textDecoration: "none", fontSize: isMobile ? "13px" : "14px", cursor: "pointer" }}>Shipping Info</a></li>
@@ -99,28 +100,28 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Contact</h4>
+          <h4 style={{ marginBottom: isMobile ? "15px" : "24px", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase" }}>Contact</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
-            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📧 support@thesringarhouse.com</li>
-            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📞 +1 (555) 123-4567</li>
-            <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "10px" : "15px" }}>Follow us:</li>
+            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📧 support@thesringarhouse.com</li>
+            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📞 +1 (555) 123-4567</li>
+            <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "16px" : "24px", color: "#fff" }}>Follow us:</li>
             <li style={{ marginTop: "8px", fontSize: isMobile ? "14px" : "18px" }}>
-              <a onClick={() => handleSocialClick("Facebook")} style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none", cursor: "pointer" }}>f</a>
-              <a onClick={() => handleSocialClick("Instagram")} style={{ color: "#D4AF37", marginRight: isMobile ? "10px" : "15px", textDecoration: "none", cursor: "pointer" }}>📷</a>
-              <a onClick={() => handleSocialClick("Twitter")} style={{ color: "#D4AF37", textDecoration: "none", cursor: "pointer" }}>𝕏</a>
+              <a onClick={() => handleSocialClick("Facebook")} style={{ color: "#D4AF37", marginRight: isMobile ? "12px" : "16px", textDecoration: "none", cursor: "pointer", transition: "opacity 0.2s" }} onMouseEnter={e => e.target.style.opacity = 0.7} onMouseLeave={e => e.target.style.opacity = 1}>f</a>
+              <a onClick={() => handleSocialClick("Instagram")} style={{ color: "#D4AF37", marginRight: isMobile ? "12px" : "16px", textDecoration: "none", cursor: "pointer", transition: "opacity 0.2s" }} onMouseEnter={e => e.target.style.opacity = 0.7} onMouseLeave={e => e.target.style.opacity = 1}>📷</a>
+              <a onClick={() => handleSocialClick("Twitter")} style={{ color: "#D4AF37", textDecoration: "none", cursor: "pointer", transition: "opacity 0.2s" }} onMouseEnter={e => e.target.style.opacity = 0.7} onMouseLeave={e => e.target.style.opacity = 1}>𝕏</a>
             </li>
           </ul>
         </div>
       </div>
 
       <div style={{
-        borderTop: "1px solid rgba(255,255,255,0.1)",
-        paddingTop: isMobile ? "15px" : "20px",
+        borderTop: "1px solid rgba(212,175,55,0.1)",
+        paddingTop: isMobile ? "20px" : "30px",
         textAlign: "center",
         fontSize: isMobile ? "11px" : "13px",
-        opacity: "0.8"
+        color: "rgba(255,255,255,0.5)"
       }}>
-        <p style={{ margin: "0 0 8px 0" }}>✨ SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF | USE CODE SRINGAR5 ✨</p>
+        <p style={{ margin: "0 0 8px 0", color: "#D4AF37", letterSpacing: "1px" }}>✨ SALE UP TO 50% OFF EVERYTHING | PLUS 5% OFF | USE CODE SRINGAR5 ✨</p>
         <p style={{ margin: "0" }}>
           © 2026 The Sringar House. All rights reserved. | Perfect Tailoring, Delivered at Doorsteps
         </p>
