@@ -1,4 +1,4 @@
-# House of Jodha - Enhanced Features ✨
+# The Sringar House - Enhanced Features ✨
 
 ## Recent Updates
 
@@ -15,7 +15,7 @@
 
 ### 1. **Promotional Banner Section**
 - Eye-catching gradient background (Purple theme)
-- Special offer display: "50% OFF + 5% with code JODHA5"
+- Special offer display: "50% OFF + 5% with code SRINGAR5"
 - Call-to-action button with hover effects
 - Location: Top of website (after navbar)
 
@@ -128,7 +128,7 @@ App/
 
 ## 📊 Feature Comparison
 
-| Feature | Like A Diva | House of Jodha |
+| Feature | Like A Diva | The Sringar House |
 |---------|------------|-----------------|
 | Products | ✓ | ✓ |
 | Filter by Category | ✓ | ✓ |
@@ -193,4 +193,4 @@ All components are ready to connect to the Express backend:
 
 ---
 
-**Your House of Jodha website is now feature-complete and ready for deployment!** 🎉
+**Your The Sringar House website is now feature-complete and ready for deployment!** 🎉

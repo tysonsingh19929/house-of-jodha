@@ -142,7 +142,7 @@ export default function AdminPanel() {
         originalPrice: parseInt(formData.originalPrice || formData.price, 10),
         occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
         sellerId: "admin",
-        sellerName: "House of Jodha"
+        sellerName: "The Sringar House"
       };
       const res = await fetch(`${API_BASE_URL}/products`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (res.ok) {
@@ -283,7 +283,7 @@ export default function AdminPanel() {
                 Master Control Center
               </h2>
               <p style={{ color: "#64748b", lineHeight: "1.6", margin: 0 }}>
-                You have full operational access to House of Jodha. Manage external sellers, verify their product listings, track financial metrics, and monitor user accounts. Utilize the sidebar to navigate the master administrative portals.
+                You have full operational access to The Sringar House. Manage external sellers, verify their product listings, track financial metrics, and monitor user accounts. Utilize the sidebar to navigate the master administrative portals.
               </p>
             </div>
           </div>
@@ -347,7 +347,7 @@ export default function AdminPanel() {
                     <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b" }}>Filter by Seller:</label>
                     <select value={sellerFilter} onChange={e => setSellerFilter(e.target.value)} style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none" }}>
                       <option value="All">All Products</option>
-                      <option value="admin">House of Jodha (Admin)</option>
+                      <option value="admin">The Sringar House (Admin)</option>
                       {sellers.filter(s => s.role !== 'admin').map(s => (
                         <option key={s._id} value={s._id}>{s.businessName || s.name}</option>
                       ))}
@@ -378,7 +378,7 @@ export default function AdminPanel() {
                           <td style={{ padding: "16px 24px" }}>
                             <span style={{ padding: "4px 10px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "100px", fontSize: "12px", fontWeight: "500" }}>{p.category}</span>
                           </td>
-                          <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "House of Jodha"}</td>
+                          <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "The Sringar House"}</td>
                           <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{p.price}</td>
                           <td style={{ padding: "16px 24px", textAlign: "right" }}>
                             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>

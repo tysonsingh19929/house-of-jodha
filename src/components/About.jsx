@@ -9,12 +9,12 @@ export default function About() {
     }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", marginBottom: isMobile ? "25px" : "40px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
-          About House of Jodha
+          About The Sringar House
         </h2>
 
         <div style={{ fontSize: isMobile ? "14px" : "16px", lineHeight: "1.8", color: "#333", marginBottom: isMobile ? "20px" : "30px" }}>
           <p>
-            <strong>House of Jodha</strong> is an honest attempt to make every woman across the globe shine the brightest inside and out. We intend to dress up the fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses.
+            <strong>The Sringar House</strong> is an honest attempt to make every woman across the globe shine the brightest inside and out. We intend to dress up the fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses.
           </p>
 
           <p>

@@ -193,7 +193,7 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
 
           <div style={{ marginTop: "32px", textAlign: "center", paddingTop: "24px", borderTop: "1px solid #f0f0f0" }}>
             <p style={{ fontSize: "14px", color: "#666", margin: "0", fontWeight: "500" }}>
-              New to House of Jodha? <Link to="/signup" style={{ color: "#1a1a1a", textDecoration: "none", fontWeight: "700", borderBottom: "2px solid #D4AF37", paddingBottom: "2px", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#D4AF37"} onMouseLeave={e => e.target.style.color = "#1a1a1a"}>Create account</Link>
+              New to The Sringar House? <Link to="/signup" style={{ color: "#1a1a1a", textDecoration: "none", fontWeight: "700", borderBottom: "2px solid #D4AF37", paddingBottom: "2px", transition: "color 0.2s" }} onMouseEnter={e => e.target.style.color = "#D4AF37"} onMouseLeave={e => e.target.style.color = "#1a1a1a"}>Create account</Link>
             </p>
           </div>
 

@@ -78,7 +78,7 @@ export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "32px" }}>
               <label style={{ display: "block", fontSize: "13px", fontWeight: "600", color: "rgba(255,255,255,0.7)", marginBottom: "8px", textTransform: "uppercase" }}>Email Address</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Ex: boutique@jodha.com" required style={{ width: "100%", padding: "16px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", fontSize: "15px", color: "#fff", outline: "none", boxSizing: "border-box" }} autoFocus />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Ex: boutique@sringarhouse.com" required style={{ width: "100%", padding: "16px", background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", fontSize: "15px", color: "#fff", outline: "none", boxSizing: "border-box" }} autoFocus />
             </div>
             <button type="submit" disabled={loading} style={{ width: "100%", padding: "16px", background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}>
               {loading ? "Sending..." : "Send Reset Link"}

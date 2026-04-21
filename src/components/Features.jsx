@@ -32,7 +32,7 @@ export default function Features() {
         position: "relative",
       }}>
         Why Choose{" "}
-        <span style={{ color: "#FFD54F", fontStyle: "italic" }}>House of Jodha?</span>
+        <span style={{ color: "#FFD54F", fontStyle: "italic" }}>The Sringar House?</span>
       </h2>
 
       <div style={{

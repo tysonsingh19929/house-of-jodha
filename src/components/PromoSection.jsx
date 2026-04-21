@@ -11,9 +11,9 @@ export default function PromoSection() {
       boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
     }}>
       <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-        <h2 style={{ 
+        <h2 style={{
           fontSize: isMobile ? "22px" : "32px",
-          marginBottom: "16px", 
+          marginBottom: "16px",
           margin: "0 0 16px 0",
           fontWeight: "700",
           letterSpacing: "0.5px",
@@ -24,7 +24,7 @@ export default function PromoSection() {
         }}>
           ✨ SPECIAL OFFER ✨
         </h2>
-        <p style={{ 
+        <p style={{
           fontSize: isMobile ? "14px" : "17px",
           margin: "0",
           fontWeight: "500",
@@ -34,7 +34,7 @@ export default function PromoSection() {
           color: "rgba(255,255,255,0.95)",
           fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
         }}>
-          SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <span style={{ fontSize: isMobile ? "15px" : "18px", color: "#fff", fontWeight: "700", letterSpacing: "0.5px" }}>JODHA5</span>
+          SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <span style={{ fontSize: isMobile ? "15px" : "18px", color: "#fff", fontWeight: "700", letterSpacing: "0.5px" }}>SRINGAR5</span>
         </p>
       </div>
     </div>

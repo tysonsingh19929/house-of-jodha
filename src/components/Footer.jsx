@@ -36,9 +36,9 @@ export default function Footer() {
 
   const handleSocialClick = (platform) => {
     const urls = {
-      "Facebook": "https://facebook.com/houseofjodha",
-      "Instagram": "https://instagram.com/houseofjodha",
-      "Twitter": "https://twitter.com/houseofjodha"
+      "Facebook": "https://facebook.com/thesringarhouse",
+      "Instagram": "https://instagram.com/thesringarhouse",
+      "Twitter": "https://twitter.com/thesringarhouse"
     };
     if (urls[platform]) {
       window.open(urls[platform], "_blank");
@@ -61,7 +61,7 @@ export default function Footer() {
       }}>
         <div>
           <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "16px" : "18px", fontWeight: "600", color: "#D4AF37" }}>
-            House of Jodha
+            The Sringar House
           </h4>
           <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: "1.6", opacity: "0.9", margin: "0" }}>
             Exquisite Indian ethnic wear designed for the modern woman. Handpicked, carefully curated, and tailored to perfection.
@@ -101,7 +101,7 @@ export default function Footer() {
         <div>
           <h4 style={{ marginBottom: isMobile ? "15px" : "20px", fontSize: isMobile ? "15px" : "16px", fontWeight: "600" }}>Contact</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
-            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📧 support@houseofjodha.com</li>
+            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📧 support@thesringarhouse.com</li>
             <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px" }}>📞 +1 (555) 123-4567</li>
             <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "10px" : "15px" }}>Follow us:</li>
             <li style={{ marginTop: "8px", fontSize: isMobile ? "14px" : "18px" }}>
@@ -120,9 +120,9 @@ export default function Footer() {
         fontSize: isMobile ? "11px" : "13px",
         opacity: "0.8"
       }}>
-        <p style={{ margin: "0 0 8px 0" }}>✨ SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF | USE CODE JODHA5 ✨</p>
+        <p style={{ margin: "0 0 8px 0" }}>✨ SALE UPTO 50% OFF EVERYTHING | PLUS 5% OFF | USE CODE SRINGAR5 ✨</p>
         <p style={{ margin: "0" }}>
-          © 2026 House of Jodha. All rights reserved. | Perfect Tailoring, Delivered at Doorsteps
+          © 2026 The Sringar House. All rights reserved. | Perfect Tailoring, Delivered at Doorsteps
         </p>
       </div>
     </div>

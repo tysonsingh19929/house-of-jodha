@@ -36,7 +36,7 @@ const makeLinksClickable = (text) => {
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'model', text: 'Namaste! Welcome to House of Jodha. I am Ishani, your Senior Fashion Consultant. How can I help you pick the perfect outfit today, love?' }
+    { role: 'model', text: 'Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. How can I help you pick the perfect outfit today, love?' }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
