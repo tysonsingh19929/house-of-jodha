@@ -9,6 +9,8 @@ import imageDatabase from "../data/imageDatabase.js";
 
 function SearchBar({ onSearch, initialQuery }) {
   const [searchTerm, setSearchTerm] = useState(initialQuery || "");
+  const [isFocused, setIsFocused] = useState(false);
+  const isMobile = window.innerWidth <= 768;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,34 +20,49 @@ function SearchBar({ onSearch, initialQuery }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", gap: "8px", marginBottom: "20px", width: "100%" }}>
-      <input
-        type="text"
-        name="search"
-        id="search"
-        placeholder="Search products..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{
-          flex: 1, padding: "12px 16px", fontSize: "14px",
-          border: "2px solid #e0e0e0", borderRadius: "4px",
-          outline: "none", transition: "border-color 0.2s", fontFamily: "inherit"
-        }}
-        onFocus={(e) => e.target.style.borderColor = "#880E4F"}
-        onBlur={(e) => e.target.style.borderColor = "#e0e0e0"}
-      />
-      <button
-        type="submit"
-        style={{
-          padding: "12px 24px", background: "#880E4F", color: "#fff",
-          border: "none", borderRadius: "4px", cursor: "pointer",
-          fontWeight: "600", fontSize: "14px", transition: "background 0.2s"
-        }}
-        onMouseEnter={(e) => e.target.style.background = "#6B0A3D"}
-        onMouseLeave={(e) => e.target.style.background = "#880E4F"}
-      >
-        Search
-      </button>
+    <form onSubmit={handleSubmit} style={{
+      position: "relative",
+      maxWidth: "640px",
+      margin: "0 auto 40px auto",
+      width: "100%"
+    }}>
+      <div style={{
+        display: "flex", alignItems: "center", background: "#fff",
+        borderRadius: "50px", padding: isMobile ? "4px 4px 4px 16px" : "6px 6px 6px 24px",
+        boxShadow: isFocused ? "0 12px 32px rgba(212, 175, 55, 0.15)" : "0 8px 24px rgba(0,0,0,0.06)",
+        border: `1px solid ${isFocused ? "#D4AF37" : "#eaeaea"}`,
+        transition: "all 0.3s ease"
+      }}>
+        <svg width={isMobile ? "16" : "20"} height={isMobile ? "16" : "20"} viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Discover your next outfit..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          style={{
+            flex: 1, padding: isMobile ? "10px 12px" : "12px 16px", fontSize: isMobile ? "14px" : "16px",
+            border: "none", outline: "none", background: "transparent",
+            fontFamily: "'Inter', sans-serif", color: "#1a1a1a"
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: isMobile ? "10px 20px" : "12px 32px", background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff",
+            border: "none", borderRadius: "40px", cursor: "pointer",
+            fontWeight: "600", fontSize: isMobile ? "13px" : "15px", transition: "transform 0.2s, box-shadow 0.2s",
+            boxShadow: "0 4px 15px rgba(212, 175, 55, 0.3)"
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(212, 175, 55, 0.4)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 15px rgba(212, 175, 55, 0.3)"; }}
+        >
+          Search
+        </button>
+      </div>
     </form>
   );
 }
@@ -137,7 +154,80 @@ export default function SearchResults({
   const paginatedProducts = filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
-    <div style={{ background: "#fff", paddingTop: "64px", minHeight: "100vh" }}>
+    <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+        .sr-card {
+          background: #fff;
+          border-radius: 16px;
+          overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          border: 1px solid rgba(212, 175, 55, 0.1);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+        .sr-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+          border-color: rgba(212, 175, 55, 0.3);
+        }
+        .sr-img-wrap {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 3/4;
+          overflow: hidden;
+          background: #f8f8f8;
+          cursor: pointer;
+        }
+        .sr-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .sr-card:hover .sr-img {
+          transform: scale(1.07);
+        }
+        .sr-btn {
+          width: 100%; padding: 12px; background: #1a1a1a; color: #fff;
+          border: none; border-radius: 10px; font-size: 13px; font-weight: 600;
+          cursor: pointer; transition: all 0.2s ease; display: flex;
+          align-items: center; justify-content: center; gap: 6px;
+        }
+        .sr-btn:hover { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .sr-qty-btn {
+          flex: 1; padding: 10px; background: #f5f5f5; color: #1a1a1a;
+          border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+          font-size: 16px; transition: all 0.2s ease;
+        }
+        .sr-qty-btn:hover { background: #eaeaea; }
+        .sr-badge {
+          position: absolute; top: 12px; left: 12px; background: #1a1a1a; color: #D4AF37;
+          padding: 6px 12px; border-radius: 30px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(212,175,55,0.3); z-index: 2;
+        }
+        .sr-wish {
+          position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+          border-radius: 50%; background: rgba(255,255,255,0.9); border: none;
+          display: flex; align-items: center; justify-content: center; cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #ccc; backdrop-filter: blur(4px);
+        }
+        .sr-wish:hover { transform: scale(1.1); background: #fff; color: #e03131; }
+        .sr-wish.active { color: #e03131; }
+        
+        @media (max-width: 768px) {
+          .sr-card { border-radius: 12px; }
+          .sr-btn { padding: 8px; font-size: 11px; border-radius: 8px; gap: 4px; }
+          .sr-btn svg { width: 14px; height: 14px; }
+          .sr-qty-btn { padding: 6px; font-size: 14px; }
+          .sr-badge { padding: 4px 8px; font-size: 9px; top: 8px; left: 8px; }
+          .sr-wish { width: 30px; height: 30px; top: 8px; right: 8px; }
+          .sr-wish svg { width: 15px; height: 15px; }
+        }
+      `}</style>
       <Navbar
         cartCount={cartCount}
         onCartClick={() => setCartOpen(!cartOpen)}
@@ -155,176 +245,115 @@ export default function SearchResults({
       )}
 
       <div style={{ padding: isMobile ? "15px 12px" : "30px", maxWidth: "1200px", margin: "0 auto" }}>
-        <SearchBar onSearch={handleSearch} initialQuery={query} />
-
-        <div style={{ marginBottom: "24px" }}>
-          <h1 style={{ fontSize: isMobile ? "20px" : "28px", marginBottom: "6px", color: "#D4AF37" }}>
-            Search Results
+        <div style={{ textAlign: "center", marginBottom: "32px", animation: "fadeIn 0.5s ease-out" }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? "32px" : "42px", color: "#1a1a1a", margin: "0 0 12px 0", fontWeight: "700" }}>
+            Discover Your Style
           </h1>
-          <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", margin: 0 }}>
-            {loading ? "Searching our collections..." : (query ? `Showing ${filteredProducts.length} result${filteredProducts.length !== 1 ? "s" : ""} for "${query}"` : "Enter a search term")}
+          <p style={{ fontSize: isMobile ? "14px" : "16px", color: "#666", margin: 0 }}>
+            {loading ? "Curating the finest collections..." : (query ? `Showing ${filteredProducts.length} result${filteredProducts.length !== 1 ? "s" : ""} for "${query}"` : "Find your perfect luxury outfit")}
           </p>
         </div>
 
+        <SearchBar onSearch={handleSearch} initialQuery={query} />
+
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
-            <div style={{
-              display: "inline-block", width: "40px", height: "40px",
-              border: "3px solid #f3f3f3", borderTop: "3px solid #D4AF37",
-              borderRadius: "50%", animation: "spin 1s linear infinite"
-            }} />
-            <p style={{ marginTop: "16px", color: "#666" }}>Finding the perfect pieces...</p>
-            <style dangerouslySetInnerHTML={{ __html: "@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }" }} />
+            <div style={{ position: "relative", width: "60px", height: "60px", margin: "0 auto" }}>
+              <div style={{ position: "absolute", inset: 0, border: "3px solid #fdf8ee", borderRadius: "50%" }}></div>
+              <div style={{ position: "absolute", inset: 0, border: "3px solid transparent", borderTopColor: "#D4AF37", borderRightColor: "#D4AF37", borderRadius: "50%", animation: "spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite" }}></div>
+              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "20px", height: "20px", backgroundColor: "#1a1a1a", borderRadius: "50%", animation: "pulse 1.5s ease-in-out infinite" }}></div>
+            </div>
+            <p style={{ marginTop: "20px", color: "#666", fontSize: "15px", letterSpacing: "0.5px", textTransform: "uppercase" }}>Finding the perfect pieces...</p>
+            <style dangerouslySetInnerHTML={{ __html: "@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.4; } }" }} />
           </div>
         ) : filteredProducts.length > 0 ? (
           <>
             <div style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-              gap: "12px", width: "100%"
+              gap: isMobile ? "12px" : "24px", width: "100%"
             }}>
               {paginatedProducts.map((product) => {
-                const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+                const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
                 return (
-                  <div
-                    key={product.id}
-                    style={{
-                      background: "#fff", border: "1px solid #eee",
-                      borderRadius: "8px", overflow: "hidden",
-                      transition: "all 0.2s", position: "relative",
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.boxShadow = "0 4px 16px rgba(194,24,91,0.15)";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.borderColor = "#E91E63";
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.boxShadow = "none";
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.borderColor = "#eee";
-                    }}
-                  >
-                    {/* Image — clickable */}
-                    <div
-                      onClick={() => navigate(`/product/${product.id}`)}
-                      style={{
-                        position: "relative", width: "100%",
-                        aspectRatio: "1", overflow: "hidden",
-                        background: "#f5f5f5", cursor: "pointer",
-                      }}
-                    >
+                  <div key={product.id} className="sr-card">
+                    <div className="sr-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
                       <img
-                        src={product.image} alt={product.name}
-                        loading="lazy"
-                        decoding="async"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        src={product.image} alt={product.name} className="sr-img" loading="lazy" decoding="async"
                       />
                       {discount > 0 && (
-                        <div style={{
-                          position: "absolute", top: "8px", left: "8px",
-                          background: "#C2185B", color: "#fff",
-                          padding: "3px 8px", borderRadius: "3px",
-                          fontSize: "10px", fontWeight: "700",
-                        }}>
+                        <div className="sr-badge">
                           {discount}% OFF
                         </div>
                       )}
-                      {/* Wishlist */}
                       <button
+                        className={`sr-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           if (isInWishlist && isInWishlist(product.id)) removeFromWishlist(product.id);
                           else addToWishlist(product);
                         }}
-                        style={{
-                          position: "absolute", top: "8px", right: "8px",
-                          background: isInWishlist && isInWishlist(product.id) ? "#E91E63" : "#fff",
-                          border: "none", width: "32px", height: "32px",
-                          borderRadius: "50%", cursor: "pointer", fontSize: "16px",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)", transition: "all 0.2s",
-                          color: isInWishlist && isInWishlist(product.id) ? "#fff" : "#E91E63",
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.transform = "scale(1.2)"}
-                        onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
                       >
-                        {isInWishlist && isInWishlist(product.id) ? "♥" : "♡"}
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill={isInWishlist && isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
                       </button>
                     </div>
 
-                    {/* Info */}
                     <div
                       onClick={() => navigate(`/product/${product.id}`)}
-                      style={{ padding: isMobile ? "8px 8px 4px" : "12px 12px 6px", cursor: "pointer" }}
+                      style={{ padding: isMobile ? "10px" : "16px", cursor: "pointer", flex: 1, display: "flex", flexDirection: "column" }}
                     >
                       <h3 style={{
-                        fontSize: isMobile ? "12px" : "13px", fontWeight: "600",
-                        color: "#333", margin: "0 0 4px 0",
-                        minHeight: isMobile ? "32px" : "35px",
+                        fontSize: isMobile ? "12px" : "15px", fontWeight: "600",
+                        color: "#1a1a1a", margin: "0 0 4px 0",
                         overflow: "hidden", display: "-webkit-box",
                         WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                        lineHeight: "1.4"
                       }}>
                         {product.name}
                       </h3>
-                      <p style={{ fontSize: isMobile ? "10px" : "11px", color: "#999", margin: "0 0 5px 0" }}>
-                        {product.category} • {product.material}
+                      <p style={{ fontSize: isMobile ? "10px" : "12px", color: "#888", margin: "0 0 8px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "500" }}>
+                        {product.category}
                       </p>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                        <span style={{ fontSize: isMobile ? "13px" : "14px", fontWeight: "700", color: "#880E4F" }}>
+
+                      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: "10px" }}>
+                        <span style={{ fontSize: isMobile ? "14px" : "16px", fontWeight: "700", color: "#D4AF37" }}>
                           ₹{product.price.toLocaleString()}
                         </span>
-                        <span style={{ fontSize: isMobile ? "10px" : "11px", color: "#bbb", textDecoration: "line-through" }}>
-                          ₹{product.originalPrice.toLocaleString()}
-                        </span>
+                        {product.originalPrice > product.price && (
+                          <span style={{ fontSize: isMobile ? "12px" : "13px", color: "#aaa", textDecoration: "line-through", fontWeight: "500" }}>
+                            ₹{product.originalPrice.toLocaleString()}
+                          </span>
+                        )}
                       </div>
-                      <div style={{ fontSize: isMobile ? "10px" : "11px", color: "#666", marginBottom: "8px" }}>
-                        ⭐ {product.rating} ({product.reviews} reviews)
-                      </div>
-                    </div>
 
-                    {/* Add to Cart / Quantity Controls */}
-                    <div style={{ padding: isMobile ? "0 8px 10px" : "0 12px 12px" }}>
                       {addedProducts[product.id] ? (
                         <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDecrease(product); }}
-                            style={{
-                              flex: 1, padding: isMobile ? "5px" : "7px",
-                              background: "linear-gradient(135deg, #E91E63, #C2185B)",
-                              color: "#fff", border: "none", borderRadius: "3px",
-                              cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                            }}
+                            className="sr-qty-btn"
                           >−</button>
                           <span style={{
                             flex: 1, textAlign: "center",
-                            fontSize: isMobile ? "12px" : "13px",
-                            fontWeight: "700", color: "#C2185B",
+                            fontSize: "14px",
+                            fontWeight: "700", color: "#1a1a1a",
                           }}>
                             {addedProducts[product.id]}
                           </span>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleIncrease(product); }}
-                            style={{
-                              flex: 1, padding: isMobile ? "5px" : "7px",
-                              background: "linear-gradient(135deg, #E91E63, #C2185B)",
-                              color: "#fff", border: "none", borderRadius: "3px",
-                              cursor: "pointer", fontWeight: "700", fontSize: "14px",
-                            }}
+                            className="sr-qty-btn"
                           >+</button>
                         </div>
                       ) : (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleAddProduct(product); }}
-                          style={{
-                            width: "100%", padding: isMobile ? "7px" : "9px",
-                            fontSize: isMobile ? "11px" : "12px",
-                            background: "linear-gradient(90deg, #E91E63, #C2185B)",
-                            color: "#fff", border: "none", borderRadius: "3px",
-                            cursor: "pointer", fontWeight: "700", transition: "opacity 0.2s",
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
-                          onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                          className="sr-btn"
                         >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
+                          </svg>
                           Add to Cart
                         </button>
                       )}
@@ -333,9 +362,14 @@ export default function SearchResults({
                         message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
                         buttonStyle={{
                           width: "100%",
-                          padding: isMobile ? "7px" : "9px",
+                          padding: isMobile ? "8px" : "10px",
                           fontSize: isMobile ? "11px" : "12px",
-                          marginTop: "6px",
+                          marginTop: isMobile ? "6px" : "8px",
+                          background: "#fff",
+                          border: "1px solid #eaeaea",
+                          color: "#1a1a1a",
+                          borderRadius: "10px",
+                          boxShadow: "none"
                         }}
                       />
                     </div>
@@ -348,7 +382,7 @@ export default function SearchResults({
                 <button
                   onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   disabled={currentPage === 1}
-                  style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #ddd", background: currentPage === 1 ? "#f9f9f9" : "#fff", color: currentPage === 1 ? "#aaa" : "#333", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "600" }}
+                  style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea", background: currentPage === 1 ? "#f9f9f9" : "#fff", color: currentPage === 1 ? "#aaa" : "#1a1a1a", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s" }}
                 >
                   Previous
                 </button>
@@ -358,7 +392,7 @@ export default function SearchResults({
                 <button
                   onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   disabled={currentPage === totalPages}
-                  style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #ddd", background: currentPage === totalPages ? "#f9f9f9" : "#fff", color: currentPage === totalPages ? "#aaa" : "#333", cursor: currentPage === totalPages ? "not-allowed" : "pointer", fontWeight: "600" }}
+                  style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea", background: currentPage === totalPages ? "#f9f9f9" : "#fff", color: currentPage === totalPages ? "#aaa" : "#1a1a1a", cursor: currentPage === totalPages ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s" }}
                 >
                   Next
                 </button>
@@ -371,8 +405,8 @@ export default function SearchResults({
             <button
               onClick={() => navigate("/")}
               style={{
-                background: "#D4AF37", color: "#fff", border: "none",
-                padding: "10px 20px", borderRadius: "4px",
+                background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff", border: "none",
+                padding: "12px 24px", borderRadius: "8px",
                 cursor: "pointer", fontWeight: "600"
               }}
             >
