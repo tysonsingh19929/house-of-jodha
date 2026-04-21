@@ -294,6 +294,52 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
                 </div>
               ))}
             </div>
+
+            {/* Become a Partner Call to Action */}
+            <div style={{ padding: "8px 20px 20px 20px" }}>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate('/seller/register');
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  width: "100%",
+                  padding: "12px 20px",
+                  background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  fontWeight: "700",
+                  fontSize: "14px",
+                  letterSpacing: "0.5px",
+                  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                  boxShadow: "0 4px 15px rgba(212, 175, 55, 0.3)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 8px 20px rgba(212, 175, 55, 0.5)";
+                  e.currentTarget.style.background = "linear-gradient(135deg, #dfb945 0%, #b89630 100%)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 4px 15px rgba(212, 175, 55, 0.3)";
+                  e.currentTarget.style.background = "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)";
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="8.5" cy="7" r="4" />
+                  <line x1="20" y1="8" x2="20" y2="14" />
+                  <line x1="23" y1="11" x2="17" y2="11" />
+                </svg>
+                Become a Partner
+              </button>
+            </div>
           </div>
         )}
       </div>

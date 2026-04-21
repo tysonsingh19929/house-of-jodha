@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Icons (Lucide React style SVGs)
@@ -26,6 +26,9 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [productSearch, setProductSearch] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchWrapperRef = useRef(null);
   const [formData, setFormData] = useState({
     name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
     material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
@@ -48,6 +51,16 @@ export default function AdminDashboard() {
   const sellerId = localStorage.getItem("seller_id");
   const sellerName = localStorage.getItem("seller_name");
   const isSuperAdmin = localStorage.getItem("is_super_admin") === "true";
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     // Replace initial state so the first back press can be properly detected
@@ -450,6 +463,15 @@ export default function AdminDashboard() {
     }
   };
 
+  const searchSuggestions = Array.from(new Set(products.flatMap(p => [p.name, p.category])))
+    .filter(kw => kw && kw.toLowerCase().includes(productSearch.toLowerCase()) && productSearch.trim() !== "")
+    .slice(0, 10);
+
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
+    p.category.toLowerCase().includes(productSearch.toLowerCase())
+  );
+
   return (
     <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
       {/* Sidebar */}
@@ -585,7 +607,7 @@ export default function AdminDashboard() {
         {/* PRODUCTS TAB */}
         {activeTab === "products" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
               <h1 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>My Products</h1>
               <button
                 onClick={() => handleTabChange("add_product")}
@@ -595,88 +617,120 @@ export default function AdminDashboard() {
               </button>
             </div>
 
+            <div style={{ marginBottom: "24px", display: "flex", position: "relative", width: "100%", maxWidth: "400px" }} ref={searchWrapperRef}>
+              <input
+                type="text"
+                placeholder="Search products by name or category..."
+                value={productSearch}
+                onChange={(e) => { setProductSearch(e.target.value); setShowSuggestions(!!e.target.value.trim()); }}
+                onFocus={(e) => { e.target.style.borderColor = "#3b82f6"; if (productSearch.trim()) setShowSuggestions(true); }}
+                onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+                style={{ width: "100%", maxWidth: "400px", padding: "12px 16px", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "14px", outline: "none", transition: "border-color 0.2s", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
+              />
+              {showSuggestions && searchSuggestions.length > 0 && (
+                <ul style={{
+                  position: "absolute", top: "100%", left: 0, right: 0,
+                  background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  border: "1px solid #e2e8f0", listStyle: "none", padding: "8px 0", margin: "4px 0 0 0",
+                  zIndex: 1000, maxHeight: "200px", overflowY: "auto"
+                }}>
+                  {searchSuggestions.map((s, i) => (
+                    <li key={i} onClick={() => { setProductSearch(s); setShowSuggestions(false); }} style={{ padding: "10px 16px", cursor: "pointer", fontSize: "14px", color: "#334155", transition: "background 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.background = "#f1f5f9"} onMouseLeave={(e) => e.currentTarget.style.background = "none"}>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {loading ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>Loading products...</div>
               ) : products.length > 0 ? (
-                isMobile ? (
-                  <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                    {products.map(product => (
-                      <div key={product._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px", backgroundColor: "#f8fafc" }}>
-                        <div style={{ display: "flex", gap: "12px" }}>
-                          <img src={product.image} alt={product.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</p>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <span style={{ fontSize: "12px", color: "#64748b", padding: "2px 8px", backgroundColor: "#e2e8f0", borderRadius: "12px" }}>{product.category}</span>
-                              <span style={{ fontWeight: "700", color: "#3b82f6", fontSize: "14px" }}>₹{product.price.toLocaleString('en-IN')}</span>
+                filteredProducts.length > 0 ? (
+                  isMobile ? (
+                    <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                      {filteredProducts.map(product => (
+                        <div key={product._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px", backgroundColor: "#f8fafc" }}>
+                          <div style={{ display: "flex", gap: "12px" }}>
+                            <img src={product.image} alt={product.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</p>
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <span style={{ fontSize: "12px", color: "#64748b", padding: "2px 8px", backgroundColor: "#e2e8f0", borderRadius: "12px" }}>{product.category}</span>
+                                <span style={{ fontWeight: "700", color: "#3b82f6", fontSize: "14px" }}>₹{product.price.toLocaleString('en-IN')}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div style={{ display: "flex", gap: "8px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
-                          {canEditProduct(product) ? (
-                            <>
+                          <div style={{ display: "flex", gap: "8px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
+                            {canEditProduct(product) ? (
+                              <>
+                                <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ flex: 1, padding: "10px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                                  👁️ Preview
+                                </button>
+                                <button onClick={() => startEdit(product)} style={{ flex: 1, padding: "10px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                                  ✎ Edit
+                                </button>
+                                <button onClick={() => deleteProduct(product._id, product)} style={{ flex: 1, padding: "10px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                                  🗑️ Delete
+                                </button>
+                              </>
+                            ) : (
                               <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ flex: 1, padding: "10px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
                                 👁️ Preview
                               </button>
-                              <button onClick={() => startEdit(product)} style={{ flex: 1, padding: "10px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
-                                ✎ Edit
-                              </button>
-                              <button onClick={() => deleteProduct(product._id, product)} style={{ flex: 1, padding: "10px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
-                                🗑️ Delete
-                              </button>
-                            </>
-                          ) : (
-                            <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ flex: 1, padding: "10px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
-                              👁️ Preview
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Product</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Category</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Price</th>
-                        <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {products.map(product => (
-                        <tr key={product._id} style={{ borderBottom: "1px solid #e2e8f0", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
-                          <td style={{ padding: "16px 24px", display: "flex", alignItems: "center", gap: "16px" }}>
-                            <img src={product.image} alt={product.name} style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
-                            <div>
-                              <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a" }}>{product.name}</p>
-                              {isSuperAdmin && <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>Seller: {product.sellerName}</p>}
-                            </div>
-                          </td>
-                          <td style={{ padding: "16px 24px" }}>
-                            <span style={{ padding: "4px 12px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "20px", fontSize: "13px", fontWeight: "500" }}>{product.category}</span>
-                          </td>
-                          <td style={{ padding: "16px 24px", fontWeight: "600", color: "#0f172a" }}>₹{product.price.toLocaleString('en-IN')}</td>
-                          <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                            {canEditProduct(product) ? (
-                              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                                <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ padding: "6px 12px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Preview</button>
-                                <button onClick={() => startEdit(product)} style={{ padding: "6px 12px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Edit</button>
-                                <button onClick={() => deleteProduct(product._id, product)} style={{ padding: "6px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Delete</button>
-                              </div>
-                            ) : (
-                              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", alignItems: "center" }}>
-                                <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ padding: "6px 12px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Preview</button>
-                                <span style={{ fontSize: "13px", color: "#94a3b8", marginLeft: "4px" }}>View Only</span>
-                              </div>
                             )}
-                          </td>
-                        </tr>
+                          </div>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
+                    </div>
+                  ) : (
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Product</th>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Category</th>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Price</th>
+                          <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredProducts.map(product => (
+                          <tr key={product._id} style={{ borderBottom: "1px solid #e2e8f0", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
+                            <td style={{ padding: "16px 24px", display: "flex", alignItems: "center", gap: "16px" }}>
+                              <img src={product.image} alt={product.name} style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
+                              <div>
+                                <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a" }}>{product.name}</p>
+                                {isSuperAdmin && <p style={{ margin: 0, fontSize: "12px", color: "#94a3b8" }}>Seller: {product.sellerName}</p>}
+                              </div>
+                            </td>
+                            <td style={{ padding: "16px 24px" }}>
+                              <span style={{ padding: "4px 12px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "20px", fontSize: "13px", fontWeight: "500" }}>{product.category}</span>
+                            </td>
+                            <td style={{ padding: "16px 24px", fontWeight: "600", color: "#0f172a" }}>₹{product.price.toLocaleString('en-IN')}</td>
+                            <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                              {canEditProduct(product) ? (
+                                <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                                  <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ padding: "6px 12px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Preview</button>
+                                  <button onClick={() => startEdit(product)} style={{ padding: "6px 12px", backgroundColor: "#eff6ff", color: "#3b82f6", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Edit</button>
+                                  <button onClick={() => deleteProduct(product._id, product)} style={{ padding: "6px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Delete</button>
+                                </div>
+                              ) : (
+                                <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", alignItems: "center" }}>
+                                  <button onClick={() => window.open(`/product/${product._id}`, '_blank')} style={{ padding: "6px 12px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Preview</button>
+                                  <span style={{ fontSize: "13px", color: "#94a3b8", marginLeft: "4px" }}>View Only</span>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )
+                ) : (
+                  <div style={{ padding: "60px", textAlign: "center", color: "#64748b" }}>
+                    No products match your search.
+                  </div>
                 )
               ) : (
                 <div style={{ padding: "60px", textAlign: "center" }}>

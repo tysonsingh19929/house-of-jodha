@@ -55,7 +55,7 @@ const imageDatabase = {
     "https://images.pexels.com/photos/35108811/pexels-photo-35108811.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/32397666/pexels-photo-32397666.jpeg?auto=compress&w=800&format=webp",
     "https://images.unsplash.com/photo-1754230778726-0a578ed2a7ac?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://source.unsplash.com/400x600/?saree%20embroidered&24"
+    "https://images.pexels.com/photos/833052/pexels-photo-833052.jpeg?auto=compress&w=800&format=webp"
   ],
   anarkali: [
     "https://images.pexels.com/photos/34673508/pexels-photo-34673508.jpeg?auto=compress&w=800&format=webp",
@@ -81,8 +81,8 @@ const imageDatabase = {
     "https://images.pexels.com/photos/12783909/pexels-photo-12783909.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/25309040/pexels-photo-25309040.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/14819717/pexels-photo-14819717.jpeg?auto=compress&w=800&format=webp",
-    "https://source.unsplash.com/400x600/?anarkali%20dress&23",
-    "https://source.unsplash.com/400x600/?anarkali%20dress&24"
+    "https://images.pexels.com/photos/33216017/pexels-photo-33216017.jpeg?auto=compress&w=800&format=webp",
+    "https://images.pexels.com/photos/33216044/pexels-photo-33216044.jpeg?auto=compress&w=800&format=webp"
   ],
   salwarKameez: [
     "https://images.pexels.com/photos/33363057/pexels-photo-33363057.jpeg?auto=compress&w=800&format=webp",
@@ -107,7 +107,7 @@ const imageDatabase = {
     "https://images.pexels.com/photos/35340709/pexels-photo-35340709.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/19248045/pexels-photo-19248045.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/20407208/pexels-photo-20407208.jpeg?auto=compress&w=800&format=webp",
-    "https://source.unsplash.com/400x600/?salwar%20kameez&20"
+    "https://images.pexels.com/photos/20407212/pexels-photo-20407212.jpeg?auto=compress&w=800&format=webp"
   ],
   gharara: [
     "https://images.pexels.com/photos/12068899/pexels-photo-12068899.png?auto=compress&w=800&format=webp",
@@ -135,7 +135,7 @@ const imageDatabase = {
     "https://images.unsplash.com/photo-1705921345983-645ac1ac9db7?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.pexels.com/photos/19956041/pexels-photo-19956041.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/19956021/pexels-photo-19956021.jpeg?auto=compress&w=800&format=webp",
-    "https://images.pexels.com/photos/19956005/pexels-photo-19956005.jpeg?_gl=1*1e07tdr*_ga*MTU3MTkwODc3NS4xNzc0ODM5NDE5*_ga_8JE65Q40S6*czE3NzUzODQ5MjgkbzUkZzEkdDE3NzU0MDMyNjckajYwJGwwJGgw&auto=compress&w=800&format=webp",
+    "https://images.pexels.com/photos/19956005/pexels-photo-19956005.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/8031944/pexels-photo-8031944.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/19956045/pexels-photo-19956045.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/5393857/pexels-photo-5393857.jpeg?auto=compress&w=800&format=webp",
@@ -143,7 +143,7 @@ const imageDatabase = {
     "https://images.pexels.com/photos/16116787/pexels-photo-16116787.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/36090378/pexels-photo-36090378.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/28831537/pexels-photo-28831537.jpeg?auto=compress&w=800&format=webp",
-    "https://images.pexels.com/photos/20593515/pexels-photo-20593515.jpeg?_gl=1*1y9430f*_ga*MTU3MTkwODc3NS4xNzc0ODM5NDE5*_ga_8JE65Q40S6*czE3NzUzODQ5MjgkbzUkZzEkdDE3NzU0MDMzMjkkajYwJGwwJGgw&auto=compress&w=800&format=webp",
+    "https://images.pexels.com/photos/20593515/pexels-photo-20593515.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/19956041/pexels-photo-19956041.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/11570395/pexels-photo-11570395.jpeg?auto=compress&w=800&format=webp",
     "https://images.pexels.com/photos/5399874/pexels-photo-5399874.jpeg?auto=compress&w=800&format=webp",

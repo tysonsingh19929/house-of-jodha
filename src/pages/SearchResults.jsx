@@ -14,14 +14,15 @@ function SearchBar({ onSearch, initialQuery }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
   const isMobile = window.innerWidth <= 768;
-
-  const commonKeywords = [
-    "Lehenga", "Bridal Lehenga", "Saree", "Silk Saree", "Anarkali",
-    "Salwar Kameez", "Gharara", "Sharara", "Embroidered", "Tissue Silk",
-    "Floral Printed", "Midnight Blue", "Emerald Green", "Rose Pink", "Wine Red"
-  ];
+  const [dbProducts, setDbProducts] = useState([]);
 
   useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+    fetch(`${API_BASE_URL}/products`)
+      .then(res => res.json())
+      .then(data => setDbProducts(Array.isArray(data) ? data : []))
+      .catch(console.error);
+
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setShowSuggestions(false);
@@ -35,7 +36,8 @@ function SearchBar({ onSearch, initialQuery }) {
     const value = e.target.value;
     setSearchTerm(value);
     if (value.trim()) {
-      const filtered = commonKeywords.filter(kw => kw.toLowerCase().includes(value.toLowerCase()));
+      const dynamicKeywords = Array.from(new Set(dbProducts.flatMap(p => [p.name, p.category])));
+      const filtered = dynamicKeywords.filter(kw => kw && kw.toLowerCase().includes(value.toLowerCase())).slice(0, 10);
       setSuggestions(filtered);
       setShowSuggestions(true);
     } else {

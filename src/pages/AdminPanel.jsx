@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { CrownIcon, SparklesIcon, TrashIcon } from "../components/Icons";
 
@@ -19,6 +19,9 @@ export default function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [sellerFilter, setSellerFilter] = useState("All");
+  const [productSearch, setProductSearch] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchWrapperRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -32,6 +35,16 @@ export default function AdminPanel() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [editFormData, setEditFormData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     window.history.replaceState({ tab: activeTab }, "", window.location.pathname);
@@ -208,6 +221,15 @@ export default function AdminPanel() {
     totalRevenue: orders.reduce((sum, order) => sum + (order.total || 0), 0)
   };
 
+  const searchSuggestions = Array.from(new Set(products.flatMap(p => [p.name, p.category])))
+    .filter(kw => kw && kw.toLowerCase().includes(productSearch.toLowerCase()) && productSearch.trim() !== "")
+    .slice(0, 10);
+
+  const filteredProducts = products.filter(p =>
+    (sellerFilter === "All" || p.sellerId === sellerFilter) &&
+    (p.name.toLowerCase().includes(productSearch.toLowerCase()) || p.category.toLowerCase().includes(productSearch.toLowerCase()))
+  );
+
   return (
     <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Inter', 'DM Sans', sans-serif" }}>
 
@@ -344,6 +366,30 @@ export default function AdminPanel() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "16px", color: "#1e293b", fontWeight: "600" }}>Live Master Catalog</h3>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ position: "relative" }} ref={searchWrapperRef}>
+                      <input
+                        type="text"
+                        placeholder="Search products by name or category..."
+                        value={productSearch}
+                        onChange={(e) => { setProductSearch(e.target.value); setShowSuggestions(!!e.target.value.trim()); }}
+                        onFocus={() => { if (productSearch.trim()) setShowSuggestions(true); }}
+                        style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none", minWidth: "220px", transition: "border-color 0.2s" }}
+                      />
+                      {showSuggestions && searchSuggestions.length > 0 && (
+                        <ul style={{
+                          position: "absolute", top: "100%", left: 0, right: 0,
+                          background: "#fff", borderRadius: "6px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                          border: "1px solid #cbd5e1", listStyle: "none", padding: "4px 0", margin: "4px 0 0 0",
+                          zIndex: 1000, maxHeight: "200px", overflowY: "auto"
+                        }}>
+                          {searchSuggestions.map((s, i) => (
+                            <li key={i} onClick={() => { setProductSearch(s); setShowSuggestions(false); }} style={{ padding: "8px 12px", cursor: "pointer", fontSize: "13px", color: "#334155", transition: "background 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.background = "#f1f5f9"} onMouseLeave={(e) => e.currentTarget.style.background = "none"}>
+                              {s}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                     <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b" }}>Filter by Seller:</label>
                     <select value={sellerFilter} onChange={e => setSellerFilter(e.target.value)} style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none" }}>
                       <option value="All">All Products</option>
@@ -355,7 +401,7 @@ export default function AdminPanel() {
                   </div>
                 </div>
               </div>
-              {products.filter(p => sellerFilter === "All" || p.sellerId === sellerFilter).length === 0 ? (
+              {filteredProducts.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No products found for this selection.</div>
               ) : (
                 <div style={{ overflowX: "auto" }}>
@@ -370,7 +416,7 @@ export default function AdminPanel() {
                       </tr>
                     </thead>
                     <tbody>
-                      {products.filter(p => sellerFilter === "All" || p.sellerId === sellerFilter).map((p) => (
+                      {filteredProducts.map((p) => (
                         <tr key={p._id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
                           <td style={{ padding: "16px 24px" }}>
                             <div style={{ fontWeight: "500", color: "#0f172a" }}>{p.name}</div>

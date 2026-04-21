@@ -15,12 +15,6 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchWrapperRef = useRef(null);
 
-  const commonKeywords = [
-    "Lehenga", "Bridal Lehenga", "Saree", "Silk Saree", "Anarkali",
-    "Salwar Kameez", "Gharara", "Sharara", "Embroidered", "Tissue Silk",
-    "Floral Printed", "Midnight Blue", "Emerald Green", "Rose Pink", "Wine Red"
-  ];
-
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
   const allProducts = [...products, ...customProducts];
   const isMobile = window.innerWidth <= 768;
@@ -62,7 +56,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     const value = e.target.value;
     setSearchQuery(value);
     if (value.trim()) {
-      const filtered = commonKeywords.filter(kw => kw.toLowerCase().includes(value.toLowerCase()));
+      const dynamicKeywords = Array.from(new Set(allProducts.flatMap(p => [p.name, p.category])));
+      const filtered = dynamicKeywords.filter(kw => kw && kw.toLowerCase().includes(value.toLowerCase())).slice(0, 10);
       setSuggestions(filtered);
       setShowSuggestions(true);
     } else {
