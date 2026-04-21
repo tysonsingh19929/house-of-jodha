@@ -300,7 +300,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               <button
                 onClick={() => {
                   setMenuOpen(false);
-                  navigate('/seller/register');
+                  navigate('/seller-signup');
                 }}
                 style={{
                   display: "flex",
