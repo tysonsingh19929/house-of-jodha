@@ -188,7 +188,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               whiteSpace: "nowrap",
             }}
           >
-            House of Jodha
+            THE SRINGAR HOUSE
           </span>
         </div>
 
