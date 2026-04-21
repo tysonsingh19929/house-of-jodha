@@ -10,7 +10,7 @@ const getSystemInstruction = (dynamicProductsStr) => `
 The Boutique Specialist
 Name: Ishani
 Role: Senior Fashion Consultant & Customer Representative
-Location: House of Jodha, UK
+Location: The Sringar House, UK
 
 Tone & Language: Tumhari awaaz bahut polite, sophisticated aur warm honi chahiye. Tum "British-Indian" accent mein baat karti ho (English language, par Indian values aur warm greetings jaise 'Namaste' ka istemal).
 
@@ -25,11 +25,11 @@ Expertise: Tumhe Indian fabrics (Silk, Chiffon, Organza), embroidery (Zardosi, C
 EVERY time you mention a specific product, you MUST include:
 1. Product Name
 2. Price in ₹
-3. Full URL link: https://house-of-jodha.vercel.app/product/[ID]
+3. Full URL link: https://the-sringar-house.vercel.app/product/[ID]
 
 FORMAT EXAMPLES (Copy this exact format):
-✓ "Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11"
-✓ "Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22"
+✓ "Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://the-sringar-house.vercel.app/product/11"
+✓ "Gold Sequined Silk Bridal Saree - ₹21,000 → https://the-sringar-house.vercel.app/product/22"
 
 DO NOT just say "I recommend the Red Lehenga" - ALWAYS include the full link!
 
@@ -41,7 +41,7 @@ CUSTOMER INTERACTION WORKFLOW:
 ═══════════════════════════════════════════════════════════════════════════════
 
 Step 1 - Greeting & Occasion:
-"Namaste! Welcome to House of Jodha. I am Ishani, your Senior Fashion Consultant. What special occasion are you shopping for today, love?"
+"Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. What special occasion are you shopping for today, love?"
 
 Step 2 - Color & Style Questions:
 Ask about: occasion (Wedding/Mehndi/Party), preferred colors, budget range, body type.
@@ -51,8 +51,8 @@ Once you know preferences, recommend EXACTLY like this:
 
 Example Response:
 "For a Mehndi ceremony, I suggest:
-1. Parrot Green Floral Printed Lehenga - ₹7,700 → https://house-of-jodha.vercel.app/product/14
-2. Maroon Tissue Silk Bridal - ₹29,000 → https://house-of-jodha.vercel.app/product/13
+1. Parrot Green Floral Printed Lehenga - ₹7,700 → https://the-sringar-house.vercel.app/product/14
+2. Maroon Tissue Silk Bridal - ₹29,000 → https://the-sringar-house.vercel.app/product/13
 
 Click the links above to view details, love!"
 
@@ -66,9 +66,9 @@ Step 5 - Order Support:
 STRICT RULES - NO EXCEPTIONS:
 ═══════════════════════════════════════════════════════════════════════════════
 ✓ EVERY product recommendation MUST have a link
-✓ Format: "Name - ₹Price → https://house-of-jodha.vercel.app/product/[ID]"
+✓ Format: "Name - ₹Price → https://the-sringar-house.vercel.app/product/[ID]"
 ✓ If customer asks "What do you have?", recommend 2-3 products WITH links from the provided list.
-✓ Never say "There's a red lehenga" - say "Red Silk Hand Embroidered Bridal - ₹32,000 → https://house-of-jodha.vercel.app/product/11"
+✓ Never say "There's a red lehenga" - say "Red Silk Hand Embroidered Bridal - ₹32,000 → https://the-sringar-house.vercel.app/product/11"
 ✓ Be warm, luxe, professional - always use "love" at end of sentences
 
 PROHIBITED:
@@ -87,7 +87,7 @@ router.post('/message', async (req, res) => {
     if (!apiKey) {
       console.warn("⚠️ GEMINI_API_KEY is not set. Using fallback demo response.");
       responseText = history.length === 0
-        ? "Namaste! Welcome to House of Jodha. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
+        ? "Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
         : "I understand completely! Let me know your preferred color and occasion, love.";
       return res.json({ text: responseText });
     }
@@ -97,15 +97,15 @@ router.post('/message', async (req, res) => {
     try {
       const lowerMsg = message.toLowerCase();
       const categories = ['lehenga', 'saree', 'anarkali', 'salwar kameez', 'gharara', 'sharara'];
-      
+
       let query = {};
-      
+
       // Match category if mentioned
       const matchedCategory = categories.find(c => lowerMsg.includes(c));
       if (matchedCategory) {
         query.category = { $regex: new RegExp(`^${matchedCategory}$`, 'i') };
       }
-      
+
       // Match color if mentioned
       const colors = ['red', 'blue', 'green', 'pink', 'gold', 'ivory', 'black', 'white', 'yellow', 'purple', 'maroon'];
       const matchedColor = colors.find(c => lowerMsg.includes(c));
@@ -115,23 +115,23 @@ router.post('/message', async (req, res) => {
 
       // Fetch up to 5 matching products, but ONLY grab name, price, and ID. No heavy images!
       let products = await Product.find(query).sort({ _id: -1 }).select('name price _id').limit(5);
-      
+
       // If we didn't find enough, fetch some random ones (again, only small data)
       if (products.length < 5) {
-          const additionalProducts = await Product.find({ _id: { $nin: products.map(p => p._id) } })
-              .sort({ _id: -1 })
-              .select('name price _id')
-              .limit(5 - products.length);
-          products = [...products, ...additionalProducts];
+        const additionalProducts = await Product.find({ _id: { $nin: products.map(p => p._id) } })
+          .sort({ _id: -1 })
+          .select('name price _id')
+          .limit(5 - products.length);
+        products = [...products, ...additionalProducts];
       }
 
       products.forEach((p, index) => {
-        dynamicProductsStr += `${index + 1}. ${p.name} - ₹${p.price.toLocaleString('en-IN')} → https://house-of-jodha.vercel.app/product/${p._id}\n`;
+        dynamicProductsStr += `${index + 1}. ${p.name} - ₹${p.price.toLocaleString('en-IN')} → https://the-sringar-house.vercel.app/product/${p._id}\n`;
       });
-      
+
     } catch (dbError) {
-        console.error("Error fetching dynamic products:", dbError);
-        dynamicProductsStr += "1. Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n2. Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n";
+      console.error("Error fetching dynamic products:", dbError);
+      dynamicProductsStr += "1. Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://the-sringar-house.vercel.app/product/11\n2. Gold Sequined Silk Bridal Saree - ₹21,000 → https://the-sringar-house.vercel.app/product/22\n";
     }
 
     try {
@@ -159,7 +159,7 @@ router.post('/message', async (req, res) => {
       const MAX_RETRIES = 3;
       let result;
       let attempt = 0;
-      
+
       while (attempt < MAX_RETRIES) {
         try {
           result = await model.generateContent({
@@ -189,24 +189,24 @@ router.post('/message', async (req, res) => {
       responseText = result.response.text();
     } catch (geminiError) {
       console.error('Gemini API Error:', geminiError.message);
-      
+
       const errorMessage = geminiError.message || "";
       const isExpiredKey = errorMessage.includes('API key expired') || errorMessage.includes('API_KEY_INVALID') || errorMessage.includes('400');
       const isRateLimit = errorMessage.includes('429') || errorMessage.includes('Too Many Requests');
 
       if (isExpiredKey) {
-        responseText = "Apologies, love, my connection seems to have a configuration issue (API Key Expired). Please notify the store administrator to update the API key in the settings. Meanwhile, I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11";
+        responseText = "Apologies, love, my connection seems to have a configuration issue (API Key Expired). Please notify the store administrator to update the API key in the settings. Meanwhile, I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://the-sringar-house.vercel.app/product/11";
       } else if (isRateLimit) {
-        responseText = "Apologies, love, I am receiving too many requests right now. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nClick the links to view them!";
+        responseText = "Apologies, love, I am receiving too many requests right now. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://the-sringar-house.vercel.app/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹21,000 → https://the-sringar-house.vercel.app/product/22\n\nClick the links to view them!";
       } else {
         // Fallback to demo response if Gemini fails for other reasons
         const userMsg = message.toLowerCase();
         if (userMsg.includes('lehenga')) {
-          responseText = "I'm currently experiencing some technical difficulties, love, but I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr our Parrot Green Floral Printed Lehenga - ₹7,700 → https://house-of-jodha.vercel.app/product/14";
+          responseText = "I'm currently experiencing some technical difficulties, love, but I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://the-sringar-house.vercel.app/product/11\n\nOr our Parrot Green Floral Printed Lehenga - ₹7,700 → https://the-sringar-house.vercel.app/product/14";
         } else if (userMsg.includes('saree')) {
-          responseText = "I'm currently experiencing some technical difficulties, love, but I highly recommend our Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nOr our Pre-draped Royal Purple Satin Saree - ₹8,900 → https://house-of-jodha.vercel.app/product/3";
+          responseText = "I'm currently experiencing some technical difficulties, love, but I highly recommend our Gold Sequined Silk Bridal Saree - ₹21,000 → https://the-sringar-house.vercel.app/product/22\n\nOr our Pre-draped Royal Purple Satin Saree - ₹8,900 → https://the-sringar-house.vercel.app/product/3";
         } else {
-          responseText = "Apologies, love, my system is currently unavailable. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://house-of-jodha.vercel.app/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹21,000 → https://house-of-jodha.vercel.app/product/22\n\nClick the links to view them!";
+          responseText = "Apologies, love, my system is currently unavailable. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹32,000 → https://the-sringar-house.vercel.app/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹21,000 → https://the-sringar-house.vercel.app/product/22\n\nClick the links to view them!";
         }
       }
     }

@@ -1,6 +1,6 @@
 import { enhancedProductDatabase } from '../src/data/enhancedProductDatabase.js';
 
-const API_URL = 'https://house-of-jodha-backend.onrender.com/api/products';
+const API_URL = 'https://the-sringar-house-backend.onrender.com/api/products';
 
 const validCategories = ['Lehenga', 'Saree', 'Anarkali', 'Salwar Kameez', 'Gharara', 'Sharara'];
 
@@ -11,11 +11,11 @@ async function migrate() {
             category: p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1).toLowerCase() : 'Lehenga',
             price: p.price || 1000,
             originalPrice: p.originalPrice || ((p.price || 1000) * 1.2),
-            description: p.description || 'Premium design from House of Jodha.',
+            description: p.description || 'Premium design from The Sringar House.',
             image: p.image || '/images/placeholder.jpg',
             stock: p.stock || 10,
             sellerId: '507f1f77bcf86cd799439011',
-            sellerName: 'House of Jodha Master',
+            sellerName: 'The Sringar House Master',
             occasions: p.occasions || (p.occasion ? [p.occasion] : [])
         }));
 
@@ -25,7 +25,7 @@ async function migrate() {
             } else if (!validCategories.includes(doc.category)) {
                 const cap = doc.category.charAt(0).toUpperCase() + doc.category.slice(1).toLowerCase();
                 if (validCategories.includes(cap)) doc.category = cap;
-                else doc.category = 'Lehenga'; 
+                else doc.category = 'Lehenga';
             }
         });
 
@@ -44,17 +44,17 @@ async function migrate() {
                 });
                 if (res.ok) {
                     success++;
-                    console.log(`[${i+1}/${documents.length}] Success: ${doc.name}`);
+                    console.log(`[${i + 1}/${documents.length}] Success: ${doc.name}`);
                 } else {
                     fail++;
-                    console.error(`[${i+1}/${documents.length}] Failed: ${doc.name}`, await res.text());
+                    console.error(`[${i + 1}/${documents.length}] Failed: ${doc.name}`, await res.text());
                 }
             } catch (err) {
                 fail++;
-                console.error(`[${i+1}/${documents.length}] Error: ${doc.name}`, err.message);
+                console.error(`[${i + 1}/${documents.length}] Error: ${doc.name}`, err.message);
             }
         }
-        
+
         console.log(`✅ Migration complete! Successful: ${success}, Failed: ${fail}`);
     } catch (e) {
         console.error('Fatal error during migration:', e);

@@ -1,4 +1,4 @@
-# House of Jodha - Quick Start Guide
+# The Sringar House - Quick Start Guide
 
 ## 🚀 Fastest Way to Get Running (5 minutes)
 
@@ -28,7 +28,7 @@ npm run dev
 **Option B - Local MongoDB:**
 1. Download from https://www.mongodb.com/try/download/community
 2. Install and run MongoDB
-3. Use default: `MONGODB_URI=mongodb://localhost:27017/house-of-jodha`
+3. Use default: `MONGODB_URI=mongodb://localhost:27017/the-sringar-house`
 
 ---
 
@@ -146,7 +146,7 @@ For issues or questions, check:
 
 ## 🎉 You're All Set!
 
-Your House of Jodha e-commerce platform is ready. Visit:
+Your The Sringar House e-commerce platform is ready. Visit:
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:5000/api/health
 
