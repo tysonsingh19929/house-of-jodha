@@ -21,7 +21,16 @@ const app = express();
 const PORT = process.env.PORT || 5002;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://house-of-jodha.vercel.app',
+    'https://thesringarhouse.com',
+    'https://www.thesringarhouse.com',
+    /^https?:\/\/([a-z0-9-]+\.)?thesringarhouse\.com$/,
+    /^http:\/\/localhost:\d+$/
+  ],
+  credentials: true
+}));
 app.use(express.json({ limit: '50mb' }));
 
 // Database Connection
