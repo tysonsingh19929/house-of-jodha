@@ -3,38 +3,44 @@ import { useNavigate } from "react-router-dom";
 
 const carouselSlides = [
   {
-    image: "https://images.pexels.com/photos/13124449/pexels-photo-13124449.jpeg?auto=compress&w=800&format=webp",
-    label: "Bridal Lehenga Collection",
-    sub: "Crafted for your special day",
-    route: "/collection/lehenga",
+    image: "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp",
+    label: "Wedding Collection",
+    sub: "Exquisite bridal wear for the most special day",
+    route: "/occasion/wedding",
   },
   {
-    image: "https://images.pexels.com/photos/27575174/pexels-photo-27575174.jpeg?auto=compress&w=800&format=webp",
-    label: "Festive Saree Looks",
-    sub: "Timeless elegance, modern drape",
-    route: "/collection/saree",
+    image: "https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=1200&format=webp",
+    label: "Reception Glamour",
+    sub: "Dazzling glamour for your reception night",
+    route: "/occasion/reception",
   },
   {
-    image: "https://images.pexels.com/photos/9418537/pexels-photo-9418537.jpeg?auto=compress&w=800&format=webp",
-    label: "Anarkali & Gharara Sets",
-    sub: "Handpicked for every occasion",
-    route: "/collection/anarkali",
+    image: "https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=1200&format=webp",
+    label: "Engagement Elegance",
+    sub: "Sophisticated looks for your special announcement",
+    route: "/occasion/engagement",
   },
   {
-    image: "https://images.pexels.com/photos/35327940/pexels-photo-35327940.jpeg?auto=compress&w=800&format=webp",
-    label: "Sangeet & Mehendi Wear",
-    sub: "Dance, celebrate, shine",
+    image: "https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=1200&format=webp",
+    label: "Mehendi Ceremony",
+    sub: "Vibrant & colorful styles for your Mehendi",
+    route: "/occasion/mehendi",
+  },
+  {
+    image: "https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=1200&format=webp",
+    label: "Sangeet Night",
+    sub: "Elegant, dance-ready outfits for celebration",
     route: "/occasion/sangeet",
   },
   {
-    image: "https://images.pexels.com/photos/29370686/pexels-photo-29370686.jpeg?auto=compress&w=800&format=webp",
-    label: "Wedding Season Specials",
-    sub: "Exclusive collections now live",
-    route: "/occasion/wedding",
+    image: "https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=1200&format=webp",
+    label: "Cocktail Party",
+    sub: "Chic & contemporary styles for cocktail evenings",
+    route: "/occasion/cocktail",
   },
 ];
 
-const slideAccent = ["#C2185B", "#E65100", "#1565C0", "#2E7D32", "#6A1B9A"];
+const slideAccent = ["#C2185B", "#E65100", "#1565C0", "#2E7D32", "#F5B041", "#6A1B9A"];
 const INTERVAL_MS = 3000;
 
 export default function Hero() {
@@ -94,13 +100,6 @@ export default function Hero() {
   const next = () => {
     setCurrent(p => (p + 1) % total);
     resetInterval();
-  };
-
-  const scrollToOccasions = () => {
-    const section = document.getElementById("shop-by-occasion");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
   };
 
   const handleWhatsAppInquiry = () => {
@@ -254,7 +253,7 @@ export default function Hero() {
               textTransform: "uppercase",
               marginBottom: isMobile ? "4px" : "8px",
             }}>
-              New Collection
+              Shop By Occasion
             </div>
             <div style={{
               fontFamily: "Georgia, 'Times New Roman', serif",
@@ -278,7 +277,7 @@ export default function Hero() {
 
             <div style={{ display: "flex", gap: isMobile ? "8px" : "12px", alignItems: "center" }}>
               <button
-                onClick={scrollToOccasions}
+                onClick={() => navigate(s.route)}
                 style={{
                   background: slideAccent[i],
                   color: "#fff",
@@ -330,7 +329,7 @@ export default function Hero() {
                   }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                   </svg>
                   Inquire this
                 </button>
