@@ -109,7 +109,7 @@ export const api = {
   },
 
   sellerForgotPassword: async (email) => {
-    const res = await fetch(`${API_BASE_URL}/sellers/forgot-password`, {
+    const res = await fetch(`${API_BASE_URL}/users/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
@@ -120,7 +120,7 @@ export const api = {
   },
 
   sellerResetPassword: async (token, newPassword) => {
-    const res = await fetch(`${API_BASE_URL}/sellers/reset-password`, {
+    const res = await fetch(`${API_BASE_URL}/users/reset-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, newPassword })
