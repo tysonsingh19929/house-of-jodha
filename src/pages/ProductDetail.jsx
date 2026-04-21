@@ -605,8 +605,11 @@ export default function ProductDetail({
 
 
   const product = useMemo(() => {
-    const base = dbProduct || staticProduct;
-    if (!base) return null;
+    const baseRaw = dbProduct || staticProduct;
+    if (!baseRaw) return null;
+
+    const matchingStatic = products.find(p => p.name === baseRaw.name);
+    const base = matchingStatic ? { ...baseRaw, price: matchingStatic.price, originalPrice: matchingStatic.originalPrice, image: matchingStatic.image, images: matchingStatic.images || [matchingStatic.image] } : baseRaw;
 
     const catKey = base.category?.toLowerCase() === "salwar kameez" ? "salwarKameez" : base.category?.toLowerCase() || "lehenga";
     const urls = imageDatabase?.[catKey] || imageDatabase?.lehenga || [];

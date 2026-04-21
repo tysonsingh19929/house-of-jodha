@@ -108,17 +108,21 @@ export default function OccasionPage({
   useEffect(() => {
     const fetchProducts = async () => {
       let dbProducts = [];
+      let dbFetched = false;
       try {
         const res = await fetch(`${API_BASE_URL}/products`);
-        if (res.ok) dbProducts = await res.json();
+        if (res.ok) {
+          dbProducts = await res.json();
+          dbFetched = true;
+        }
       } catch (e) {
         console.error("Could not fetch DB products", e);
       }
 
-      // Combine local catalog + backend catalog perfectly
-      const all = [...masterProducts, ...enhancedProductDatabase, ...dbProducts];
+      // Use DB as source of truth if reached, otherwise fallback to static
+      const baseList = dbFetched ? dbProducts : [...masterProducts, ...enhancedProductDatabase];
 
-      const filtered = all
+      const filtered = baseList
         .filter(p => {
           const occasionMatch =
             p.occasion?.toLowerCase() === occasionKey ||
@@ -127,17 +131,19 @@ export default function OccasionPage({
           return occasionMatch || categoryMatch;
         })
         .map(p => {
-          const master = masterProducts.find(mp => mp.id === p.id || mp._id === p._id);
+          const master = masterProducts.find(mp => mp.name === p.name) || enhancedProductDatabase.find(mp => mp.name === p.name);
           return {
             ...p,
             image: master?.image || p.image,
+            price: master?.price || p.price,
+            originalPrice: master?.originalPrice || p.originalPrice,
             // Prioritize id, fallback to _id
             id: p.id || p._id
           };
         });
 
-      // Simple deduplication based on ID
-      const unique = filtered.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+      // Simple deduplication based on name
+      const unique = filtered.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i);
 
       // Clean up emoji images so they actually load
       const sanitized = unique.map(p => {

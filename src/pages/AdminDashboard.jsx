@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { products as staticProducts } from "../data/products.js";
 
 // Icons (Lucide React style SVGs)
 const HomeIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
@@ -160,7 +161,16 @@ export default function AdminDashboard() {
         : `/products/seller/${sellerId}`;
       const response = await fetch(`${API_BASE_URL}${url}`);
       const data = await response.json();
-      setProducts(Array.isArray(data) ? data : []);
+
+      const patchedData = (Array.isArray(data) ? data : []).map(p => {
+        const match = staticProducts.find(sp => sp.name === p.name);
+        if (match) {
+          return { ...p, price: match.price, originalPrice: match.originalPrice, image: match.image, images: match.images || [match.image] };
+        }
+        return p;
+      });
+
+      setProducts(patchedData);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {

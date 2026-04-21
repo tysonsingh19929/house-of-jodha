@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { CrownIcon, SparklesIcon, TrashIcon } from "../components/Icons";
+import { products as staticProducts } from "../data/products.js";
 
 const HomeIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
 const PackageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" /></svg>;
@@ -79,7 +80,15 @@ export default function AdminPanel() {
   const fetchProducts = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/products`);
-      if (res.ok) setProducts(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        const patchedData = (Array.isArray(data) ? data : []).map(p => {
+          const match = staticProducts.find(sp => sp.name === p.name);
+          if (match) return { ...p, price: match.price, originalPrice: match.originalPrice, image: match.image, images: match.images || [match.image] };
+          return p;
+        });
+        setProducts(patchedData);
+      }
     } catch (e) { console.error(e); }
   };
   const fetchOrders = async () => {
@@ -173,7 +182,7 @@ export default function AdminPanel() {
     e.preventDefault();
     try {
       setLoading(true);
-      const payload = { ...editFormData, occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions };
+      const payload = { ...editFormData, occasions: typeof editFormData.occasions === 'string' ? editFormData.occasions.split(',').map(s => s.trim()) : editFormData.occasions, isSuperAdmin: true };
       const res = await fetch(`${API_BASE_URL}/products/${editingProduct._id}`, {
         method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
@@ -193,8 +202,12 @@ export default function AdminPanel() {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/products/${id}`, { method: "DELETE" });
-      if (res.ok) fetchProducts();
+      const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isSuperAdmin: true })
+      });
+      if (res.ok) { fetchProducts(); alert("Product deleted successfully!"); }
     } catch (e) { alert("Error deleting product"); }
   };
 
@@ -365,15 +378,15 @@ export default function AdminPanel() {
               <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
                   <h3 style={{ margin: 0, fontSize: "16px", color: "#1e293b", fontWeight: "600" }}>Live Master Catalog</h3>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{ position: "relative" }} ref={searchWrapperRef}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", width: isMobile ? "100%" : "auto" }}>
+                    <div style={{ position: "relative", width: isMobile ? "100%" : "auto" }} ref={searchWrapperRef}>
                       <input
                         type="text"
                         placeholder="Search products by name or category..."
                         value={productSearch}
                         onChange={(e) => { setProductSearch(e.target.value); setShowSuggestions(!!e.target.value.trim()); }}
                         onFocus={() => { if (productSearch.trim()) setShowSuggestions(true); }}
-                        style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none", minWidth: "220px", transition: "border-color 0.2s" }}
+                        style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none", minWidth: isMobile ? "100%" : "220px", width: "100%", boxSizing: "border-box", transition: "border-color 0.2s" }}
                       />
                       {showSuggestions && searchSuggestions.length > 0 && (
                         <ul style={{
@@ -390,60 +403,93 @@ export default function AdminPanel() {
                         </ul>
                       )}
                     </div>
-                    <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b" }}>Filter by Seller:</label>
-                    <select value={sellerFilter} onChange={e => setSellerFilter(e.target.value)} style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none" }}>
-                      <option value="All">All Products</option>
-                      <option value="admin">The Sringar House (Admin)</option>
-                      {sellers.filter(s => s.role !== 'admin').map(s => (
-                        <option key={s._id} value={s._id}>{s.businessName || s.name}</option>
-                      ))}
-                    </select>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", width: isMobile ? "100%" : "auto" }}>
+                      <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b", whiteSpace: "nowrap" }}>Filter by Seller:</label>
+                      <select value={sellerFilter} onChange={e => setSellerFilter(e.target.value)} style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none", flex: 1 }}>
+                        <option value="All">All Products</option>
+                        <option value="admin">The Sringar House (Admin)</option>
+                        {sellers.filter(s => s.role !== 'admin').map(s => (
+                          <option key={s._id} value={s._id}>{s.businessName || s.name}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
               {filteredProducts.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No products found for this selection.</div>
               ) : (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "700px" }}>
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Product</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Category</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Seller</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Price</th>
-                        <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredProducts.map((p) => (
-                        <tr key={p._id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
-                          <td style={{ padding: "16px 24px" }}>
-                            <div style={{ fontWeight: "500", color: "#0f172a" }}>{p.name}</div>
-                          </td>
-                          <td style={{ padding: "16px 24px" }}>
-                            <span style={{ padding: "4px 10px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "100px", fontSize: "12px", fontWeight: "500" }}>{p.category}</span>
-                          </td>
-                          <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "The Sringar House"}</td>
-                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{p.price}</td>
-                          <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                              <button onClick={() => {
-                                setEditingProduct(p);
-                                setEditFormData({ ...p, occasions: Array.isArray(p.occasions) ? p.occasions.join(', ') : (p.occasions || "") });
-                              }} style={{ padding: "8px 12px", backgroundColor: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600" }}>
-                                ✎ Edit
-                              </button>
-                              <button onClick={() => handleDeleteProduct(p._id)} style={{ padding: "8px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fca5a5", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fee2e2"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fef2f2"}>
-                                <TrashIcon size="14px" /> Delete
-                              </button>
+                isMobile ? (
+                  <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {filteredProducts.map((p) => (
+                      <div key={p._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px", backgroundColor: "#f8fafc" }}>
+                        <div style={{ display: "flex", gap: "12px" }}>
+                          <img src={p.image} alt={p.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name}</p>
+                            <p style={{ margin: "0 0 8px", fontSize: "12px", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Seller: {p.sellerName || "The Sringar House"}</p>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ fontSize: "12px", color: "#475569", padding: "4px 10px", backgroundColor: "#f1f5f9", borderRadius: "100px", fontWeight: "500" }}>{p.category}</span>
+                              <span style={{ fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>₹{p.price}</span>
                             </div>
-                          </td>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: "8px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
+                          <button onClick={() => {
+                            setEditingProduct(p);
+                            setEditFormData({ ...p, occasions: Array.isArray(p.occasions) ? p.occasions.join(', ') : (p.occasions || "") });
+                          }} style={{ flex: 1, padding: "8px 12px", backgroundColor: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600", display: "flex", justifyContent: "center" }}>
+                            ✎ Edit
+                          </button>
+                          <button onClick={() => handleDeleteProduct(p._id)} style={{ flex: 1, padding: "8px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fca5a5", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fee2e2"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fef2f2"}>
+                            <TrashIcon size="14px" /> Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "700px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Product</th>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Category</th>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Seller</th>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Price</th>
+                          <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {filteredProducts.map((p) => (
+                          <tr key={p._id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
+                            <td style={{ padding: "16px 24px" }}>
+                              <div style={{ fontWeight: "500", color: "#0f172a" }}>{p.name}</div>
+                            </td>
+                            <td style={{ padding: "16px 24px" }}>
+                              <span style={{ padding: "4px 10px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "100px", fontSize: "12px", fontWeight: "500" }}>{p.category}</span>
+                            </td>
+                            <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "The Sringar House"}</td>
+                            <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{p.price}</td>
+                            <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                              <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                <button onClick={() => {
+                                  setEditingProduct(p);
+                                  setEditFormData({ ...p, occasions: Array.isArray(p.occasions) ? p.occasions.join(', ') : (p.occasions || "") });
+                                }} style={{ padding: "8px 12px", backgroundColor: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600" }}>
+                                  ✎ Edit
+                                </button>
+                                <button onClick={() => handleDeleteProduct(p._id)} style={{ padding: "8px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "1px solid #fca5a5", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#fee2e2"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fef2f2"}>
+                                  <TrashIcon size="14px" /> Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )
               )}
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import WhatsAppInquiryButton from "./WhatsAppInquiryButton.jsx";
 import { products } from "../data/products.js";
@@ -15,8 +15,33 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchWrapperRef = useRef(null);
 
+  const [dbProducts, setDbProducts] = useState([]);
+  const [dbFetched, setDbFetched] = useState(false);
+
+  useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+    fetch(`${API_BASE_URL}/products`)
+      .then(res => res.json())
+      .then(data => {
+        setDbProducts(Array.isArray(data) ? data : []);
+        setDbFetched(true);
+      })
+      .catch(err => { console.error(err); setDbFetched(true); });
+  }, []);
+
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
-  const allProducts = [...products, ...customProducts];
+
+  const allProducts = useMemo(() => {
+    if (!dbFetched) return [...products, ...customProducts]; // Initial load fallback
+    if (dbFetched && dbProducts.length === 0) return [...customProducts]; // Empty DB means products were deleted
+
+    const patchedDb = dbProducts.map(p => {
+      const match = products.find(sp => sp.name === p.name);
+      if (match) return { ...p, price: match.price, originalPrice: match.originalPrice, image: match.image, id: p._id || p.id };
+      return { ...p, id: p._id || p.id };
+    });
+    return [...patchedDb, ...customProducts];
+  }, [dbProducts, customProducts, dbFetched]);
   const isMobile = window.innerWidth <= 768;
 
   const handleAddProduct = (product) => {
