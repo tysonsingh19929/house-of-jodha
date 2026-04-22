@@ -164,13 +164,9 @@ export default function SearchResults({
   useEffect(() => {
     setLoading(true);
 
-    if (!query.trim()) {
-      setAllProducts([]);
-      setLoading(false);
-      return;
-    }
+    const fetchQuery = query.trim() ? query : "Lehenga";
 
-    fetch(`${apiUrl}/products/search?q=${encodeURIComponent(query)}`)
+    fetch(`${apiUrl}/products/search?q=${encodeURIComponent(fetchQuery)}`)
       .then(res => res.json())
       .then(data => {
         setAllProducts(Array.isArray(data) ? data : []);

@@ -2,9 +2,15 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Cart from "../components/Cart";
+import Wishlist from "../components/Wishlist";
 import { forgotPassword, api } from "../services/api";
 
-export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
+export default function ForgotPassword({
+  cartOpen, setCartOpen, cartCount, onCartClick,
+  wishlistOpen, setWishlistOpen, wishlistCount, onWishlistClick,
+  cartItems, removeFromCart, wishlistItems, removeFromWishlist, addToCart
+}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type");
@@ -95,7 +101,18 @@ export default function ForgotPassword({ cartOpen, setCartOpen, cartCount }) {
 
   return (
     <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
-      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      <Navbar
+        cartCount={cartCount}
+        onCartClick={onCartClick || (() => setCartOpen(!cartOpen))}
+        wishlistCount={wishlistCount}
+        onWishlistClick={onWishlistClick || (() => setWishlistOpen(!wishlistOpen))}
+      />
+      {cartOpen && (
+        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
+      )}
+      {wishlistOpen && (
+        <Wishlist items={wishlistItems} onRemove={removeFromWishlist} onClose={() => setWishlistOpen(false)} onAddToCart={addToCart} />
+      )}
       <div style={{ flex: "1", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "20px" : "40px", position: "relative" }}>
         <div style={{ width: "100%", maxWidth: "440px", background: "#ffffff", padding: isMobile ? "30px 24px" : "48px", borderRadius: "24px", boxShadow: "0 20px 60px rgba(0,0,0,0.04)", border: "1px solid rgba(212,175,55,0.1)", position: "relative", zIndex: 1 }}>
 

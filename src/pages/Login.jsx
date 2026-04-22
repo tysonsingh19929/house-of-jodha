@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Cart from "../components/Cart";
+import Wishlist from "../components/Wishlist";
 import { login } from "../services/api";
 
 const WhatsAppIcon = () => (
@@ -33,7 +35,11 @@ const EyeOffIcon = () => (
   </svg>
 );
 
-export default function Login({ cartOpen, setCartOpen, cartCount }) {
+export default function Login({
+  cartOpen, setCartOpen, cartCount, onCartClick,
+  wishlistOpen, setWishlistOpen, wishlistCount, onWishlistClick,
+  cartItems, removeFromCart, wishlistItems, removeFromWishlist, addToCart
+}) {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -90,7 +96,18 @@ export default function Login({ cartOpen, setCartOpen, cartCount }) {
 
   return (
     <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
-      <Navbar cartCount={cartCount} onCartClick={() => setCartOpen(!cartOpen)} />
+      <Navbar
+        cartCount={cartCount}
+        onCartClick={onCartClick || (() => setCartOpen(!cartOpen))}
+        wishlistCount={wishlistCount}
+        onWishlistClick={onWishlistClick || (() => setWishlistOpen(!wishlistOpen))}
+      />
+      {cartOpen && (
+        <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setCartOpen(false)} />
+      )}
+      {wishlistOpen && (
+        <Wishlist items={wishlistItems} onRemove={removeFromWishlist} onClose={() => setWishlistOpen(false)} onAddToCart={addToCart} />
+      )}
 
       {/* Toast Notification */}
       {toast.show && (

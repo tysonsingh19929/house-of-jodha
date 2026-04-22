@@ -372,6 +372,15 @@ function App() {
               setCartOpen={setCartOpen}
               cartCount={cartCount}
               onCartClick={handleCartClick}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistCount={wishlistCount}
+              onWishlistClick={handleWishlistClick}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
+              wishlistItems={wishlistItems}
+              removeFromWishlist={removeFromWishlist}
+              addToCart={addToCart}
             />
           }
         />
@@ -383,6 +392,16 @@ function App() {
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               cartCount={cartCount}
+              onCartClick={handleCartClick}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistCount={wishlistCount}
+              onWishlistClick={handleWishlistClick}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
+              wishlistItems={wishlistItems}
+              removeFromWishlist={removeFromWishlist}
+              addToCart={addToCart}
             />
           }
         />
@@ -393,6 +412,16 @@ function App() {
               cartOpen={cartOpen}
               setCartOpen={setCartOpen}
               cartCount={cartCount}
+              onCartClick={handleCartClick}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistCount={wishlistCount}
+              onWishlistClick={handleWishlistClick}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
+              wishlistItems={wishlistItems}
+              removeFromWishlist={removeFromWishlist}
+              addToCart={addToCart}
             />
           }
         />
@@ -405,6 +434,15 @@ function App() {
               setCartOpen={setCartOpen}
               cartCount={cartCount}
               onCartClick={handleCartClick}
+              wishlistOpen={wishlistOpen}
+              setWishlistOpen={setWishlistOpen}
+              wishlistCount={wishlistCount}
+              onWishlistClick={handleWishlistClick}
+              cartItems={cartItems}
+              removeFromCart={removeFromCart}
+              wishlistItems={wishlistItems}
+              removeFromWishlist={removeFromWishlist}
+              addToCart={addToCart}
             />
           }
         />
