@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../services/api";
 
 const defaultSlides = [
   {
@@ -56,15 +57,18 @@ export default function Hero() {
   const total = carouselSlides.length;
 
   useEffect(() => {
-    const saved = localStorage.getItem("hero_slides");
-    if (saved) {
+    const loadHeroSlides = async () => {
+      const cached = localStorage.getItem("hero_slides_cache");
+      if (cached) { try { setCarouselSlides(JSON.parse(cached)); } catch (e) { } }
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setCarouselSlides(parsed);
+        const settings = await api.getSettings();
+        if (settings.hero_slides && settings.hero_slides.length > 0) {
+          setCarouselSlides(settings.hero_slides);
+          localStorage.setItem("hero_slides_cache", JSON.stringify(settings.hero_slides));
         }
-      } catch (e) { }
-    }
+      } catch (e) { console.error("Failed to load hero slides from DB", e); }
+    };
+    loadHeroSlides();
   }, []);
 
   // Hide tooltip after 4 seconds

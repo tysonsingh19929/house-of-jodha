@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { CrownIcon, SparklesIcon, TrashIcon } from "../components/Icons";
 import { products as staticProducts } from "../data/products.js";
+import { api } from "../services/api";
 
 const HomeIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
 const PackageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15" /><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /><path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" /></svg>;
@@ -82,35 +83,31 @@ export default function AdminPanel() {
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem("hero_slides");
-    if (saved) {
-      try { setHeroSlides(JSON.parse(saved)); } catch (e) { }
-    } else {
-      setHeroSlides([
-        { image: "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp", label: "Wedding Collection", sub: "Exquisite bridal wear for the most special day", route: "/occasion/wedding" },
-        { image: "https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=1200&format=webp", label: "Reception Glamour", sub: "Dazzling glamour for your reception night", route: "/occasion/reception" },
-        { image: "https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=1200&format=webp", label: "Engagement Elegance", sub: "Sophisticated looks for your special announcement", route: "/occasion/engagement" },
-        { image: "https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=1200&format=webp", label: "Mehendi Ceremony", sub: "Vibrant & colorful styles for your Mehendi", route: "/occasion/mehendi" },
-        { image: "https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=1200&format=webp", label: "Sangeet Night", sub: "Elegant, dance-ready outfits for celebration", route: "/occasion/sangeet" },
-        { image: "https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=1200&format=webp", label: "Cocktail Party", sub: "Chic & contemporary styles for cocktail evenings", route: "/occasion/cocktail" }
-      ]);
-    }
-  }, []);
+    const loadBanners = async () => {
+      try {
+        const settings = await api.getSettings();
+        if (settings.hero_slides && settings.hero_slides.length > 0) setHeroSlides(settings.hero_slides);
+        else setHeroSlides([
+          { image: "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp", label: "Wedding Collection", sub: "Exquisite bridal wear for the most special day", route: "/occasion/wedding" },
+          { image: "https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=1200&format=webp", label: "Reception Glamour", sub: "Dazzling glamour for your reception night", route: "/occasion/reception" },
+          { image: "https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=1200&format=webp", label: "Engagement Elegance", sub: "Sophisticated looks for your special announcement", route: "/occasion/engagement" },
+          { image: "https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=1200&format=webp", label: "Mehendi Ceremony", sub: "Vibrant & colorful styles for your Mehendi", route: "/occasion/mehendi" },
+          { image: "https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=1200&format=webp", label: "Sangeet Night", sub: "Elegant, dance-ready outfits for celebration", route: "/occasion/sangeet" },
+          { image: "https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=1200&format=webp", label: "Cocktail Party", sub: "Chic & contemporary styles for cocktail evenings", route: "/occasion/cocktail" }
+        ]);
 
-  useEffect(() => {
-    const savedOccasions = localStorage.getItem("occasion_banners");
-    if (savedOccasions) {
-      try { setOccasionBanners(JSON.parse(savedOccasions)); } catch (e) { }
-    } else {
-      setOccasionBanners([
-        { key: 'mehendi', title: 'MEHENDI', image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=800&format=webp' },
-        { key: 'sangeet', title: 'SANGEET', image: 'https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=800&format=webp' },
-        { key: 'wedding', title: 'WEDDING', image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=800&format=webp' },
-        { key: 'engagement', title: 'ENGAGEMENT', image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=800&format=webp' },
-        { key: 'reception', title: 'RECEPTION', image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=800&format=webp' },
-        { key: 'cocktail', title: 'COCKTAIL', image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' }
-      ]);
-    }
+        if (settings.occasion_banners && settings.occasion_banners.length > 0) setOccasionBanners(settings.occasion_banners);
+        else setOccasionBanners([
+          { key: 'mehendi', title: 'MEHENDI', image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=800&format=webp' },
+          { key: 'sangeet', title: 'SANGEET', image: 'https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=800&format=webp' },
+          { key: 'wedding', title: 'WEDDING', image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=800&format=webp' },
+          { key: 'engagement', title: 'ENGAGEMENT', image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=800&format=webp' },
+          { key: 'reception', title: 'RECEPTION', image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=800&format=webp' },
+          { key: 'cocktail', title: 'COCKTAIL', image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' }
+        ]);
+      } catch (e) { console.error("Error loading banners", e); }
+    };
+    loadBanners();
   }, []);
 
   const fetchProducts = async () => {
@@ -765,9 +762,9 @@ export default function AdminPanel() {
                 + Add New Slide
               </button>
 
-              <button onClick={() => {
-                localStorage.setItem("hero_slides", JSON.stringify(heroSlides));
-                alert("Hero slides saved successfully!");
+              <button onClick={async () => {
+                await api.updateSetting("hero_slides", heroSlides);
+                alert("Hero slides saved successfully and are now live!");
               }} style={{ padding: "12px 32px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                 <SparklesIcon size="16px" /> Save Changes
               </button>
@@ -859,9 +856,9 @@ export default function AdminPanel() {
                 + Add New Category
               </button>
 
-              <button onClick={() => {
-                localStorage.setItem("occasion_banners", JSON.stringify(occasionBanners));
-                alert("Occasion banners saved successfully!");
+              <button onClick={async () => {
+                await api.updateSetting("occasion_banners", occasionBanners);
+                alert("Occasion banners saved successfully and are now live!");
               }} style={{ padding: "12px 32px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                 <SparklesIcon size="16px" /> Save Changes
               </button>

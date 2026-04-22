@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from "../services/api";
 
 const defaultOccasions = [
   { key: 'mehendi', title: 'MEHENDI', image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=800&format=webp' },
@@ -14,15 +15,18 @@ const ShopByOccasion = () => {
   const [occasions, setOccasions] = useState(defaultOccasions);
 
   useEffect(() => {
-    const saved = localStorage.getItem("occasion_banners");
-    if (saved) {
+    const loadOccasions = async () => {
+      const cached = localStorage.getItem("occasion_banners_cache");
+      if (cached) { try { setOccasions(JSON.parse(cached)); } catch (e) { } }
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setOccasions(parsed);
+        const settings = await api.getSettings();
+        if (settings.occasion_banners && settings.occasion_banners.length > 0) {
+          setOccasions(settings.occasion_banners);
+          localStorage.setItem("occasion_banners_cache", JSON.stringify(settings.occasion_banners));
         }
-      } catch (e) { }
-    }
+      } catch (e) { console.error("Failed to load occasion banners from DB", e); }
+    };
+    loadOccasions();
   }, []);
 
   return (

@@ -135,6 +135,22 @@ export const api = {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Store not found');
     return data;
+  },
+
+  // Site Settings (Dynamic Banners)
+  getSettings: async () => {
+    const res = await fetch(`${API_BASE_URL}/users/config/settings`);
+    if (!res.ok) return {};
+    return res.json();
+  },
+
+  updateSetting: async (key, value) => {
+    const res = await fetch(`${API_BASE_URL}/users/config/settings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value })
+    });
+    return res.json();
   }
 };
 
