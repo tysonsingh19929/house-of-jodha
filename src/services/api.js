@@ -139,9 +139,15 @@ export const api = {
 
   // Site Settings (Dynamic Banners)
   getSettings: async () => {
-    const res = await fetch(`${API_BASE_URL}/users/config/settings`);
-    if (!res.ok) return {};
-    return res.json();
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/config/settings`);
+      if (!res.ok) return {};
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) return {};
+      return await res.json();
+    } catch (e) {
+      return {};
+    }
   },
 
   updateSetting: async (key, value) => {
@@ -150,6 +156,10 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, value })
     });
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error("Backend routes not found. Please restart your backend server to apply the changes!");
+    }
     return res.json();
   }
 };

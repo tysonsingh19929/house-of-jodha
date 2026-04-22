@@ -763,8 +763,12 @@ export default function AdminPanel() {
               </button>
 
               <button onClick={async () => {
-                await api.updateSetting("hero_slides", heroSlides);
-                alert("Hero slides saved successfully and are now live!");
+                try {
+                  await api.updateSetting("hero_slides", heroSlides);
+                  alert("Hero slides saved successfully and are now live!");
+                } catch (error) {
+                  alert("Save failed: " + error.message);
+                }
               }} style={{ padding: "12px 32px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                 <SparklesIcon size="16px" /> Save Changes
               </button>
@@ -857,8 +861,12 @@ export default function AdminPanel() {
               </button>
 
               <button onClick={async () => {
-                await api.updateSetting("occasion_banners", occasionBanners);
-                alert("Occasion banners saved successfully and are now live!");
+                try {
+                  await api.updateSetting("occasion_banners", occasionBanners);
+                  alert("Occasion banners saved successfully and are now live!");
+                } catch (error) {
+                  alert("Save failed: " + error.message);
+                }
               }} style={{ padding: "12px 32px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
                 <SparklesIcon size="16px" /> Save Changes
               </button>
