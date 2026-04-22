@@ -8,6 +8,8 @@ const PackageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="
 const UsersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
 const OrdersIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path d="M8 10h.01" /><path d="M8 14h.01" /></svg>;
 const StoreIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>;
+const ImageIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>;
+const GridIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg>;
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -23,6 +25,8 @@ export default function AdminPanel() {
   const [productSearch, setProductSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchWrapperRef = useRef(null);
+  const [heroSlides, setHeroSlides] = useState([]);
+  const [occasionBanners, setOccasionBanners] = useState([]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -75,6 +79,38 @@ export default function AdminPanel() {
 
   useEffect(() => {
     fetchProducts(); fetchOrders(); fetchUsers(); fetchSellers();
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("hero_slides");
+    if (saved) {
+      try { setHeroSlides(JSON.parse(saved)); } catch (e) { }
+    } else {
+      setHeroSlides([
+        { image: "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp", label: "Wedding Collection", sub: "Exquisite bridal wear for the most special day", route: "/occasion/wedding" },
+        { image: "https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=1200&format=webp", label: "Reception Glamour", sub: "Dazzling glamour for your reception night", route: "/occasion/reception" },
+        { image: "https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=1200&format=webp", label: "Engagement Elegance", sub: "Sophisticated looks for your special announcement", route: "/occasion/engagement" },
+        { image: "https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=1200&format=webp", label: "Mehendi Ceremony", sub: "Vibrant & colorful styles for your Mehendi", route: "/occasion/mehendi" },
+        { image: "https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=1200&format=webp", label: "Sangeet Night", sub: "Elegant, dance-ready outfits for celebration", route: "/occasion/sangeet" },
+        { image: "https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=1200&format=webp", label: "Cocktail Party", sub: "Chic & contemporary styles for cocktail evenings", route: "/occasion/cocktail" }
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedOccasions = localStorage.getItem("occasion_banners");
+    if (savedOccasions) {
+      try { setOccasionBanners(JSON.parse(savedOccasions)); } catch (e) { }
+    } else {
+      setOccasionBanners([
+        { key: 'mehendi', title: 'MEHENDI', image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=800&format=webp' },
+        { key: 'sangeet', title: 'SANGEET', image: 'https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=800&format=webp' },
+        { key: 'wedding', title: 'WEDDING', image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=800&format=webp' },
+        { key: 'engagement', title: 'ENGAGEMENT', image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=800&format=webp' },
+        { key: 'reception', title: 'RECEPTION', image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=800&format=webp' },
+        { key: 'cocktail', title: 'COCKTAIL', image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' }
+      ]);
+    }
   }, []);
 
   const fetchProducts = async () => {
@@ -261,7 +297,9 @@ export default function AdminPanel() {
             { id: "products", icon: <PackageIcon />, label: "Products" },
             { id: "orders", icon: <OrdersIcon />, label: "Orders" },
             { id: "users", icon: <UsersIcon />, label: "Users" },
-            { id: "sellers", icon: <StoreIcon />, label: "Sellers" }
+            { id: "sellers", icon: <StoreIcon />, label: "Sellers" },
+            { id: "hero", icon: <ImageIcon />, label: "Hero Banners" },
+            { id: "occasions", icon: <GridIcon />, label: "Occasion Banners" }
           ].map(item => (
             <button
               key={item.id} onClick={() => handleTabChange(item.id)}
@@ -625,6 +663,208 @@ export default function AdminPanel() {
                   </table>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* HERO BANNERS TAB */}
+        {activeTab === "hero" && (
+          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "1000px" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Hero Banner Management</h1>
+
+            <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", marginBottom: "32px" }}>
+              <h2 style={{ margin: "0 0 12px", fontSize: "18px", color: "#1e293b", display: "flex", alignItems: "center", gap: "8px" }}>
+                <ImageIcon /> Guidelines for Hero Images
+              </h2>
+              <ul style={{ color: "#64748b", fontSize: "14px", lineHeight: "1.6", margin: 0, paddingLeft: "20px" }}>
+                <li><strong>Recommended Size:</strong> 1200px to 1920px width and 600px to 800px height.</li>
+                <li><strong>Aspect Ratio:</strong> Landscape orientation (e.g., 16:9 or wider) looks best.</li>
+                <li><strong>File Size:</strong> Keep images under 500KB to ensure fast page loading.</li>
+                <li><strong>Subject Focus:</strong> Keep main subjects centered, as edges may crop on mobile screens.</li>
+              </ul>
+            </div>
+
+            <div style={{ display: "grid", gap: "24px" }}>
+              {heroSlides.map((slide, index) => (
+                <div key={index} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: "24px", display: "flex", flexDirection: isMobile ? "column" : "row", gap: "24px" }}>
+
+                  <div style={{ width: isMobile ? "100%" : "300px", flexShrink: 0 }}>
+                    <div style={{ width: "100%", aspectRatio: "16/9", backgroundColor: "#f1f5f9", borderRadius: "8px", overflow: "hidden", border: "1px solid #e2e8f0", marginBottom: "12px" }}>
+                      {slide.image ? (
+                        <img src={slide.image} alt={slide.label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: "12px" }}>No Image</div>
+                      )}
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <input
+                        type="text"
+                        placeholder="Image URL"
+                        value={slide.image}
+                        onChange={(e) => {
+                          const newSlides = [...heroSlides];
+                          newSlides[index].image = e.target.value;
+                          setHeroSlides(newSlides);
+                        }}
+                        style={{ width: "100%", padding: "10px", fontSize: "13px", border: "1px solid #cbd5e1", borderRadius: "6px", outline: "none", boxSizing: "border-box" }}
+                      />
+                      <label style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px", backgroundColor: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: "6px", cursor: "pointer", fontSize: "13px", color: "#475569", fontWeight: "500", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f1f5f9"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#f8fafc"}>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: "none" }}
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                const newSlides = [...heroSlides];
+                                newSlides[index].image = reader.result;
+                                setHeroSlides(newSlides);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                        Upload Image File
+                      </label>
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Heading (Label)</label>
+                      <input type="text" value={slide.label} onChange={e => { const s = [...heroSlides]; s[index].label = e.target.value; setHeroSlides(s); }} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px", boxSizing: "border-box" }} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Subheading</label>
+                      <input type="text" value={slide.sub} onChange={e => { const s = [...heroSlides]; s[index].sub = e.target.value; setHeroSlides(s); }} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px", boxSizing: "border-box" }} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Link Route</label>
+                      <input type="text" value={slide.route} onChange={e => { const s = [...heroSlides]; s[index].route = e.target.value; setHeroSlides(s); }} style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px", boxSizing: "border-box" }} placeholder="/occasion/wedding" />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "auto" }}>
+                      <button onClick={() => {
+                        if (window.confirm("Remove this slide?")) {
+                          const s = heroSlides.filter((_, i) => i !== index);
+                          setHeroSlides(s);
+                        }
+                      }} style={{ padding: "8px 16px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "13px", cursor: "pointer" }}>Remove Slide</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <button onClick={() => {
+                setHeroSlides([...heroSlides, { image: "", label: "New Slide", sub: "Add a description", route: "/" }]);
+              }} style={{ padding: "12px 20px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #cbd5e1", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer" }}>
+                + Add New Slide
+              </button>
+
+              <button onClick={() => {
+                localStorage.setItem("hero_slides", JSON.stringify(heroSlides));
+                alert("Hero slides saved successfully!");
+              }} style={{ padding: "12px 32px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                <SparklesIcon size="16px" /> Save Changes
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* OCCASION BANNERS TAB */}
+        {activeTab === "occasions" && (
+          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "1000px" }}>
+            <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Occasion Categories</h1>
+
+            <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", marginBottom: "32px" }}>
+              <h2 style={{ margin: "0 0 12px", fontSize: "18px", color: "#1e293b", display: "flex", alignItems: "center", gap: "8px" }}>
+                <GridIcon /> Guidelines for Occasion Images
+              </h2>
+              <ul style={{ color: "#64748b", fontSize: "14px", lineHeight: "1.6", margin: 0, paddingLeft: "20px" }}>
+                <li><strong>Recommended Size:</strong> Minimum 600px width. Wide or Landscape orientation works best for grid presentation.</li>
+                <li><strong>File Size:</strong> Keep images under 500KB to ensure fast page loading.</li>
+                <li><strong>Subject Focus:</strong> Keep main subjects centered as edges crop dynamically on different devices.</li>
+              </ul>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "24px" }}>
+              {occasionBanners.map((banner, index) => (
+                <div key={index} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+
+                  <div style={{ width: "100%", height: "160px", backgroundColor: "#f1f5f9", borderRadius: "8px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+                    {banner.image ? (
+                      <img src={banner.image} alt={banner.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: "12px" }}>No Image</div>
+                    )}
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Heading (Title)</label>
+                      <input type="text" value={banner.title} onChange={e => { const b = [...occasionBanners]; b[index].title = e.target.value; setOccasionBanners(b); }} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", boxSizing: "border-box" }} placeholder="e.g. MEHENDI" />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Link Route Key</label>
+                      <input type="text" value={banner.key} onChange={e => { const b = [...occasionBanners]; b[index].key = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''); setOccasionBanners(b); }} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", boxSizing: "border-box" }} placeholder="e.g. mehendi" />
+                      <span style={{ fontSize: "11px", color: "#94a3b8", display: "block", margin: "4px 0 0 0" }}>Users will be taken to: /occasion/{banner.key || "..."}</span>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Image URL</label>
+                      <input type="text" value={banner.image} onChange={e => { const b = [...occasionBanners]; b[index].image = e.target.value; setOccasionBanners(b); }} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", boxSizing: "border-box" }} />
+                    </div>
+
+                    <label style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px", backgroundColor: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: "6px", cursor: "pointer", fontSize: "13px", color: "#475569", fontWeight: "500", transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f1f5f9"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#f8fafc"}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              const b = [...occasionBanners];
+                              b[index].image = reader.result;
+                              setOccasionBanners(b);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      Upload Image File
+                    </label>
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>
+                      <button onClick={() => {
+                        if (window.confirm("Remove this category banner?")) {
+                          const b = occasionBanners.filter((_, i) => i !== index);
+                          setOccasionBanners(b);
+                        }
+                      }} style={{ padding: "6px 12px", backgroundColor: "#fef2f2", color: "#ef4444", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "12px", cursor: "pointer" }}>Remove Banner</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+              <button onClick={() => {
+                setOccasionBanners([...occasionBanners, { image: "", title: "NEW CATEGORY", key: "new-category" }]);
+              }} style={{ padding: "12px 20px", backgroundColor: "#f8fafc", color: "#0f172a", border: "1px solid #cbd5e1", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer" }}>
+                + Add New Category
+              </button>
+
+              <button onClick={() => {
+                localStorage.setItem("occasion_banners", JSON.stringify(occasionBanners));
+                alert("Occasion banners saved successfully!");
+              }} style={{ padding: "12px 32px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
+                <SparklesIcon size="16px" /> Save Changes
+              </button>
             </div>
           </div>
         )}

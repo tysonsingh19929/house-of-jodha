@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-const carouselSlides = [
+const defaultSlides = [
   {
     image: "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp",
     label: "Wedding Collection",
@@ -44,6 +44,7 @@ const slideAccent = ["#C2185B", "#E65100", "#1565C0", "#2E7D32", "#F5B041", "#6A
 const INTERVAL_MS = 3000;
 
 export default function Hero() {
+  const [carouselSlides, setCarouselSlides] = useState(defaultSlides);
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
@@ -53,6 +54,18 @@ export default function Hero() {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
   const total = carouselSlides.length;
+
+  useEffect(() => {
+    const saved = localStorage.getItem("hero_slides");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCarouselSlides(parsed);
+        }
+      } catch (e) { }
+    }
+  }, []);
 
   // Hide tooltip after 4 seconds
   useEffect(() => {
@@ -249,7 +262,7 @@ export default function Hero() {
               fontSize: isMobile ? "8px" : "11px",
               fontWeight: 700,
               letterSpacing: "3px",
-              color: slideAccent[i],
+              color: slideAccent[i % slideAccent.length],
               textTransform: "uppercase",
               marginBottom: isMobile ? "4px" : "8px",
             }}>
@@ -279,7 +292,7 @@ export default function Hero() {
               <button
                 onClick={() => navigate(s.route)}
                 style={{
-                  background: slideAccent[i],
+                  background: slideAccent[i % slideAccent.length],
                   color: "#fff",
                   border: "none",
                   borderRadius: "20px",
@@ -287,7 +300,7 @@ export default function Hero() {
                   fontSize: isMobile ? "10px" : "12px",
                   fontWeight: 700,
                   cursor: "pointer",
-                  boxShadow: `0 4px 15px ${slideAccent[i]}66`,
+                  boxShadow: `0 4px 15px ${slideAccent[i % slideAccent.length]}66`,
                   transition: "transform 0.2s",
                 }}
               >

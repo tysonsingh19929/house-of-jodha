@@ -1,61 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+const defaultOccasions = [
+  { key: 'mehendi', title: 'MEHENDI', image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=800&format=webp' },
+  { key: 'sangeet', title: 'SANGEET', image: 'https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=800&format=webp' },
+  { key: 'wedding', title: 'WEDDING', image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=800&format=webp' },
+  { key: 'engagement', title: 'ENGAGEMENT', image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=800&format=webp' },
+  { key: 'reception', title: 'RECEPTION', image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=800&format=webp' },
+  { key: 'cocktail', title: 'COCKTAIL', image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' }
+];
+
 const ShopByOccasion = () => {
-  const occasions = [
-    { 
-      key: 'mehendi', 
-      title: 'MEHENDI', 
-      image: 'https://images.pexels.com/photos/34833771/pexels-photo-34833771.jpeg?auto=compress&w=800&format=webp' 
-    },
-    { 
-      key: 'sangeet', 
-      title: 'SANGEET', 
-      image: 'https://images.pexels.com/photos/33411709/pexels-photo-33411709.jpeg?auto=compress&w=800&format=webp' 
-    },
-    { 
-      key: 'wedding', 
-      title: 'WEDDING', 
-      image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=800&format=webp' 
-    },
-    { 
-      key: 'engagement', 
-      title: 'ENGAGEMENT', 
-      image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=800&format=webp' 
-    },
-    { 
-      key: 'reception', 
-      title: 'RECEPTION', 
-      image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=800&format=webp' 
-    },
-    { 
-      key: 'cocktail', 
-      title: 'COCKTAIL', 
-      image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' 
+  const [occasions, setOccasions] = useState(defaultOccasions);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("occasion_banners");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setOccasions(parsed);
+        }
+      } catch (e) { }
     }
-  ];
+  }, []);
 
   return (
     <section id="shop-by-occasion" style={{ padding: "60px 20px", background: "#fff" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 style={{ 
-          textAlign: "center", 
-          fontSize: "32px", 
-          color: "#1a1a1a", 
-          marginBottom: "40px", 
+        <h2 style={{
+          textAlign: "center",
+          fontSize: "32px",
+          color: "#1a1a1a",
+          marginBottom: "40px",
           fontWeight: "600",
           letterSpacing: "1px"
         }}>
           Shop by Occasion
         </h2>
-        
+
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", // Slightly wider for banners
           gap: "24px",
         }}>
           {occasions.map((occasion) => (
-            <Link 
+            <Link
               key={occasion.key}
               to={`/occasion/${occasion.key}`}
               style={{ textDecoration: 'none' }}
@@ -72,14 +62,14 @@ const ShopByOccasion = () => {
                 background: `url(${occasion.image}) no-repeat center center`,
                 backgroundSize: "cover"
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.02)";
-                e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
-              }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.02)";
+                  e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+                }}
               >
                 {/* DARK OVERLAY FOR TEXT READABILITY */}
                 <div style={{
@@ -92,10 +82,10 @@ const ShopByOccasion = () => {
                   alignItems: "center",
                   padding: "20px"
                 }}>
-                  <h3 style={{ 
-                    fontSize: "24px", 
-                    fontWeight: "700", 
-                    color: "#fff", 
+                  <h3 style={{
+                    fontSize: "24px",
+                    fontWeight: "700",
+                    color: "#fff",
                     margin: "0",
                     textShadow: "0 2px 4px rgba(0,0,0,0.3)"
                   }}>
