@@ -137,6 +137,10 @@ const Chatbot = () => {
         .chatbot-toggle {
           overflow: visible !important;
         }
+        .chatbot-toggle::before {
+          background: conic-gradient(from 0deg, #3b82f6, #8b5cf6, #ec4899, #06b6d4, #3b82f6) !important;
+          animation: spinRGBOrb 3s linear infinite !important;
+        }
         .orb-glow {
           position: absolute;
           top: -4px;
@@ -144,15 +148,24 @@ const Chatbot = () => {
           right: -4px;
           bottom: -4px;
           border-radius: 50%;
-          background: #D4AF37;
-          box-shadow: 0 0 20px 8px rgba(212, 175, 55, 0.6);
+          background: conic-gradient(
+            from 0deg,
+            #3b82f6,
+            #8b5cf6,
+            #ec4899,
+            #06b6d4,
+            #3b82f6
+          ) !important;
+          box-shadow: none !important;
           z-index: 1;
-          animation: pulseOrb 2.5s ease-in-out infinite alternate !important;
+          animation: spinRGBOrb 3s linear infinite !important;
           pointer-events: none;
+          filter: blur(8px) !important;
+          opacity: 0.9;
         }
-        @keyframes pulseOrb {
-          0% { transform: scale(1); opacity: 0.6; filter: blur(4px); }
-          100% { transform: scale(1.15); opacity: 1; filter: blur(8px); }
+        @keyframes spinRGBOrb {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
         .ishani-greeting-bubble {
           position: absolute;
