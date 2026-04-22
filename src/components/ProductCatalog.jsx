@@ -20,11 +20,32 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+    // 1. Check local cache first for an instant load
+    const cachedData = localStorage.getItem("diva_catalog_cache");
+    if (cachedData) {
+      try {
+        setDbProducts(JSON.parse(cachedData));
+        setDbFetched(true);
+      } catch (e) { console.error("Cache read error", e); }
+    }
+
+    // 2. Fetch fresh data in the background
     fetch(`${API_BASE_URL}/products`)
       .then(res => res.json())
       .then(data => {
-        setDbProducts(Array.isArray(data) ? data : []);
+        const arr = Array.isArray(data) ? data : [];
+        setDbProducts(arr);
         setDbFetched(true);
+        try {
+          // Strip heavy Base64 images and unneeded arrays to prevent QuotaExceededError
+          const lightweightCache = arr.map(p => ({
+            _id: p._id, id: p.id, name: p.name, category: p.category,
+            price: p.price, originalPrice: p.originalPrice,
+            image: p.image && p.image.length > 100000 ? null : p.image
+          }));
+          localStorage.setItem("diva_catalog_cache", JSON.stringify(lightweightCache));
+        } catch (e) { console.warn("Cache write failed, ignoring to prevent crash", e); }
       })
       .catch(err => { console.error(err); setDbFetched(true); });
   }, []);
@@ -32,7 +53,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
 
   const allProducts = useMemo(() => {
-    if (!dbFetched) return [...products, ...customProducts]; // Initial load fallback
+    if (!dbFetched) return []; // Wait for DB to prevent flicker
     if (dbFetched && dbProducts.length === 0) return [...customProducts]; // Empty DB means products were deleted
 
     const patchedDb = dbProducts.map(p => {
@@ -102,7 +123,14 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
   const filteredProducts = (selectedCategory === "All"
-    ? allProducts
+    ? [...allProducts].sort((a, b) => {
+      // Always keep Lehenga section prominently at the top when in "All"
+      const aIsLehenga = a.category?.toLowerCase() === "lehenga";
+      const bIsLehenga = b.category?.toLowerCase() === "lehenga";
+      if (aIsLehenga && !bIsLehenga) return -1;
+      if (!aIsLehenga && bIsLehenga) return 1;
+      return 0;
+    })
     : allProducts.filter(p => p.category === selectedCategory));
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
@@ -289,131 +317,142 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       </div>
 
       {/* Product Grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-        gap: isMobile ? "12px" : "24px", width: "100%", maxWidth: "1200px", margin: "0 auto"
-      }}>
-        {paginatedProducts.map((product) => {
-          const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
-          return (
-            <div key={product.id} className="pc-card">
-              {/* Image Container */}
-              <div className="pc-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
-                {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="pc-img"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <span style={{ fontSize: isMobile ? "48px" : "60px" }}>{product.image}</span>
-                )}
-
-                {/* Discount Badge */}
-                {discount > 0 && (
-                  <div className="pc-badge">
-                    {discount}% OFF
-                  </div>
-                )}
-
-                {/* Wishlist */}
-                <button
-                  className={`pc-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (isInWishlist && isInWishlist(product.id)) {
-                      removeFromWishlist(product.id);
-                    } else {
-                      addToWishlist(product);
-                    }
-                  }}
-                  title={isInWishlist && isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill={isInWishlist && isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Product Info */}
-              <div onClick={() => navigate(`/product/${product.id}`)} style={{ padding: isMobile ? "12px" : "16px", cursor: "pointer", flex: 1, display: "flex", flexDirection: "column" }}>
-                <h3 style={{
-                  fontSize: isMobile ? "13px" : "15px", fontWeight: "600",
-                  color: "#1a1a1a", margin: "0 0 4px 0",
-                  overflow: "hidden", display: "-webkit-box",
-                  WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-                  lineHeight: "1.4"
-                }}>
-                  {product.name}
-                </h3>
-                <p style={{ fontSize: isMobile ? "11px" : "12px", color: "#888", margin: "0 0 10px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "500" }}>
-                  {product.category}
-                </p>
-
-                <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
-                  <span style={{ fontSize: isMobile ? "15px" : "16px", fontWeight: "700", color: "#D4AF37" }}>
-                    ₹{product.price.toLocaleString()}
-                  </span>
-                  {product.originalPrice > product.price && (
-                    <span style={{ fontSize: isMobile ? "12px" : "13px", color: "#aaa", textDecoration: "line-through", fontWeight: "500" }}>
-                      ₹{product.originalPrice.toLocaleString()}
-                    </span>
+      {!dbFetched ? (
+        <div style={{ textAlign: "center", padding: "60px 20px" }}>
+          <div style={{ position: "relative", width: "40px", height: "40px", margin: "0 auto" }}>
+            <div style={{ position: "absolute", inset: 0, border: "3px solid #fdf8ee", borderRadius: "50%" }}></div>
+            <div style={{ position: "absolute", inset: 0, border: "3px solid transparent", borderTopColor: "#D4AF37", borderRightColor: "#D4AF37", borderRadius: "50%", animation: "spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite" }}></div>
+          </div>
+          <p style={{ marginTop: "16px", color: "#666", fontSize: "14px" }}>Loading collections...</p>
+          <style dangerouslySetInnerHTML={{ __html: "@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }" }} />
+        </div>
+      ) : (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
+          gap: isMobile ? "12px" : "24px", width: "100%", maxWidth: "1200px", margin: "0 auto"
+        }}>
+          {paginatedProducts.map((product) => {
+            const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
+            return (
+              <div key={product.id} className="pc-card">
+                {/* Image Container */}
+                <div className="pc-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
+                  {typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("data:") || product.image.startsWith("/")) ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="pc-img"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <span style={{ fontSize: isMobile ? "48px" : "60px" }}>{product.image}</span>
                   )}
+
+                  {/* Discount Badge */}
+                  {discount > 0 && (
+                    <div className="pc-badge">
+                      {discount}% OFF
+                    </div>
+                  )}
+
+                  {/* Wishlist */}
+                  <button
+                    className={`pc-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isInWishlist && isInWishlist(product.id)) {
+                        removeFromWishlist(product.id);
+                      } else {
+                        addToWishlist(product);
+                      }
+                    }}
+                    title={isInWishlist && isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill={isInWishlist && isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
                 </div>
 
-                {/* Add to Cart / Quantity Controls */}
-                {addedProducts[product.id] ? (
-                  <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                    <button
-                      onClick={e => { e.stopPropagation(); handleDecreaseQuantity(product); }}
-                      className="pc-qty-btn"
-                    >−</button>
-                    <span style={{
-                      flex: 1, textAlign: "center",
-                      fontSize: "14px",
-                      fontWeight: "700", color: "#1a1a1a",
-                    }}>
-                      {addedProducts[product.id]}
-                    </span>
-                    <button
-                      onClick={e => { e.stopPropagation(); handleIncreaseQuantity(product); }}
-                      className="pc-qty-btn"
-                    >+</button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={e => { e.stopPropagation(); handleAddProduct(product); }}
-                    className="pc-btn"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
-                    </svg>
-                    Add to Cart
-                  </button>
-                )}
+                {/* Product Info */}
+                <div onClick={() => navigate(`/product/${product.id}`)} style={{ padding: isMobile ? "12px" : "16px", cursor: "pointer", flex: 1, display: "flex", flexDirection: "column" }}>
+                  <h3 style={{
+                    fontSize: isMobile ? "13px" : "15px", fontWeight: "600",
+                    color: "#1a1a1a", margin: "0 0 4px 0",
+                    overflow: "hidden", display: "-webkit-box",
+                    WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                    lineHeight: "1.4"
+                  }}>
+                    {product.name}
+                  </h3>
+                  <p style={{ fontSize: isMobile ? "11px" : "12px", color: "#888", margin: "0 0 10px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "500" }}>
+                    {product.category}
+                  </p>
 
-                <WhatsAppInquiryButton
-                  message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
-                  buttonStyle={{
-                    width: "100%",
-                    padding: isMobile ? "8px" : "10px",
-                    fontSize: isMobile ? "11px" : "12px",
-                    marginTop: isMobile ? "6px" : "8px",
-                    background: "#fff",
-                    border: "1px solid #eaeaea",
-                    color: "#1a1a1a",
-                    borderRadius: "10px",
-                    boxShadow: "none"
-                  }}
-                />
+                  <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
+                    <span style={{ fontSize: isMobile ? "15px" : "16px", fontWeight: "700", color: "#D4AF37" }}>
+                      ₹{product.price.toLocaleString()}
+                    </span>
+                    {product.originalPrice > product.price && (
+                      <span style={{ fontSize: isMobile ? "12px" : "13px", color: "#aaa", textDecoration: "line-through", fontWeight: "500" }}>
+                        ₹{product.originalPrice.toLocaleString()}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Add to Cart / Quantity Controls */}
+                  {addedProducts[product.id] ? (
+                    <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                      <button
+                        onClick={e => { e.stopPropagation(); handleDecreaseQuantity(product); }}
+                        className="pc-qty-btn"
+                      >−</button>
+                      <span style={{
+                        flex: 1, textAlign: "center",
+                        fontSize: "14px",
+                        fontWeight: "700", color: "#1a1a1a",
+                      }}>
+                        {addedProducts[product.id]}
+                      </span>
+                      <button
+                        onClick={e => { e.stopPropagation(); handleIncreaseQuantity(product); }}
+                        className="pc-qty-btn"
+                      >+</button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={e => { e.stopPropagation(); handleAddProduct(product); }}
+                      className="pc-btn"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
+                      </svg>
+                      Add to Cart
+                    </button>
+                  )}
+
+                  <WhatsAppInquiryButton
+                    message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                    buttonStyle={{
+                      width: "100%",
+                      padding: isMobile ? "8px" : "10px",
+                      fontSize: isMobile ? "11px" : "12px",
+                      marginTop: isMobile ? "6px" : "8px",
+                      background: "#fff",
+                      border: "1px solid #eaeaea",
+                      color: "#1a1a1a",
+                      borderRadius: "10px",
+                      boxShadow: "none"
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {totalPages > 1 && (
         <div style={{

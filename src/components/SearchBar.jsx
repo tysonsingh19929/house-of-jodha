@@ -12,9 +12,25 @@ export default function SearchBar() {
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+    const cachedData = localStorage.getItem("diva_catalog_cache");
+    if (cachedData) {
+      try { setDbProducts(JSON.parse(cachedData)); } catch (e) { }
+    }
+
     fetch(`${API_BASE_URL}/products`)
       .then(res => res.json())
-      .then(data => setDbProducts(Array.isArray(data) ? data : []))
+      .then(data => {
+        const arr = Array.isArray(data) ? data : [];
+        setDbProducts(arr);
+        try {
+          const lightweightCache = arr.map(p => ({
+            _id: p._id, id: p.id, name: p.name, category: p.category,
+            image: p.image && p.image.length > 100000 ? null : p.image
+          }));
+          localStorage.setItem("diva_catalog_cache", JSON.stringify(lightweightCache));
+        } catch (e) { }
+      })
       .catch(console.error);
 
     const handleClickOutside = (event) => {
