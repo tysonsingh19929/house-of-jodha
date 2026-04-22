@@ -13,10 +13,13 @@ export default function Newsletter() {
 
   return (
     <div style={{
-      background: "linear-gradient(135deg, rgba(184, 68, 141, 0.1) 0%, rgba(184, 68, 141, 0.05) 100%)",
-      padding: isMobile ? "40px 15px" : "60px 30px",
+      background: "#0a0f0d",
+      backgroundImage: "linear-gradient(135deg, #111 0%, #0a0f0d 100%)",
+      padding: isMobile ? "60px 20px" : "100px 30px",
       textAlign: "center",
-      borderBottom: "1px solid #e5e4e7"
+      borderBottom: "1px solid rgba(212,175,55,0.1)",
+      position: "relative",
+      overflow: "hidden"
     }}>
       <style>{`
       @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
@@ -34,58 +37,66 @@ export default function Newsletter() {
         </div>
       )}
 
-      <h2 style={{ fontSize: isMobile ? "24px" : "32px", marginBottom: "15px", color: "#08060d" }}>
-        Join Our Community
+      {/* Decorative Blur */}
+      <div style={{ position: "absolute", top: "-100px", left: "50%", transform: "translateX(-50%)", width: "400px", height: "400px", background: "#D4AF37", filter: "blur(200px)", opacity: "0.15", borderRadius: "50%", pointerEvents: "none" }} />
+
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? "32px" : "46px", marginBottom: "16px", color: "#fff", fontWeight: "600", position: "relative", zIndex: 1 }}>
+        Join The <span style={{ color: "#D4AF37", fontStyle: "italic" }}>Inner Circle</span>
       </h2>
-      <p style={{ fontSize: isMobile ? "14px" : "16px", color: "#666", marginBottom: "25px" }}>
-        Get exclusive offers, new arrivals, and fashion tips delivered to your inbox
+      <p style={{ fontSize: isMobile ? "14px" : "16px", color: "rgba(255,255,255,0.6)", marginBottom: "40px", maxWidth: "500px", margin: "0 auto 40px auto", lineHeight: "1.6", position: "relative", zIndex: 1 }}>
+        Subscribe to receive early access to new collections, exclusive high-fashion insights, and private invitations.
       </p>
 
       <form onSubmit={handleSubscribe} style={{
         display: "flex",
-        gap: isMobile ? "8px" : "10px",
-        maxWidth: "500px",
+        gap: isMobile ? "12px" : "0",
+        maxWidth: "480px",
         margin: "0 auto",
         justifyContent: "center",
         flexDirection: isMobile ? "column" : "row",
-        flexWrap: "wrap"
+        position: "relative",
+        zIndex: 1
       }}>
         <input
           type="email"
           name="newsletterEmail"
           id="newsletterEmail"
-          placeholder="Enter your email"
+          placeholder="Enter your email address"
           required
           style={{
             flex: isMobile ? "1" : "1",
             minWidth: isMobile ? "100%" : "200px",
-            padding: isMobile ? "10px 15px" : "12px 20px",
-            border: "1px solid #D4AF37",
-            borderRadius: "4px",
-            fontSize: isMobile ? "13px" : "14px",
-            outline: "none"
+            padding: isMobile ? "14px 20px" : "16px 24px",
+            border: "1px solid rgba(212,175,55,0.3)",
+            background: "rgba(255,255,255,0.05)",
+            borderRadius: isMobile ? "12px" : "30px 0 0 30px",
+            fontSize: "14px",
+            color: "#fff",
+            outline: "none",
+            backdropFilter: "blur(10px)"
           }}
         />
         <button
           type="submit"
           style={{
-            background: "#D4AF37",
-            color: "#fff",
+            background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)",
+            color: "#0a0f0d",
             border: "none",
-            padding: isMobile ? "10px 20px" : "12px 30px",
-            borderRadius: "4px",
+            padding: isMobile ? "14px 24px" : "16px 36px",
+            borderRadius: isMobile ? "12px" : "0 30px 30px 0",
             fontWeight: "600",
             cursor: "pointer",
             transition: "all 0.3s",
-            width: isMobile ? "100%" : "auto"
+            width: isMobile ? "100%" : "auto",
+            fontSize: "14px",
+            letterSpacing: "0.5px",
+            textTransform: "uppercase"
           }}
           onMouseEnter={e => {
-            e.target.style.background = "#a0337a";
-            e.target.style.transform = "scale(1.05)";
+            e.target.style.opacity = "0.9";
           }}
           onMouseLeave={e => {
-            e.target.style.background = "#D4AF37";
-            e.target.style.transform = "scale(1)";
+            e.target.style.opacity = "1";
           }}
         >
           Subscribe

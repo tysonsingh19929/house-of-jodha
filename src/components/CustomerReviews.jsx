@@ -34,12 +34,13 @@ export default function CustomerReviews() {
 
   return (
     <div id="reviews" style={{
-      padding: isMobile ? "40px 15px" : "60px 30px",
-      background: "var(--accent-bg)",
-      borderBottom: "1px solid var(--accent-border)"
+      padding: isMobile ? "60px 20px" : "100px 40px",
+      background: "#FAFAFA",
+      borderBottom: "1px solid #eaeaea",
+      fontFamily: "'Inter', sans-serif"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
-        Customer Reviews
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", textAlign: "center", marginBottom: isMobile ? "40px" : "60px", fontSize: isMobile ? "32px" : "46px", color: "#1a1a1a", fontWeight: "700" }}>
+        Client <span style={{ color: "#D4AF37", fontStyle: "italic" }}>Experiences</span>
       </h2>
 
       <div style={{

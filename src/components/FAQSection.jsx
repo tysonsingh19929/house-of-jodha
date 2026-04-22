@@ -33,60 +33,69 @@ export default function FAQSection() {
 
   return (
     <div style={{
-      padding: isMobile ? "40px 15px" : "60px 30px",
+      padding: isMobile ? "60px 20px" : "100px 40px",
       background: "#fff",
-      borderTop: "1px solid #e5e4e7",
-      borderBottom: "1px solid #e5e4e7"
+      fontFamily: "'Inter', sans-serif"
     }}>
-      <h2 style={{ textAlign: "center", marginBottom: isMobile ? "30px" : "50px", fontSize: isMobile ? "28px" : "36px", color: "#2C4F3E" }}>
-        Frequently Asked Questions
-      </h2>
+      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", textAlign: "center", marginBottom: isMobile ? "40px" : "60px", fontSize: isMobile ? "32px" : "46px", color: "#1a1a1a", fontWeight: "700" }}>
+          Frequently Asked <span style={{ color: "#D4AF37", fontStyle: "italic" }}>Questions</span>
+        </h2>
 
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto"
-      }}>
-        {faqs.map((faq, idx) => (
-          <div key={idx} style={{
-            marginBottom: isMobile ? "10px" : "15px",
-            border: "1px solid #e5e4e7",
-            borderRadius: "8px",
-            overflow: "hidden"
-          }}>
-            <button
-              onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-              style={{
-                width: "100%",
-                padding: isMobile ? "12px 15px" : "15px 20px",
-                background: openIndex === idx ? "rgba(184, 68, 141, 0.1)" : "#f8f8f8",
-                border: "none",
-                textAlign: "left",
-                cursor: "pointer",
-                fontSize: isMobile ? "14px" : "16px",
-                fontWeight: "600",
-                color: "#08060d",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center"
-              }}
-            >
-              {faq.q}
-              <span style={{ fontSize: isMobile ? "16px" : "20px" }}>{openIndex === idx ? "−" : "+"}</span>
-            </button>
-            {openIndex === idx && (
+        <div style={{
+          display: "flex", flexDirection: "column", gap: "8px"
+        }}>
+          {faqs.map((faq, idx) => (
+            <div key={idx} style={{
+              borderBottom: "1px solid #eaeaea",
+              overflow: "hidden",
+              transition: "all 0.3s ease"
+            }}>
+              <button
+                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                style={{
+                  width: "100%",
+                  padding: isMobile ? "20px 0" : "24px 0",
+                  background: "transparent",
+                  border: "none",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: isMobile ? "15px" : "17px",
+                  fontWeight: "500",
+                  color: openIndex === idx ? "#D4AF37" : "#1a1a1a",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  transition: "color 0.3s"
+                }}
+              >
+                {faq.q}
+                <span style={{
+                  fontSize: "24px",
+                  color: openIndex === idx ? "#D4AF37" : "#999",
+                  transform: openIndex === idx ? "rotate(45deg)" : "rotate(0deg)",
+                  transition: "transform 0.3s, color 0.3s",
+                  lineHeight: 1
+                }}>+</span>
+              </button>
               <div style={{
-                padding: isMobile ? "12px 15px" : "15px 20px",
-                background: "#fff",
-                color: "#333",
-                borderTop: "1px solid #e5e4e7",
-                lineHeight: "1.6",
-                fontSize: isMobile ? "13px" : "14px"
+                maxHeight: openIndex === idx ? "200px" : "0",
+                opacity: openIndex === idx ? 1 : 0,
+                transition: "all 0.3s ease-in-out",
               }}>
-                {faq.a}
+                <p style={{
+                  padding: "0 0 24px 0",
+                  margin: 0,
+                  color: "#666",
+                  lineHeight: "1.7",
+                  fontSize: isMobile ? "14px" : "15px"
+                }}>
+                  {faq.a}
+                </p>
               </div>
-            )}
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
