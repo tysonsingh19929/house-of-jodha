@@ -33,7 +33,7 @@ const makeLinksClickable = (text) => {
   });
 };
 
-const ISHANI_AVATAR = "https://images.unsplash.com/photo-1554727242-741c14fa561c?auto=format&fit=crop&w=150&h=150&q=80";
+const ISHANI_AVATAR = "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&h=150&q=80";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
