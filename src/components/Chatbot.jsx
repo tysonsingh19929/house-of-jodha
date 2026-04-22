@@ -42,14 +42,45 @@ const Chatbot = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [hasGreeted, setHasGreeted] = useState(() => {
+    return sessionStorage.getItem('ishani_greeted') === 'true';
+  });
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
 
-  const toggleChat = () => setIsOpen(prev => !prev);
+  const toggleChat = () => {
+    setIsOpen(prev => !prev);
+    if (!isOpen) {
+      setShowGreeting(false);
+      setHasGreeted(true);
+      sessionStorage.setItem('ishani_greeted', 'true');
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpen && !hasGreeted) {
+        setShowGreeting(true);
+      }
+    }, 4000); // Appears 4 seconds after page load
+    return () => clearTimeout(timer);
+  }, [isOpen, hasGreeted]);
+
+  useEffect(() => {
+    if (showGreeting) {
+      const hideTimer = setTimeout(() => {
+        setShowGreeting(false);
+        setHasGreeted(true);
+        sessionStorage.setItem('ishani_greeted', 'true');
+      }, 12000); // Auto-hides after 12 seconds
+      return () => clearTimeout(hideTimer);
+    }
+  }, [showGreeting]);
 
   useEffect(() => {
     if (isOpen) scrollToBottom();
@@ -103,10 +134,111 @@ const Chatbot = () => {
   return (
     <div className="chatbot-container" ref={containerRef}>
       <style>{`
+        .chatbot-toggle {
+          overflow: visible !important;
+        }
         .orb-glow {
-          animation-duration: 8s !important; /* Slow and soothing RGB rotation */
+          position: absolute;
+          top: -4px;
+          left: -4px;
+          right: -4px;
+          bottom: -4px;
+          border-radius: 50%;
+          background: #D4AF37;
+          box-shadow: 0 0 20px 8px rgba(212, 175, 55, 0.6);
+          z-index: 1;
+          animation: pulseOrb 2.5s ease-in-out infinite alternate !important;
+          pointer-events: none;
+        }
+        @keyframes pulseOrb {
+          0% { transform: scale(1); opacity: 0.6; filter: blur(4px); }
+          100% { transform: scale(1.15); opacity: 1; filter: blur(8px); }
+        }
+        .ishani-greeting-bubble {
+          position: absolute;
+          bottom: calc(100% + 20px);
+          right: 0;
+          width: 270px;
+          background: #fff;
+          border: 1px solid rgba(212, 175, 55, 0.4);
+          border-radius: 16px 16px 4px 16px;
+          padding: 16px 20px;
+          box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+          animation: popInGreeting 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          z-index: 101;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+        .ishani-greeting-bubble:hover {
+          transform: translateY(-2px);
+        }
+        .ishani-greeting-bubble::after {
+          content: '';
+          position: absolute;
+          bottom: -7px;
+          right: 22px;
+          width: 14px;
+          height: 14px;
+          background: #fff;
+          border-right: 1px solid rgba(212, 175, 55, 0.4);
+          border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+          transform: rotate(45deg);
+        }
+        .close-greeting {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: none;
+          border: none;
+          font-size: 16px;
+          color: #999;
+          cursor: pointer;
+          line-height: 1;
+          padding: 4px;
+          transition: color 0.2s;
+        }
+        .close-greeting:hover { color: #1a1a1a; }
+        .greeting-content strong {
+          display: block;
+          color: #1a1a1a;
+          margin-bottom: 6px;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 18px;
+          font-weight: 700;
+        }
+        .greeting-content p {
+          margin: 0;
+          color: #555;
+          font-size: 13px;
+          line-height: 1.5;
+        }
+        @keyframes popInGreeting {
+          0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
+
+      {showGreeting && !isOpen && (
+        <div className="ishani-greeting-bubble" onClick={toggleChat}>
+          <button
+            className="close-greeting"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowGreeting(false);
+              setHasGreeted(true);
+              sessionStorage.setItem('ishani_greeted', 'true');
+            }}
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+          <div className="greeting-content">
+            <strong>Namaste! 🙏</strong>
+            <p>Looking for a specific outfit? I know every piece in our collection. Let me help you find your perfect match!</p>
+          </div>
+        </div>
+      )}
+
       <button
         className={`chatbot-toggle ${isOpen ? 'open' : ''}`}
         onClick={toggleChat}
