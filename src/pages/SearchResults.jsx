@@ -159,6 +159,9 @@ export default function SearchResults({
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
   const [sellersMap, setSellersMap] = useState({});
+  const [sortBy, setSortBy] = useState('featured');
+  const [priceFilter, setPriceFilter] = useState('all');
+  const [colorFilter, setColorFilter] = useState('all');
 
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -222,12 +225,30 @@ export default function SearchResults({
   };
 
   const filteredProducts = useMemo(() => {
-    return allProducts.map((product) => {
+    let res = allProducts.map((product) => {
       // Just ensure backward compatibility with old hardcoded logic
       const idToUse = product._id || product.id;
       return { ...product, id: idToUse, image: product.image || imageDatabase.lehenga[0] };
     });
-  }, [allProducts]);
+
+    if (priceFilter === 'under-5000') res = res.filter(p => p.price < 5000);
+    else if (priceFilter === '5000-10000') res = res.filter(p => p.price >= 5000 && p.price <= 10000);
+    else if (priceFilter === 'over-10000') res = res.filter(p => p.price > 10000);
+
+    if (colorFilter !== 'all') {
+      const colorMatch = colorFilter.toLowerCase().split(' / ');
+      res = res.filter(p => {
+        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name)).toLowerCase();
+        return colorMatch.some(c => targetStr.includes(c.trim()));
+      });
+    }
+
+    if (sortBy === 'price-low') res.sort((a, b) => a.price - b.price);
+    else if (sortBy === 'price-high') res.sort((a, b) => b.price - a.price);
+    else if (sortBy === 'name-asc') res.sort((a, b) => a.name.localeCompare(b.name));
+
+    return res;
+  }, [allProducts, priceFilter, colorFilter, sortBy]);
 
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const paginatedProducts = filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -306,6 +327,40 @@ export default function SearchResults({
           .sr-wish { width: 30px; height: 30px; top: 8px; right: 8px; }
           .sr-wish svg { width: 15px; height: 15px; }
         }
+        .sr-filters {
+          display: flex; justify-content: center; align-items: center;
+          margin: 0 auto 40px; flex-wrap: wrap; gap: 16px; max-width: 1200px;
+          animation: slideUp 0.4s ease;
+        }
+        .sr-filter-group {
+          display: flex; align-items: center; gap: 10px;
+          background: #fff; padding: 6px 16px 6px 20px;
+          border-radius: 40px; border: 1px solid #eaeaea;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: all 0.3s ease;
+        }
+        .sr-filter-group:hover {
+          border-color: rgba(212, 175, 55, 0.4);
+          box-shadow: 0 6px 24px rgba(212, 175, 55, 0.12);
+          transform: translateY(-2px);
+        }
+        .sr-filter-label {
+          font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600;
+          color: #1a1a1a; font-style: italic; letter-spacing: 0.5px;
+        }
+        .sr-select {
+          appearance: none; padding: 4px 24px 4px 0; width: auto; min-width: 140px;
+          border: none; border-radius: 0;
+          background: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23D4AF37' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right center;
+          background-color: transparent; color: #444; font-family: 'Inter', sans-serif;
+          font-size: 13px; font-weight: 600; cursor: pointer; outline: none; transition: color 0.2s;
+        }
+        .sr-select:hover, .sr-select:focus { color: #1a1a1a; }
+        @media (max-width: 768px) {
+          .sr-filters { margin-bottom: 24px; gap: 12px; margin: 0 16px 24px; }
+          .sr-filter-group { flex: 1; width: 100%; justify-content: space-between; padding: 8px 20px; }
+          .sr-select { text-align: right; }
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
       <Navbar
         cartCount={cartCount}
@@ -334,6 +389,43 @@ export default function SearchResults({
         </div>
 
         <SearchBar onSearch={handleSearch} initialQuery={query} />
+
+        {allProducts.length > 0 && !loading && (
+          <div className="sr-filters">
+            <div className="sr-filter-group">
+              <span className="sr-filter-label">Price:</span>
+              <select className="sr-select" value={priceFilter} onChange={e => { setPriceFilter(e.target.value); setCurrentPage(1); }}>
+                <option value="all">All Prices</option>
+                <option value="under-5000">Under ₹5,000</option>
+                <option value="5000-10000">₹5,000 - ₹10,000</option>
+                <option value="over-10000">Over ₹10,000</option>
+              </select>
+            </div>
+            <div className="sr-filter-group">
+              <span className="sr-filter-label">Color:</span>
+              <select className="sr-select" value={colorFilter} onChange={e => { setColorFilter(e.target.value); setCurrentPage(1); }}>
+                <option value="all">All Colors</option>
+                <option value="red">Red / Maroon</option>
+                <option value="pink">Pink / Blush</option>
+                <option value="green">Green / Emerald</option>
+                <option value="blue">Blue / Navy</option>
+                <option value="gold">Gold / Yellow</option>
+                <option value="ivory">Ivory / White</option>
+                <option value="black">Black</option>
+                <option value="purple">Purple / Lavender</option>
+              </select>
+            </div>
+            <div className="sr-filter-group">
+              <span className="sr-filter-label">Sort:</span>
+              <select className="sr-select" value={sortBy} onChange={e => { setSortBy(e.target.value); setCurrentPage(1); }}>
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px 20px" }}>

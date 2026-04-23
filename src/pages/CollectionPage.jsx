@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import WhatsAppInquiryButton from "../components/WhatsAppInquiryButton.jsx";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -17,6 +17,10 @@ export default function OccasionPage({
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState({});
   const [sellersMap, setSellersMap] = useState({});
+  const [sortBy, setSortBy] = useState('featured');
+  const [priceFilter, setPriceFilter] = useState('all');
+  const [colorFilter, setColorFilter] = useState('all');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const occasionDetails = {
     mehendi: {
@@ -261,125 +265,75 @@ export default function OccasionPage({
           padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 16px;
         }
 
-        /* CARD */
-        .occ-card {
-          background: #fff; border: 1px solid ${d.cardBorder};
-          border-radius: 12px; overflow: hidden;
-          transition: all 0.25s ease;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-          display: flex; flex-direction: column;
-          cursor: pointer;
-        }
-        .occ-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 32px rgba(0,0,0,0.1);
-          border-color: ${d.accentMid};
-        }
-
-        /* IMAGE */
-        .occ-img-wrap { position: relative; overflow: hidden; flex-shrink: 0; }
-        .occ-img {
-          width: 100%; height: 185px; object-fit: cover;
-          display: block; transition: transform 0.4s ease;
-        }
-        .occ-card:hover .occ-img { transform: scale(1.04); }
-
-        /* DISCOUNT BADGE */
-        .occ-discount {
-          position: absolute; top: 7px; left: 7px;
-          background: ${d.accentColor}; color: #fff;
-          font-family: 'Jost', sans-serif; font-size: 9px; font-weight: 800;
-          letter-spacing: 0.5px; padding: 3px 7px; border-radius: 3px;
-        }
-
-        /* WISHLIST */
-        .occ-wish {
-          position: absolute; top: 7px; right: 7px;
-          width: 28px; height: 28px; border-radius: 50%;
-          background: rgba(255,255,255,0.9); border: none;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; transition: all 0.2s; z-index: 5;
-          box-shadow: 0 1px 6px rgba(0,0,0,0.15);
-          font-size: 14px; padding: 0; color: #ccc;
-        }
-        .occ-wish:hover { transform: scale(1.18); background: #fff; color: ${d.wishlistActive}; }
-        .occ-wish.on { color: ${d.wishlistActive}; }
-
-        /* INFO */
-        .occ-info {
-          padding: 9px 10px 5px; flex: 1;
-          text-decoration: none; display: block; color: inherit;
-        }
-        .occ-cat {
-          font-family: 'Jost', sans-serif; font-size: 9px;
-          color: ${d.accentMid}; text-transform: uppercase;
-          font-weight: 700; letter-spacing: 1px; margin: 0 0 3px;
-        }
-        .occ-name-text {
-          font-family: 'Jost', sans-serif; font-size: 11px;
-          color: #222; margin: 0 0 6px; font-weight: 600;
-          line-height: 1.35;
-          display: -webkit-box; -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical; overflow: hidden;
-        }
-
-        /* PRICE ROW — clean, single line */
-        .occ-price-row {
-          display: flex; align-items: baseline; gap: 5px; margin-bottom: 0; flex-wrap: nowrap;
-        }
-        .occ-price {
-          font-family: 'Jost', sans-serif; font-weight: 700;
-          font-size: 14px; color: #880E4F;
-          margin: 0; line-height: 1; white-space: nowrap;
-        }
-        .occ-original {
-          font-family: 'Jost', sans-serif; font-size: 12px;
-          color: #bbb; text-decoration: line-through; margin: 0; white-space: nowrap;
-        }
-        .occ-off {
-          font-family: 'Jost', sans-serif; font-size: 9px;
-          color: ${d.accentMid}; font-weight: 700; margin: 0; white-space: nowrap;
-        }
-
-        /* CART CONTROLS */
-        .occ-cart-wrap { padding: 6px 10px 11px; }
-
-        .occ-add-btn {
-          width: 100%; padding: 9px 8px;
-          background: ${d.btnBg}; color: #fff;
-          border: none; border-radius: 6px;
-          font-family: 'Jost', sans-serif; font-weight: 700;
-          font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
-          cursor: pointer; transition: opacity 0.2s, transform 0.15s;
-          display: block;
-        }
-        .occ-add-btn:hover { opacity: 0.86; }
-        .occ-add-btn:active { transform: scale(0.97); }
-
-        /* +/- quantity row — same style as CollectionPage */
-        .occ-qty-row {
-          display: flex; align-items: center; gap: 4px;
-        }
-        .occ-qty-btn {
-          flex: 1; padding: 8px 4px;
-          background: ${d.qtyBg}; color: #fff;
-          border: none; border-radius: 5px;
-          cursor: pointer; font-weight: 700; font-size: 15px;
-          transition: opacity 0.2s; line-height: 1;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .occ-qty-btn:hover { opacity: 0.82; }
-        .occ-qty-num {
-          flex: 1; text-align: center;
-          font-family: 'Jost', sans-serif;
-          font-size: 13px; font-weight: 800;
-          color: ${d.priceColor};
-        }
-
         .occ-empty {
           text-align: center; padding: 60px 20px;
           font-family: 'Jost', sans-serif; color: ${d.accentMid};
         }
+
+        /* MYNTRA LAYOUT */
+        .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 30px; padding: 24px 16px; align-items: flex-start; font-family: 'Inter', sans-serif; }
+        .myntra-sidebar { width: 250px; flex-shrink: 0; position: sticky; top: 100px; }
+        .myntra-main { flex: 1; min-width: 0; }
+        .myntra-topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; margin-bottom: 24px; }
+        .myntra-count { font-size: 16px; color: #282c3f; }
+        .myntra-count strong { font-weight: 700; }
+        .myntra-sort { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #282c3f; }
+        .myntra-sort-select { padding: 8px 12px; border: 1px solid #d4d5d9; border-radius: 4px; font-size: 14px; color: #282c3f; cursor: pointer; outline: none; background: #fff; font-weight: 500; }
+        
+        .myntra-filter-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; color: #282c3f; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; text-transform: uppercase; }
+        .myntra-filter-clear { font-size: 12px; color: #ff3f6c; font-weight: 700; cursor: pointer; border: none; background: none; text-transform: uppercase; }
+        
+        .myntra-filter-sec { padding: 20px 0; border-bottom: 1px solid #eaeaec; }
+        .myntra-filter-title { font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; margin-bottom: 16px; }
+        .myntra-radio-label { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #282c3f; margin-bottom: 12px; cursor: pointer; font-weight: 400; }
+        .myntra-radio { accent-color: #ff3f6c; width: 16px; height: 16px; cursor: pointer; margin: 0; }
+        
+        .myntra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 16px; }
+        
+        .m-card-wrapper { position: relative; } 
+        .m-card { position: relative; background: #fff; transition: all 0.2s ease; z-index: 1; border-radius: 4px; height: 100%; display: flex; flex-direction: column; border: 1px solid transparent; }
+        .m-card:hover { z-index: 10; box-shadow: 0 -2px 16px rgba(0,0,0,0.08); border-color: #eaeaec; }
+        .m-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: #f5f5f6; cursor: pointer; border-radius: 4px 4px 0 0; }
+        .m-img { width: 100%; height: 100%; object-fit: cover; }
+        .m-badge { position: absolute; bottom: 12px; left: 12px; background: rgba(255,255,255,0.9); color: #282c3f; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 2px; }
+        .m-wish { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #ccc; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .m-wish:hover { background: #fff; color: #ff3f6c; transform: scale(1.1); }
+        .m-wish.active { color: #ff3f6c; }
+        
+        .m-info { padding: 12px 10px; cursor: pointer; background: #fff; border-radius: 0 0 4px 4px; flex: 1; display: flex; flex-direction: column; }
+        .m-brand { font-size: 16px; font-weight: 700; color: #282c3f; margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+        .m-price { font-size: 14px; font-weight: 700; color: #282c3f; }
+        .m-orig { font-size: 12px; color: #7e818c; text-decoration: line-through; }
+        .m-disc { font-size: 12px; font-weight: 700; color: #ff905a; }
+        
+        .m-actions { display: none; position: absolute; top: 100%; left: -1px; right: -1px; background: #fff; padding: 0 10px 12px; box-shadow: 0 12px 16px rgba(0,0,0,0.08); border-radius: 0 0 4px 4px; z-index: 10; border: 1px solid #eaeaec; border-top: none; }
+        .m-card:hover .m-actions { display: flex; flex-direction: column; gap: 8px; }
+        
+        .m-btn { width: 100%; padding: 10px; background: #ff3f6c; color: #fff; border: 1px solid #ff3f6c; border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .m-btn:hover { background: #e0355f; }
+        
+        .m-qty-row { display: flex; align-items: center; gap: 4px; }
+        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+        .m-qty-num { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #282c3f; }
+        
+        .m-mobile-filter-btn { display: none; }
+        
+        @media (max-width: 1024px) { .myntra-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) {
+          .myntra-layout { flex-direction: column; padding: 16px 0; gap: 16px; }
+          .myntra-topbar { flex-direction: column; align-items: flex-start; gap: 12px; border-bottom: none; padding-bottom: 0; margin-bottom: 16px; }
+          .myntra-sidebar { display: none; width: 100%; position: static; border-right: none; }
+          .myntra-sidebar.show { display: block; border-bottom: 1px solid #eaeaec; padding-bottom: 20px; margin-bottom: 10px; padding: 0 16px; }
+          .m-mobile-filter-btn { display: flex; align-items: center; justify-content: center; width: calc(100% - 32px); padding: 12px; background: #fff; border: 1px solid #d4d5d9; font-weight: 700; font-size: 14px; color: #282c3f; margin: 0 16px; cursor: pointer; border-radius: 4px; }
+          .myntra-grid { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; padding: 0 16px; }
+          .m-card { position: relative; height: 100%; display: flex; flex-direction: column; border-color: #eaeaec; }
+          .m-actions { display: flex; position: static; padding: 0 10px 12px; margin-top: auto; box-shadow: none !important; border: none; }
+          .m-card:hover { transform: none; box-shadow: none; }
+          .m-card:hover .m-actions { position: static; box-shadow: none; }
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
       {/* HEADER */}
@@ -400,94 +354,133 @@ export default function OccasionPage({
       </div>
 
       {/* GRID */}
-      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "24px 16px 40px" }}>
-        {products.length > 0 && (
-          <div style={{ textAlign: "center", marginBottom: "20px" }}>
-            <span className="occ-count">{products.length} Styles Available</span>
+      <div className="myntra-layout">
+        <button className="m-mobile-filter-btn" onClick={() => setShowMobileFilters(!showMobileFilters)}>
+          {showMobileFilters ? "HIDE FILTERS" : "SHOW FILTERS"}
+        </button>
+
+        <aside className={`myntra-sidebar ${showMobileFilters ? 'show' : ''}`}>
+          <div className="myntra-filter-header">
+            FILTERS
+            <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
           </div>
-        )}
 
-        {products.length === 0 ? (
-          <div className="occ-empty">
-            <div style={{ fontSize: "48px", marginBottom: "12px" }}>{d.icon}</div>
-            <p style={{ fontWeight: "600", fontSize: "16px", marginBottom: "6px" }}>No styles yet</p>
-            <p style={{ fontSize: "13px", opacity: 0.7 }}>Check back soon for new arrivals</p>
+          <div className="myntra-filter-sec">
+            <div className="myntra-filter-title">Price</div>
+            {[
+              { label: "All Prices", value: "all" },
+              { label: "Under ₹5,000", value: "under-5000" },
+              { label: "₹5,000 - ₹10,000", value: "5000-10000" },
+              { label: "Over ₹10,000", value: "over-10000" }
+            ].map(price => (
+              <label key={price.value} className="myntra-radio-label">
+                <input type="radio" className="myntra-radio" checked={priceFilter === price.value} onChange={() => { setPriceFilter(price.value); }} />
+                {price.label}
+              </label>
+            ))}
           </div>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-            {products.map(product => {
-              const qty = addedProducts[product.id] || 0;
-              const wishlisted = isInWishlist(product.id);
-              const discount = product.originalPrice
-                ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-                : 0;
 
-              return (
-                <div key={product.id} className="occ-card" onClick={() => navigate(`/product/${product.id}`)}>
+          <div className="myntra-filter-sec">
+            <div className="myntra-filter-title">Color</div>
+            {[
+              { label: "All Colors", value: "all" },
+              { label: "Red / Maroon", value: "red" },
+              { label: "Pink / Blush", value: "pink" },
+              { label: "Green / Emerald", value: "green" },
+              { label: "Blue / Navy", value: "blue" },
+              { label: "Gold / Yellow", value: "gold" },
+              { label: "Ivory / White", value: "ivory" },
+              { label: "Black", value: "black" },
+              { label: "Purple / Lavender", value: "purple" }
+            ].map(col => (
+              <label key={col.value} className="myntra-radio-label">
+                <input type="radio" className="myntra-radio" checked={colorFilter === col.value} onChange={() => { setColorFilter(col.value); }} />
+                {col.label}
+              </label>
+            ))}
+          </div>
+        </aside>
 
-                  {/* IMAGE */}
-                  <div className="occ-img-wrap">
-                    <img src={product.image} alt={product.name} className="occ-img" loading="lazy" decoding="async" />
-                    {discount > 0 && (
-                      <span className="occ-discount">{discount}% OFF</span>
-                    )}
-                    <button
-                      className={`occ-wish${wishlisted ? " on" : ""}`}
-                      onClick={(e) => handleWishlistToggle(e, product)}
-                      title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-                    >
-                      {wishlisted ? "♥" : "♡"}
-                    </button>
-                  </div>
+        <main className="myntra-main">
+          <div className="myntra-topbar">
+            <div className="myntra-count">
+              <strong>{d.name}</strong> - {displayedProducts.length} items
+            </div>
+            <div className="myntra-sort">
+              Sort by:
+              <select className="myntra-sort-select" value={sortBy} onChange={e => { setSortBy(e.target.value); }}>
+                <option value="featured">Recommended</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
 
-                  {/* INFO */}
-                  <div className="occ-info" onClick={e => e.stopPropagation()}>
-                    <p className="occ-cat">{product.category}</p>
-                    <p className="occ-name-text">{product.name}</p>
-                    <div className="occ-price-row">
-                      <p className="occ-price">₹{product.price?.toLocaleString("en-IN")}</p>
-                      {product.originalPrice && (
-                        <p className="occ-original">₹{product.originalPrice?.toLocaleString("en-IN")}</p>
-                      )}
-                      {discount > 0 && (
-                        <p className="occ-off">({discount}%)</p>
-                      )}
+          {displayedProducts.length === 0 ? (
+            <div className="occ-empty">
+              <div style={{ fontSize: "48px", marginBottom: "12px" }}>{d.icon}</div>
+              <p style={{ fontWeight: "600", fontSize: "16px", marginBottom: "6px" }}>{products.length > 0 ? "No styles match your filters" : "No styles yet"}</p>
+              <p style={{ fontSize: "13px", opacity: 0.7 }}>{products.length > 0 ? "Try adjusting your price range" : "Check back soon for new arrivals"}</p>
+              {products.length > 0 && (
+                <button onClick={() => { setPriceFilter('all'); setSortBy('featured'); setColorFilter('all'); }} style={{ marginTop: "16px", padding: "8px 16px", background: d.btnBg, color: "#fff", border: "none", borderRadius: "20px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Clear Filters</button>
+              )}
+            </div>
+          ) : (
+            <div className="myntra-grid">
+              {displayedProducts.map(product => {
+                const qty = addedProducts[product.id] || 0;
+                const wishlisted = isInWishlist(product.id);
+                const discount = product.originalPrice
+                  ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+                  : 0;
+
+                return (
+                  <div key={product.id} className="m-card-wrapper">
+                    <div className="m-card">
+                      <div className="m-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
+                        <img src={product.image} alt={product.name} className="m-img" loading="lazy" />
+                        {discount > 0 && <div className="m-badge">{discount}% OFF</div>}
+                        <button className={`m-wish ${wishlisted ? 'active' : ''}`} onClick={(e) => handleWishlistToggle(e, product)}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill={wishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="m-info" onClick={() => navigate(`/product/${product.id}`)}>
+                        <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
+                        <p className="m-title">{product.name}</p>
+                        <div className="m-price-row">
+                          <span className="m-price">Rs. {product.price?.toLocaleString('en-IN')}</span>
+                          {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice?.toLocaleString('en-IN')}</span>}
+                          {discount > 0 && <span className="m-disc">({discount}% OFF)</span>}
+                        </div>
+                      </div>
+                      <div className="m-actions">
+                        {qty > 0 ? (
+                          <div className="m-qty-row">
+                            <button className="m-qty-btn" onClick={(e) => handleDecrease(e, product)}>−</button>
+                            <span className="m-qty-num">{qty}</span>
+                            <button className="m-qty-btn" onClick={(e) => handleIncrease(e, product)}>+</button>
+                          </div>
+                        ) : (
+                          <button className="m-btn" onClick={(e) => handleAddProduct(e, product)}>
+                            ADD TO BAG
+                          </button>
+                        )}
+                        <WhatsAppInquiryButton
+                          message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                          phoneNumber={sellersMap[product.sellerId] || "9967670497"}
+                          buttonStyle={{ width: "100%", padding: "10px", borderRadius: "4px", fontSize: "13px", background: "#fff", color: "#282c3f", border: "1px solid #d4d5d9", fontWeight: "700", boxShadow: "none" }}
+                        />
+                      </div>
                     </div>
                   </div>
-
-                  {/* CART CONTROLS */}
-                  <div className="occ-cart-wrap" onClick={e => e.stopPropagation()}>
-                    {qty > 0 ? (
-                      <div className="occ-qty-row">
-                        <button className="occ-qty-btn" onClick={(e) => handleDecrease(e, product)}>−</button>
-                        <span className="occ-qty-num">{qty}</span>
-                        <button className="occ-qty-btn" onClick={(e) => handleIncrease(e, product)}>+</button>
-                      </div>
-                    ) : (
-                      <button className="occ-add-btn" onClick={(e) => handleAddProduct(e, product)}>
-                        + Add to Cart
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="occ-cart-wrap" onClick={e => e.stopPropagation()}>
-                    <WhatsAppInquiryButton
-                      message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
-                      phoneNumber={sellersMap[product.sellerId] || "9967670497"}
-                      buttonStyle={{
-                        width: "100%",
-                        padding: "8px 12px",
-                        fontSize: "11px",
-                        marginTop: "6px",
-                      }}
-                    />
-                  </div>
-
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </main>
       </div>
 
       <Footer />

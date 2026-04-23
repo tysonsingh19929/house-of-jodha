@@ -67,13 +67,25 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
     {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <path d="M16 10a4 4 0 0 1-8 0" />
+          <path d="M12 2l2.4 7.4L22 12l-7.6 2.6L12 22l-2.4-7.4L2 12l7.6-2.6L12 2z" />
         </svg>
       ),
-      label: "Shop All",
+      label: "Women's Ethnic Wear",
       path: "/#products",
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+          <path d="M2 9h20" />
+          <path d="M12 21l-4-12" />
+          <path d="M12 21l4-12" />
+          <path d="M6 3l2 6" />
+          <path d="M18 3l-2 6" />
+        </svg>
+      ),
+      label: "Jewellery",
+      path: "/search?q=Jewellery",
     },
     {
       icon: (

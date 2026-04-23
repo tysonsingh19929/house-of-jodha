@@ -55,10 +55,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/chat', chatRoutes);
 
-// Health check
+// Health checks
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running' });
 });
+app.get('/api/chat/health', (req, res) => res.status(200).send('Always Awake!'));
 
 // Serve frontend static files in production
 const frontendBuildPath = path.join(__dirname, '../dist');
