@@ -5,6 +5,49 @@ import { products } from "../data/products.js";
 
 const PRODUCTS_PER_PAGE = 12;
 
+const ProductCard = ({ product, onAddToCart, onRemoveProduct, addedProducts, handleAddProduct, handleIncreaseQuantity, handleDecreaseQuantity, isMobile, navigate }) => {
+  const discount = product.originalPrice && product.originalPrice > product.price
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
+  const qty = addedProducts[product.id] || addedProducts[product._id] || 0;
+
+  return (
+    <div style={{ background: "#fff", borderRadius: "12px", overflow: "hidden", border: "1px solid #eaeaea", transition: "transform 0.2s", display: "flex", flexDirection: "column" }}>
+      <div style={{ position: "relative", aspectRatio: "3/4", background: "#f5f5f6", cursor: "pointer" }} onClick={() => navigate(`/product/${product._id || product.id}`)}>
+        <img src={product.image} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+        {discount > 0 && (
+          <div style={{ position: "absolute", top: "10px", left: "10px", background: "#D4AF37", color: "#fff", fontSize: "10px", padding: "4px 8px", borderRadius: "4px", fontWeight: "bold" }}>
+            {discount}% OFF
+          </div>
+        )}
+      </div>
+      <div style={{ padding: "16px", display: "flex", flexDirection: "column", flex: 1 }}>
+        <h3 style={{ fontSize: "11px", color: "#888", margin: "0 0 4px 0", textTransform: "uppercase", letterSpacing: "0.5px" }}>{product.sellerName || "The Sringar House"}</h3>
+        <p style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600", color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", cursor: "pointer" }} onClick={() => navigate(`/product/${product._id || product.id}`)}>{product.name}</p>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+          <span style={{ fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>₹{product.price?.toLocaleString()}</span>
+          {product.originalPrice > product.price && <span style={{ fontSize: "12px", color: "#999", textDecoration: "line-through" }}>₹{product.originalPrice?.toLocaleString()}</span>}
+        </div>
+        <div style={{ marginTop: "auto" }}>
+          {qty > 0 ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "8px" }}>
+              <button onClick={(e) => { e.stopPropagation(); handleDecreaseQuantity(product); }} style={{ flex: 1, padding: "8px", background: "#f5f5f5", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600" }}>-</button>
+              <span style={{ flex: 1, textAlign: "center", fontSize: "14px", fontWeight: "600" }}>{qty}</span>
+              <button onClick={(e) => { e.stopPropagation(); handleIncreaseQuantity(product); }} style={{ flex: 1, padding: "8px", background: "#f5f5f5", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600" }}>+</button>
+            </div>
+          ) : (
+            <button onClick={(e) => { e.stopPropagation(); handleAddProduct(product); }} style={{ width: "100%", padding: "10px", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer", fontSize: "13px", marginBottom: "8px" }}>Add to Bag</button>
+          )}
+          <WhatsAppInquiryButton
+            message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}.`}
+            buttonStyle={{ width: "100%", padding: "8px", borderRadius: "6px", fontSize: "12px", background: "#fff", color: "#1a1a1a", border: "1px solid #eaeaea", fontWeight: "700", boxShadow: "none" }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWishlist, removeFromWishlist, isInWishlist }) {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -23,6 +66,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const [dbProducts, setDbProducts] = useState([]);
   const [dbFetched, setDbFetched] = useState(false);
   const [sellersMap, setSellersMap] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -33,6 +78,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       try {
         setDbProducts(JSON.parse(cachedData));
         setDbFetched(true);
+        setLoading(false);
       } catch (e) { console.error("Cache read error", e); }
     }
 
@@ -43,6 +89,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         const arr = Array.isArray(data) ? data : [];
         setDbProducts(arr);
         setDbFetched(true);
+        setLoading(false);
         try {
           // Strip heavy Base64 images and unneeded arrays to prevent QuotaExceededError
           const lightweightCache = arr.map(p => ({
@@ -53,7 +100,11 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
           localStorage.setItem("diva_catalog_cache", JSON.stringify(lightweightCache));
         } catch (e) { console.warn("Cache write failed, ignoring to prevent crash", e); }
       })
-      .catch(err => { console.error(err); setDbFetched(true); });
+      .catch(err => {
+        console.error(err);
+        setDbFetched(true);
+        setLoading(false);
+      });
 
     fetch(`${API_BASE_URL}/sellers`)
       .then(res => res.json())
@@ -157,14 +208,14 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     if (colorFilter !== 'all') {
       const colorMatch = colorFilter.toLowerCase().split(' / ');
       res = res.filter(p => {
-        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name)).toLowerCase();
+        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name || "")).toLowerCase();
         return colorMatch.some(c => targetStr.includes(c.trim()));
       });
     }
 
     if (sortBy === 'price-low') res.sort((a, b) => a.price - b.price);
     else if (sortBy === 'price-high') res.sort((a, b) => b.price - a.price);
-    else if (sortBy === 'name-asc') res.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === 'name-asc') res.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
     return res;
   }, [allProducts, selectedCategory, priceFilter, colorFilter, sortBy]);
@@ -503,8 +554,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                           <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
                           <p className="m-title">{product.name}</p>
                           <div className="m-price-row">
-                            <span className="m-price">Rs. {product.price.toLocaleString('en-IN')}</span>
-                            {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice.toLocaleString('en-IN')}</span>}
+                            <span className="m-price">Rs. {product.price?.toLocaleString('en-IN')}</span>
+                            {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice?.toLocaleString('en-IN')}</span>}
                             {discount > 0 && <span className="m-disc">({discount}% OFF)</span>}
                           </div>
                         </div>

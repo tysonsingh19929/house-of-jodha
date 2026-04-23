@@ -241,14 +241,14 @@ export default function SearchResults({
     if (colorFilter !== 'all') {
       const colorMatch = colorFilter.toLowerCase().split(' / ');
       res = res.filter(p => {
-        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name)).toLowerCase();
+        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name || "")).toLowerCase();
         return colorMatch.some(c => targetStr.includes(c.trim()));
       });
     }
 
     if (sortBy === 'price-low') res.sort((a, b) => a.price - b.price);
     else if (sortBy === 'price-high') res.sort((a, b) => b.price - a.price);
-    else if (sortBy === 'name-asc') res.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === 'name-asc') res.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
     return res;
   }, [allProducts, priceFilter, colorFilter, sortBy]);
@@ -516,8 +516,8 @@ export default function SearchResults({
                               <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
                               <p className="m-title">{product.name}</p>
                               <div className="m-price-row">
-                                <span className="m-price">Rs. {product.price.toLocaleString('en-IN')}</span>
-                                {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice.toLocaleString('en-IN')}</span>}
+                                <span className="m-price">Rs. {product.price?.toLocaleString('en-IN')}</span>
+                                {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice?.toLocaleString('en-IN')}</span>}
                                 {discount > 0 && <span className="m-disc">({discount}% OFF)</span>}
                               </div>
                             </div>

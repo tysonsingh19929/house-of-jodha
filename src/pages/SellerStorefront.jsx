@@ -83,7 +83,7 @@ export default function SellerStorefront({ subdomain, cartCount, onCartClick }) 
                 <div style={{ padding: isMobile ? "12px 10px" : "20px", display: "flex", flexDirection: "column", flex: 1 }}>
                   <h3 style={{ margin: "0 0 10px 0", fontSize: isMobile ? "13px" : "16px", color: "#1a1a1a", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal", lineHeight: 1.4, flex: 1 }}>{product.name}</h3>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "6px", marginTop: "auto" }}>
-                    <span style={{ fontSize: isMobile ? "15px" : "16px", fontWeight: "700", color: "#D4AF37" }}>₹{product.price.toLocaleString('en-IN')}</span>
+                    <span style={{ fontSize: isMobile ? "15px" : "16px", fontWeight: "700", color: "#D4AF37" }}>₹{product.price?.toLocaleString('en-IN')}</span>
                     <span style={{ fontSize: isMobile ? "10px" : "12px", color: "#888", background: "#f5f5f5", padding: "4px 10px", borderRadius: "20px" }}>{product.category}</span>
                   </div>
                 </div>

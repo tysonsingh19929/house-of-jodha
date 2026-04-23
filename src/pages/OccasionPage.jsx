@@ -178,14 +178,14 @@ export default function OccasionPage({
     if (colorFilter !== 'all') {
       const colorMatch = colorFilter.toLowerCase().split(' / ');
       res = res.filter(p => {
-        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name)).toLowerCase();
+        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name || "")).toLowerCase();
         return colorMatch.some(c => targetStr.includes(c.trim()));
       });
     }
 
     if (sortBy === 'price-low') res.sort((a, b) => a.price - b.price);
     else if (sortBy === 'price-high') res.sort((a, b) => b.price - a.price);
-    else if (sortBy === 'name-asc') res.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortBy === 'name-asc') res.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
     return res;
   }, [products, priceFilter, colorFilter, sortBy]);
