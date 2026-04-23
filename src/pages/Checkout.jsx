@@ -16,15 +16,6 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
-  useEffect(() => {
-    window.history.pushState(null, null, window.location.pathname);
-    const handleBackButton = () => {
-      navigate("/");
-    };
-    window.addEventListener("popstate", handleBackButton);
-    return () => window.removeEventListener("popstate", handleBackButton);
-  }, [navigate]);
-
   // Group items by id
   const groupedItems = cartItems.reduce((acc, item) => {
     const existing = acc.find(i => i.id === item.id);

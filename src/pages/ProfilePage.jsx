@@ -17,15 +17,6 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    window.history.pushState(null, null, window.location.pathname);
-    const handleBackButton = () => {
-      navigate("/");
-    };
-    window.addEventListener("popstate", handleBackButton);
-    return () => window.removeEventListener("popstate", handleBackButton);
-  }, [navigate]);
-
   const handleEdit = () => {
     setIsEditing(true);
     let pNum = user?.phone || "";

@@ -459,6 +459,15 @@ function App() {
             />
           }
         />
+        <Route
+          path="*"
+          element={
+            <div style={{ textAlign: "center", padding: "100px", fontFamily: "sans-serif" }}>
+              <h2>Page Not Found</h2>
+              <a href="/" style={{ color: "#D4AF37", textDecoration: "underline", marginTop: "20px", display: "inline-block" }}>Return to Home</a>
+            </div>
+          }
+        />
       </Routes>
       <FloatingWidgets />
     </BrowserRouter>

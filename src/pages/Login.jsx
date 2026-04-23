@@ -53,16 +53,6 @@ export default function Login({
     setTimeout(() => setToast({ show: false, message: "" }), 4000);
   };
 
-  useEffect(() => {
-    // Intercept mobile hardware back button to navigate to home instead of closing the app
-    window.history.pushState(null, null, window.location.pathname);
-    const handleBackButton = () => {
-      navigate("/");
-    };
-    window.addEventListener("popstate", handleBackButton);
-    return () => window.removeEventListener("popstate", handleBackButton);
-  }, [navigate]);
-
   const handlePendingAuth = (provider) => {
     showToast(`${provider} login will be enabled once API keys are provided.`);
     console.log(`[AUTH REQUIRED] To enable ${provider}, please register for the API (e.g. OTPless or Firebase) and deploy the Client ID in your .env variables.`);

@@ -18,30 +18,6 @@ export default function Cart({ items, onRemove, onClose }) {
 
   const total = groupedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  useEffect(() => {
-    const stateKey = Math.random();
-    window.history.pushState({ cartOpen: true, key: stateKey }, "");
-
-    const handlePopState = (e) => {
-      if (e.state?.cartOpen) {
-        e.preventDefault?.();
-        onClose();
-        window.history.pushState({ cartOpen: true, key: stateKey }, "");
-      }
-    };
-
-    let isMounted = true;
-    const timer = setTimeout(() => {
-      if (isMounted) window.addEventListener("popstate", handlePopState);
-    }, 0);
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timer);
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [onClose]);
-
   // ✅ Ignore clicks on the navbar cart button so toggle works correctly
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -93,7 +69,7 @@ export default function Cart({ items, onRemove, onClose }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <button
-              onClick={() => navigate(-1)}
+              onClick={onClose}
               style={{
                 background: "none", border: "none",
                 fontSize: window.innerWidth <= 768 ? "18px" : "16px",
