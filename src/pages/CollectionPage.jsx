@@ -172,6 +172,23 @@ export default function OccasionPage({
       });
   }, [occasionKey]);
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (e.target.closest('.m-mobile-action-btn')) return;
+      if (e.target.closest('.myntra-sidebar-inner')) return;
+      setShowMobileSort(false);
+      setShowMobileFilters(false);
+    };
+    if (showMobileSort || showMobileFilters) {
+      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('touchstart', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [showMobileSort, showMobileFilters]);
+
   const handleAddProduct = (e, product) => {
     e.preventDefault();
     e.stopPropagation();

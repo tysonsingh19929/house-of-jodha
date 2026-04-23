@@ -7,6 +7,23 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wishlistRef.current && !wishlistRef.current.contains(e.target)) {
+        onClose();
+      }
+    };
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }, 100);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [onClose]);
+
   return (
     <div
       ref={wishlistRef}

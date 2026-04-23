@@ -196,6 +196,23 @@ export default function SearchResults({
       .catch(console.error);
   }, [apiUrl, query]);
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (e.target.closest('.m-mobile-action-btn')) return;
+      if (e.target.closest('.myntra-sidebar-inner')) return;
+      setShowMobileSort(false);
+      setShowMobileFilters(false);
+    };
+    if (showMobileSort || showMobileFilters) {
+      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('touchstart', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [showMobileSort, showMobileFilters]);
+
   const handleSearch = (searchTerm) => {
     setSearchParams({ q: searchTerm });
     setCurrentPage(1);
@@ -241,14 +258,14 @@ export default function SearchResults({
     if (colorFilter !== 'all') {
       const colorMatch = colorFilter.toLowerCase().split(' / ');
       res = res.filter(p => {
-        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name || "")).toLowerCase();
+        const targetStr = (p.colors && Array.isArray(p.colors) ? p.colors.join(' ') : (p.colors || p.name)).toLowerCase();
         return colorMatch.some(c => targetStr.includes(c.trim()));
       });
     }
 
     if (sortBy === 'price-low') res.sort((a, b) => a.price - b.price);
     else if (sortBy === 'price-high') res.sort((a, b) => b.price - a.price);
-    else if (sortBy === 'name-asc') res.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    else if (sortBy === 'name-asc') res.sort((a, b) => a.name.localeCompare(b.name));
 
     return res;
   }, [allProducts, priceFilter, colorFilter, sortBy]);
@@ -339,7 +356,7 @@ export default function SearchResults({
           .m-wish svg { width: 14px; height: 14px; }
           .m-info { padding: 10px 8px 0; }
           
-          .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 10001; height: 50px; border-top: 1px solid #eaeaec; }
+          .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; height: 50px; border-top: 1px solid #eaeaec; }
           .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
           .m-mobile-action-btn:last-child { border-right: none; }
         }
@@ -382,11 +399,11 @@ export default function SearchResults({
         <>
           {/* MOBILE ACTION BAR */}
           <div className="m-mobile-action-bar">
-            <button className="m-mobile-action-btn" onClick={() => { setShowMobileSort(!showMobileSort); setShowMobileFilters(false); }}>
+            <button className="m-mobile-action-btn" onClick={() => setShowMobileSort(true)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
               SORT
             </button>
-            <button className="m-mobile-action-btn" onClick={() => { setShowMobileFilters(!showMobileFilters); setShowMobileSort(false); }}>
+            <button className="m-mobile-action-btn" onClick={() => setShowMobileFilters(true)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
               FILTER
             </button>
@@ -516,8 +533,8 @@ export default function SearchResults({
                               <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
                               <p className="m-title">{product.name}</p>
                               <div className="m-price-row">
-                                <span className="m-price">Rs. {product.price?.toLocaleString('en-IN')}</span>
-                                {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice?.toLocaleString('en-IN')}</span>}
+                                <span className="m-price">Rs. {product.price.toLocaleString('en-IN')}</span>
+                                {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice.toLocaleString('en-IN')}</span>}
                                 {discount > 0 && <span className="m-disc">({discount}% OFF)</span>}
                               </div>
                             </div>
