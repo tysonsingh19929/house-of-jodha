@@ -50,7 +50,7 @@ export default function SellerStorefront({ subdomain, cartCount, onCartClick }) 
   return (
     <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
       <Navbar cartCount={cartCount} onCartClick={onCartClick} />
-      
+
       <div style={{ flex: 1, padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
         {/* Storefront Banner */}
         <div style={{ background: "#0a0f0d", backgroundImage: "radial-gradient(circle at 50% 0%, #1e3a29 0%, #0a0f0d 60%)", borderRadius: "24px", padding: "60px 40px", textAlign: "center", color: "#fff", marginBottom: "40px", boxShadow: "0 20px 40px rgba(0,0,0,0.1)", position: "relative", overflow: "hidden" }}>
@@ -61,29 +61,29 @@ export default function SellerStorefront({ subdomain, cartCount, onCartClick }) 
 
         {/* Products Grid */}
         <h2 style={{ fontSize: "24px", color: "#1a1a1a", marginBottom: "24px" }}>Exclusive Collection</h2>
-        
+
         {products.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px", background: "#fff", borderRadius: "16px", border: "1px solid #eaeaea" }}>
             <p style={{ color: "#666" }}>This boutique is currently preparing their new collection.</p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "30px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(auto-fill, minmax(280px, 1fr))", gap: isMobile ? "12px 8px" : "30px" }}>
             {products.map(product => (
-              <div 
-                key={product._id} 
+              <div
+                key={product._id}
                 onClick={() => navigate(`/product/${product._id}`)}
-                style={{ background: "#fff", borderRadius: "16px", overflow: "hidden", cursor: "pointer", boxShadow: "0 4px 15px rgba(0,0,0,0.03)", transition: "transform 0.3s, box-shadow 0.3s", border: "1px solid #eaeaea" }}
+                style={{ background: "#fff", borderRadius: isMobile ? "8px" : "16px", overflow: "hidden", cursor: "pointer", boxShadow: "0 4px 15px rgba(0,0,0,0.03)", transition: "transform 0.3s, box-shadow 0.3s", border: "1px solid #eaeaea", display: "flex", flexDirection: "column" }}
                 onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.08)"; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.03)"; }}
               >
-                <div style={{ position: "relative", paddingTop: "133%" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "3/4" }}>
                   <img src={product.image} alt={product.name} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
-                <div style={{ padding: "20px" }}>
-                  <h3 style={{ margin: "0 0 8px 0", fontSize: "16px", color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</h3>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "16px", fontWeight: "700", color: "#D4AF37" }}>₹{product.price.toLocaleString('en-IN')}</span>
-                    <span style={{ fontSize: "12px", color: "#888", background: "#f5f5f5", padding: "4px 10px", borderRadius: "20px" }}>{product.category}</span>
+                <div style={{ padding: isMobile ? "12px 10px" : "20px", display: "flex", flexDirection: "column", flex: 1 }}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: isMobile ? "13px" : "16px", color: "#1a1a1a", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "normal", lineHeight: 1.4, flex: 1 }}>{product.name}</h3>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "6px", marginTop: "auto" }}>
+                    <span style={{ fontSize: isMobile ? "15px" : "16px", fontWeight: "700", color: "#D4AF37" }}>₹{product.price.toLocaleString('en-IN')}</span>
+                    <span style={{ fontSize: isMobile ? "10px" : "12px", color: "#888", background: "#f5f5f5", padding: "4px 10px", borderRadius: "20px" }}>{product.category}</span>
                   </div>
                 </div>
               </div>
