@@ -934,8 +934,8 @@ export default function ProductDetail({
           {/* Price */}
           <div className="pd-price-section">
             <div className="pd-price-row">
-              <span className="pd-price-current">₹{product.price.toLocaleString()}</span>
-              <span className="pd-price-original">₹{product.originalPrice.toLocaleString()}</span>
+              <span className="pd-price-current">₹{product.price?.toLocaleString() || "N/A"}</span>
+              <span className="pd-price-original">₹{product.originalPrice?.toLocaleString()}</span>
               {discount > 0 && <span className="pd-price-save">Save {discount}%</span>}
             </div>
             <p className="pd-price-note">Inclusive of all taxes • Free shipping above ₹5000</p>
