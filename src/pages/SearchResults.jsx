@@ -259,15 +259,16 @@ export default function SearchResults({
   return (
     <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap');
-        .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 0 24px; align-items: flex-start; font-family: 'Assistant', sans-serif; color: #282c3f; box-sizing: border-box; width: 100%; }
+        .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 0 24px; align-items: flex-start; font-family: 'Assistant', sans-serif; color: #282c3f; }
         .myntra-sidebar { width: 250px; flex-shrink: 0; position: sticky; top: 80px; border-right: 1px solid #eaeaec; padding-right: 20px; margin-right: 24px; height: calc(100vh - 80px); overflow-y: auto; }
         .myntra-sidebar::-webkit-scrollbar { display: none; }
-        .myntra-main { flex: 1; min-width: 0; padding-top: 10px; width: 100%; box-sizing: border-box; }
+        .myntra-main { flex: 1; min-width: 0; padding-top: 10px; }
         .myntra-topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; margin-bottom: 24px; }
         .myntra-count { font-size: 16px; font-weight: 700; }
         .myntra-count span { font-weight: 400; color: #535766; }
-        .myntra-sort { display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d4d5d9; border-radius: 6px; font-size: 14px; cursor: pointer; background: #fff; }
+        .myntra-sort { display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; cursor: pointer; background: #fff; }
         .myntra-sort-select { border: none; outline: none; font-weight: 700; color: #282c3f; background: transparent; cursor: pointer; margin-left: 6px; font-family: 'Assistant', sans-serif; }
         .myntra-filter-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; text-transform: uppercase; }
         .myntra-filter-clear { font-size: 12px; color: #ff3f6c; font-weight: 700; cursor: pointer; border: none; background: none; text-transform: uppercase; }
@@ -275,37 +276,34 @@ export default function SearchResults({
         .myntra-filter-title { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
         .myntra-radio-label { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #282c3f; margin-bottom: 12px; cursor: pointer; }
         .myntra-radio-label:hover { background: #f4f4f5; }
-        .myntra-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #c3c4c6; border-radius: 4px; cursor: pointer; position: relative; margin: 0; }
+        .myntra-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #c3c4c6; border-radius: 2px; cursor: pointer; position: relative; margin: 0; }
         .myntra-radio:checked { background-color: #ff3f6c; border-color: #ff3f6c; }
         .myntra-radio:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-        
-        .myntra-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 20px; width: 100%; box-sizing: border-box; }
-        .m-card-wrapper { position: relative; min-width: 0; width: 100%; display: flex; }
-        .m-card { position: relative; background: #fff; transition: box-shadow 0.2s ease, transform 0.2s ease; cursor: pointer; display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%; overflow: hidden; border-radius: 12px; border: 1px solid #f0f0f0; }
-        .m-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-4px); z-index: 10; }
+        .myntra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 20px; }
+        .m-card-wrapper { position: relative; }
+        .m-card { position: relative; background: #fff; transition: box-shadow 0.2s ease, transform 0.2s ease; cursor: pointer; display: flex; flex-direction: column; height: 100%; }
+        .m-card:hover { box-shadow: 0 2px 16px 4px rgba(40,44,63,0.07); transform: translateY(-2px); z-index: 10; }
         .m-img-wrap { position: relative; width: 100%; aspect-ratio: 3/4; background: #f5f5f6; overflow: hidden; }
         .m-img { width: 100%; height: 100%; object-fit: cover; }
-        .m-rating { position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); font-size: 11px; font-weight: 700; padding: 4px 6px; border-radius: 4px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .m-wish { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background: #fff; border: 1px solid #eaeaea; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #666; opacity: 0; transition: all 0.2s ease; z-index: 3; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .m-rating { position: absolute; bottom: 12px; left: 12px; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); font-size: 12px; font-weight: 700; padding: 4px 6px; border-radius: 2px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; }
+        .m-wish { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: #fff; border: 1px solid #d4d5d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #282c3f; opacity: 0; transition: all 0.2s ease; z-index: 3; }
         .m-card:hover .m-wish { opacity: 1; }
         .m-wish:hover { background: #ff3f6c; color: #fff; border-color: #ff3f6c; }
         .m-wish.active { color: #ff3f6c; opacity: 1; border-color: #ff3f6c; background: #fff; }
         .m-wish.active:hover { background: #ff3f6c; color: #fff; }
-        
-        .m-info { padding: 12px; background: #fff; min-width: 0; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; }
-        .m-brand { font-size: 14px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1a1a1a; }
-        .m-title { font-size: 13px; color: #666; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; flex: 1; white-space: normal; }
-        .m-price-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-top: auto; }
-        .m-price { font-size: 15px; font-weight: 700; color: #1a1a1a; }
-        .m-orig { font-size: 12px; color: #999; text-decoration: line-through; }
-        .m-disc { font-size: 11px; font-weight: 700; color: #ff3f6c; padding: 2px 6px; background: #fff0f6; border-radius: 4px; }
-        
-        .m-actions { display: none; background: #fff; padding: 0 12px 12px; min-width: 0; box-sizing: border-box; margin-top: auto; }
+        .m-info { padding: 12px 10px 0; background: #fff; }
+        .m-brand { font-size: 16px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+        .m-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+        .m-price { font-size: 14px; font-weight: 700; }
+        .m-orig { font-size: 12px; color: #7e818c; text-decoration: line-through; }
+        .m-disc { font-size: 12px; font-weight: 700; color: #ff905a; }
+        .m-actions { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 10px; box-shadow: 0 10px 16px 4px rgba(40,44,63,0.07); border-top: 1px solid #eaeaec; z-index: 10; }
         .m-card:hover .m-actions { display: block; }
-        .m-btn { width: 100%; padding: 10px; background: #fff; color: #ff3f6c; border: 1px solid #eaeaea; border-radius: 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .m-btn:hover { border-color: #ff3f6c; background: #fff0f6; }
-        .m-qty-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 6px; color: #1a1a1a; }
+        .m-btn { width: 100%; padding: 10px; background: #fff; color: #ff3f6c; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .m-btn:hover { border-color: #ff3f6c; }
+        .m-qty-row { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 2px; }
         .m-qty-num { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #282c3f; }
         
         .m-mobile-action-bar { display: none; }
@@ -315,40 +313,39 @@ export default function SearchResults({
         @media (max-width: 768px) {
           .myntra-layout { padding: 16px 0; flex-direction: column; overflow-x: hidden; }
           .myntra-sidebar { display: none; }
-          .myntra-sidebar.mobile-open { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow-y: auto; }
+          .myntra-sidebar.mobile-open { display: flex; flex-direction: column; justify-content: flex-end; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow: hidden; animation: fadeIn 0.2s ease; }
+          .myntra-sidebar-inner { background: #fff; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding-bottom: 20px; animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
           .m-mobile-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eaeaec; position: sticky; top: 0; background: #fff; z-index: 10; }
           .m-mobile-modal-header h3 { margin: 0; font-size: 16px; text-transform: uppercase; color: #282c3f; font-weight: 700; }
           .myntra-filter-header { display: none; }
           .myntra-filter-sec { padding: 16px; }
           
           .myntra-main { padding-left: 0; padding-top: 0; width: 100%; }
-          .myntra-topbar { padding: 0 16px 12px; flex-direction: column; align-items: flex-start; gap: 10px; display: none; }
-          .myntra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; padding: 0 12px 70px; width: 100%; box-sizing: border-box; }
+          .myntra-topbar { padding: 0 16px 16px; flex-direction: column; align-items: flex-start; gap: 12px; display: none; }
+          .myntra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; padding: 0 16px 60px; width: 100%; box-sizing: border-box; }
+          .m-card:hover { transform: none; box-shadow: none; }
+          .m-actions { display: block; position: static; box-shadow: none; padding: 0; margin-top: 10px; border-top: none; }
+          .m-wish { opacity: 1; border: none; background: rgba(255,255,255,0.8); }
           
-          .m-card { border-radius: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: none; }
-          .m-card:hover { transform: none; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-          .m-actions { display: block; padding: 0 10px 10px; margin-top: 0; border: none; box-shadow: none; position: static; }
-          .m-wish { opacity: 1; border: none; background: rgba(255,255,255,0.85); width: 28px; height: 28px; top: 8px; right: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-          .m-wish svg { width: 14px; height: 14px; }
-          .m-rating { font-size: 10px; padding: 3px 5px; bottom: 8px; left: 8px; }
-          
-          .m-info { padding: 10px 10px 8px; flex: 1; display: flex; flex-direction: column; }
-          .m-brand { font-size: 12px; margin-bottom: 2px; }
-          .m-title { font-size: 11px; margin-bottom: 8px; line-height: 1.3; }
-          .m-price-row { gap: 4px; margin-top: auto; }
-          .m-price { font-size: 13px; }
+          .m-brand { font-size: 13px; margin-bottom: 2px; }
+          .m-title { font-size: 12px; margin-bottom: 6px; }
+          .m-price-row { gap: 4px; }
+          .m-price { font-size: 14px; }
           .m-orig { font-size: 11px; }
-          .m-disc { font-size: 10px; padding: 1px 4px; background: #fff0f6; border-radius: 4px; display: inline-block; }
-          
-          .m-btn { font-size: 11px; padding: 8px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #eaeaea; }
-          .m-qty-row { margin-bottom: 6px; gap: 4px; }
-          .m-qty-btn { padding: 6px; font-size: 14px; border-radius: 6px; }
-          .m-qty-num { font-size: 13px; }
+          .m-disc { font-size: 10px; padding: 1px 4px; background: #fff0f6; border-radius: 4px; }
+          .m-btn { font-size: 12px; padding: 8px; }
+          .m-qty-btn { padding: 6px; font-size: 14px; }
+          .m-rating { font-size: 10px; padding: 3px 5px; bottom: 8px; left: 8px; }
+          .m-wish { width: 28px; height: 28px; top: 8px; right: 8px; }
+          .m-wish svg { width: 14px; height: 14px; }
+          .m-info { padding: 10px 8px 0; }
           
           .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; height: 50px; border-top: 1px solid #eaeaec; }
           .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
           .m-mobile-action-btn:last-child { border-right: none; }
         }
+        @keyframes slideUpModal { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       `}</style>
       <Navbar
         cartCount={cartCount}
@@ -399,71 +396,75 @@ export default function SearchResults({
 
           {/* MOBILE SORT MODAL */}
           {showMobileSort && (
-            <div className="myntra-sidebar mobile-open">
-              <div className="m-mobile-modal-header">
-                <h3>Sort By</h3>
-                <button className="myntra-filter-clear" onClick={() => setShowMobileSort(false)}>✕</button>
-              </div>
-              <div className="myntra-filter-sec" style={{ padding: "0" }}>
-                {[
-                  { value: "featured", label: "Recommended" },
-                  { value: "price-low", label: "Price: Low to High" },
-                  { value: "price-high", label: "Price: High to Low" },
-                  { value: "name-asc", label: "Name: A to Z" }
-                ].map(option => (
-                  <label key={option.value} className="myntra-radio-label" style={{ padding: "16px", borderBottom: "1px solid #eaeaec", margin: 0, display: "flex", justifyContent: "space-between" }}>
-                    {option.label}
-                    <input type="radio" className="myntra-radio" checked={sortBy === option.value} onChange={() => { setSortBy(option.value); setCurrentPage(1); setShowMobileSort(false); }} />
-                  </label>
-                ))}
+            <div className="myntra-sidebar mobile-open" onClick={() => setShowMobileSort(false)}>
+              <div className="myntra-sidebar-inner" onClick={e => e.stopPropagation()}>
+                <div className="m-mobile-modal-header">
+                  <h3>Sort By</h3>
+                  <button className="myntra-filter-clear" onClick={() => setShowMobileSort(false)}>✕</button>
+                </div>
+                <div className="myntra-filter-sec" style={{ padding: "0" }}>
+                  {[
+                    { value: "featured", label: "Recommended" },
+                    { value: "price-low", label: "Price: Low to High" },
+                    { value: "price-high", label: "Price: High to Low" },
+                    { value: "name-asc", label: "Name: A to Z" }
+                  ].map(option => (
+                    <label key={option.value} className="myntra-radio-label" style={{ padding: "16px", borderBottom: "1px solid #eaeaec", margin: 0, display: "flex", justifyContent: "space-between" }}>
+                      {option.label}
+                      <input type="radio" className="myntra-radio" checked={sortBy === option.value} onChange={() => { setSortBy(option.value); setCurrentPage(1); setShowMobileSort(false); }} />
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
           <div className="myntra-layout">
-            <aside className={`myntra-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
-              <div className="m-mobile-modal-header">
-                <h3>Filters</h3>
-                <button className="myntra-filter-clear" onClick={() => setShowMobileFilters(false)}>✕</button>
-              </div>
-              <div className="myntra-filter-header">
-                FILTERS
-                <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
-              </div>
+            <aside className={`myntra-sidebar ${showMobileFilters ? 'mobile-open' : ''}`} onClick={() => showMobileFilters && setShowMobileFilters(false)}>
+              <div className={showMobileFilters ? "myntra-sidebar-inner" : ""} onClick={e => showMobileFilters && e.stopPropagation()}>
+                <div className="m-mobile-modal-header">
+                  <h3>Filters</h3>
+                  <button className="myntra-filter-clear" onClick={() => setShowMobileFilters(false)}>✕</button>
+                </div>
+                <div className="myntra-filter-header">
+                  FILTERS
+                  <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
+                </div>
 
-              <div className="myntra-filter-sec">
-                <div className="myntra-filter-title">Price</div>
-                {[
-                  { label: "All Prices", value: "all" },
-                  { label: "Under ₹5,000", value: "under-5000" },
-                  { label: "₹5,000 - ₹10,000", value: "5000-10000" },
-                  { label: "Over ₹10,000", value: "over-10000" }
-                ].map(price => (
-                  <label key={price.value} className="myntra-radio-label">
-                    <input type="radio" className="myntra-radio" checked={priceFilter === price.value} onChange={() => { setPriceFilter(price.value); setCurrentPage(1); }} />
-                    {price.label}
-                  </label>
-                ))}
-              </div>
+                <div className="myntra-filter-sec">
+                  <div className="myntra-filter-title">Price</div>
+                  {[
+                    { label: "All Prices", value: "all" },
+                    { label: "Under ₹5,000", value: "under-5000" },
+                    { label: "₹5,000 - ₹10,000", value: "5000-10000" },
+                    { label: "Over ₹10,000", value: "over-10000" }
+                  ].map(price => (
+                    <label key={price.value} className="myntra-radio-label">
+                      <input type="radio" className="myntra-radio" checked={priceFilter === price.value} onChange={() => { setPriceFilter(price.value); setCurrentPage(1); }} />
+                      {price.label}
+                    </label>
+                  ))}
+                </div>
 
-              <div className="myntra-filter-sec">
-                <div className="myntra-filter-title">Color</div>
-                {[
-                  { label: "All Colors", value: "all" },
-                  { label: "Red / Maroon", value: "red" },
-                  { label: "Pink / Blush", value: "pink" },
-                  { label: "Green / Emerald", value: "green" },
-                  { label: "Blue / Navy", value: "blue" },
-                  { label: "Gold / Yellow", value: "gold" },
-                  { label: "Ivory / White", value: "ivory" },
-                  { label: "Black", value: "black" },
-                  { label: "Purple / Lavender", value: "purple" }
-                ].map(col => (
-                  <label key={col.value} className="myntra-radio-label">
-                    <input type="radio" className="myntra-radio" checked={colorFilter === col.value} onChange={() => { setColorFilter(col.value); setCurrentPage(1); }} />
-                    {col.label}
-                  </label>
-                ))}
+                <div className="myntra-filter-sec">
+                  <div className="myntra-filter-title">Color</div>
+                  {[
+                    { label: "All Colors", value: "all" },
+                    { label: "Red / Maroon", value: "red" },
+                    { label: "Pink / Blush", value: "pink" },
+                    { label: "Green / Emerald", value: "green" },
+                    { label: "Blue / Navy", value: "blue" },
+                    { label: "Gold / Yellow", value: "gold" },
+                    { label: "Ivory / White", value: "ivory" },
+                    { label: "Black", value: "black" },
+                    { label: "Purple / Lavender", value: "purple" }
+                  ].map(col => (
+                    <label key={col.value} className="myntra-radio-label">
+                      <input type="radio" className="myntra-radio" checked={colorFilter === col.value} onChange={() => { setColorFilter(col.value); setCurrentPage(1); }} />
+                      {col.label}
+                    </label>
+                  ))}
+                </div>
               </div>
             </aside>
 
