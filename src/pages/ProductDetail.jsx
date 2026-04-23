@@ -75,6 +75,16 @@ const IconSparkle = () => (
     <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z" /><path d="M5 3l.75 2.25L8 6l-2.25.75L5 9l-.75-2.25L2 6l2.25-.75z" /><path d="M19 15l.75 2.25L22 18l-2.25.75L19 21l-.75-2.25L16 18l2.25-.75z" />
   </svg>
 );
+const IconDiamond = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+    <path d="M2 9h20" />
+    <path d="M12 21l-4-12" />
+    <path d="M12 21l4-12" />
+    <path d="M6 3l2 6" />
+    <path d="M18 3l-2 6" />
+  </svg>
+);
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -1119,6 +1129,19 @@ export default function ProductDetail({
                   {product.freeShipping && <p className="pd-info-row" style={{ color: "#16a34a", fontWeight: "600" }}><IconCheck /> Free Shipping Available</p>}
                   {product.maxBustSize && <p className="pd-info-row"><strong>Max Standard Size:</strong> {product.maxBustSize} bust</p>}
                   {product.customFitAvailable && <p className="pd-info-row" style={{ color: "#B8860B", fontWeight: "600" }}>✦ Custom Fit Available</p>}
+                </div>
+              )}
+
+              {(product.metalType || product.gemstones || product.plating || product.weight) && (
+                <div className="pd-info-card">
+                  <div className="pd-info-card-header">
+                    <IconDiamond />
+                    <span className="pd-info-card-title">Jewellery Specifications</span>
+                  </div>
+                  {product.metalType && <p className="pd-info-row"><strong>Metal Type:</strong> {product.metalType}</p>}
+                  {product.plating && <p className="pd-info-row"><strong>Plating:</strong> {product.plating}</p>}
+                  {product.gemstones && <p className="pd-info-row"><strong>Gemstones:</strong> {product.gemstones}</p>}
+                  {product.weight && <p className="pd-info-row"><strong>Weight:</strong> {product.weight}</p>}
                 </div>
               )}
             </div>

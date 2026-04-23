@@ -8,7 +8,8 @@ const defaultOccasions = [
   { key: 'wedding', title: 'WEDDING', image: 'https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=800&format=webp' },
   { key: 'engagement', title: 'ENGAGEMENT', image: 'https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=800&format=webp' },
   { key: 'reception', title: 'RECEPTION', image: 'https://images.pexels.com/photos/32081722/pexels-photo-32081722.jpeg?auto=compress&w=800&format=webp' },
-  { key: 'cocktail', title: 'COCKTAIL', image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' }
+  { key: 'cocktail', title: 'COCKTAIL', image: 'https://images.pexels.com/photos/30184613/pexels-photo-30184613.jpeg?auto=compress&w=800&format=webp' },
+  { key: 'jewellery', title: 'FINE JEWELLERY', image: 'https://images.pexels.com/photos/1458867/pexels-photo-1458867.jpeg?auto=compress&w=800&format=webp' }
 ];
 
 const ShopByOccasion = () => {

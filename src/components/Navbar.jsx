@@ -87,8 +87,8 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
           <path d="M18 3l-2 6" />
         </svg>
       ),
-      label: "Jewellery",
-      path: "/search?q=Jewellery",
+      label: "Fine Jewellery",
+      path: "/occasion/jewellery",
     },
     {
       icon: (

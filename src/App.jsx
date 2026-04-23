@@ -124,12 +124,21 @@ function App() {
     }
 
     initializeProductsInStorage();
+
     const user = localStorage.getItem("currentUser");
-    if (user) setCurrentUser(JSON.parse(user));
+    if (user && user !== "undefined") {
+      try { setCurrentUser(JSON.parse(user)); } catch (e) { console.error(e); }
+    }
+
     const savedWishlist = localStorage.getItem("wishlist");
-    if (savedWishlist) setWishlistItems(JSON.parse(savedWishlist));
+    if (savedWishlist && savedWishlist !== "undefined") {
+      try { setWishlistItems(JSON.parse(savedWishlist)); } catch (e) { console.error(e); }
+    }
+
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) setCartItems(JSON.parse(savedCart));
+    if (savedCart && savedCart !== "undefined") {
+      try { setCartItems(JSON.parse(savedCart)); } catch (e) { console.error(e); }
+    }
   }, []);
 
   useEffect(() => {

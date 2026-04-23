@@ -16,6 +16,12 @@ const defaultSlides = [
     route: "/occasion/reception",
   },
   {
+    image: "https://images.pexels.com/photos/1458867/pexels-photo-1458867.jpeg?auto=compress&w=1200&format=webp",
+    label: "Fine Jewellery",
+    sub: "Handcrafted luxury pieces for your special moments",
+    route: "/occasion/jewellery",
+  },
+  {
     image: "https://images.pexels.com/photos/29494642/pexels-photo-29494642.jpeg?auto=compress&w=1200&format=webp",
     label: "Engagement Elegance",
     sub: "Sophisticated looks for your special announcement",

@@ -95,6 +95,18 @@ export default function OccasionPage({
       description: "Chic & contemporary styles for cocktail evenings.",
       tips: "Minis & midis are in!", icon: "🍸",
       pattern: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='15' cy='15' r='4' fill='%233B0764' fill-opacity='0.06'/%3E%3Ccircle cx='45' cy='45' r='4' fill='%233B0764' fill-opacity='0.06'/%3E%3C/svg%3E")`
+    },
+    jewellery: {
+      name: "FINE JEWELLERY", tagline: "Handcrafted Luxury",
+      bgGradient: "linear-gradient(135deg, #E6E6FA 0%, #F4F0FC 40%, #FFFFFF 100%)",
+      accentColor: "#4B0082", accentMid: "#8A2BE2",
+      btnBg: "linear-gradient(135deg, #4B0082, #8A2BE2)",
+      qtyBg: "linear-gradient(135deg, #4B0082, #8A2BE2)",
+      cardBorder: "#D8BFD8", priceBg: "#F8F4FF", priceColor: "#4B0082",
+      badgeBg: "rgba(75,0,130,0.1)", badgeColor: "#4B0082", wishlistActive: "#8A2BE2",
+      description: "Exquisite gemstones and intricate designs.",
+      tips: "Pair with minimalistic outfits.", icon: "💎",
+      pattern: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 5 L22 15 L32 15 L24 21 L27 31 L20 25 L13 31 L16 21 L8 15 L18 15Z' fill='%234B0082' fill-opacity='0.05'/%3E%3C/svg%3E")`
     }
   };
 
@@ -140,7 +152,9 @@ export default function OccasionPage({
           const occasionMatch = p.occasion?.toLowerCase() === occasionKey ||
             (Array.isArray(p.occasions) && p.occasions.some(o => o.toLowerCase() === occasionKey));
           const categoryMatch = p.category?.toLowerCase() === occasionKey;
-          return occasionMatch || categoryMatch;
+          const isJewelleryCat = ['necklaces', 'earrings', 'rings', 'bracelets', 'bridal sets', 'jewellery'].includes(p.category?.toLowerCase());
+          const jewelMatch = occasionKey === 'jewellery' && isJewelleryCat;
+          return occasionMatch || categoryMatch || jewelMatch;
         });
 
         // Filter out duplicates (DB products overwrite static ones)

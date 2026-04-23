@@ -205,7 +205,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     }
   };
 
-  const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
+  const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Jewellery", "Gharara", "Sharara"];
+  const isJewelleryCat = (cat) => ['Necklaces', 'Earrings', 'Rings', 'Bracelets', 'Bridal Sets', 'Jewellery'].includes(cat);
 
   const filteredProducts = useMemo(() => {
     let res = selectedCategory === "All"
@@ -216,7 +217,9 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         if (!aIsLehenga && bIsLehenga) return 1;
         return 0;
       })
-      : allProducts.filter(p => p.category === selectedCategory);
+      : selectedCategory === "Jewellery"
+        ? allProducts.filter(p => isJewelleryCat(p.category))
+        : allProducts.filter(p => p.category === selectedCategory);
 
     if (priceFilter === 'under-5000') res = res.filter(p => p.price < 5000);
     else if (priceFilter === '5000-10000') res = res.filter(p => p.price >= 5000 && p.price <= 10000);
