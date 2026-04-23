@@ -88,8 +88,11 @@ export default function Signup({
     try {
       const payload = { ...formData, phone: `${formData.countryCode || "+91"}${formData.phone}` };
       const response = await signup(payload);
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("currentUser", JSON.stringify(response.user));
+      localStorage.setItem("token", response.token || response.accessToken || "token");
+
+      // Fallback for different API response structures
+      const userObj = response.user || response.data?.user || (response.email ? response : { email: formData.email, name: formData.name });
+      localStorage.setItem("currentUser", JSON.stringify(userObj));
       setSuccess("Account created successfully!");
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {

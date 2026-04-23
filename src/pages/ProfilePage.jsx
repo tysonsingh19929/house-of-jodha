@@ -63,8 +63,16 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-      if (!storedUser) {
+      const storedStr = localStorage.getItem("currentUser");
+      if (!storedStr || storedStr === "undefined") {
+        navigate("/login");
+        return;
+      }
+
+      let storedUser;
+      try {
+        storedUser = JSON.parse(storedStr);
+      } catch (e) {
         navigate("/login");
         return;
       }
@@ -74,10 +82,11 @@ export default function ProfilePage({ cartCount, onCartClick, wishlistCount, onW
         const userData = await api.getUser(storedUser.id || storedUser._id);
         const userOrders = await api.getUserOrders(storedUser.id || storedUser._id);
 
-        setUser(userData);
-        setOrders(userOrders);
+        setUser(userData && !userData.message ? userData : storedUser);
+        setOrders(Array.isArray(userOrders) ? userOrders : []);
       } catch (err) {
         console.error("Failed to load profile:", err);
+        setUser(storedUser); // fallback so page still loads on network errors
       } finally {
         setLoading(false);
       }

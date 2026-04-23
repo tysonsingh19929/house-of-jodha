@@ -19,7 +19,10 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
   }, [menuOpen]);
 
   const currentUser = (() => {
-    try { return JSON.parse(localStorage.getItem("currentUser")); } catch { return null; }
+    try {
+      const item = localStorage.getItem("currentUser");
+      return item && item !== "undefined" ? JSON.parse(item) : null;
+    } catch { return null; }
   })();
 
   const handleProfileClick = () => {

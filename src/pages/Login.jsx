@@ -74,8 +74,11 @@ export default function Login({
 
     try {
       const response = await login(formData.email, formData.password);
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("currentUser", JSON.stringify(response.user));
+      localStorage.setItem("token", response.token || response.accessToken || "token");
+
+      // Fallback for different API response structures
+      const userObj = response.user || response.data?.user || (response.email ? response : { email: formData.email, name: "User" });
+      localStorage.setItem("currentUser", JSON.stringify(userObj));
       navigate("/");
     } catch (err) {
       setError(err.message);
