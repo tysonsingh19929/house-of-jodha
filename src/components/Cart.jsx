@@ -18,18 +18,6 @@ export default function Cart({ items, onRemove, onClose }) {
 
   const total = groupedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  // ✅ Ignore clicks on the navbar cart button so toggle works correctly
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (document.getElementById("navbar-cart-btn")?.contains(e.target)) return;
-      if (cartRef.current && !cartRef.current.contains(e.target)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside, true);
-    return () => document.removeEventListener("mousedown", handleClickOutside, true);
-  }, [onClose]);
-
   return (
     <div
       ref={cartRef}

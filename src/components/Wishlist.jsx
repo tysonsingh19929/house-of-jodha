@@ -7,18 +7,6 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
   const navigate = useNavigate();
   const isMobile = window.innerWidth <= 768;
 
-  // ✅ Ignore clicks on the navbar wishlist button so toggle works correctly
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (document.getElementById("navbar-wishlist-btn")?.contains(e.target)) return;
-      if (wishlistRef.current && !wishlistRef.current.contains(e.target)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside, true);
-    return () => document.removeEventListener("mousedown", handleClickOutside, true);
-  }, [onClose]);
-
   return (
     <div
       ref={wishlistRef}

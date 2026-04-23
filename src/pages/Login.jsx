@@ -55,7 +55,7 @@ export default function Login({
 
   const handlePendingAuth = (provider) => {
     showToast(`${provider} login will be enabled once API keys are provided.`);
-    console.log(`[AUTH REQUIRED] To enable ${provider}, please register for the API (e.g. OTPless or Firebase) and deploy the Client ID in your .env variables.`);
+    console.log(`[AUTH REQUIRED] To enable ${provider}, please register for the API and deploy the Client ID.`);
   };
 
   const handleInputChange = (e) => {

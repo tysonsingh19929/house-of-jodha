@@ -329,7 +329,7 @@ export default function OccasionPage({
           .myntra-layout { padding: 16px 0; flex-direction: column; overflow-x: hidden; }
           .myntra-sidebar { display: none; }
           .myntra-sidebar.mobile-open { display: flex; flex-direction: column; justify-content: flex-end; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow: hidden; animation: fadeIn 0.2s ease; }
-          .myntra-sidebar-inner { background: #fff; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding-bottom: 20px; animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+          .myntra-sidebar-inner { background: #fff; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding-bottom: 70px; animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
           .m-mobile-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eaeaec; position: sticky; top: 0; background: #fff; z-index: 10; }
           .m-mobile-modal-header h3 { margin: 0; font-size: 16px; text-transform: uppercase; color: #282c3f; font-weight: 700; }
           .myntra-filter-header { display: none; }
@@ -359,7 +359,7 @@ export default function OccasionPage({
           .m-qty-btn { padding: 6px; font-size: 14px; border-radius: 6px; }
           .m-qty-num { font-size: 13px; }
           
-          .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; height: 50px; border-top: 1px solid #eaeaec; }
+          .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 10001; height: 50px; border-top: 1px solid #eaeaec; }
           .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
           .m-mobile-action-btn:last-child { border-right: none; }
         }
@@ -387,11 +387,11 @@ export default function OccasionPage({
       {/* GRID */}
       {/* MOBILE ACTION BAR */}
       <div className="m-mobile-action-bar">
-        <button className="m-mobile-action-btn" onClick={() => setShowMobileSort(true)}>
+        <button className="m-mobile-action-btn" onClick={() => { setShowMobileSort(!showMobileSort); setShowMobileFilters(false); }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
           SORT
         </button>
-        <button className="m-mobile-action-btn" onClick={() => setShowMobileFilters(true)}>
+        <button className="m-mobile-action-btn" onClick={() => { setShowMobileFilters(!showMobileFilters); setShowMobileSort(false); }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
           FILTER
         </button>
