@@ -257,7 +257,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   };
 
   return (
-    <div id="products" style={{ padding: isMobile ? "40px 0" : "80px 0", background: "#fff", fontFamily: "'Assistant', sans-serif" }}>
+    <div id="products" style={{ padding: isMobile ? "20px 0" : "60px 0", background: "#fff", fontFamily: "'Assistant', sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap');
         .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 0 24px; align-items: flex-start; font-family: 'Assistant', sans-serif; color: #282c3f; box-sizing: border-box; width: 100%; }
@@ -356,7 +356,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       `}</style>
 
       {/* Search Bar — navigates to /search */}
-      <form ref={searchWrapperRef} onSubmit={(e) => handleSearchSubmit(e)} style={{ position: "relative", maxWidth: "600px", margin: isMobile ? "0 auto 32px auto" : "0 auto 40px auto" }}>
+      <form ref={searchWrapperRef} onSubmit={(e) => handleSearchSubmit(e)} style={{ position: "relative", maxWidth: "600px", margin: isMobile ? "0 auto 16px auto" : "0 auto 32px auto" }}>
         <div style={{
           display: "flex", alignItems: "center",
           background: "#fff", borderRadius: "20px",
@@ -419,7 +419,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       </form>
 
       {/* Section Header */}
-      <div style={{ textAlign: "center", marginBottom: isMobile ? "20px" : "32px" }}>
+      <div style={{ textAlign: "center", marginBottom: isMobile ? "12px" : "32px" }}>
         <h2 style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontSize: isMobile ? "32px" : "42px",

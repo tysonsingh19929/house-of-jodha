@@ -34,6 +34,84 @@ import Chatbot from "./components/Chatbot";
 import { lazy, Suspense } from "react";
 import SellerStorefront from "./pages/SellerStorefront";
 
+function TrustBanner() {
+  const isMobile = window.innerWidth <= 768;
+  const iconSize = isMobile ? "18" : "24";
+  const features = [
+    {
+      icon: <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
+      title: "Assured Quality",
+      sub: isMobile ? "Premium Fabrics" : "Handpicked Premium Fabrics"
+    },
+    {
+      icon: <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>,
+      title: "Secure Payment",
+      sub: isMobile ? "100% Encrypted" : "100% Encrypted Checkout"
+    },
+    {
+      icon: <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg>,
+      title: isMobile ? "100% Protected" : "100% Payment Protection",
+      sub: isMobile ? "Safe & Fraud-Free" : "Safe & Fraud-Free Guarantee"
+    }
+  ];
+
+  return (
+    <div style={{
+      background: "#fff",
+      borderBottom: "1px solid #eaeaea",
+      padding: isMobile ? "12px 8px" : "32px 0",
+      width: "100%",
+    }}>
+      <div style={{
+        maxWidth: "1200px",
+        margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: isMobile ? "8px" : "40px",
+      }}>
+        {features.map((f, i) => (
+          <div key={i} style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: isMobile ? "center" : "left",
+            gap: isMobile ? "6px" : "16px",
+            padding: isMobile ? "8px 4px" : "0",
+            background: isMobile ? "#fafafa" : "transparent",
+            borderRadius: "12px",
+            border: isMobile ? "1px solid #f0f0f0" : "none",
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            cursor: "default"
+          }}
+            onMouseEnter={e => { if (!isMobile) e.currentTarget.style.transform = "translateY(-4px)"; }}
+            onMouseLeave={e => { if (!isMobile) e.currentTarget.style.transform = "translateY(0)"; }}
+          >
+            <div style={{
+              color: "#D4AF37",
+              display: "flex",
+              background: isMobile ? "#fff" : "#fafafa",
+              padding: isMobile ? "10px" : "16px",
+              borderRadius: "50%",
+              boxShadow: "0 4px 16px rgba(212, 175, 55, 0.15)"
+            }}>
+              {f.icon}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? "2px" : "4px", alignItems: isMobile ? "center" : "flex-start" }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: isMobile ? "10px" : "14px", fontWeight: "700", color: "#1a1a1a", letterSpacing: isMobile ? "0px" : "0.5px", textTransform: "uppercase", lineHeight: 1.2 }}>
+                {f.title}
+              </span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: isMobile ? "9px" : "12px", color: "#666", lineHeight: 1.2 }}>
+                {f.sub}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function HomePage({
   cartOpen, setCartOpen, cartItems, setCartItems, addToCart, removeFromCart, removeProductFromCart, cartCount,
   wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist,
@@ -59,6 +137,7 @@ function HomePage({
         />
       )}
       <Hero />
+      <TrustBanner />
       <ProductCatalog
         onAddToCart={addToCart}
         onRemoveProduct={removeProductFromCart}
