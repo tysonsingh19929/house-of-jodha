@@ -162,6 +162,8 @@ export default function SearchResults({
   const [sortBy, setSortBy] = useState('featured');
   const [priceFilter, setPriceFilter] = useState('all');
   const [colorFilter, setColorFilter] = useState('all');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [showMobileSort, setShowMobileSort] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -257,110 +259,77 @@ export default function SearchResults({
     <div style={{ background: "#FAFAFA", paddingTop: "64px", minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
-        .sr-card {
-          background: #fff;
-          border-radius: 16px;
-          overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-          border: 1px solid rgba(212, 175, 55, 0.1);
-          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-          display: flex;
-          flex-direction: column;
-          height: 100%;
-        }
-        .sr-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-          border-color: rgba(212, 175, 55, 0.3);
-        }
-        .sr-img-wrap {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 3/4;
-          overflow: hidden;
-          background: #f8f8f8;
-          cursor: pointer;
-        }
-        .sr-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .sr-card:hover .sr-img {
-          transform: scale(1.07);
-        }
-        .sr-btn {
-          width: 100%; padding: 12px; background: #1a1a1a; color: #fff;
-          border: none; border-radius: 10px; font-size: 13px; font-weight: 600;
-          cursor: pointer; transition: all 0.2s ease; display: flex;
-          align-items: center; justify-content: center; gap: 6px;
-        }
-        .sr-btn:hover { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .sr-qty-btn {
-          flex: 1; padding: 10px; background: #f5f5f5; color: #1a1a1a;
-          border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
-          font-size: 16px; transition: all 0.2s ease;
-        }
-        .sr-qty-btn:hover { background: #eaeaea; }
-        .sr-badge {
-          position: absolute; top: 12px; left: 12px; background: #1a1a1a; color: #D4AF37;
-          padding: 6px 12px; border-radius: 30px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(212,175,55,0.3); z-index: 2;
-        }
-        .sr-wish {
-          position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
-          border-radius: 50%; background: rgba(255,255,255,0.9); border: none;
-          display: flex; align-items: center; justify-content: center; cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #ccc; backdrop-filter: blur(4px);
-        }
-        .sr-wish:hover { transform: scale(1.1); background: #fff; color: #e03131; }
-        .sr-wish.active { color: #e03131; }
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap');
+        .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 0 24px; align-items: flex-start; font-family: 'Assistant', sans-serif; color: #282c3f; }
+        .myntra-sidebar { width: 250px; flex-shrink: 0; position: sticky; top: 80px; border-right: 1px solid #eaeaec; padding-right: 20px; margin-right: 24px; height: calc(100vh - 80px); overflow-y: auto; }
+        .myntra-sidebar::-webkit-scrollbar { display: none; }
+        .myntra-main { flex: 1; min-width: 0; padding-top: 10px; }
+        .myntra-topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; margin-bottom: 24px; }
+        .myntra-count { font-size: 16px; font-weight: 700; }
+        .myntra-count span { font-weight: 400; color: #535766; }
+        .myntra-sort { display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; cursor: pointer; background: #fff; }
+        .myntra-sort-select { border: none; outline: none; font-weight: 700; color: #282c3f; background: transparent; cursor: pointer; margin-left: 6px; font-family: 'Assistant', sans-serif; }
+        .myntra-filter-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; text-transform: uppercase; }
+        .myntra-filter-clear { font-size: 12px; color: #ff3f6c; font-weight: 700; cursor: pointer; border: none; background: none; text-transform: uppercase; }
+        .myntra-filter-sec { padding: 20px 0; border-bottom: 1px solid #eaeaec; }
+        .myntra-filter-title { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
+        .myntra-radio-label { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #282c3f; margin-bottom: 12px; cursor: pointer; }
+        .myntra-radio-label:hover { background: #f4f4f5; }
+        .myntra-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #c3c4c6; border-radius: 2px; cursor: pointer; position: relative; margin: 0; }
+        .myntra-radio:checked { background-color: #ff3f6c; border-color: #ff3f6c; }
+        .myntra-radio:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .myntra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 20px; }
+        .m-card-wrapper { position: relative; }
+        .m-card { position: relative; background: #fff; transition: box-shadow 0.2s ease, transform 0.2s ease; cursor: pointer; display: flex; flex-direction: column; height: 100%; }
+        .m-card:hover { box-shadow: 0 2px 16px 4px rgba(40,44,63,0.07); transform: translateY(-2px); z-index: 10; }
+        .m-img-wrap { position: relative; width: 100%; aspect-ratio: 3/4; background: #f5f5f6; overflow: hidden; }
+        .m-img { width: 100%; height: 100%; object-fit: cover; }
+        .m-rating { position: absolute; bottom: 12px; left: 12px; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); font-size: 12px; font-weight: 700; padding: 4px 6px; border-radius: 2px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; }
+        .m-wish { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: #fff; border: 1px solid #d4d5d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #282c3f; opacity: 0; transition: all 0.2s ease; z-index: 3; }
+        .m-card:hover .m-wish { opacity: 1; }
+        .m-wish:hover { background: #ff3f6c; color: #fff; border-color: #ff3f6c; }
+        .m-wish.active { color: #ff3f6c; opacity: 1; border-color: #ff3f6c; background: #fff; }
+        .m-wish.active:hover { background: #ff3f6c; color: #fff; }
+        .m-info { padding: 12px 10px 0; background: #fff; }
+        .m-brand { font-size: 16px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+        .m-price-row { display: flex; align-items: baseline; gap: 8px; }
+        .m-price { font-size: 14px; font-weight: 700; }
+        .m-orig { font-size: 12px; color: #7e818c; text-decoration: line-through; }
+        .m-disc { font-size: 12px; font-weight: 700; color: #ff905a; }
+        .m-actions { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 10px; box-shadow: 0 10px 16px 4px rgba(40,44,63,0.07); border-top: 1px solid #eaeaec; z-index: 10; }
+        .m-card:hover .m-actions { display: block; }
+        .m-btn { width: 100%; padding: 10px; background: #fff; color: #ff3f6c; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .m-btn:hover { border-color: #ff3f6c; }
+        .m-qty-row { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 2px; }
+        .m-qty-num { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #282c3f; }
         
+        .m-mobile-action-bar { display: none; }
+        .m-mobile-modal-header { display: none; }
+        
+        @media (max-width: 1024px) { .myntra-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) {
-          .sr-card { border-radius: 12px; }
-          .sr-btn { padding: 8px; font-size: 11px; border-radius: 8px; gap: 4px; }
-          .sr-btn svg { width: 14px; height: 14px; }
-          .sr-qty-btn { padding: 6px; font-size: 14px; }
-          .sr-badge { padding: 4px 8px; font-size: 9px; top: 8px; left: 8px; }
-          .sr-wish { width: 30px; height: 30px; top: 8px; right: 8px; }
-          .sr-wish svg { width: 15px; height: 15px; }
+          .myntra-layout { padding: 16px 0; flex-direction: column; }
+          .myntra-sidebar { display: none; }
+          .myntra-sidebar.mobile-open { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow-y: auto; }
+          .m-mobile-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eaeaec; position: sticky; top: 0; background: #fff; z-index: 10; }
+          .m-mobile-modal-header h3 { margin: 0; font-size: 16px; text-transform: uppercase; color: #282c3f; font-weight: 700; }
+          .myntra-filter-header { display: none; }
+          .myntra-filter-sec { padding: 16px; }
+          
+          .myntra-main { padding-left: 0; padding-top: 0; width: 100%; }
+          .myntra-topbar { padding: 0 16px 16px; flex-direction: column; align-items: flex-start; gap: 12px; display: none; }
+          .myntra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; padding: 0 16px 60px; width: 100%; box-sizing: border-box; }
+          .m-card:hover { transform: none; box-shadow: none; }
+          .m-actions { display: block; position: static; box-shadow: none; padding: 0; margin-top: 10px; border-top: none; }
+          .m-wish { opacity: 1; border: none; background: rgba(255,255,255,0.8); }
+          
+          .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; height: 50px; border-top: 1px solid #eaeaec; }
+          .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
+          .m-mobile-action-btn:last-child { border-right: none; }
         }
-        .sr-filters {
-          display: flex; justify-content: center; align-items: center;
-          margin: 0 auto 40px; flex-wrap: wrap; gap: 16px; max-width: 1200px;
-          animation: slideUp 0.4s ease;
-        }
-        .sr-filter-group {
-          display: flex; align-items: center; gap: 10px;
-          background: #fff; padding: 6px 16px 6px 20px;
-          border-radius: 40px; border: 1px solid #eaeaea;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: all 0.3s ease;
-        }
-        .sr-filter-group:hover {
-          border-color: rgba(212, 175, 55, 0.4);
-          box-shadow: 0 6px 24px rgba(212, 175, 55, 0.12);
-          transform: translateY(-2px);
-        }
-        .sr-filter-label {
-          font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600;
-          color: #1a1a1a; font-style: italic; letter-spacing: 0.5px;
-        }
-        .sr-select {
-          appearance: none; padding: 4px 24px 4px 0; width: auto; min-width: 140px;
-          border: none; border-radius: 0;
-          background: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23D4AF37' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right center;
-          background-color: transparent; color: #444; font-family: 'Inter', sans-serif;
-          font-size: 13px; font-weight: 600; cursor: pointer; outline: none; transition: color 0.2s;
-        }
-        .sr-select:hover, .sr-select:focus { color: #1a1a1a; }
-        @media (max-width: 768px) {
-          .sr-filters { margin-bottom: 24px; gap: 12px; margin: 0 16px 24px; }
-          .sr-filter-group { flex: 1; width: 100%; justify-content: space-between; padding: 8px 20px; }
-          .sr-select { text-align: right; }
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       `}</style>
       <Navbar
         cartCount={cartCount}
@@ -389,208 +358,213 @@ export default function SearchResults({
         </div>
 
         <SearchBar onSearch={handleSearch} initialQuery={query} />
+      </div>
 
-        {allProducts.length > 0 && !loading && (
-          <div className="sr-filters">
-            <div className="sr-filter-group">
-              <span className="sr-filter-label">Price:</span>
-              <select className="sr-select" value={priceFilter} onChange={e => { setPriceFilter(e.target.value); setCurrentPage(1); }}>
-                <option value="all">All Prices</option>
-                <option value="under-5000">Under ₹5,000</option>
-                <option value="5000-10000">₹5,000 - ₹10,000</option>
-                <option value="over-10000">Over ₹10,000</option>
-              </select>
-            </div>
-            <div className="sr-filter-group">
-              <span className="sr-filter-label">Color:</span>
-              <select className="sr-select" value={colorFilter} onChange={e => { setColorFilter(e.target.value); setCurrentPage(1); }}>
-                <option value="all">All Colors</option>
-                <option value="red">Red / Maroon</option>
-                <option value="pink">Pink / Blush</option>
-                <option value="green">Green / Emerald</option>
-                <option value="blue">Blue / Navy</option>
-                <option value="gold">Gold / Yellow</option>
-                <option value="ivory">Ivory / White</option>
-                <option value="black">Black</option>
-                <option value="purple">Purple / Lavender</option>
-              </select>
-            </div>
-            <div className="sr-filter-group">
-              <span className="sr-filter-label">Sort:</span>
-              <select className="sr-select" value={sortBy} onChange={e => { setSortBy(e.target.value); setCurrentPage(1); }}>
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name-asc">Name: A to Z</option>
-              </select>
-            </div>
-          </div>
-        )}
-
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "60px 20px" }}>
-            <div style={{ position: "relative", width: "60px", height: "60px", margin: "0 auto" }}>
-              <div style={{ position: "absolute", inset: 0, border: "3px solid #fdf8ee", borderRadius: "50%" }}></div>
-              <div style={{ position: "absolute", inset: 0, border: "3px solid transparent", borderTopColor: "#D4AF37", borderRightColor: "#D4AF37", borderRadius: "50%", animation: "spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite" }}></div>
-              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "20px", height: "20px", backgroundColor: "#1a1a1a", borderRadius: "50%", animation: "pulse 1.5s ease-in-out infinite" }}></div>
-            </div>
-            <p style={{ marginTop: "20px", color: "#666", fontSize: "15px", letterSpacing: "0.5px", textTransform: "uppercase" }}>Finding the perfect pieces...</p>
-            <style dangerouslySetInnerHTML={{ __html: "@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.4; } }" }} />
-          </div>
-        ) : filteredProducts.length > 0 ? (
-          <>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
-              gap: isMobile ? "12px" : "24px", width: "100%"
-            }}>
-              {paginatedProducts.map((product) => {
-                const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
-                return (
-                  <div key={product.id} className="sr-card">
-                    <div className="sr-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
-                      <img
-                        src={product.image} alt={product.name} className="sr-img" loading="lazy" decoding="async"
-                      />
-                      {discount > 0 && (
-                        <div className="sr-badge">
-                          {discount}% OFF
-                        </div>
-                      )}
-                      <button
-                        className={`sr-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (isInWishlist && isInWishlist(product.id)) removeFromWishlist(product.id);
-                          else addToWishlist(product);
-                        }}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill={isInWishlist && isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    <div
-                      onClick={() => navigate(`/product/${product.id}`)}
-                      style={{ padding: isMobile ? "10px" : "16px", cursor: "pointer", flex: 1, display: "flex", flexDirection: "column" }}
-                    >
-                      <h3 style={{
-                        fontSize: isMobile ? "12px" : "15px", fontWeight: "600",
-                        color: "#1a1a1a", margin: "0 0 4px 0",
-                        overflow: "hidden", display: "-webkit-box",
-                        WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-                        lineHeight: "1.4"
-                      }}>
-                        {product.name}
-                      </h3>
-                      <p style={{ fontSize: isMobile ? "10px" : "12px", color: "#888", margin: "0 0 8px 0", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "500" }}>
-                        {product.category}
-                      </p>
-
-                      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: "10px" }}>
-                        <span style={{ fontSize: isMobile ? "14px" : "16px", fontWeight: "700", color: "#D4AF37" }}>
-                          ₹{product.price.toLocaleString()}
-                        </span>
-                        {product.originalPrice > product.price && (
-                          <span style={{ fontSize: isMobile ? "12px" : "13px", color: "#aaa", textDecoration: "line-through", fontWeight: "500" }}>
-                            ₹{product.originalPrice.toLocaleString()}
-                          </span>
-                        )}
-                      </div>
-
-                      {addedProducts[product.id] ? (
-                        <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDecrease(product); }}
-                            className="sr-qty-btn"
-                          >−</button>
-                          <span style={{
-                            flex: 1, textAlign: "center",
-                            fontSize: "14px",
-                            fontWeight: "700", color: "#1a1a1a",
-                          }}>
-                            {addedProducts[product.id]}
-                          </span>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleIncrease(product); }}
-                            className="sr-qty-btn"
-                          >+</button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleAddProduct(product); }}
-                          className="sr-btn"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
-                          </svg>
-                          Add to Cart
-                        </button>
-                      )}
-
-                      <WhatsAppInquiryButton
-                        message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
-                        phoneNumber={sellersMap[product.sellerId] || "9967670497"}
-                        buttonStyle={{
-                          width: "100%",
-                          padding: isMobile ? "8px" : "10px",
-                          fontSize: isMobile ? "11px" : "12px",
-                          marginTop: isMobile ? "6px" : "8px",
-                          background: "#fff",
-                          border: "1px solid #eaeaea",
-                          color: "#1a1a1a",
-                          borderRadius: "10px",
-                          boxShadow: "none"
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            {totalPages > 1 && (
-              <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "32px", width: "100%" }}>
-                <button
-                  onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  disabled={currentPage === 1}
-                  style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea", background: currentPage === 1 ? "#f9f9f9" : "#fff", color: currentPage === 1 ? "#aaa" : "#1a1a1a", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s" }}
-                >
-                  Previous
-                </button>
-                <span style={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#666", fontWeight: "500" }}>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  disabled={currentPage === totalPages}
-                  style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea", background: currentPage === totalPages ? "#f9f9f9" : "#fff", color: currentPage === totalPages ? "#aaa" : "#1a1a1a", cursor: currentPage === totalPages ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s" }}
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
-        ) : query ? (
-          <div style={{ textAlign: "center", padding: "40px 20px", color: "#999" }}>
-            <p style={{ fontSize: "16px", marginBottom: "20px" }}>No products found for "{query}"</p>
-            <button
-              onClick={() => navigate("/")}
-              style={{
-                background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff", border: "none",
-                padding: "12px 24px", borderRadius: "8px",
-                cursor: "pointer", fontWeight: "600"
-              }}
-            >
-              Back to Home
+      {!query ? (
+        <div style={{ textAlign: "center", padding: "40px 20px", color: "#999", minHeight: "40vh" }}>
+          <p style={{ fontSize: "16px" }}>Enter a product name, category, color, or material to search</p>
+        </div>
+      ) : (
+        <>
+          {/* MOBILE ACTION BAR */}
+          <div className="m-mobile-action-bar">
+            <button className="m-mobile-action-btn" onClick={() => setShowMobileSort(true)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+              SORT
+            </button>
+            <button className="m-mobile-action-btn" onClick={() => setShowMobileFilters(true)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
+              FILTER
             </button>
           </div>
-        ) : (
-          <div style={{ textAlign: "center", padding: "40px 20px", color: "#999" }}>
-            <p style={{ fontSize: "16px" }}>Enter a product name, category, color, or material to search</p>
+
+          {/* MOBILE SORT MODAL */}
+          {showMobileSort && (
+            <div className="myntra-sidebar mobile-open">
+              <div className="m-mobile-modal-header">
+                <h3>Sort By</h3>
+                <button className="myntra-filter-clear" onClick={() => setShowMobileSort(false)}>✕</button>
+              </div>
+              <div className="myntra-filter-sec" style={{ padding: "0" }}>
+                {[
+                  { value: "featured", label: "Recommended" },
+                  { value: "price-low", label: "Price: Low to High" },
+                  { value: "price-high", label: "Price: High to Low" },
+                  { value: "name-asc", label: "Name: A to Z" }
+                ].map(option => (
+                  <label key={option.value} className="myntra-radio-label" style={{ padding: "16px", borderBottom: "1px solid #eaeaec", margin: 0, display: "flex", justifyContent: "space-between" }}>
+                    {option.label}
+                    <input type="radio" className="myntra-radio" checked={sortBy === option.value} onChange={() => { setSortBy(option.value); setCurrentPage(1); setShowMobileSort(false); }} />
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="myntra-layout">
+            <aside className={`myntra-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
+              <div className="m-mobile-modal-header">
+                <h3>Filters</h3>
+                <button className="myntra-filter-clear" onClick={() => setShowMobileFilters(false)}>✕</button>
+              </div>
+              <div className="myntra-filter-header">
+                FILTERS
+                <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
+              </div>
+
+              <div className="myntra-filter-sec">
+                <div className="myntra-filter-title">Price</div>
+                {[
+                  { label: "All Prices", value: "all" },
+                  { label: "Under ₹5,000", value: "under-5000" },
+                  { label: "₹5,000 - ₹10,000", value: "5000-10000" },
+                  { label: "Over ₹10,000", value: "over-10000" }
+                ].map(price => (
+                  <label key={price.value} className="myntra-radio-label">
+                    <input type="radio" className="myntra-radio" checked={priceFilter === price.value} onChange={() => { setPriceFilter(price.value); setCurrentPage(1); }} />
+                    {price.label}
+                  </label>
+                ))}
+              </div>
+
+              <div className="myntra-filter-sec">
+                <div className="myntra-filter-title">Color</div>
+                {[
+                  { label: "All Colors", value: "all" },
+                  { label: "Red / Maroon", value: "red" },
+                  { label: "Pink / Blush", value: "pink" },
+                  { label: "Green / Emerald", value: "green" },
+                  { label: "Blue / Navy", value: "blue" },
+                  { label: "Gold / Yellow", value: "gold" },
+                  { label: "Ivory / White", value: "ivory" },
+                  { label: "Black", value: "black" },
+                  { label: "Purple / Lavender", value: "purple" }
+                ].map(col => (
+                  <label key={col.value} className="myntra-radio-label">
+                    <input type="radio" className="myntra-radio" checked={colorFilter === col.value} onChange={() => { setColorFilter(col.value); setCurrentPage(1); }} />
+                    {col.label}
+                  </label>
+                ))}
+              </div>
+            </aside>
+
+            <main className="myntra-main">
+              <div className="myntra-topbar">
+                <div className="myntra-count">
+                  <strong>{query ? `Search: "${query}"` : "All Products"}</strong> - {filteredProducts.length} items
+                </div>
+                <div className="myntra-sort">
+                  Sort by:
+                  <select className="myntra-sort-select" value={sortBy} onChange={e => { setSortBy(e.target.value); setCurrentPage(1); }}>
+                    <option value="featured">Recommended</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                  </select>
+                </div>
+              </div>
+
+              {loading ? (
+                <div style={{ textAlign: "center", padding: "60px 20px" }}>
+                  <div style={{ position: "relative", width: "40px", height: "40px", margin: "0 auto" }}>
+                    <div style={{ position: "absolute", inset: 0, border: "3px solid #fdf8ee", borderRadius: "50%" }}></div>
+                    <div style={{ position: "absolute", inset: 0, border: "3px solid transparent", borderTopColor: "#D4AF37", borderRightColor: "#D4AF37", borderRadius: "50%", animation: "spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite" }}></div>
+                  </div>
+                  <p style={{ marginTop: "16px", color: "#666", fontSize: "14px" }}>Loading collections...</p>
+                </div>
+              ) : filteredProducts.length > 0 ? (
+                <>
+                  <div className="myntra-grid">
+                    {paginatedProducts.map(product => {
+                      const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
+                      const qty = addedProducts[product.id] || 0;
+                      return (
+                        <div key={product.id} className="m-card-wrapper">
+                          <div className="m-card">
+                            <div className="m-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
+                              <img src={product.image} alt={product.name} className="m-img" loading="lazy" />
+                              {discount > 0 && (
+                                <div className="m-rating">
+                                  4.{Math.floor(Math.random() * 6) + 3} <svg width="12" height="12" viewBox="0 0 24 24" fill="#00897b" stroke="#00897b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg> | {Math.floor(Math.random() * 300) + 20}
+                                </div>
+                              )}
+                              <button className={`m-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`} onClick={(e) => {
+                                e.stopPropagation();
+                                if (isInWishlist && isInWishlist(product.id)) removeFromWishlist(product.id);
+                                else addToWishlist(product);
+                              }}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill={isInWishlist && isInWishlist(product.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                </svg>
+                              </button>
+                            </div>
+                            <div className="m-info" onClick={() => navigate(`/product/${product.id}`)}>
+                              <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
+                              <p className="m-title">{product.name}</p>
+                              <div className="m-price-row">
+                                <span className="m-price">Rs. {product.price.toLocaleString('en-IN')}</span>
+                                {product.originalPrice > product.price && <span className="m-orig">Rs. {product.originalPrice.toLocaleString('en-IN')}</span>}
+                                {discount > 0 && <span className="m-disc">({discount}% OFF)</span>}
+                              </div>
+                            </div>
+                            <div className="m-actions">
+                              {qty > 0 ? (
+                                <div className="m-qty-row">
+                                  <button className="m-qty-btn" onClick={(e) => { e.stopPropagation(); handleDecrease(product); }}>−</button>
+                                  <span className="m-qty-num">{qty}</span>
+                                  <button className="m-qty-btn" onClick={(e) => { e.stopPropagation(); handleIncrease(product); }}>+</button>
+                                </div>
+                              ) : (
+                                <button className="m-btn" onClick={(e) => { e.stopPropagation(); handleAddProduct(product); }}>
+                                  ADD TO BAG
+                                </button>
+                              )}
+                              <WhatsAppInquiryButton
+                                message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                                phoneNumber={sellersMap[product.sellerId] || "9967670497"}
+                                buttonStyle={{ width: "100%", padding: "10px", borderRadius: "4px", fontSize: "13px", background: "#fff", color: "#282c3f", border: "1px solid #d4d5d9", fontWeight: "700", boxShadow: "none" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginTop: "32px", width: "100%" }}>
+                      <button
+                        onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        disabled={currentPage === 1}
+                        style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea", background: currentPage === 1 ? "#f9f9f9" : "#fff", color: currentPage === 1 ? "#aaa" : "#1a1a1a", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s" }}
+                      >
+                        Previous
+                      </button>
+                      <span style={{ display: "flex", alignItems: "center", fontSize: "14px", color: "#666", fontWeight: "500" }}>
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <button
+                        onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                        disabled={currentPage === totalPages}
+                        style={{ padding: "10px 20px", borderRadius: "8px", border: "1px solid #eaeaea", background: currentPage === totalPages ? "#f9f9f9" : "#fff", color: currentPage === totalPages ? "#aaa" : "#1a1a1a", cursor: currentPage === totalPages ? "not-allowed" : "pointer", fontWeight: "600", transition: "all 0.2s" }}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{ textAlign: "center", padding: "40px 20px", color: "#999" }}>
+                  <p style={{ fontSize: "16px", marginBottom: "20px" }}>No products found for "{query}"</p>
+                  <button onClick={() => navigate("/")} style={{ background: "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)", color: "#fff", border: "none", padding: "12px 24px", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>
+                    Back to Home
+                  </button>
+                </div>
+              )}
+            </main>
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       <Footer />
     </div>

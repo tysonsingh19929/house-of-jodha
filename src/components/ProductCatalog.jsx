@@ -19,6 +19,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   const [priceFilter, setPriceFilter] = useState('all');
   const [colorFilter, setColorFilter] = useState('all');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [showMobileSort, setShowMobileSort] = useState(false);
   const [dbProducts, setDbProducts] = useState([]);
   const [dbFetched, setDbFetched] = useState(false);
   const [sellersMap, setSellersMap] = useState({});
@@ -185,71 +186,77 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   };
 
   return (
-    <div id="products" style={{ padding: isMobile ? "40px 16px" : "80px 40px", background: "#FAFAFA", fontFamily: "'Inter', sans-serif" }}>
+    <div id="products" style={{ padding: isMobile ? "40px 0" : "80px 0", background: "#fff", fontFamily: "'Assistant', sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
-        .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 30px; padding: 24px 0; align-items: flex-start; font-family: 'Inter', sans-serif; }
-        .myntra-sidebar { width: 250px; flex-shrink: 0; position: sticky; top: 100px; }
-        .myntra-main { flex: 1; min-width: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap');
+        .myntra-layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 0 24px; align-items: flex-start; font-family: 'Assistant', sans-serif; color: #282c3f; }
+        .myntra-sidebar { width: 250px; flex-shrink: 0; position: sticky; top: 80px; border-right: 1px solid #eaeaec; padding-right: 20px; margin-right: 24px; height: calc(100vh - 80px); overflow-y: auto; }
+        .myntra-sidebar::-webkit-scrollbar { display: none; }
+        .myntra-main { flex: 1; min-width: 0; padding-top: 10px; }
         .myntra-topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; margin-bottom: 24px; }
-        .myntra-count { font-size: 16px; color: #282c3f; }
-        .myntra-count strong { font-weight: 700; }
-        .myntra-sort { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #282c3f; }
-        .myntra-sort-select { padding: 8px 12px; border: 1px solid #d4d5d9; border-radius: 4px; font-size: 14px; color: #282c3f; cursor: pointer; outline: none; background: #fff; font-weight: 500; }
-        
-        .myntra-filter-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; color: #282c3f; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; text-transform: uppercase; }
+        .myntra-count { font-size: 16px; font-weight: 700; }
+        .myntra-count span { font-weight: 400; color: #535766; }
+        .myntra-sort { display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; cursor: pointer; background: #fff; }
+        .myntra-sort-select { border: none; outline: none; font-weight: 700; color: #282c3f; background: transparent; cursor: pointer; margin-left: 6px; font-family: 'Assistant', sans-serif; }
+        .myntra-filter-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; text-transform: uppercase; }
         .myntra-filter-clear { font-size: 12px; color: #ff3f6c; font-weight: 700; cursor: pointer; border: none; background: none; text-transform: uppercase; }
-        
         .myntra-filter-sec { padding: 20px 0; border-bottom: 1px solid #eaeaec; }
-        .myntra-filter-title { font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; margin-bottom: 16px; }
-        .myntra-radio-label { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #282c3f; margin-bottom: 12px; cursor: pointer; font-weight: 400; }
-        .myntra-radio { accent-color: #ff3f6c; width: 16px; height: 16px; cursor: pointer; margin: 0; }
-        
-        .myntra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px 16px; }
-        
-        .m-card-wrapper { position: relative; } 
-        .m-card { position: relative; background: #fff; transition: all 0.2s ease; z-index: 1; border-radius: 4px; height: 100%; display: flex; flex-direction: column; border: 1px solid transparent; }
-        .m-card:hover { z-index: 10; box-shadow: 0 -2px 16px rgba(0,0,0,0.08); border-color: #eaeaec; }
-        .m-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: #f5f5f6; cursor: pointer; border-radius: 4px 4px 0 0; }
+        .myntra-filter-title { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
+        .myntra-radio-label { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #282c3f; margin-bottom: 12px; cursor: pointer; }
+        .myntra-radio-label:hover { background: #f4f4f5; }
+        .myntra-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #c3c4c6; border-radius: 2px; cursor: pointer; position: relative; margin: 0; }
+        .myntra-radio:checked { background-color: #ff3f6c; border-color: #ff3f6c; }
+        .myntra-radio:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .myntra-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 20px; width: 100%; box-sizing: border-box; }
+        .m-card-wrapper { position: relative; min-width: 0; width: 100%; }
+        .m-card { position: relative; background: #fff; transition: box-shadow 0.2s ease, transform 0.2s ease; cursor: pointer; display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%; overflow: hidden; }
+        .m-card:hover { box-shadow: 0 2px 16px 4px rgba(40,44,63,0.07); transform: translateY(-2px); z-index: 10; }
+        .m-img-wrap { position: relative; width: 100%; aspect-ratio: 3/4; background: #f5f5f6; overflow: hidden; }
         .m-img { width: 100%; height: 100%; object-fit: cover; }
-        .m-badge { position: absolute; bottom: 12px; left: 12px; background: rgba(255,255,255,0.9); color: #282c3f; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 2px; }
-        .m-wish { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #ccc; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .m-wish:hover { background: #fff; color: #ff3f6c; transform: scale(1.1); }
-        .m-wish.active { color: #ff3f6c; }
-        
-        .m-info { padding: 12px 10px; cursor: pointer; background: #fff; border-radius: 0 0 4px 4px; flex: 1; display: flex; flex-direction: column; }
-        .m-brand { font-size: 16px; font-weight: 700; color: #282c3f; margin: 0 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .m-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: auto; }
-        .m-price { font-size: 14px; font-weight: 700; color: #282c3f; }
+        .m-rating { position: absolute; bottom: 12px; left: 12px; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); font-size: 12px; font-weight: 700; padding: 4px 6px; border-radius: 2px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; }
+        .m-wish { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: #fff; border: 1px solid #d4d5d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #282c3f; opacity: 0; transition: all 0.2s ease; z-index: 3; }
+        .m-card:hover .m-wish { opacity: 1; }
+        .m-wish:hover { background: #ff3f6c; color: #fff; border-color: #ff3f6c; }
+        .m-wish.active { color: #ff3f6c; opacity: 1; border-color: #ff3f6c; background: #fff; }
+        .m-wish.active:hover { background: #ff3f6c; color: #fff; }
+        .m-info { padding: 12px 10px 0; background: #fff; min-width: 0; width: 100%; box-sizing: border-box; }
+        .m-brand { font-size: 16px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+        .m-price-row { display: flex; align-items: baseline; gap: 8px; }
+        .m-price { font-size: 14px; font-weight: 700; }
         .m-orig { font-size: 12px; color: #7e818c; text-decoration: line-through; }
         .m-disc { font-size: 12px; font-weight: 700; color: #ff905a; }
-        
-        .m-actions { display: none; position: absolute; top: 100%; left: -1px; right: -1px; background: #fff; padding: 0 10px 12px; box-shadow: 0 12px 16px rgba(0,0,0,0.08); border-radius: 0 0 4px 4px; z-index: 10; border: 1px solid #eaeaec; border-top: none; }
-        .m-card:hover .m-actions { display: flex; flex-direction: column; gap: 8px; }
-        
-        .m-btn { width: 100%; padding: 10px; background: #ff3f6c; color: #fff; border: 1px solid #ff3f6c; border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .m-btn:hover { background: #e0355f; }
-        
-        .m-qty-row { display: flex; align-items: center; gap: 4px; }
-        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+        .m-actions { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 10px; box-shadow: 0 10px 16px 4px rgba(40,44,63,0.07); border-top: 1px solid #eaeaec; z-index: 10; min-width: 0; box-sizing: border-box; }
+        .m-card:hover .m-actions { display: block; }
+        .m-btn { width: 100%; padding: 10px; background: #fff; color: #ff3f6c; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .m-btn:hover { border-color: #ff3f6c; }
+        .m-qty-row { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 2px; }
         .m-qty-num { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #282c3f; }
         
-        .m-mobile-filter-btn { display: none; }
+        .m-mobile-action-bar { display: none; }
+        .m-mobile-modal-header { display: none; }
         
         @media (max-width: 1024px) { .myntra-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) {
-          .myntra-layout { flex-direction: column; padding: 16px 0; gap: 16px; }
-          .myntra-topbar { flex-direction: column; align-items: flex-start; gap: 12px; border-bottom: none; padding-bottom: 0; margin-bottom: 16px; }
-          .myntra-sidebar { display: none; width: 100%; position: static; border-right: none; }
-          .myntra-sidebar.show { display: block; border-bottom: 1px solid #eaeaec; padding-bottom: 20px; margin-bottom: 10px; }
-          .m-mobile-filter-btn { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: #fff; border: 1px solid #d4d5d9; font-weight: 700; font-size: 14px; color: #282c3f; margin-bottom: 0; cursor: pointer; border-radius: 4px; }
+          .myntra-layout { padding: 16px 0; flex-direction: column; }
+          .myntra-sidebar { display: none; }
+          .myntra-sidebar.mobile-open { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow-y: auto; }
+          .m-mobile-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eaeaec; position: sticky; top: 0; background: #fff; z-index: 10; }
+          .m-mobile-modal-header h3 { margin: 0; font-size: 16px; text-transform: uppercase; color: #282c3f; font-weight: 700; }
+          .myntra-filter-header { display: none; }
+          .myntra-filter-sec { padding: 16px; }
           
-          .myntra-grid { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
-          .m-card { position: relative; height: 100%; display: flex; flex-direction: column; border-color: #eaeaec; }
-          .m-actions { display: flex; position: static; padding: 0 10px 12px; margin-top: auto; box-shadow: none !important; border: none; }
+          .myntra-main { padding-left: 0; padding-top: 0; width: 100%; }
+          .myntra-topbar { padding: 0 16px 16px; flex-direction: column; align-items: flex-start; gap: 12px; display: none; }
+          .myntra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 10px; padding: 0 16px 60px; width: 100%; box-sizing: border-box; }
           .m-card:hover { transform: none; box-shadow: none; }
-          .m-card:hover .m-actions { position: static; box-shadow: none; }
+          .m-actions { display: block; position: static; box-shadow: none; padding: 0; margin-top: 10px; border-top: none; }
+          .m-wish { opacity: 1; border: none; background: rgba(255,255,255,0.8); }
+          
+          .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; height: 50px; border-top: 1px solid #eaeaec; }
+          .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
+          .m-mobile-action-btn:last-child { border-right: none; }
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       `}</style>
@@ -331,12 +338,47 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         </p>
       </div>
 
-      <div className="myntra-layout">
-        <button className="m-mobile-filter-btn" onClick={() => setShowMobileFilters(!showMobileFilters)}>
-          {showMobileFilters ? "HIDE FILTERS" : "SHOW FILTERS"}
+      {/* MOBILE ACTION BAR */}
+      <div className="m-mobile-action-bar">
+        <button className="m-mobile-action-btn" onClick={() => setShowMobileSort(true)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+          SORT
         </button>
+        <button className="m-mobile-action-btn" onClick={() => setShowMobileFilters(true)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
+          FILTER
+        </button>
+      </div>
 
-        <aside className={`myntra-sidebar ${showMobileFilters ? 'show' : ''}`}>
+      {/* MOBILE SORT MODAL */}
+      {showMobileSort && (
+        <div className="myntra-sidebar mobile-open">
+          <div className="m-mobile-modal-header">
+            <h3>Sort By</h3>
+            <button className="myntra-filter-clear" onClick={() => setShowMobileSort(false)}>✕</button>
+          </div>
+          <div className="myntra-filter-sec" style={{ padding: "0" }}>
+            {[
+              { value: "featured", label: "Recommended" },
+              { value: "price-low", label: "Price: Low to High" },
+              { value: "price-high", label: "Price: High to Low" },
+              { value: "name-asc", label: "Name: A to Z" }
+            ].map(option => (
+              <label key={option.value} className="myntra-radio-label" style={{ padding: "16px", borderBottom: "1px solid #eaeaec", margin: 0, display: "flex", justifyContent: "space-between" }}>
+                {option.label}
+                <input type="radio" className="myntra-radio" checked={sortBy === option.value} onChange={() => { setSortBy(option.value); setCurrentPage(1); setShowMobileSort(false); }} />
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="myntra-layout">
+        <aside className={`myntra-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
+          <div className="m-mobile-modal-header">
+            <h3>Filters</h3>
+            <button className="myntra-filter-clear" onClick={() => setShowMobileFilters(false)}>✕</button>
+          </div>
           <div className="myntra-filter-header">
             FILTERS
             <button className="myntra-filter-clear" onClick={() => { setSelectedCategory("All"); setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
@@ -422,7 +464,11 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                       <div className="m-card">
                         <div className="m-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
                           <img src={product.image} alt={product.name} className="m-img" loading="lazy" />
-                          {discount > 0 && <div className="m-badge">{discount}% OFF</div>}
+                          {discount > 0 && (
+                            <div className="m-rating">
+                              4.{Math.floor(Math.random() * 6) + 3} <svg width="12" height="12" viewBox="0 0 24 24" fill="#00897b" stroke="#00897b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg> | {Math.floor(Math.random() * 300) + 20}
+                            </div>
+                          )}
                           <button className={`m-wish ${isInWishlist && isInWishlist(product.id) ? 'active' : ''}`} onClick={(e) => {
                             e.stopPropagation();
                             if (isInWishlist && isInWishlist(product.id)) removeFromWishlist(product.id);
