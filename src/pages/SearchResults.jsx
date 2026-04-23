@@ -74,7 +74,8 @@ function SearchBar({ onSearch, initialQuery }) {
       position: "relative",
       maxWidth: "640px",
       margin: "0 auto 40px auto",
-      width: "100%"
+      width: "100%",
+      boxSizing: "border-box"
     }}>
       <div style={{
         display: "flex", alignItems: "center", background: "#fff",
@@ -293,7 +294,7 @@ export default function SearchResults({
         .m-info { padding: 12px 10px 0; background: #fff; }
         .m-brand { font-size: 16px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
-        .m-price-row { display: flex; align-items: baseline; gap: 8px; }
+        .m-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
         .m-price { font-size: 14px; font-weight: 700; }
         .m-orig { font-size: 12px; color: #7e818c; text-decoration: line-through; }
         .m-disc { font-size: 12px; font-weight: 700; color: #ff905a; }
@@ -310,7 +311,7 @@ export default function SearchResults({
         
         @media (max-width: 1024px) { .myntra-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) {
-          .myntra-layout { padding: 16px 0; flex-direction: column; }
+          .myntra-layout { padding: 16px 0; flex-direction: column; overflow-x: hidden; }
           .myntra-sidebar { display: none; }
           .myntra-sidebar.mobile-open { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow-y: auto; }
           .m-mobile-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eaeaec; position: sticky; top: 0; background: #fff; z-index: 10; }
@@ -324,6 +325,19 @@ export default function SearchResults({
           .m-card:hover { transform: none; box-shadow: none; }
           .m-actions { display: block; position: static; box-shadow: none; padding: 0; margin-top: 10px; border-top: none; }
           .m-wish { opacity: 1; border: none; background: rgba(255,255,255,0.8); }
+          
+          .m-brand { font-size: 13px; margin-bottom: 2px; }
+          .m-title { font-size: 12px; margin-bottom: 6px; }
+          .m-price-row { gap: 4px; }
+          .m-price { font-size: 14px; }
+          .m-orig { font-size: 11px; }
+          .m-disc { font-size: 10px; padding: 1px 4px; background: #fff0f6; border-radius: 4px; }
+          .m-btn { font-size: 12px; padding: 8px; }
+          .m-qty-btn { padding: 6px; font-size: 14px; }
+          .m-rating { font-size: 10px; padding: 3px 5px; bottom: 8px; left: 8px; }
+          .m-wish { width: 28px; height: 28px; top: 8px; right: 8px; }
+          .m-wish svg { width: 14px; height: 14px; }
+          .m-info { padding: 10px 8px 0; }
           
           .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; height: 50px; border-top: 1px solid #eaeaec; }
           .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
@@ -522,7 +536,7 @@ export default function SearchResults({
                               <WhatsAppInquiryButton
                                 message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
                                 phoneNumber={sellersMap[product.sellerId] || "9967670497"}
-                                buttonStyle={{ width: "100%", padding: "10px", borderRadius: "4px", fontSize: "13px", background: "#fff", color: "#282c3f", border: "1px solid #d4d5d9", fontWeight: "700", boxShadow: "none" }}
+                                buttonStyle={{ width: "100%", padding: isMobile ? "8px" : "10px", borderRadius: "4px", fontSize: isMobile ? "11px" : "13px", background: "#fff", color: "#282c3f", border: "1px solid #d4d5d9", fontWeight: "700", boxShadow: "none", marginTop: isMobile ? "4px" : "0" }}
                               />
                             </div>
                           </div>
