@@ -6,6 +6,7 @@ import { api } from "../services/api";
 
 export default function SellerStorefront({ subdomain, cartCount, onCartClick }) {
   const navigate = useNavigate();
+  const isMobile = window.innerWidth <= 768;
   const [seller, setSeller] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
