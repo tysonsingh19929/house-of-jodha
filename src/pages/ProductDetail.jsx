@@ -645,6 +645,17 @@ export default function ProductDetail({
     return { ...base, image: img, images: imgs, videoUrl: video };
   }, [dbProduct, staticProduct]);
 
+  useEffect(() => {
+    if (product) {
+      document.title = `${product.name} | The Sringar House`;
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+
+      const descText = product.description ? product.description.replace(/(<([^>]+)>)/gi, "") : `Buy ${product.name} online at The Sringar House. Explore our luxury collection.`;
+      metaDesc.content = descText.length > 150 ? descText.substring(0, 147) + '...' : descText;
+    }
+  }, [product]);
+
   const discount = product && product.originalPrice > product.price
   const sizes = product?.sizes?.length > 0
     ? product.sizes

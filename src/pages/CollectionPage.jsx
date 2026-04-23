@@ -187,6 +187,13 @@ export default function OccasionPage({
   }, [occasionKey]);
 
   useEffect(() => {
+    document.title = `${d.name} Collection | The Sringar House`;
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+    metaDesc.content = d.description ? `${d.description} Shop the exclusive ${d.name} collection at The Sringar House.` : `Explore the exclusive ${d.name} collection at The Sringar House.`;
+  }, [d]);
+
+  useEffect(() => {
     const handleOutsideClick = (e) => {
       if (e.target.closest('.m-mobile-action-btn')) return;
       if (e.target.closest('.myntra-sidebar-inner')) return;

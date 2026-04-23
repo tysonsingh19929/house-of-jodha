@@ -117,6 +117,13 @@ function HomePage({
   wishlistOpen, setWishlistOpen, wishlistItems, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist,
   handleCartClick, handleWishlistClick
 }) {
+  useEffect(() => {
+    document.title = "The Sringar House | Luxury Indian Ethnic Wear & Fine Jewellery";
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+    metaDesc.content = "Discover exquisite Indian ethnic wear, lehengas, sarees, and fine jewellery at The Sringar House. Shop premium, bespoke, and handcrafted outfits.";
+  }, []);
+
   return (
     <div style={{ background: "#fff", paddingTop: "64px" }}>
       <Navbar
