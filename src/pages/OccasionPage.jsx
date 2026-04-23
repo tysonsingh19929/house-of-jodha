@@ -17,6 +17,7 @@ export default function OccasionPage({
   const isMobile = window.innerWidth <= 768;
   const [products, setProducts] = useState([]);
   const [addedProducts, setAddedProducts] = useState({});
+  const [sellersMap, setSellersMap] = useState({});
 
   const occasionDetails = {
     mehendi: {
@@ -469,6 +470,7 @@ export default function OccasionPage({
                   <div className="occ-cart-wrap" onClick={e => e.stopPropagation()}>
                     <WhatsAppInquiryButton
                       message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                      phoneNumber={sellersMap[product.sellerId] || "9967670497"}
                       buttonStyle={{
                         width: "100%",
                         padding: "8px 12px",

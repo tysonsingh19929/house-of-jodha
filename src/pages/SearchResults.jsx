@@ -158,6 +158,7 @@ export default function SearchResults({
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
+  const [sellersMap, setSellersMap] = useState({});
 
   const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
@@ -176,6 +177,17 @@ export default function SearchResults({
         console.error("Error fetching matching products:", err);
         setLoading(false);
       });
+
+    fetch(`${apiUrl}/sellers`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const map = {};
+          data.forEach(s => map[s._id] = s.phone);
+          setSellersMap(map);
+        }
+      })
+      .catch(console.error);
   }, [apiUrl, query]);
 
   const handleSearch = (searchTerm) => {
@@ -427,6 +439,7 @@ export default function SearchResults({
 
                       <WhatsAppInquiryButton
                         message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                        phoneNumber={sellersMap[product.sellerId] || "9967670497"}
                         buttonStyle={{
                           width: "100%",
                           padding: isMobile ? "8px" : "10px",

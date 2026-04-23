@@ -17,6 +17,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
   const [dbProducts, setDbProducts] = useState([]);
   const [dbFetched, setDbFetched] = useState(false);
+  const [sellersMap, setSellersMap] = useState({});
 
   useEffect(() => {
     const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -48,6 +49,17 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         } catch (e) { console.warn("Cache write failed, ignoring to prevent crash", e); }
       })
       .catch(err => { console.error(err); setDbFetched(true); });
+
+    fetch(`${API_BASE_URL}/sellers`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const map = {};
+          data.forEach(s => map[s._id] = s.phone);
+          setSellersMap(map);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const customProducts = JSON.parse(localStorage.getItem("customProducts") || "[]");
@@ -435,6 +447,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
 
                   <WhatsAppInquiryButton
                     message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
+                    phoneNumber={sellersMap[product.sellerId] || "9967670497"}
                     buttonStyle={{
                       width: "100%",
                       padding: isMobile ? "8px" : "10px",
