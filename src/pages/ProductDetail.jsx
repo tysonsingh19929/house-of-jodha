@@ -666,13 +666,29 @@ export default function ProductDetail({
   const inWishlist = product ? isInWishlist(product._id || product.id) : false;
 
   const handleAddToCart = () => {
-    addToCart(product);
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentCartQty = cartItems.filter(item => (item.id || item._id) === (product.id || product._id)).length;
+    if (currentCartQty + quantity > stock) {
+      alert(`Only ${stock} unit(s) available in stock. You already have ${currentCartQty} in your cart.`);
+      return;
+    }
+    for (let i = 0; i < quantity; i++) {
+      addToCart({ ...product, size: selectedSize, color: selectedColor });
+    }
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
   const handleBuyNow = () => {
-    addToCart(product);
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentCartQty = cartItems.filter(item => (item.id || item._id) === (product.id || product._id)).length;
+    if (currentCartQty + quantity > stock) {
+      alert(`Only ${stock} unit(s) available in stock. You already have ${currentCartQty} in your cart.`);
+      return;
+    }
+    for (let i = 0; i < quantity; i++) {
+      addToCart({ ...product, size: selectedSize, color: selectedColor });
+    }
     navigate("/checkout");
   };
 
@@ -1032,16 +1048,21 @@ export default function ProductDetail({
                 const v = e.target.value;
                 if (v === "") return;
                 const n = parseInt(v, 10);
-                if (!isNaN(n) && n > 0) setQuantity(Math.min(n, 99));
+                const stock = product?.stock !== undefined ? Number(product.stock) : 99;
+                if (!isNaN(n) && n > 0) setQuantity(Math.min(n, stock));
               }}
               onBlur={e => {
                 let v = parseInt(e.target.value, 10);
+                const stock = product?.stock !== undefined ? Number(product.stock) : 99;
                 if (isNaN(v) || v < 1) v = 1;
-                else if (v > 99) v = 99;
+                else if (v > stock) v = stock;
                 setQuantity(v);
               }}
             />
-            <button className="pd-qty-btn" onClick={() => setQuantity(Math.min(99, quantity + 1))}>+</button>
+            <button className="pd-qty-btn" onClick={() => {
+              const stock = product?.stock !== undefined ? Number(product.stock) : 99;
+              setQuantity(Math.min(stock, quantity + 1));
+            }}>+</button>
           </div>
 
           {/* CTA Buttons */}

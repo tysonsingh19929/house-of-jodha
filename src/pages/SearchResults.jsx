@@ -220,12 +220,24 @@ export default function SearchResults({
 
   const handleAddProduct = (product) => {
     const idToUse = product._id || product.id;
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentQty = addedProducts[idToUse] || 0;
+    if (currentQty >= stock) {
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
+    }
     setAddedProducts(prev => ({ ...prev, [idToUse]: (prev[idToUse] || 0) + 1 }));
     addToCart(product);
   };
 
   const handleIncrease = (product) => {
     const idToUse = product._id || product.id;
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentQty = addedProducts[idToUse] || 0;
+    if (currentQty >= stock) {
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
+    }
     setAddedProducts(prev => ({ ...prev, [idToUse]: (prev[idToUse] || 0) + 1 }));
     addToCart(product);
   };

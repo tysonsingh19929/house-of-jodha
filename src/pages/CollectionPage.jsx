@@ -213,6 +213,12 @@ export default function OccasionPage({
   const handleAddProduct = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentQty = addedProducts[product.id] || 0;
+    if (currentQty >= stock) {
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
+    }
     setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
@@ -220,6 +226,12 @@ export default function OccasionPage({
   const handleIncrease = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentQty = addedProducts[product.id] || 0;
+    if (currentQty >= stock) {
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
+    }
     setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };

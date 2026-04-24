@@ -151,11 +151,23 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
   }, [showMobileSort, showMobileFilters]);
 
   const handleAddProduct = (product) => {
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentQty = addedProducts[product.id] || addedProducts[product._id] || 0;
+    if (currentQty >= stock) {
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
+    }
     setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
 
   const handleIncreaseQuantity = (product) => {
+    const stock = product.stock !== undefined ? Number(product.stock) : 99;
+    const currentQty = addedProducts[product.id] || addedProducts[product._id] || 0;
+    if (currentQty >= stock) {
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
+    }
     setAddedProducts(prev => ({ ...prev, [product.id]: (prev[product.id] || 0) + 1 }));
     onAddToCart(product);
   };
