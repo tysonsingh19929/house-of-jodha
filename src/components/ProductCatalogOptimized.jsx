@@ -171,195 +171,226 @@ const ProductCard = memo(({ product, onAddToCart, onRemoveProduct, addedProducts
             fontSize: isMobile ? "12px" : "13px",
             marginTop: "6px",
           }}
-        /
+        />
+      </div>
+    </div>
+  );
+});
+
+export default function ProductCatalogOptimized({ onAddToCart, onRemoveProduct }) {
+  const isMobile = window.innerWidth <= 768;
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [addedProducts, setAddedProducts] = useState({});
+  const ITEMS_PER_PAGE = 12;
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await api.getProducts();
+        if (selectedCategory === "All") {
+          setProducts(data);
+        } else {
+          setProducts(data.filter(p => p.category === selectedCategory));
+        }
+      } catch (err) {
+        setError(err.message || "Failed to fetch products.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-        fetchProducts();
+    fetchProducts();
   }, [selectedCategory]);
 
-        const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
+  const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"];
 
-        // Pagination
-        const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
-        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        const paginatedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  // Pagination
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleAddProduct = (product) => {
     const stock = product.stock !== undefined ? Number(product.stock) : 99;
-        const currentQty = addedProducts[product.id] || addedProducts[product._id] || 0;
+    const currentQty = addedProducts[product.id] || addedProducts[product._id] || 0;
     if (currentQty >= stock) {
-          alert(`Only ${stock} unit(s) available in stock.`);
-        return;
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
     }
     setAddedProducts(prev => ({
-          ...prev,
-          [product.id]: (prev[product.id] || 0) + 1
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1
     }));
-        onAddToCart(product);
+    onAddToCart(product);
   };
 
   const handleIncreaseQuantity = (product) => {
     const stock = product.stock !== undefined ? Number(product.stock) : 99;
-        const currentQty = addedProducts[product.id] || addedProducts[product._id] || 0;
+    const currentQty = addedProducts[product.id] || addedProducts[product._id] || 0;
     if (currentQty >= stock) {
-          alert(`Only ${stock} unit(s) available in stock.`);
-        return;
+      alert(`Only ${stock} unit(s) available in stock.`);
+      return;
     }
     setAddedProducts(prev => ({
-          ...prev,
-          [product.id]: (prev[product.id] || 0) + 1
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1
     }));
-        onAddToCart(product);
+    onAddToCart(product);
   };
 
   const handleDecreaseQuantity = (product) => {
-          setAddedProducts(prev => {
-            const newQty = Math.max(0, (prev[product.id] || 0) - 1);
-            if (newQty === 0) {
-              const updated = { ...prev };
-              delete updated[product.id];
-              onRemoveProduct?.(product.id);
-              return updated;
-            }
-            return { ...prev, [product.id]: newQty };
-          });
+    setAddedProducts(prev => {
+      const newQty = Math.max(0, (prev[product.id] || 0) - 1);
+      if (newQty === 0) {
+        const updated = { ...prev };
+        delete updated[product.id];
+        onRemoveProduct?.(product.id);
+        return updated;
+      }
+      return { ...prev, [product.id]: newQty };
+    });
   };
 
-        const gridCols = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
+  const gridCols = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
 
-        if (error) {
+  if (error) {
     return <div style={{ padding: "30px", textAlign: "center", color: "red" }}>{error}</div>;
   }
 
-        return (
-        <div style={{ padding: "30px 20px", width: "100%", background: "#f5f5f5" }}>
-          {/* Category Filter */}
+  return (
+    <div style={{ padding: "30px 20px", width: "100%", background: "#f5f5f5" }}>
+      {/* Category Filter */}
+      <div style={{
+        display: "flex",
+        gap: "10px",
+        marginBottom: "30px",
+        justifyContent: "center",
+        flexWrap: "wrap"
+      }}>
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => {
+              setSelectedCategory(cat);
+              setCurrentPage(1);
+            }}
+            style={{
+              padding: "10px 20px",
+              fontSize: "14px",
+              background: selectedCategory === cat ? "var(--accent)" : "#fff",
+              color: selectedCategory === cat ? "#fff" : "#666",
+              border: selectedCategory === cat ? "none" : "1px solid #ddd",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontWeight: selectedCategory === cat ? "600" : "500",
+              transition: "all 0.2s"
+            }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: "30px", fontSize: "14px", fontWeight: "600", textAlign: "center" }}>
+        ✨ {products.length} {selectedCategory} products
+      </div>
+
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "40px", fontSize: "16px", color: "#999" }}>
+          Loading products... ⏳
+        </div>
+      ) : (
+        <>
+          {/* Product Grid */}
           <div style={{
-            display: "flex",
-            gap: "10px",
-            marginBottom: "30px",
-            justifyContent: "center",
-            flexWrap: "wrap"
+            display: "grid",
+            gridTemplateColumns: gridCols,
+            gap: "12px",
+            width: "100%",
+            marginBottom: "30px"
           }}>
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => {
-                  setSelectedCategory(cat);
-                  setCurrentPage(1);
-                }}
-                style={{
-                  padding: "10px 20px",
-                  fontSize: "14px",
-                  background: selectedCategory === cat ? "var(--accent)" : "#fff",
-                  color: selectedCategory === cat ? "#fff" : "#666",
-                  border: selectedCategory === cat ? "none" : "1px solid #ddd",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontWeight: selectedCategory === cat ? "600" : "500",
-                  transition: "all 0.2s"
-                }}
-              >
-                {cat}
-              </button>
+            {paginatedProducts.map((product) => (
+              <ProductCard
+                key={product._id || product.id}
+                product={product}
+                onAddToCart={onAddToCart}
+                onRemoveProduct={onRemoveProduct}
+                addedProducts={addedProducts}
+                handleAddProduct={handleAddProduct}
+                handleIncreaseQuantity={handleIncreaseQuantity}
+                handleDecreaseQuantity={handleDecreaseQuantity}
+                isMobile={isMobile}
+              />
             ))}
           </div>
 
-          <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "4px", marginBottom: "30px", fontSize: "14px", fontWeight: "600", textAlign: "center" }}>
-            ✨ {products.length} {selectedCategory} products
-          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "10px",
+              marginTop: "30px",
+              flexWrap: "wrap"
+            }}>
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "10px 15px",
+                  background: currentPage === 1 ? "#ddd" : "var(--accent)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                  fontWeight: "600"
+                }}
+              >
+                ← Previous
+              </button>
 
-          {loading ? (
-            <div style={{ textAlign: "center", padding: "40px", fontSize: "16px", color: "#999" }}>
-              Loading products... ⏳
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  style={{
+                    padding: "10px 15px",
+                    background: currentPage === page ? "var(--accent)" : "#fff",
+                    color: currentPage === page ? "#fff" : "#666",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontWeight: currentPage === page ? "600" : "400"
+                  }}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "10px 15px",
+                  background: currentPage === totalPages ? "#ddd" : "var(--accent)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                  fontWeight: "600"
+                }}
+              >
+                Next →
+              </button>
             </div>
-          ) : (
-            <>
-              {/* Product Grid */}
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: gridCols,
-                gap: "12px",
-                width: "100%",
-                marginBottom: "30px"
-              }}>
-                {paginatedProducts.map((product) => (
-                  <ProductCard
-                    key={product._id || product.id}
-                    product={product}
-                    onAddToCart={onAddToCart}
-                    onRemoveProduct={onRemoveProduct}
-                    addedProducts={addedProducts}
-                    handleAddProduct={handleAddProduct}
-                    handleIncreaseQuantity={handleIncreaseQuantity}
-                    handleDecreaseQuantity={handleDecreaseQuantity}
-                    isMobile={isMobile}
-                  />
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "10px",
-                  marginTop: "30px",
-                  flexWrap: "wrap"
-                }}>
-                  <button
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                    style={{
-                      padding: "10px 15px",
-                      background: currentPage === 1 ? "#ddd" : "var(--accent)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                      fontWeight: "600"
-                    }}
-                  >
-                    ← Previous
-                  </button>
-
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      style={{
-                        padding: "10px 15px",
-                        background: currentPage === page ? "var(--accent)" : "#fff",
-                        color: currentPage === page ? "#fff" : "#666",
-                        border: "1px solid #ddd",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontWeight: currentPage === page ? "600" : "400"
-                      }}
-                    >
-                      {page}
-                    </button>
-                  ))}
-
-                  <button
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                    style={{
-                      padding: "10px 15px",
-                      background: currentPage === totalPages ? "#ddd" : "var(--accent)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                      fontWeight: "600"
-                    }}
-                  >
-                    Next →
-                  </button>
-                </div>
-              )}
-            </>
           )}
-        </div>
-        );
+        </>
+      )}
+    </div>
+  );
 }
