@@ -28,6 +28,7 @@ export default function AdminPanel() {
   const searchWrapperRef = useRef(null);
   const [heroSlides, setHeroSlides] = useState([]);
   const [occasionBanners, setOccasionBanners] = useState([]);
+  const [passwordModal, setPasswordModal] = useState({ isOpen: false, sellerId: null, newPassword: "", show: false });
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -257,6 +258,26 @@ export default function AdminPanel() {
       const res = await fetch(`${API_BASE_URL}/sellers/${id}`, { method: "DELETE" });
       res.ok ? fetchSellers() : alert("Error deleting seller");
     } catch (e) { alert("Error deleting seller"); }
+  };
+
+  const handleUpdateSellerPassword = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_BASE_URL}/sellers/${passwordModal.sellerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: passwordModal.newPassword })
+      });
+      if (res.ok) {
+        fetchSellers();
+        setPasswordModal({ isOpen: false, sellerId: null, newPassword: "", show: false });
+        alert("Password updated successfully!");
+      } else {
+        alert("Error updating password");
+      }
+    } catch (error) {
+      alert("Error updating password");
+    }
   };
 
   const stats = {
@@ -650,6 +671,7 @@ export default function AdminPanel() {
                                 {s.status === "active" && (
                                   <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
                                 )}
+                                <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ padding: "6px 12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🔑 Password</button>
                                 <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
                               </div>
                             )}

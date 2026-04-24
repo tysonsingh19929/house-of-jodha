@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all sellers (admin only)
 router.get('/', async (req, res) => {
   try {
-    const sellers = await Seller.find().select('-password');
+    const sellers = await Seller.find();
     res.json(sellers);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -155,7 +155,7 @@ router.get('/store/:slug', async (req, res) => {
 // Get seller profile
 router.get('/:id', async (req, res) => {
   try {
-    const seller = await Seller.findById(req.params.id).select('-password');
+    const seller = await Seller.findById(req.params.id);
     if (!seller) return res.status(404).json({ message: 'Seller not found' });
     res.json(seller);
   } catch (error) {
@@ -187,7 +187,7 @@ router.put('/:id', async (req, res) => {
       updatePayload.slug = newSlug;
     }
 
-    const seller = await Seller.findByIdAndUpdate(req.params.id, updatePayload, { new: true }).select('-password');
+    const seller = await Seller.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
     res.json(seller);
   } catch (error) {
     res.status(400).json({ message: error.message });

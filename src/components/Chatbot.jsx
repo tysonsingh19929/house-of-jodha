@@ -106,20 +106,41 @@ const Chatbot = () => {
     setInputMessage('');
     setIsTyping(true);
 
+    // Gemini API strictly requires history to start with a 'user' message.
+    // We safely slice off the initial hardcoded 'model' greeting to prevent 400 errors.
+    const historyToSend = messages.length > 0 && messages[0].role === 'model' ? messages.slice(1) : messages;
+
     try {
+      const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
       const response = await fetch(buildApiUrl('/chat/message'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           message: userMessage.text,
-          history: messages.map(m => ({ role: m.role, text: m.text }))
+          // Send BOTH formats to guarantee backend compatibility!
+          // Gemini SDK strictly requires 'parts: [{ text }]'
+          history: historyToSend.map(m => ({
+            role: m.role,
+            text: m.text,
+            parts: [{ text: m.text }]
+          }))
         })
       });
 
-      if (!response.ok) throw new Error('Server error');
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("Chatbot API Error:", response.status, errText);
+        throw new Error('Server error');
+      }
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'model', text: data.text }]);
+
+      // Safely catch the AI's response no matter what key the backend uses
+      const replyText = data.reply || data.text || data.response || data.message || "I'm having a little trouble formatting my response right now.";
+      setMessages(prev => [...prev, { role: 'model', text: replyText }]);
     } catch (error) {
       console.error('Chat error:', error);
       setMessages(prev => [
