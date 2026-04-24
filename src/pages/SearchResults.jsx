@@ -342,7 +342,8 @@ export default function SearchResults({
         @media (max-width: 768px) {
           .myntra-layout { padding: 16px 0; flex-direction: column; overflow-x: hidden; }
           .myntra-sidebar { display: none; }
-          .myntra-sidebar.mobile-open { display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow-y: auto; }
+      .myntra-sidebar.mobile-open { display: flex; flex-direction: column; justify-content: flex-end; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: transparent; z-index: 10000; padding: 0; height: 100vh; margin: 0; border: none; overflow: hidden; animation: fadeIn 0.2s ease; }
+      .myntra-sidebar-inner { background: #fff; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding-bottom: 70px; animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
           .m-mobile-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eaeaec; position: sticky; top: 0; background: #fff; z-index: 10; }
           .m-mobile-modal-header h3 { margin: 0; font-size: 16px; text-transform: uppercase; color: #282c3f; font-weight: 700; }
           .myntra-filter-header { display: none; }
@@ -372,6 +373,8 @@ export default function SearchResults({
           .m-mobile-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: none; border-right: 1px solid #eaeaec; font-size: 14px; font-weight: 700; color: #282c3f; text-transform: uppercase; cursor: pointer; }
           .m-mobile-action-btn:last-child { border-right: none; }
         }
+    @keyframes slideUpModal { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       `}</style>
       <Navbar
@@ -423,71 +426,75 @@ export default function SearchResults({
 
           {/* MOBILE SORT MODAL */}
           {showMobileSort && (
-            <div className="myntra-sidebar mobile-open">
-              <div className="m-mobile-modal-header">
-                <h3>Sort By</h3>
-                <button className="myntra-filter-clear" onClick={() => setShowMobileSort(false)}>✕</button>
-              </div>
-              <div className="myntra-filter-sec" style={{ padding: "0" }}>
-                {[
-                  { value: "featured", label: "Recommended" },
-                  { value: "price-low", label: "Price: Low to High" },
-                  { value: "price-high", label: "Price: High to Low" },
-                  { value: "name-asc", label: "Name: A to Z" }
-                ].map(option => (
-                  <label key={option.value} className="myntra-radio-label" style={{ padding: "16px", borderBottom: "1px solid #eaeaec", margin: 0, display: "flex", justifyContent: "space-between" }}>
-                    {option.label}
-                    <input type="radio" className="myntra-radio" checked={sortBy === option.value} onChange={() => { setSortBy(option.value); setCurrentPage(1); setShowMobileSort(false); }} />
-                  </label>
-                ))}
+            <div className="myntra-sidebar mobile-open" onClick={() => setShowMobileSort(false)}>
+              <div className="myntra-sidebar-inner" onClick={e => e.stopPropagation()}>
+                <div className="m-mobile-modal-header">
+                  <h3>Sort By</h3>
+                  <button className="myntra-filter-clear" onClick={() => setShowMobileSort(false)}>✕</button>
+                </div>
+                <div className="myntra-filter-sec" style={{ padding: "0" }}>
+                  {[
+                    { value: "featured", label: "Recommended" },
+                    { value: "price-low", label: "Price: Low to High" },
+                    { value: "price-high", label: "Price: High to Low" },
+                    { value: "name-asc", label: "Name: A to Z" }
+                  ].map(option => (
+                    <label key={option.value} className="myntra-radio-label" style={{ padding: "16px", borderBottom: "1px solid #eaeaec", margin: 0, display: "flex", justifyContent: "space-between" }}>
+                      {option.label}
+                      <input type="radio" className="myntra-radio" checked={sortBy === option.value} onChange={() => { setSortBy(option.value); setCurrentPage(1); setShowMobileSort(false); }} />
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
           <div className="myntra-layout">
-            <aside className={`myntra-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
-              <div className="m-mobile-modal-header">
-                <h3>Filters</h3>
-                <button className="myntra-filter-clear" onClick={() => setShowMobileFilters(false)}>✕</button>
-              </div>
-              <div className="myntra-filter-header">
-                FILTERS
-                <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
-              </div>
+            <aside className={`myntra-sidebar ${showMobileFilters ? 'mobile-open' : ''}`} onClick={() => showMobileFilters && setShowMobileFilters(false)}>
+              <div className={showMobileFilters ? "myntra-sidebar-inner" : ""} onClick={e => showMobileFilters && e.stopPropagation()}>
+                <div className="m-mobile-modal-header">
+                  <h3>Filters</h3>
+                  <button className="myntra-filter-clear" onClick={() => setShowMobileFilters(false)}>✕</button>
+                </div>
+                <div className="myntra-filter-header">
+                  FILTERS
+                  <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
+                </div>
 
-              <div className="myntra-filter-sec">
-                <div className="myntra-filter-title">Price</div>
-                {[
-                  { label: "All Prices", value: "all" },
-                  { label: "Under ₹5,000", value: "under-5000" },
-                  { label: "₹5,000 - ₹10,000", value: "5000-10000" },
-                  { label: "Over ₹10,000", value: "over-10000" }
-                ].map(price => (
-                  <label key={price.value} className="myntra-radio-label">
-                    <input type="radio" className="myntra-radio" checked={priceFilter === price.value} onChange={() => { setPriceFilter(price.value); setCurrentPage(1); }} />
-                    {price.label}
-                  </label>
-                ))}
-              </div>
+                <div className="myntra-filter-sec">
+                  <div className="myntra-filter-title">Price</div>
+                  {[
+                    { label: "All Prices", value: "all" },
+                    { label: "Under ₹5,000", value: "under-5000" },
+                    { label: "₹5,000 - ₹10,000", value: "5000-10000" },
+                    { label: "Over ₹10,000", value: "over-10000" }
+                  ].map(price => (
+                    <label key={price.value} className="myntra-radio-label">
+                      <input type="radio" className="myntra-radio" checked={priceFilter === price.value} onChange={() => { setPriceFilter(price.value); setCurrentPage(1); }} />
+                      {price.label}
+                    </label>
+                  ))}
+                </div>
 
-              <div className="myntra-filter-sec">
-                <div className="myntra-filter-title">Color</div>
-                {[
-                  { label: "All Colors", value: "all" },
-                  { label: "Red / Maroon", value: "red" },
-                  { label: "Pink / Blush", value: "pink" },
-                  { label: "Green / Emerald", value: "green" },
-                  { label: "Blue / Navy", value: "blue" },
-                  { label: "Gold / Yellow", value: "gold" },
-                  { label: "Ivory / White", value: "ivory" },
-                  { label: "Black", value: "black" },
-                  { label: "Purple / Lavender", value: "purple" }
-                ].map(col => (
-                  <label key={col.value} className="myntra-radio-label">
-                    <input type="radio" className="myntra-radio" checked={colorFilter === col.value} onChange={() => { setColorFilter(col.value); setCurrentPage(1); }} />
-                    {col.label}
-                  </label>
-                ))}
+                <div className="myntra-filter-sec">
+                  <div className="myntra-filter-title">Color</div>
+                  {[
+                    { label: "All Colors", value: "all" },
+                    { label: "Red / Maroon", value: "red" },
+                    { label: "Pink / Blush", value: "pink" },
+                    { label: "Green / Emerald", value: "green" },
+                    { label: "Blue / Navy", value: "blue" },
+                    { label: "Gold / Yellow", value: "gold" },
+                    { label: "Ivory / White", value: "ivory" },
+                    { label: "Black", value: "black" },
+                    { label: "Purple / Lavender", value: "purple" }
+                  ].map(col => (
+                    <label key={col.value} className="myntra-radio-label">
+                      <input type="radio" className="myntra-radio" checked={colorFilter === col.value} onChange={() => { setColorFilter(col.value); setCurrentPage(1); }} />
+                      {col.label}
+                    </label>
+                  ))}
+                </div>
               </div>
             </aside>
 
