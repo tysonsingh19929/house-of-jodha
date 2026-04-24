@@ -229,6 +229,32 @@ export default function Hero() {
         }
       `}</style>
 
+      {/* Sleek Promotional Badge */}
+      <div style={{
+        position: "absolute",
+        top: isMobile ? "16px" : "32px",
+        left: isMobile ? "16px" : "40px",
+        background: "rgba(0, 0, 0, 0.3)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(212, 175, 55, 0.3)",
+        borderRadius: "30px",
+        padding: isMobile ? "6px 12px" : "8px 16px",
+        color: "#fff",
+        fontSize: isMobile ? "10px" : "12px",
+        fontWeight: "600",
+        letterSpacing: "1.5px",
+        zIndex: 20,
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+        textTransform: "uppercase"
+      }}>
+        <span style={{ color: "#D4AF37", fontSize: isMobile ? "14px" : "16px", lineHeight: 1 }}>✦</span>
+        Flat 50% Off
+      </div>
+
       {carouselSlides.map((s, i) => (
         <div
           key={i}
