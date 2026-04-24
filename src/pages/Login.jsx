@@ -77,7 +77,15 @@ export default function Login({
       localStorage.setItem("token", response.token || response.accessToken || "token");
 
       // Fallback for different API response structures
-      const userObj = response.user || response.data?.user || (response.email ? response : { email: formData.email, name: "User" });
+      const emailPrefix = formData.email.split("@")[0];
+      const fallbackName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+
+      const userObj = response.user || response.data?.user || {
+        email: response.email || formData.email,
+        name: response.name || response.fullName || fallbackName,
+        phone: response.phone || ""
+      };
+
       localStorage.setItem("currentUser", JSON.stringify(userObj));
       navigate("/");
     } catch (err) {
