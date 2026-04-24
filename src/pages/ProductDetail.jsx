@@ -647,12 +647,29 @@ export default function ProductDetail({
 
   useEffect(() => {
     if (product) {
-      document.title = `${product.name} | The Sringar House`;
+      const title = `${product.name} | The Sringar House`;
+      const description = product.description ? product.description.replace(/(<([^>]+)>)/gi, "") : `Buy ${product.name} online at The Sringar House. Explore our luxury collection.`;
+      const imageUrl = product.image;
+
+      document.title = title;
       let metaDesc = document.querySelector('meta[name="description"]');
       if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+      metaDesc.content = description.length > 150 ? description.substring(0, 147) + '...' : description;
 
-      const descText = product.description ? product.description.replace(/(<([^>]+)>)/gi, "") : `Buy ${product.name} online at The Sringar House. Explore our luxury collection.`;
-      metaDesc.content = descText.length > 150 ? descText.substring(0, 147) + '...' : descText;
+      // Open Graph / Social Media meta tags
+      const ogTags = {
+        "og:title": title,
+        "og:description": description,
+        "og:image": imageUrl,
+        "og:url": window.location.href,
+        "og:type": "product"
+      };
+
+      Object.keys(ogTags).forEach(property => {
+        let metaTag = document.querySelector(`meta[property="${property}"]`);
+        if (!metaTag) { metaTag = document.createElement('meta'); metaTag.setAttribute('property', property); document.head.appendChild(metaTag); }
+        metaTag.content = ogTags[property];
+      });
     }
   }, [product]);
 

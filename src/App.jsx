@@ -121,7 +121,28 @@ function HomePage({
     document.title = "The Sringar House | Luxury Indian Ethnic Wear & Fine Jewellery";
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
-    metaDesc.content = "Discover exquisite Indian ethnic wear, lehengas, sarees, and fine jewellery at The Sringar House. Shop premium, bespoke, and handcrafted outfits.";
+    const description = "Discover exquisite Indian ethnic wear, lehengas, sarees, and fine jewellery at The Sringar House. Shop premium, bespoke, and handcrafted outfits.";
+    metaDesc.content = description;
+
+    // Open Graph / Social Media meta tags
+    const ogTags = {
+      "og:title": "The Sringar House | Luxury Indian Ethnic Wear & Fine Jewellery",
+      "og:description": description,
+      "og:image": "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp",
+      "og:url": window.location.origin,
+      "og:type": "website",
+      "og:site_name": "The Sringar House"
+    };
+
+    Object.keys(ogTags).forEach(property => {
+      let metaTag = document.querySelector(`meta[property="${property}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('property', property);
+        document.head.appendChild(metaTag);
+      }
+      metaTag.content = ogTags[property];
+    });
   }, []);
 
   return (

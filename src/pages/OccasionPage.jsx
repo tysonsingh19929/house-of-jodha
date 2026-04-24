@@ -184,6 +184,28 @@ export default function OccasionPage({
   }, [occasionKey]);
 
   useEffect(() => {
+    document.title = `${d.name} Collection | The Sringar House`;
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+    const description = d.description ? `${d.description} Shop the exclusive ${d.name} collection at The Sringar House.` : `Explore the exclusive ${d.name} collection at The Sringar House.`;
+    metaDesc.content = description;
+
+    const ogTags = {
+      "og:title": `${d.name} Collection | The Sringar House`,
+      "og:description": description,
+      "og:image": "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp",
+      "og:url": window.location.href,
+      "og:type": "website"
+    };
+
+    Object.keys(ogTags).forEach(property => {
+      let metaTag = document.querySelector(`meta[property="${property}"]`);
+      if (!metaTag) { metaTag = document.createElement('meta'); metaTag.setAttribute('property', property); document.head.appendChild(metaTag); }
+      metaTag.content = ogTags[property];
+    });
+  }, [d]);
+
+  useEffect(() => {
     const handleOutsideClick = (e) => {
       if (e.target.closest('.m-mobile-action-btn')) return;
       if (e.target.closest('.myntra-sidebar-inner')) return;
