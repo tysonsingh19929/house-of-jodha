@@ -962,6 +962,40 @@ export default function AdminPanel() {
         </div>
       )}
 
+      {/* PASSWORD MODAL */}
+      {passwordModal.isOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ backgroundColor: "#fff", borderRadius: "20px", width: "100%", maxWidth: "400px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)", animation: "slideUp 0.3s ease" }}>
+            <div style={{ padding: "24px 32px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 style={{ margin: 0, fontSize: "20px", color: "#0f172a" }}>Seller Password</h2>
+              <button onClick={() => setPasswordModal({ isOpen: false, sellerId: null, newPassword: "", show: false })} style={{ background: "none", border: "none", fontSize: "24px", color: "#94a3b8", cursor: "pointer", padding: "4px" }}>&times;</button>
+            </div>
+            <div style={{ padding: "32px" }}>
+              <form onSubmit={handleUpdateSellerPassword} style={{ display: "grid", gap: "20px" }}>
+                <div>
+                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Current / New Password</label>
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type={passwordModal.show ? "text" : "password"}
+                      value={passwordModal.newPassword}
+                      onChange={e => setPasswordModal({ ...passwordModal, newPassword: e.target.value })}
+                      style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "15px", outline: "none", boxSizing: "border-box", paddingRight: "40px" }}
+                      required
+                    />
+                    <button type="button" onClick={() => setPasswordModal({ ...passwordModal, show: !passwordModal.show })} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "16px", padding: 0 }}>
+                      {passwordModal.show ? "🙈" : "👁️"}
+                    </button>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                  <button type="submit" style={{ flex: 1, padding: "12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>Save Password</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
     </div>
   );
