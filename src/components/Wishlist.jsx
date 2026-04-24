@@ -34,7 +34,7 @@ export default function Wishlist({ items, onRemove, onClose, onAddToCart }) {
         width: isMobile ? "100%" : "400px",
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0,0,0,0.15)",
-        zIndex: "9997",
+        zIndex: "10005",
         display: "flex", flexDirection: "column",
         animation: "slideIn 0.3s ease-out",
         overflowY: "hidden"
