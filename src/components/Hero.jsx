@@ -166,7 +166,7 @@ export default function Hero() {
       style={{
         position: "relative",
         width: "100%",
-        height: isMobile ? "220px" : "420px",
+        height: isMobile ? "264px" : "504px",
         overflow: "hidden",
         userSelect: "none",
         touchAction: "pan-y",
