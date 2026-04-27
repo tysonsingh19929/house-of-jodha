@@ -175,14 +175,14 @@ router.post('/message', async (req, res) => {
           break; // Success
         } catch (error) {
           attempt++;
-          // Check if it's a 429 Too Many Requests error
-          const isRateLimit = error.status === 429 || (error.message && error.message.includes('429'));
-          if (attempt >= MAX_RETRIES || !isRateLimit) {
+          // Check if it's a 429 Too Many Requests error or 503 Service Unavailable
+          const isTransientError = error.status === 429 || error.status === 503 || (error.message && (error.message.includes('429') || error.message.includes('503')));
+          if (attempt >= MAX_RETRIES || !isTransientError) {
             throw error; // Let the outer catch handle it
           }
           // Exponential backoff: 1000ms, 2000ms, 4000ms + random jitter
           const delay = Math.pow(2, attempt - 1) * 1000 + Math.random() * 500;
-          console.warn(`⚠️ Gemini API rate limit hit. Retrying in ${Math.round(delay)}ms (Attempt ${attempt}/${MAX_RETRIES})...`);
+          console.warn(`⚠️ Gemini API transient error hit. Retrying in ${Math.round(delay)}ms (Attempt ${attempt}/${MAX_RETRIES})...`);
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
@@ -193,7 +193,7 @@ router.post('/message', async (req, res) => {
 
       const errorMessage = geminiError.message || "";
       const isExpiredKey = errorMessage.includes('API key expired') || errorMessage.includes('API_KEY_INVALID') || errorMessage.includes('400');
-      const isRateLimit = errorMessage.includes('429') || errorMessage.includes('Too Many Requests');
+      const isRateLimit = errorMessage.includes('429') || errorMessage.includes('Too Many Requests') || errorMessage.includes('503') || errorMessage.includes('Service Unavailable') || errorMessage.includes('high demand');
 
       if (isExpiredKey) {
         responseText = `Apologies, love, my connection seems to have a configuration issue (API Key Expired). Please notify the store administrator to update the API key in the settings. Meanwhile, I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11`;
