@@ -76,12 +76,12 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       ),
       label: "Women's Ethnic Wear",
       subItems: [
-        { label: "Lehengas", path: "/collection/lehenga" },
-        { label: "Sarees", path: "/collection/saree" },
-        { label: "Anarkalis", path: "/collection/anarkali" },
-        { label: "Salwar Kameez", path: "/collection/salwarkameez" },
-        { label: "Ghararas", path: "/collection/gharara" },
-        { label: "Shararas", path: "/collection/sharara" }
+        { label: "Lehengas", path: "/?category=Lehenga#products" },
+        { label: "Sarees", path: "/?category=Saree#products" },
+        { label: "Anarkalis", path: "/?category=Anarkali#products" },
+        { label: "Salwar Kameez", path: "/?category=Salwar Kameez#products" },
+        { label: "Ghararas", path: "/?category=Gharara#products" },
+        { label: "Shararas", path: "/?category=Sharara#products" }
       ]
     },
     {
@@ -97,11 +97,11 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
       ),
       label: "Fine Jewellery",
       subItems: [
-        { label: "Necklaces", path: "/collection/necklaces" },
-        { label: "Earrings", path: "/collection/earrings" },
-        { label: "Rings", path: "/collection/rings" },
-        { label: "Bracelets & Bangles", path: "/collection/bracelets" },
-        { label: "Bridal Sets", path: "/collection/bridal sets" }
+        { label: "Necklaces", path: "/?category=Necklaces#products" },
+        { label: "Earrings", path: "/?category=Earrings#products" },
+        { label: "Rings", path: "/?category=Rings#products" },
+        { label: "Bracelets & Bangles", path: "/?category=Bracelets#products" },
+        { label: "Bridal Sets", path: "/?category=Bridal Sets#products" }
       ]
     },
     {
@@ -359,6 +359,12 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
                               e.stopPropagation();
                               setMenuOpen(false);
                               navigate(sub.path);
+                              if (sub.path.includes("#")) {
+                                setTimeout(() => {
+                                  const id = sub.path.split("#")[1];
+                                  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                                }, 100);
+                              }
                             }}
                             style={{
                               padding: "10px 12px",

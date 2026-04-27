@@ -25,13 +25,13 @@ export default function Footer() {
   };
 
   const handleCollectionClick = (collection) => {
-    const collectionMap = {
-      "Lehenga": "lehenga",
-      "Saree": "saree",
-      "Anarkali": "anarkali",
-      "Salwar Kameez": "salwarkameez"
-    };
-    navigate(`/collection/${collectionMap[collection]}`);
+    navigate(`/?category=${collection}#products`);
+    setTimeout(() => {
+      const productsSection = document.getElementById("products");
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   const handleSocialClick = (platform) => {

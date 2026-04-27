@@ -163,6 +163,8 @@ export default function SearchResults({
   const [sortBy, setSortBy] = useState('featured');
   const [priceFilter, setPriceFilter] = useState('all');
   const [colorFilter, setColorFilter] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [expandedFilterMenu, setExpandedFilterMenu] = useState("Women's Ethnic Wear");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSort, setShowMobileSort] = useState(false);
 
@@ -263,6 +265,10 @@ export default function SearchResults({
       return { ...product, id: idToUse, image: product.image || imageDatabase.lehenga[0] };
     });
 
+    if (selectedCategory !== "All") {
+      res = res.filter(p => p.category === selectedCategory);
+    }
+
     if (priceFilter === 'under-5000') res = res.filter(p => p.price < 5000);
     else if (priceFilter === '5000-10000') res = res.filter(p => p.price >= 5000 && p.price <= 10000);
     else if (priceFilter === 'over-10000') res = res.filter(p => p.price > 10000);
@@ -300,13 +306,13 @@ export default function SearchResults({
         .myntra-sort { display: flex; align-items: center; padding: 10px 14px; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; cursor: pointer; background: #fff; }
         .myntra-sort-select { border: none; outline: none; font-weight: 700; color: #282c3f; background: transparent; cursor: pointer; margin-left: 6px; font-family: 'Assistant', sans-serif; }
         .myntra-filter-header { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; padding-bottom: 16px; border-bottom: 1px solid #eaeaec; text-transform: uppercase; }
-        .myntra-filter-clear { font-size: 12px; color: #ff3f6c; font-weight: 700; cursor: pointer; border: none; background: none; text-transform: uppercase; }
+        .myntra-filter-clear { font-size: 12px; color: #B8860B; font-weight: 700; cursor: pointer; border: none; background: none; text-transform: uppercase; }
         .myntra-filter-sec { padding: 20px 0; border-bottom: 1px solid #eaeaec; }
         .myntra-filter-title { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
         .myntra-radio-label { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #282c3f; margin-bottom: 12px; cursor: pointer; }
-        .myntra-radio-label:hover { background: #f4f4f5; }
+        .myntra-radio-label:hover { background: #fdf8ee; color: #B8860B; }
         .myntra-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #c3c4c6; border-radius: 2px; cursor: pointer; position: relative; margin: 0; }
-        .myntra-radio:checked { background-color: #ff3f6c; border-color: #ff3f6c; }
+        .myntra-radio:checked { background-color: #B8860B; border-color: #B8860B; }
         .myntra-radio:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         .myntra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 20px; }
         .m-card-wrapper { position: relative; }
@@ -317,20 +323,20 @@ export default function SearchResults({
         .m-rating { position: absolute; bottom: 12px; left: 12px; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); font-size: 12px; font-weight: 700; padding: 4px 6px; border-radius: 2px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; }
         .m-wish { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: #fff; border: 1px solid #d4d5d9; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #282c3f; opacity: 0; transition: all 0.2s ease; z-index: 3; }
         .m-card:hover .m-wish { opacity: 1; }
-        .m-wish:hover { background: #ff3f6c; color: #fff; border-color: #ff3f6c; }
-        .m-wish.active { color: #ff3f6c; opacity: 1; border-color: #ff3f6c; background: #fff; }
-        .m-wish.active:hover { background: #ff3f6c; color: #fff; }
+        .m-wish:hover { background: #E91E63; color: #fff; border-color: #E91E63; }
+        .m-wish.active { color: #E91E63; opacity: 1; border-color: #E91E63; background: #fff; }
+        .m-wish.active:hover { background: #E91E63; color: #fff; }
         .m-info { padding: 12px 10px 0; background: #fff; }
         .m-brand { font-size: 16px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .m-title { font-size: 14px; color: #535766; margin: 0 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
         .m-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
         .m-price { font-size: 14px; font-weight: 700; }
         .m-orig { font-size: 12px; color: #7e818c; text-decoration: line-through; }
-        .m-disc { font-size: 12px; font-weight: 700; color: #ff905a; }
+        .m-disc { font-size: 11px; font-weight: 700; color: #B8860B; padding: 2px 6px; background: #fdf8ee; border-radius: 4px; }
         .m-actions { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 10px; box-shadow: 0 10px 16px 4px rgba(40,44,63,0.07); border-top: 1px solid #eaeaec; z-index: 10; }
         .m-card:hover .m-actions { display: block; }
-        .m-btn { width: 100%; padding: 10px; background: #fff; color: #ff3f6c; border: 1px solid #d4d5d9; border-radius: 2px; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .m-btn:hover { border-color: #ff3f6c; }
+        .m-btn { width: 100%; padding: 10px; background: #fff; color: #1a1a1a; border: 1px solid #1a1a1a; border-radius: 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .m-btn:hover { border-color: #B8860B; background: #B8860B; color: #fff; }
         .m-qty-row { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
         .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 2px; }
         .m-qty-num { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #282c3f; }
@@ -361,7 +367,7 @@ export default function SearchResults({
           .m-price-row { gap: 4px; }
           .m-price { font-size: 14px; }
           .m-orig { font-size: 11px; }
-          .m-disc { font-size: 10px; padding: 1px 4px; background: #fff0f6; border-radius: 4px; }
+          .m-disc { font-size: 10px; padding: 1px 4px; background: #fdf8ee; color: #B8860B; border-radius: 4px; display: inline-block; }
           .m-btn { font-size: 12px; padding: 8px; }
           .m-qty-btn { padding: 6px; font-size: 14px; }
           .m-rating { font-size: 10px; padding: 3px 5px; bottom: 8px; left: 8px; }
@@ -458,7 +464,97 @@ export default function SearchResults({
                 </div>
                 <div className="myntra-filter-header">
                   FILTERS
-                  <button className="myntra-filter-clear" onClick={() => { setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
+                  <button className="myntra-filter-clear" onClick={() => { setSelectedCategory("All"); setPriceFilter("all"); setColorFilter("all"); }}>CLEAR ALL</button>
+                </div>
+
+                <div className="myntra-filter-sec" style={{ padding: "16px 0" }}>
+                  <div className="myntra-filter-title" style={{ padding: "0 20px" }}>Categories</div>
+
+                  {[
+                    {
+                      label: "Women's Ethnic Wear",
+                      icon: (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2l2.4 7.4L22 12l-7.6 2.6L12 22l-2.4-7.4L2 12l7.6-2.6L12 2z" />
+                        </svg>
+                      ),
+                      options: ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara"]
+                    },
+                    {
+                      label: "Fine Jewellery",
+                      icon: (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+                          <path d="M2 9h20" />
+                          <path d="M12 21l-4-12" />
+                          <path d="M12 21l4-12" />
+                          <path d="M6 3l2 6" />
+                          <path d="M18 3l-2 6" />
+                        </svg>
+                      ),
+                      options: ["Necklaces", "Earrings", "Rings", "Bracelets", "Bridal Sets"]
+                    }
+                  ].map(group => {
+                    const isExpanded = expandedFilterMenu === group.label;
+                    return (
+                      <div key={group.label} style={{ marginBottom: "4px", padding: "0 12px" }}>
+                        <div
+                          onClick={() => setExpandedFilterMenu(isExpanded ? null : group.label)}
+                          style={{
+                            display: "flex", justifyContent: "space-between", alignItems: "center",
+                            padding: "10px 12px", background: isExpanded ? "#fdf8ee" : "transparent",
+                            color: isExpanded ? "#B8860B" : "#282c3f",
+                            borderRadius: "8px", cursor: "pointer",
+                            fontWeight: "600", fontSize: "14px", transition: "all 0.2s"
+                          }}
+                          onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = "#f8f9fa"; }}
+                          onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = "transparent"; }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            {group.icon}
+                            {group.label}
+                          </div>
+                          <svg style={{ transform: isExpanded ? "rotate(-180deg)" : "rotate(0deg)", transition: "transform 0.3s" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+
+                        <div style={{
+                          maxHeight: isExpanded ? "300px" : "0", overflow: "hidden", transition: "max-height 0.3s ease-in-out",
+                          paddingLeft: "34px"
+                        }}>
+                          <div style={{ padding: "8px 0" }}>
+                            {group.options.map(cat => (
+                              <label key={cat} style={{
+                                display: "flex", alignItems: "center", gap: "10px",
+                                padding: "6px 0", cursor: "pointer", fontSize: "13px",
+                                color: selectedCategory === cat ? "#B8860B" : "#555",
+                                fontWeight: selectedCategory === cat ? "600" : "500",
+                                transition: "all 0.2s"
+                              }}
+                                onMouseEnter={e => { if (selectedCategory !== cat) e.currentTarget.style.color = "#B8860B"; e.currentTarget.style.transform = "translateX(4px)"; }}
+                                onMouseLeave={e => { if (selectedCategory !== cat) e.currentTarget.style.color = "#555"; e.currentTarget.style.transform = "translateX(0)"; }}
+                              >
+                                <input
+                                  type="radio"
+                                  name="category_filter"
+                                  checked={selectedCategory === cat}
+                                  onChange={() => { setSelectedCategory(cat); if (typeof setCurrentPage !== "undefined") { setCurrentPage(1); } }}
+                                  style={{
+                                    appearance: "none", width: "14px", height: "14px",
+                                    border: selectedCategory === cat ? "4px solid #B8860B" : "1px solid #cbd5e1",
+                                    borderRadius: "50%", cursor: "pointer", transition: "all 0.2s",
+                                    margin: 0, flexShrink: 0
+                                  }}
+                                />
+                                {cat}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="myntra-filter-sec">
