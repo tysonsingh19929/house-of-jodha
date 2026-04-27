@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, onWishlistClick }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [expandedMenu, setExpandedMenu] = React.useState(null);
   const navigate = useNavigate();
   const navbarRef = React.useRef(null);
 
@@ -74,7 +75,14 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
         </svg>
       ),
       label: "Women's Ethnic Wear",
-      path: "/#products",
+      subItems: [
+        { label: "Lehengas", path: "/collection/lehenga" },
+        { label: "Sarees", path: "/collection/saree" },
+        { label: "Anarkalis", path: "/collection/anarkali" },
+        { label: "Salwar Kameez", path: "/collection/salwarkameez" },
+        { label: "Ghararas", path: "/collection/gharara" },
+        { label: "Shararas", path: "/collection/sharara" }
+      ]
     },
     {
       icon: (
@@ -88,7 +96,13 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
         </svg>
       ),
       label: "Fine Jewellery",
-      path: "/occasion/jewellery",
+      subItems: [
+        { label: "Necklaces", path: "/collection/necklaces" },
+        { label: "Earrings", path: "/collection/earrings" },
+        { label: "Rings", path: "/collection/rings" },
+        { label: "Bracelets & Bangles", path: "/collection/bracelets" },
+        { label: "Bridal Sets", path: "/collection/bridal sets" }
+      ]
     },
     {
       icon: (
@@ -255,59 +269,120 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
             }} />
 
             <div style={{ padding: "8px 0" }}>
-              {navItems.map((item, i) => (
-                <div
-                  key={item.label}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    if (item.path.startsWith("/#")) {
-                      navigate(item.path);
-                      setTimeout(() => {
-                        const id = item.path.split("#")[1];
-                        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-                      }, 100);
-                    } else {
-                      navigate(item.path);
-                    }
-                  }}
-                  style={{
-                    ...dropdownItemStyle,
-                    animationDelay: `${i * 40}ms`,
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = "#fdf8ee";
-                    e.currentTarget.style.color = "#B8860B";
-                    e.currentTarget.querySelector(".nav-icon").style.color = "#B8860B";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.color = "#333";
-                    e.currentTarget.querySelector(".nav-icon").style.color = "#888";
-                  }}
-                >
-                  <span
-                    className="nav-icon"
-                    style={{
-                      width: "36px", height: "36px",
-                      background: "#f7f7f7",
-                      borderRadius: "10px",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      color: "#888",
-                      flexShrink: 0,
-                      transition: "color 0.2s",
-                    }}
-                  >
-                    {item.icon}
-                  </span>
-                  <span style={{ fontWeight: "600", fontSize: "14px", letterSpacing: "0.3px" }}>
-                    {item.label}
-                  </span>
-                  {/* Chevron */}
-                  <svg style={{ marginLeft: "auto", opacity: 0.3 }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </div>
-              ))}
+              <style>{`
+              @keyframes slideDownSub {
+                from { opacity: 0; transform: translateY(-5px); }
+                to { opacity: 1; transform: translateY(0); }
+              }
+            `}</style>
+              {navItems.map((item, i) => {
+                const hasSub = !!item.subItems;
+                const isExpanded = expandedMenu === item.label;
+                return (
+                  <React.Fragment key={item.label}>
+                    <div
+                      onClick={() => {
+                        if (hasSub) {
+                          setExpandedMenu(isExpanded ? null : item.label);
+                        } else {
+                          setMenuOpen(false);
+                          if (item.path.startsWith("/#")) {
+                            navigate(item.path);
+                            setTimeout(() => {
+                              const id = item.path.split("#")[1];
+                              document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                            }, 100);
+                          } else {
+                            navigate(item.path);
+                          }
+                        }
+                      }}
+                      style={{
+                        ...dropdownItemStyle,
+                        animationDelay: `${i * 40}ms`,
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = "#fdf8ee";
+                        e.currentTarget.style.color = "#B8860B";
+                        e.currentTarget.querySelector(".nav-icon").style.color = "#B8860B";
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.color = "#333";
+                        e.currentTarget.querySelector(".nav-icon").style.color = "#888";
+                      }}
+                    >
+                      <span
+                        className="nav-icon"
+                        style={{
+                          width: "36px", height: "36px",
+                          background: "#f7f7f7",
+                          borderRadius: "10px",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#888",
+                          flexShrink: 0,
+                          transition: "color 0.2s",
+                        }}
+                      >
+                        {item.icon}
+                      </span>
+                      <span style={{ fontWeight: "600", fontSize: "14px", letterSpacing: "0.3px" }}>
+                        {item.label}
+                      </span>
+                      {/* Chevron */}
+                      <svg
+                        style={{
+                          marginLeft: "auto",
+                          opacity: 0.4,
+                          transform: hasSub ? (isExpanded ? "rotate(-90deg)" : "rotate(90deg)") : "none",
+                          transition: "transform 0.3s ease"
+                        }}
+                        width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </div>
+
+                    {hasSub && isExpanded && (
+                      <div style={{
+                        background: "#fafafa",
+                        padding: "8px 0 8px 46px",
+                        borderLeft: "2px solid #D4AF37",
+                        marginLeft: "24px",
+                        marginBottom: "8px",
+                        animation: "slideDownSub 0.2s ease-out"
+                      }}>
+                        {item.subItems.map(sub => (
+                          <div
+                            key={sub.label}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMenuOpen(false);
+                              navigate(sub.path);
+                            }}
+                            style={{
+                              padding: "10px 12px",
+                              cursor: "pointer",
+                              fontSize: "13px",
+                              color: "#555",
+                              transition: "all 0.2s",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px",
+                              fontWeight: "500"
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.color = "#B8860B"; e.currentTarget.style.transform = "translateX(4px)"; }}
+                            onMouseLeave={e => { e.currentTarget.style.color = "#555"; e.currentTarget.style.transform = "translateX(0)"; }}
+                          >
+                            <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#D4AF37" }} />
+                            {sub.label}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </div>
 
             {/* Become a Partner Call to Action */}
