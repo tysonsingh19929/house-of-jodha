@@ -383,6 +383,54 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
 
+      {/* LUX PASS Ticker */}
+      <div className="lux-marquee-wrapper" style={{
+        position: "relative",
+        maxWidth: "600px",
+        margin: "0 auto 16px auto",
+        height: "38px",
+        background: "linear-gradient(90deg, #fdf8ee, #fff, #fdf8ee)",
+        borderRadius: "8px",
+        border: "1px solid rgba(212, 175, 55, 0.2)",
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+        boxShadow: "0 4px 12px rgba(212, 175, 55, 0.05)",
+        cursor: "pointer"
+      }}>
+        <style>{`
+          @keyframes luxMarquee {
+            0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+          }
+          .lux-marquee-content {
+                    display: flex;
+                    width: max-content;
+                    animation: luxMarquee 15s linear infinite;
+            will-change: transform;
+          }
+          .lux-marquee-wrapper:hover .lux-marquee-content {
+            animation-play-state: paused;
+          }
+                  .lux-marquee-item {
+                    padding-right: 40px;
+                    white-space: nowrap;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #555;
+                    letter-spacing: 0.5px;
+                  }
+        `}</style>
+        <div className="lux-marquee-content">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="lux-marquee-item">
+              <span style={{ color: "#B8860B", fontSize: "14px", verticalAlign: "middle", marginRight: "6px" }}>✦</span>
+              GET <span style={{ color: "#1a1a1a", fontWeight: "800" }}>LUX PASS</span> FOR JUST ₹1 — ENJOY <span style={{ color: "#B8860B", fontWeight: "800" }}>10% OFF</span> EVERY ORDER & EARLY UPDATES ON NEW ARRIVALS
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Search Bar — navigates to /search */}
       <form ref={searchWrapperRef} onSubmit={(e) => handleSearchSubmit(e)} style={{ position: "relative", maxWidth: "600px", margin: isMobile ? "0 auto 16px auto" : "0 auto 32px auto" }}>
         <div style={{
