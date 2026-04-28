@@ -383,50 +383,6 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
 
-      {/* Sleek Running Ticker */}
-      <div style={{
-        maxWidth: "600px",
-        margin: isMobile ? "0 auto 16px auto" : "0 auto 24px auto",
-        background: "linear-gradient(90deg, #111, #1a1a1a, #111)",
-        borderRadius: "30px",
-        padding: isMobile ? "10px 0" : "12px 0",
-        overflow: "hidden",
-        position: "relative",
-        border: "1px solid rgba(212, 175, 55, 0.4)",
-        boxShadow: "0 8px 24px rgba(212, 175, 55, 0.15)",
-        display: "flex",
-        alignItems: "center",
-      }}>
-        <style>{`
-          @keyframes scrollSeamless {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-          }
-        `}</style>
-        <div style={{
-          display: "flex",
-          whiteSpace: "nowrap",
-          animation: "scrollSeamless 15s linear infinite",
-          width: "max-content",
-        }}>
-          {[...Array(4)].map((_, i) => (
-            <div key={i} style={{
-              display: "flex",
-              alignItems: "center",
-              paddingRight: "40px",
-              fontSize: isMobile ? "11px" : "13px",
-              fontWeight: "700",
-              color: "#fff",
-              letterSpacing: "1px",
-              textTransform: "uppercase"
-            }}>
-              <span style={{ color: "#D4AF37", marginRight: "12px", fontSize: "16px" }}>✦</span>
-              Get Extra <span style={{ color: "#D4AF37", margin: "0 6px", fontSize: isMobile ? "13px" : "15px" }}>10% OFF</span> on every order for just <span style={{ background: "linear-gradient(135deg, #D4AF37, #AA8A2A)", color: "#fff", padding: "4px 10px", borderRadius: "12px", margin: "0 8px", fontSize: isMobile ? "10px" : "12px", boxShadow: "0 2px 8px rgba(212,175,55,0.4)", letterSpacing: "0.5px" }}>Rs 10 Pass</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Search Bar — navigates to /search */}
       <form ref={searchWrapperRef} onSubmit={(e) => handleSearchSubmit(e)} style={{ position: "relative", maxWidth: "600px", margin: isMobile ? "0 auto 16px auto" : "0 auto 32px auto" }}>
         <div style={{
