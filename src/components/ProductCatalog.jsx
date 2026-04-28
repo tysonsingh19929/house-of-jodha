@@ -389,13 +389,13 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         maxWidth: "600px",
         margin: "0 auto 16px auto",
         height: "38px",
-        background: "linear-gradient(90deg, #fdf8ee, #fff, #fdf8ee)",
+        background: "linear-gradient(90deg, #fff0f6, #fff, #fff0f6)",
         borderRadius: "8px",
-        border: "1px solid rgba(212, 175, 55, 0.2)",
+        border: "1px solid rgba(233, 30, 99, 0.2)",
         display: "flex",
         alignItems: "center",
         overflow: "hidden",
-        boxShadow: "0 4px 12px rgba(212, 175, 55, 0.05)",
+        boxShadow: "0 4px 12px rgba(233, 30, 99, 0.05)",
         cursor: "pointer"
       }}>
         <style>{`
@@ -424,8 +424,8 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         <div className="lux-marquee-content">
           {[...Array(2)].map((_, i) => (
             <div key={i} className="lux-marquee-item">
-              <span style={{ color: "#B8860B", fontSize: "14px", verticalAlign: "middle", marginRight: "6px" }}>✦</span>
-              GET <span style={{ color: "#1a1a1a", fontWeight: "800" }}>LUX PASS</span> FOR JUST ₹1 — ENJOY <span style={{ color: "#B8860B", fontWeight: "800" }}>10% OFF</span> EVERY ORDER & EARLY UPDATES ON NEW ARRIVALS
+              <span style={{ color: "#E91E63", fontSize: "14px", verticalAlign: "middle", marginRight: "6px" }}>✦</span>
+              GET <span style={{ color: "#1a1a1a", fontWeight: "800" }}>LUX PASS</span> FOR JUST ₹1 — ENJOY <span style={{ color: "#E91E63", fontWeight: "800" }}>10% OFF</span> EVERY ORDER & EARLY UPDATES ON NEW ARRIVALS
             </div>
           ))}
         </div>
