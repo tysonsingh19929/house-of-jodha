@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gift Concierge | The Sringar House</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #08060d;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 10% 20%, rgba(184, 68, 141, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 40%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      background: rgba(18, 16, 25, 0.75);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    /* Header Nav (Close / Back) */
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      visibility: hidden; /* Hidden in step 0 */
+    }
+
+    .btn-back:hover {
+      color: #D4AF37;
+    }
+
+    .btn-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-close:hover {
+      background: rgba(212, 175, 55, 0.2);
+      color: #D4AF37;
+      transform: rotate(90deg);
+    }
+
+    /* Progress bar */
+    .progress-wrapper {
+      margin-bottom: 32px;
+      display: none; /* Hidden in step 0 */
+    }
+
+    .progress-text {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #D4AF37;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #D4AF37, #F5B041);
+      width: 0%;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Step display */
+    .step-section {
+      display: none;
+    }
+
+    .step-section.active {
+      display: block;
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .title-center {
+      text-align: center;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .subtitle-center {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* Step 0: Bifurcated choice cards */
+    .bifurcated-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .bifurcated-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 36px 24px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: space-between;
+      min-height: 280px;
+    }
+
+    .bifurcated-card:hover {
+      background: rgba(212, 175, 55, 0.06);
+      border-color: rgba(212, 175, 55, 0.6);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.15);
+      transform: translateY(-8px);
+    }
+
+    .bifurcated-card.gold-themed {
+      background: rgba(212, 175, 55, 0.03);
+      border-color: rgba(212, 175, 55, 0.2);
+    }
+
+    .bifurcated-card.gold-themed:hover {
+      background: rgba(212, 175, 55, 0.08);
+      border-color: rgba(212, 175, 55, 1);
+    }
+
+    .bifurcated-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    .bifurcated-card:hover .bifurcated-icon {
+      background: rgba(212, 175, 55, 0.15);
+      color: #D4AF37;
+      transform: scale(1.1);
+    }
+
+    .bifurcated-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .bifurcated-card-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .bifurcated-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      border-radius: 20px;
+      padding: 8px 24px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .bifurcated-card:hover .bifurcated-btn {
+      border-color: #fff;
+      background: #fff;
+      color: #121019;
+    }
+
+    .bifurcated-card.gold-themed .bifurcated-btn {
+      border-color: rgba(212, 175, 55, 0.5);
+      color: #D4AF37;
+    }
+
+    .bifurcated-card.gold-themed:hover .bifurcated-btn {
+      background: #D4AF37;
+      border-color: #D4AF37;
+      color: #121019;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Option selection grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .option-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .option-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(212, 175, 55, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .option-card.selected {
+      background: rgba(212, 175, 55, 0.08);
+      border-color: #D4AF37;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .option-icon {
+      font-size: 24px;
+    }
+
+    .option-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Text fields, forms */
+    .custom-input-group {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .custom-input-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 600;
+    }
+
+    .custom-text-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .custom-text-input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: #D4AF37;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+    }
+
+    /* Sizing options layout */
+    .sizing-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sizing-container {
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .sizing-container.selected {
+      border-color: #D4AF37;
+      background: rgba(212, 175, 55, 0.03);
+    }
+
+    .sizing-radio-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sizing-radio-header strong {
+      font-size: 14px;
+    }
+
+    .sizing-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-left: 24px;
+      margin-top: 4px;
+    }
+
+    .sizing-inner-content {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .sizing-container.selected .sizing-inner-content {
+      display: block;
+    }
+
+    .size-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+
+    .size-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px 0;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .size-btn.selected {
+      background: rgba(212, 175, 55, 0.12);
+      border-color: #D4AF37;
+      color: #D4AF37;
+    }
+
+    .contact-fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Buttons */
+    .action-btn {
+      background: #D4AF37;
+      color: #121019;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .action-btn:hover {
+      background: #f5c43d;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .action-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .action-btn-whatsapp {
+      background: #25D366;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+
+    .action-btn-whatsapp:hover {
+      background: #20ba56;
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        width: 100%;
+      }
+
+      .bifurcated-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .bifurcated-card {
+        min-height: 200px;
+        padding: 24px 16px;
+      }
+
+      .bifurcated-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 12px;
+      }
+
+      .bifurcated-card-title {
+        font-size: 18px;
+      }
+
+      .bifurcated-card-desc {
+        margin-bottom: 16px;
+        font-size: 12px;
+      }
+
+      .contact-fields-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .options-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .size-btn-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-nav">
+      <button class="btn-back" id="btnBack" onclick="prevStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style="display:inline-block; vertical-align:middle;">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+      </button>
+      <button class="btn-close" onclick="closeWizard()" aria-label="Close wizard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="progress-wrapper" id="progressWrapper">
+      <div class="progress-text">
+        <span>Gift Concierge</span>
+        <span id="stepIndicator">Step 1 of 5</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- STEP 0: Bifurcated Landing -->
+    <div class="step-section active" id="step0">
+      <h2 class="title title-center">Welcome to The Sringar House</h2>
+      <p class="subtitle subtitle-center">Select your luxury shopping experience today</p>
+      
+      <div class="bifurcated-grid">
+        <div class="bifurcated-card" onclick="shopForSelf()">
+          <div class="bifurcated-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="bifurcated-card-title">Shopping for Myself</h3>
+            <p class="bifurcated-card-desc">Browse our standard collections of premium lehengas, sarees, and fine jewellery.</p>
+          </div>
+          <button class="bifurcated-btn">Explore Catalog</button>
+        </div>
+
+        <div class="bifurcated-card gold-themed" onclick="startGifting()">
+          <div class="bifurcated-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 12v10H4V12"></path>
+              <path d="M2 7h20v5H2z"></path>
+              <path d="M12 22V7"></path>
+              <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+              <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="bifurcated-card-title" style="color: #D4AF37;">Gifting Someone Special</h3>
+            <p class="bifurcated-card-desc">Let our Gift Concierge find the perfect outfit & match standard sizing directly.</p>
+          </div>
+          <button class="bifurcated-btn">Launch Concierge</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Recipient Selection -->
+    <div class="step-section" id="step1">
+      <h3 class="title">Who is the lucky recipient?</h3>
+      <p class="subtitle">Help us narrow down styles suited for them</p>
+      
+      <div class="options-grid">
+        <div class="option-card" onclick="selectOption('recipient', 'Spouse', this)">
+          <span class="option-icon">💍</span>
+          <span class="option-label">Spouse</span>
+        </div>
+        <div class="option-card" onclick="selectOption('recipient', 'Mother', this)">
+          <span class="option-icon">👩</span>
+          <span class="option-label">Mother</span>
+        </div>
+        <div class="option-card" onclick="selectOption('recipient', 'Bride', this)">
+          <span class="option-icon">👰</span>
+          <span class="option-label">Bride</span>
+        </div>
+        <div class="option-card" onclick="selectOption('recipient', 'Friend', this)">
+          <span class="option-icon">👭</span>
+          <span class="option-label">Friend</span>
+        </div>
+        <div class="option-card" onclick="selectOption('recipient', 'Other', this)">
+          <span class="option-icon">✏️</span>
+          <span class="option-label">Other</span>
+        </div>
+      </div>
+
+      <div class="custom-input-group" id="recipientCustomGroup" style="display: none;">
+        <label class="custom-input-label">Specify Recipient Relationship</label>
+        <input type="text" id="recipientCustom" placeholder="e.g. Sister, Daughter, Mother-in-law" class="custom-text-input" oninput="validateCurrentStep()">
+      </div>
+
+      <button class="action-btn" id="btnNext1" disabled onclick="nextStep()">Continue</button>
+    </div>
+
+    <!-- STEP 2: Occasion Selection -->
+    <div class="step-section" id="step2">
+      <h3 class="title">What is the occasion?</h3>
+      <p class="subtitle">Celebrate in style matching the event vibe</p>
+      
+      <div class="options-grid">
+        <div class="option-card" onclick="selectOption('occasion', 'Wedding', this)">
+          <span class="option-icon">💍</span>
+          <span class="option-label">Wedding</span>
+        </div>
+        <div class="option-card" onclick="selectOption('occasion', 'Anniversary', this)">
+          <span class="option-icon">🎂</span>
+          <span class="option-label">Anniversary</span>
+        </div>
+        <div class="option-card" onclick="selectOption('occasion', 'Milestone Celebration', this)">
+          <span class="option-icon">✨</span>
+          <span class="option-label">Milestone</span>
+        </div>
+        <div class="option-card" onclick="selectOption('occasion', 'Urgent Apology / Last-Minute', this)">
+          <span class="option-icon">💐</span>
+          <span class="option-label">Urgent Apology</span>
+        </div>
+        <div class="option-card" onclick="selectOption('occasion', 'Other', this)">
+          <span class="option-icon">✏️</span>
+          <span class="option-label">Other</span>
+        </div>
+      </div>
+
+      <div class="custom-input-group" id="occasionCustomGroup" style="display: none;">
+        <label class="custom-input-label">Specify Occasion</label>
+        <input type="text" id="occasionCustom" placeholder="e.g. Mehendi, Birthday, Baby Shower" class="custom-text-input" oninput="validateCurrentStep()">
+      </div>
+
+      <button class="action-btn" id="btnNext2" disabled onclick="nextStep()">Continue</button>
+    </div>
+
+    <!-- STEP 3: Style Preference -->
+    <div class="step-section" id="step3">
+      <h3 class="title">What is their style preference?</h3>
+      <p class="subtitle">Choose the silhouette details they love</p>
+      
+      <div class="options-grid">
+        <div class="option-card" onclick="selectOption('style', 'Traditional Silk', this)">
+          <span class="option-icon">🧵</span>
+          <span class="option-label">Traditional Silk</span>
+        </div>
+        <div class="option-card" onclick="selectOption('style', 'Modern Minimalist', this)">
+          <span class="option-icon">💎</span>
+          <span class="option-label">Modern Minimalist</span>
+        </div>
+        <div class="option-card" onclick="selectOption('style', 'Heavily Embroidered', this)">
+          <span class="option-icon">✨</span>
+          <span class="option-label">Embroidered</span>
+        </div>
+        <div class="option-card" onclick="selectOption('style', 'Other', this)">
+          <span class="option-icon">✏️</span>
+          <span class="option-label">Other</span>
+        </div>
+      </div>
+
+      <div class="custom-input-group" id="styleCustomGroup" style="display: none;">
+        <label class="custom-input-label">Specify Style Details</label>
+        <input type="text" id="styleCustom" placeholder="e.g. Pastel organza floral, Indo-western fusion" class="custom-text-input" oninput="validateCurrentStep()">
+      </div>
+
+      <button class="action-btn" id="btnNext3" disabled onclick="nextStep()">Continue</button>
+    </div>
+
+    <!-- STEP 4: Sizing Details -->
+    <div class="step-section" id="step4">
+      <h3 class="title">Select Sizing Details</h3>
+      <p class="subtitle">Help us ensure an immaculate tailoring fit</p>
+      
+      <div class="sizing-layout">
+        <!-- Option A: Known size -->
+        <div class="sizing-container" id="sizingContainerKnown" onclick="selectSizingType('known')">
+          <div class="sizing-radio-header">
+            <input type="radio" id="radioKnown" name="sizingType" style="accent-color: #D4AF37;">
+            <strong>I know their standard size</strong>
+          </div>
+          <div class="sizing-inner-content" id="sizingContentKnown" onclick="event.stopPropagation()">
+            <div class="size-btn-grid">
+              <button class="size-btn" onclick="selectSize('XS', this)">XS</button>
+              <button class="size-btn" onclick="selectSize('S', this)">S</button>
+              <button class="size-btn" onclick="selectSize('M', this)">M</button>
+              <button class="size-btn" onclick="selectSize('L', this)">L</button>
+              <button class="size-btn" onclick="selectSize('XL', this)">XL</button>
+              <button class="size-btn" onclick="selectSize('XXL', this)">XXL</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option B: Contact recipient -->
+        <div class="sizing-container" id="sizingContainerContact" onclick="selectSizingType('contact')">
+          <div class="sizing-radio-header">
+            <input type="radio" id="radioContact" name="sizingType" style="accent-color: #D4AF37;">
+            <strong>Let concierge contact recipient for sizing</strong>
+          </div>
+          <p class="sizing-desc">We will reach out discreetly to gather size measurements without spoiling the surprise!</p>
+          <div class="sizing-inner-content" id="sizingContentContact" onclick="event.stopPropagation()">
+            <div class="contact-fields-grid">
+              <div class="custom-input-group">
+                <label class="custom-input-label">Recipient's Name</label>
+                <input type="text" id="recipientName" placeholder="Recipient Name" class="custom-text-input" oninput="validateCurrentStep()">
+              </div>
+              <div class="custom-input-group">
+                <label class="custom-input-label">Recipient's Contact (Phone)</label>
+                <input type="text" id="recipientPhone" placeholder="Recipient Phone Number" class="custom-text-input" oninput="validateCurrentStep()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="action-btn" id="btnNext4" disabled onclick="nextStep()">Continue</button>
+    </div>
+
+    <!-- STEP 5: Consultant Routing (Submit) -->
+    <div class="step-section" id="step5">
+      <h3 class="title">Consultant Routing</h3>
+      <p class="subtitle">Enter details to connect directly on WhatsApp</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="custom-input-group">
+          <label class="custom-input-label">Your Name</label>
+          <input type="text" id="senderName" placeholder="Your Full Name" class="custom-text-input" oninput="validateCurrentStep()">
+        </div>
+        <div class="custom-input-group">
+          <label class="custom-input-label">Your Phone Number (Optional)</label>
+          <input type="text" id="senderPhone" placeholder="e.g. +91 9999999999" class="custom-text-input">
+        </div>
+      </div>
+
+      <button class="action-btn action-btn-whatsapp" id="btnSubmit" disabled onclick="submitWhatsApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; vertical-align: middle;">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+        </svg>
+        Send to WhatsApp Concierge
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    let currentStep = 0;
+    const data = {
+      recipient: "",
+      recipientCustom: "",
+      occasion: "",
+      occasionCustom: "",
+      style: "",
+      styleCustom: "",
+      sizingType: "",
+      size: "",
+      senderName: "",
+      senderPhone: "",
+      recipientName: "",
+      recipientPhone: ""
+    };
+
+    // Auto-direct if already completed/skipped and they land here by accident
+    window.addEventListener('DOMContentLoaded', () => {
+      // If direct access parameters exist (e.g. ?direct=true), launch directly to step 1
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('direct') === 'true') {
+        startGifting();
+      }
+    });
+
+    function showStep(stepIdx) {
+      document.querySelectorAll('.step-section').forEach((section, idx) => {
+        if (idx === stepIdx) {
+          section.classList.add('active');
+        } else {
+          section.classList.remove('active');
+        }
+      });
+
+      // Show/Hide headers & progress indicators based on step
+      const btnBack = document.getElementById('btnBack');
+      const progressWrapper = document.getElementById('progressWrapper');
+      
+      if (stepIdx === 0) {
+        btnBack.style.visibility = 'hidden';
+        progressWrapper.style.display = 'none';
+      } else {
+        btnBack.style.visibility = 'visible';
+        progressWrapper.style.display = 'block';
+        
+        // Update progress bar
+        document.getElementById('stepIndicator').innerText = `Step ${stepIdx} of 5`;
+        document.getElementById('progressFill').style.width = `${(stepIdx / 5) * 100}%`;
+      }
+      
+      currentStep = stepIdx;
+      validateCurrentStep();
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        showStep(currentStep - 1);
+      }
+    }
+
+    function nextStep() {
+      if (currentStep < 5) {
+        showStep(currentStep + 1);
+      }
+    }
+
+    function closeWizard() {
+      // Go back to the main homepage
+      window.location.href = '/';
+    }
+
+    function shopForSelf() {
+      sessionStorage.setItem("gift_concierge_choice", "myself");
+      window.location.href = '/';
+    }
+
+    function startGifting() {
+      sessionStorage.setItem("gift_concierge_choice", "gifting");
+      showStep(1);
+    }
+
+    function selectOption(field, value, element) {
+      data[field] = value;
+      
+      // Toggle selected class on option cards in the same grid
+      const grid = element.parentElement;
+      grid.querySelectorAll('.option-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      element.classList.add('selected');
+
+      // Handle custom input display
+      const customGroup = document.getElementById(`${field}CustomGroup`);
+      if (customGroup) {
+        if (value === 'Other') {
+          customGroup.style.display = 'flex';
+          customGroup.querySelector('input').focus();
+        } else {
+          customGroup.style.display = 'none';
+        }
+      }
+
+      validateCurrentStep();
+    }
+
+    function selectSizingType(type) {
+      data.sizingType = type;
+      
+      const cKnown = document.getElementById('sizingContainerKnown');
+      const cContact = document.getElementById('sizingContainerContact');
+      const rKnown = document.getElementById('radioKnown');
+      const rContact = document.getElementById('radioContact');
+
+      if (type === 'known') {
+        cKnown.classList.add('selected');
+        cContact.classList.remove('selected');
+        rKnown.checked = true;
+        rContact.checked = false;
+      } else {
+        cContact.classList.add('selected');
+        cKnown.classList.remove('selected');
+        rContact.checked = true;
+        rKnown.checked = false;
+      }
+
+      validateCurrentStep();
+    }
+
+    function selectSize(sz, element) {
+      data.size = sz;
+      
+      const grid = element.parentElement;
+      grid.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      element.classList.add('selected');
+
+      validateCurrentStep();
+    }
+
+    function validateCurrentStep() {
+      let isValid = false;
+      
+      if (currentStep === 1) {
+        isValid = data.recipient === 'Other' 
+          ? document.getElementById('recipientCustom').value.trim() !== ''
+          : data.recipient !== '';
+        document.getElementById('btnNext1').disabled = !isValid;
+      }
+      else if (currentStep === 2) {
+        isValid = data.occasion === 'Other' 
+          ? document.getElementById('occasionCustom').value.trim() !== ''
+          : data.occasion !== '';
+        document.getElementById('btnNext2').disabled = !isValid;
+      }
+      else if (currentStep === 3) {
+        isValid = data.style === 'Other' 
+          ? document.getElementById('styleCustom').value.trim() !== ''
+          : data.style !== '';
+        document.getElementById('btnNext3').disabled = !isValid;
+      }
+      else if (currentStep === 4) {
+        if (data.sizingType === 'known') {
+          isValid = data.size !== '';
+        } else if (data.sizingType === 'contact') {
+          const rName = document.getElementById('recipientName').value.trim();
+          const rPhone = document.getElementById('recipientPhone').value.trim();
+          isValid = rName !== '' && rPhone !== '';
+        }
+        document.getElementById('btnNext4').disabled = !isValid;
+      }
+      else if (currentStep === 5) {
+        isValid = document.getElementById('senderName').value.trim() !== '';
+        document.getElementById('btnSubmit').disabled = !isValid;
+      }
+    }
+
+    function submitWhatsApp() {
+      // Gather inputs
+      const recipientText = data.recipient === 'Other' ? document.getElementById('recipientCustom').value.trim() : data.recipient;
+      const occasionText = data.occasion === 'Other' ? document.getElementById('occasionCustom').value.trim() : data.occasion;
+      const styleText = data.style === 'Other' ? document.getElementById('styleCustom').value.trim() : data.style;
+      const senderName = document.getElementById('senderName').value.trim();
+      const senderPhone = document.getElementById('senderPhone').value.trim();
+
+      let sizingText = "";
+      if (data.sizingType === 'known') {
+        sizingText = `Standard Size: ${data.size}`;
+      } else {
+        const recipientName = document.getElementById('recipientName').value.trim();
+        const recipientPhone = document.getElementById('recipientPhone').value.trim();
+        sizingText = `Contact Recipient for Sizing\n   *Recipient Name:* ${recipientName}\n   *Recipient Phone:* ${recipientPhone}`;
+      }
+
+      const message = `*✨ THE SRINGAR HOUSE - GIFT CONCIERGE INQUIRY ✨*\n\nHello! I would like to consult with a gifting expert. Here are my preferences:\n\n👤 *Gift For:* ${recipientText}\n🎉 *Occasion:* ${occasionText}\n🎨 *Style Preference:* ${styleText}\n📏 *Sizing Selection:* ${sizingText}\n\n*Sender Details:*\n✍️ *Name:* ${senderName}\n📞 *Phone:* ${senderPhone || "Not provided"}\n\nPlease guide me with the best curated options!`;
+
+      const phoneNumber = "9967670497"; 
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+      
+      sessionStorage.setItem("gift_concierge_choice", "completed");
+      window.open(whatsappUrl, "_blank");
+      
+      // Go to homepage after opening WhatsApp
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>

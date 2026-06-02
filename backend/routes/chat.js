@@ -1,0 +1,226 @@
+import express from 'express';
+import Product from '../models/Product.js';
+// We'll dynamically require or import the Google GenAI library if it exists
+// Using a simple mock fallback if we don't have the API key or library yet.
+
+const router = express.Router();
+
+// Base persona instructions
+const getSystemInstruction = (dynamicProductsStr, host) => `
+The Boutique Specialist
+Name: Ishani
+Role: Senior Fashion Consultant & Customer Representative
+Location: The Sringar House, UK
+
+Tone & Language: Tumhari awaaz bahut polite, sophisticated aur warm honi chahiye. Tum "British-Indian" accent mein baat karti ho (English language, par Indian values aur warm greetings jaise 'Namaste' ka istemal).
+
+Goal: Customer ka bharosa jeetna, unki pasand samajhna, aur order process ko seamless banana. MOST IMPORTANT: Share product links with every recommendation so customers can instantly shop.
+
+Expertise: Tumhe Indian fabrics (Silk, Chiffon, Organza), embroidery (Zardosi, Chikankari, Mirror work), aur UK sizes ki poori jaankari hai.
+
+═══════════════════════════════════════════════════════════════════════════════
+🔥 CRITICAL INSTRUCTION - YOU MUST FOLLOW THIS EXACTLY:
+═══════════════════════════════════════════════════════════════════════════════
+
+EVERY time you mention a specific product, you MUST include:
+1. Product Name
+2. Price in ₹
+3. Full URL link: ${host}/product/[ID]
+
+FORMAT EXAMPLES (Copy this exact format):
+✓ "Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11"
+✓ "Gold Sequined Silk Bridal Saree - ₹6,300 → ${host}/product/22"
+
+DO NOT just say "I recommend the Red Lehenga" - ALWAYS include the full link!
+
+FEATURED PRODUCTS TO RECOMMEND (Based on User's Request):
+${dynamicProductsStr}
+
+═══════════════════════════════════════════════════════════════════════════════
+CUSTOMER INTERACTION WORKFLOW:
+═══════════════════════════════════════════════════════════════════════════════
+
+Step 1 - Greeting & Occasion:
+"Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. What special occasion are you shopping for today, love?"
+
+Step 2 - Color & Style Questions:
+Ask about: occasion (Wedding/Mehndi/Party), preferred colors, budget range, body type.
+
+Step 3 - Product Recommendations (MUST INCLUDE LINKS):
+Once you know preferences, recommend EXACTLY like this:
+
+Example Response:
+"For a Mehndi ceremony, I suggest:
+1. Parrot Green Floral Printed Lehenga - ₹2,310 → ${host}/product/14
+2. Maroon Tissue Silk Bridal - ₹8,700 → ${host}/product/13
+
+Click the links above to view details, love!"
+
+Step 4 - Size & Customization:
+"What's your UK size? We offer custom fitting if needed."
+
+Step 5 - Order Support:
+"Standard delivery to UK is 5-7 days. Ready to place your order?"
+
+═══════════════════════════════════════════════════════════════════════════════
+STRICT RULES - NO EXCEPTIONS:
+═══════════════════════════════════════════════════════════════════════════════
+✓ EVERY product recommendation MUST have a link
+✓ Format: "Name - ₹Price → ${host}/product/[ID]"
+✓ If customer asks "What do you have?", recommend 2-3 products WITH links from the provided list.
+✓ Never say "There's a red lehenga" - say "Red Silk Hand Embroidered Bridal - ₹9,600 → ${host}/product/11"
+✓ Be warm, luxe, professional - always use "love" at end of sentences
+
+PROHIBITED:
+❌ Never recommend products WITHOUT links
+❌ Never say "Check our website" - give SPECIFIC product links
+❌ Never be vague - always use product names and IDs from list above
+`;
+
+router.post('/message', async (req, res) => {
+  const { message, history } = req.body;
+  const host = req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  try {
+    let responseText = "";
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      console.warn("⚠️ GEMINI_API_KEY is not set. Using fallback demo response.");
+      responseText = history.length === 0
+        ? "Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
+        : "I understand completely! Let me know your preferred color and occasion, love.";
+      return res.json({ text: responseText });
+    }
+
+    // Dynamic Product Fetching Strategy
+    let dynamicProductsStr = "Here are some of our best sellers:\n";
+    try {
+      const lowerMsg = message.toLowerCase();
+      const categories = ['lehenga', 'saree', 'anarkali', 'salwar kameez', 'gharara', 'sharara'];
+
+      let query = {};
+
+      // Match category if mentioned
+      const matchedCategory = categories.find(c => lowerMsg.includes(c));
+      if (matchedCategory) {
+        query.category = { $regex: new RegExp(`^${matchedCategory}$`, 'i') };
+      }
+
+      // Match color if mentioned
+      const colors = ['red', 'blue', 'green', 'pink', 'gold', 'ivory', 'black', 'white', 'yellow', 'purple', 'maroon'];
+      const matchedColor = colors.find(c => lowerMsg.includes(c));
+      if (matchedColor) {
+        query.name = { $regex: new RegExp(matchedColor, 'i') };
+      }
+
+      // Fetch up to 5 matching products, but ONLY grab name, price, and ID. No heavy images!
+      let products = await Product.find(query).sort({ _id: -1 }).select('name price _id').limit(5);
+
+      // If we didn't find enough, fetch some random ones (again, only small data)
+      if (products.length < 5) {
+        const additionalProducts = await Product.find({ _id: { $nin: products.map(p => p._id) } })
+          .sort({ _id: -1 })
+          .select('name price _id')
+          .limit(5 - products.length);
+        products = [...products, ...additionalProducts];
+      }
+
+      products.forEach((p, index) => {
+        dynamicProductsStr += `${index + 1}. ${p.name} - ₹${p.price.toLocaleString('en-IN')} → ${host}/product/${p._id}\n`;
+      });
+
+    } catch (dbError) {
+      console.error("Error fetching dynamic products:", dbError);
+      dynamicProductsStr += `1. Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11\n2. Gold Sequined Silk Bridal Saree - ₹6,300 → ${host}/product/22\n`;
+    }
+
+    try {
+      // Using the highly stable older package for absolute reliability
+      const { GoogleGenerativeAI } = await import('@google/generative-ai');
+      const genAI = new GoogleGenerativeAI(apiKey);
+
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-2.5-flash',
+        systemInstruction: getSystemInstruction(dynamicProductsStr, host)
+      });
+
+      let formattedHistory = history ? history.map(h => ({
+        role: h.role, // role must be 'user' or 'model'
+        parts: [{ text: h.text }]
+      })) : [];
+
+      // CRITICAL FIX: The Gemini API strictly rejects requests where the first message 
+      // in the contents array is from the 'model'. The conversation must start with a 'user'.
+      // We remove the hardcoded initial greeting from the history to satisfy this rule.
+      if (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
+        formattedHistory.shift();
+      }
+
+      const MAX_RETRIES = 3;
+      let result;
+      let attempt = 0;
+
+      while (attempt < MAX_RETRIES) {
+        try {
+          result = await model.generateContent({
+            contents: [
+              ...formattedHistory,
+              { role: 'user', parts: [{ text: message }] }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+            }
+          });
+          break; // Success
+        } catch (error) {
+          attempt++;
+          // Check if it's a 429 Too Many Requests error or 503 Service Unavailable
+          const isTransientError = error.status === 429 || error.status === 503 || (error.message && (error.message.includes('429') || error.message.includes('503')));
+          if (attempt >= MAX_RETRIES || !isTransientError) {
+            throw error; // Let the outer catch handle it
+          }
+          // Exponential backoff: 1000ms, 2000ms, 4000ms + random jitter
+          const delay = Math.pow(2, attempt - 1) * 1000 + Math.random() * 500;
+          console.warn(`⚠️ Gemini API transient error hit. Retrying in ${Math.round(delay)}ms (Attempt ${attempt}/${MAX_RETRIES})...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+
+      responseText = result.response.text();
+    } catch (geminiError) {
+      console.error('Gemini API Error:', geminiError.message);
+
+      const errorMessage = geminiError.message || "";
+      const isExpiredKey = errorMessage.includes('API key expired') || errorMessage.includes('API_KEY_INVALID') || errorMessage.includes('400');
+      const isRateLimit = errorMessage.includes('429') || errorMessage.includes('Too Many Requests') || errorMessage.includes('503') || errorMessage.includes('Service Unavailable') || errorMessage.includes('high demand');
+
+      if (isExpiredKey) {
+        responseText = `Apologies, love, my connection seems to have a configuration issue (API Key Expired). Please notify the store administrator to update the API key in the settings. Meanwhile, I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11`;
+      } else if (isRateLimit) {
+        responseText = `Apologies, love, I am receiving too many requests right now. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹6,300 → ${host}/product/22\n\nClick the links to view them!`;
+      } else {
+        // Fallback to demo response if Gemini fails for other reasons
+        const userMsg = message.toLowerCase();
+        if (userMsg.includes('lehenga')) {
+          responseText = `I'm currently experiencing some technical difficulties, love, but I highly recommend our Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11\n\nOr our Parrot Green Floral Printed Lehenga - ₹2,310 → ${host}/product/14`;
+        } else if (userMsg.includes('saree')) {
+          responseText = `I'm currently experiencing some technical difficulties, love, but I highly recommend our Gold Sequined Silk Bridal Saree - ₹6,300 → ${host}/product/22\n\nOr our Pre-draped Royal Purple Satin Saree - ₹2,670 → ${host}/product/3`;
+        } else {
+          responseText = `Apologies, love, my system is currently unavailable. But I'd love to suggest some of our best-sellers!\n\nFor weddings, try our Red Silk Hand Embroidered Bridal Lehenga - ₹9,600 → ${host}/product/11\n\nOr the elegant Gold Sequined Silk Bridal Saree - ₹6,300 → ${host}/product/22\n\nClick the links to view them!`;
+        }
+      }
+    }
+
+    res.json({ text: responseText });
+  } catch (error) {
+    console.error('Chatbot API Error Details:', error);
+    res.status(500).json({
+      error: 'Failed to process AI response.',
+      details: error.message || String(error),
+      type: error.name
+    });
+  }
+});
+
+export default router;

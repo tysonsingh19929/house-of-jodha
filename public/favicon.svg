@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <!-- Elegant golden gradient -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2D780" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="65%" stop-color="#A57C00" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <!-- Soft shadow for depth -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Deep dark luxury background -->
+  <rect width="120" height="120" rx="30" fill="#1A1A1A" />
+  
+  <!-- Subtle inner border -->
+  <rect x="4" y="4" width="112" height="112" rx="26" fill="none" stroke="url(#goldGradient)" stroke-width="1.5" opacity="0.4" />
+
+  <!-- The elegant 'H' symbol -->
+  <g filter="url(#shadow)">
+    <!-- Left Stem -->
+    <path d="M 35 30 L 45 30 L 45 60 C 45 60 55 60 60 60 L 60 90 L 50 90 L 50 65 C 50 65 40 65 35 65 Z" fill="url(#goldGradient)" opacity="0" />
+    <path d="M 36 28 L 48 28 C 50 28 50 30 50 32 L 50 88 C 50 90 50 92 48 92 L 36 92 C 34 92 34 90 34 88 L 34 32 C 34 30 34 28 36 28 Z" fill="url(#goldGradient)" />
+    
+    <!-- Right Stem -->
+    <path d="M 72 28 L 84 28 C 86 28 86 30 86 32 L 86 88 C 86 90 86 92 84 92 L 72 92 C 70 92 70 90 70 88 L 70 32 C 70 30 70 28 72 28 Z" fill="url(#goldGradient)" />
+    
+    <!-- Crossbar with elegant tapered tips -->
+    <path d="M 46 54 L 74 54 C 76 54 78 56 78 60 C 78 64 76 66 74 66 L 46 66 C 44 66 42 64 42 60 C 42 56 44 54 46 54 Z" fill="url(#goldGradient)" />
+    
+    <!-- A small crown motif above the H -->
+    <path d="M 52 18 L 56 22 L 60 16 L 64 22 L 68 18 L 66 24 L 54 24 Z" fill="url(#goldGradient)" />
+  </g>
+</svg>
