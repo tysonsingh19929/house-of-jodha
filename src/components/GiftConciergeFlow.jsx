@@ -127,6 +127,22 @@ export default function GiftConciergeFlow() {
   return (
     <div className={`gift-concierge-overlay ${isOpen ? "active" : ""}`} onClick={closeFlow}>
       <div className="gift-concierge-container" onClick={(e) => e.stopPropagation()}>
+        {/* Glowing Gold Metallic Gradient Defs */}
+        <svg style={{ position: "absolute", width: 0, height: 0 }} width="0" height="0">
+          <defs>
+            <linearGradient id="goldGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#bf953f" />
+              <stop offset="25%" stopColor="#fcf6ba" />
+              <stop offset="50%" stopColor="#b38728" />
+              <stop offset="75%" stopColor="#fbf5b7" />
+              <stop offset="100%" stopColor="#aa771c" />
+            </linearGradient>
+            <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+        </svg>
         <button className="gift-concierge-close" onClick={closeFlow} aria-label="Close modal">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -215,11 +231,11 @@ export default function GiftConciergeFlow() {
               
               <div className="options-grid">
                 {[
-                  { label: "Spouse", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="13" r="5" /><circle cx="16" cy="11" r="5" /><path d="M12 8a3 3 0 0 1 3 3" /></svg> },
-                  { label: "Mother", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21a9 9 0 0 0 9-9c0-5-4-9-9-9s-9 4-9 9a9 9 0 0 0 9 9z" /><path d="M12 7c-1.5 0-3 1.5-3 3 0 3 3 6 3 6s3-3 3-6c0-1.5-1.5-3-3-3z" /></svg> },
-                  { label: "Bride", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M2 19h20M4 19v-2l4-4 4 4 4-4 4 4v2" /><circle cx="12" cy="7" r="2" /><circle cx="6" cy="11" r="1.5" /><circle cx="18" cy="11" r="1.5" /></svg> },
-                  { label: "Friend", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12c-2-3-5-3-7-1a5 5 0 0 0 0 7c2 2 5 2 7-1M12 12c2-3 5-3 7-1a5 5 0 0 1 0 7c-2 2-5 2-7-1" /></svg> },
-                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> }
+                  { label: "Spouse", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="14" r="5" /><circle cx="16" cy="12" r="5" /><path d="M12 9a3 3 0 0 1 3 3" /><path d="M16 7l-2-2 2-2 2 2z" fill="url(#goldGradient)" /></svg> },
+                  { label: "Mother", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21a9 9 0 0 0 9-9c0-5-4-9-9-9s-9 4-9 9a9 9 0 0 0 9 9z" /><path d="M12 7c-1.5 0-3 1.5-3 3 0 3 3 6 3 6s3-3 3-6c0-1.5-1.5-3-3-3z" /></svg> },
+                  { label: "Bride", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M2 19h20L18 9l-4 5-2-7-2 7-4-5z" fill="rgba(212, 175, 55, 0.05)" /><circle cx="12" cy="4" r="1.5" fill="url(#goldGradient)" /><circle cx="6" cy="8" r="1.2" fill="url(#goldGradient)" /><circle cx="18" cy="8" r="1.2" fill="url(#goldGradient)" /><path d="M6 20a6 6 0 0 1 12 0" /></svg> },
+                  { label: "Friend", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12a4 4 0 0 1 4-4c2 0 4 2.5 4 4 0 1.5 2 4 4 4a4 4 0 0 0 4-4 4 4 0 0 0-4-4c-2 0-4 2.5-4 4 0 1.5-2 4-4 4a4 4 0 0 1-4-4z" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg> },
+                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M15 8l-6 6M9 8h6v6" /></svg> }
                 ].map(opt => (
                   <div 
                     key={opt.label} 
@@ -270,11 +286,11 @@ export default function GiftConciergeFlow() {
               
               <div className="options-grid">
                 {[
-                  { label: "Wedding", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22V10a8 8 0 0 1 16 0v12M2 22h20M12 2v2" /></svg> },
-                  { label: "Anniversary", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg> },
-                  { label: "Milestone Celebration", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" /><circle cx="12" cy="12" r="3" /></svg> },
-                  { label: "Urgent Apology / Last-Minute", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2M13 18h.01" /><path d="M12 2v2M12 20v2" /></svg> },
-                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> }
+                  { label: "Wedding", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18M5 21V11c0-3.9 3.1-7 7-7s7 3.1 7 7v10M9 21v-6c0-1.7 1.3-3 3-3s3 1.3 3 3v6" /></svg> },
+                  { label: "Anniversary", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M16 16.35l-1.45-1.32C9.4 10.36 6 7.28 6 3.5 6.42 1.42 8 0 10.5 0c1.74 0 3.41.81 4.5 2.09C16.09.81 17.76 0 19.5 0 22.58 0 25 2.42 25 5.5c0 3.78-3.4 6.86-8.55 11.54L15 17" /><path d="M8 21.35l-1.45-1.32C2.4 15.36 0 12.28 0 8.5 0 5.42 2.42 3 5.5 3c1.74 0 3.41.81 4.5 2.09C11.09 3.81 12.76 3 14.5 3 17.58 3 20 5.42 20 8.5c0 3.78-3.4 6.86-8.55 11.54L10 22" /></svg> },
+                  { label: "Milestone Celebration", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="rgba(212, 175, 55, 0.05)" /><path d="M12 6v12M6 12h12" /></svg> },
+                  { label: "Urgent Apology / Last-Minute", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /><path d="M12 2v2M12 20v2M4 12h2M18 12h2" /><path d="M16 16l-3-3" /></svg> },
+                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M15 8l-6 6M9 8h6v6" /></svg> }
                 ].map(opt => (
                   <div 
                     key={opt.label} 
@@ -325,10 +341,10 @@ export default function GiftConciergeFlow() {
               
               <div className="options-grid">
                 {[
-                  { label: "Traditional Silk", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="4" rx="6" ry="2" /><ellipse cx="12" cy="20" rx="6" ry="2" /><path d="M6 4v16M18 4v16M12 6v12M9 9h6M9 12h6M9 15h6" /></svg> },
-                  { label: "Modern Minimalist", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12l4 6-10 12L2 9z" /></svg> },
-                  { label: "Heavily Embroidered", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v18M3 12h18M12 3l9 9-9 9-9-9 9-9zM12 7.5L16.5 12 12 16.5 7.5 12 12 7.5z" /></svg> },
-                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> }
+                  { label: "Traditional Silk", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5M2 12l10 5 10-5" /><path d="M12 7v15" /></svg> },
+                  { label: "Modern Minimalist", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 9l10 13 10-13z" /><path d="M2 9h20M12 2v20" /></svg> },
+                  { label: "Heavily Embroidered", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" /><path d="M12 6v12M6 12h12M8.5 8.5l7 7M15.5 8.5l-7 7" /><circle cx="12" cy="12" r="3" /></svg> },
+                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="34" height="34" stroke="url(#goldGradient)" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M15 8l-6 6M9 8h6v6" /></svg> }
                 ].map(opt => (
                   <div 
                     key={opt.label} 
