@@ -32,6 +32,7 @@ import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import Chatbot from "./components/Chatbot";
 import GiftConciergeFlow from "./components/GiftConciergeFlow";
+import EmergencyConcierge from "./components/EmergencyConcierge";
 import { lazy, Suspense } from "react";
 import SellerStorefront from "./pages/SellerStorefront";
 
@@ -197,6 +198,7 @@ function FloatingWidgets() {
   return (
     <>
       <Chatbot />
+      <EmergencyConcierge />
     </>
   );
 }
@@ -247,6 +249,20 @@ function App() {
     const savedCart = localStorage.getItem("cart");
     if (savedCart && savedCart !== "undefined") {
       try { setCartItems(JSON.parse(savedCart)); } catch (e) { console.error(e); }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const cartParam = params.get("cart");
+    if (cartParam) {
+      try {
+        const decodedCart = JSON.parse(decodeURIComponent(cartParam));
+        if (Array.isArray(decodedCart) && decodedCart.length > 0) {
+          setCartItems(decodedCart);
+          localStorage.setItem("cart", JSON.stringify(decodedCart));
+        }
+      } catch (e) {
+        console.error("Failed to parse cart URL parameter:", e);
+      }
     }
   }, []);
 
