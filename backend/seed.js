@@ -18,7 +18,8 @@ export const seedSellers = async () => {
         password: 'admin123',
         businessName: 'Super Admin',
         role: 'admin',
-        status: 'active'
+        status: 'active',
+        phone: '9999999999'
       },
       {
         name: 'Priya Textiles',
@@ -26,7 +27,8 @@ export const seedSellers = async () => {
         password: 'seller123',
         businessName: 'Priya Textiles',
         role: 'seller',
-        status: 'active'
+        status: 'active',
+        phone: '8888888888'
       },
       {
         name: 'Elegant Wear',
@@ -34,7 +36,8 @@ export const seedSellers = async () => {
         password: 'seller456',
         businessName: 'Elegant Wear',
         role: 'seller',
-        status: 'active'
+        status: 'active',
+        phone: '7777777777'
       }
     ];
 

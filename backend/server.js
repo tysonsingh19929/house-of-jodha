@@ -34,18 +34,30 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 
 // Database Connection
-const mongoUri = process.env.MONGODB_URI && !process.env.MONGODB_URI.includes('<db_password>')
+const mongoUri = (process.env.MONGODB_URI && !process.env.MONGODB_URI.includes('<db_password>'))
   ? process.env.MONGODB_URI
-  : 'mongodb://localhost:27017/house-of-jodha';
+  : (process.env.MONGO_URI && !process.env.MONGO_URI.includes('<db_password>'))
+    ? process.env.MONGO_URI
+    : null;
 
-mongoose.connect(mongoUri)
-  .then(async () => {
-    console.log('MongoDB connected');
-    // Seed demo sellers and products on startup
+if (!mongoUri) {
+  console.error('Error: MONGODB_URI or MONGO_URI environment variable is not defined.');
+  process.exit(1);
+}
+
+const connectToMongo = async (uri) => {
+  try {
+    await mongoose.connect(uri);
+    console.log('MongoDB connected successfully to Atlas.');
     await seedSellers();
     await seedProducts();
-  })
-  .catch(err => console.log('MongoDB connection error:', err));
+  } catch (err) {
+    console.error('MongoDB connection error:', err.message || err);
+    process.exit(1);
+  }
+};
+
+connectToMongo(mongoUri);
 
 // Routes
 app.use('/api/products', productRoutes);
