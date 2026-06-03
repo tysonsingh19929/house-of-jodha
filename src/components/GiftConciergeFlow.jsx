@@ -215,16 +215,21 @@ export default function GiftConciergeFlow() {
               
               <div className="options-grid">
                 {[
-                  { label: "Spouse", icon: "💍" },
-                  { label: "Mother", icon: "👩" },
-                  { label: "Bride", icon: "👰" },
-                  { label: "Friend", icon: "👭" },
-                  { label: "Other", icon: "✏️" }
+                  { label: "Spouse", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="13" r="5" /><circle cx="16" cy="11" r="5" /><path d="M12 8a3 3 0 0 1 3 3" /></svg> },
+                  { label: "Mother", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21a9 9 0 0 0 9-9c0-5-4-9-9-9s-9 4-9 9a9 9 0 0 0 9 9z" /><path d="M12 7c-1.5 0-3 1.5-3 3 0 3 3 6 3 6s3-3 3-6c0-1.5-1.5-3-3-3z" /></svg> },
+                  { label: "Bride", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M2 19h20M4 19v-2l4-4 4 4 4-4 4 4v2" /><circle cx="12" cy="7" r="2" /><circle cx="6" cy="11" r="1.5" /><circle cx="18" cy="11" r="1.5" /></svg> },
+                  { label: "Friend", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12c-2-3-5-3-7-1a5 5 0 0 0 0 7c2 2 5 2 7-1M12 12c2-3 5-3 7-1a5 5 0 0 1 0 7c-2 2-5 2-7-1" /></svg> },
+                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> }
                 ].map(opt => (
                   <div 
                     key={opt.label} 
                     className={`option-card ${data.recipient === opt.label ? "selected" : ""}`}
-                    onClick={() => handleSelect("recipient", opt.label)}
+                    onClick={() => {
+                      handleSelect("recipient", opt.label);
+                      if (opt.label !== "Other") {
+                        setStep(2);
+                      }
+                    }}
                   >
                     <span className="option-icon">{opt.icon}</span>
                     <span className="option-label">{opt.label}</span>
@@ -233,25 +238,27 @@ export default function GiftConciergeFlow() {
               </div>
 
               {data.recipient === "Other" && (
-                <div className="custom-input-group animate-fade-in-up">
-                  <label className="custom-input-label">Specify Recipient Relationship</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. Sister, Daughter, Mother-in-law" 
-                    className="custom-text-input"
-                    value={data.recipientCustom}
-                    onChange={(e) => handleSelect("recipientCustom", e.target.value)}
-                  />
+                <div className="animate-fade-in-up" style={{ marginTop: "24px" }}>
+                  <div className="custom-input-group">
+                    <label className="custom-input-label">Specify Recipient Relationship</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Sister, Daughter, Mother-in-law" 
+                      className="custom-text-input"
+                      value={data.recipientCustom}
+                      onChange={(e) => handleSelect("recipientCustom", e.target.value)}
+                    />
+                  </div>
+                  <button 
+                    className="gift-concierge-action-btn" 
+                    disabled={!isStepValid()} 
+                    onClick={handleNext}
+                    style={{ marginTop: "20px" }}
+                  >
+                    Continue
+                  </button>
                 </div>
               )}
-
-              <button 
-                className="gift-concierge-action-btn" 
-                disabled={!isStepValid()} 
-                onClick={handleNext}
-              >
-                Continue
-              </button>
             </div>
           )}
 
@@ -263,16 +270,21 @@ export default function GiftConciergeFlow() {
               
               <div className="options-grid">
                 {[
-                  { label: "Wedding", icon: "💍" },
-                  { label: "Anniversary", icon: "🎉" },
-                  { label: "Milestone Celebration", icon: "✨" },
-                  { label: "Urgent Apology / Last-Minute", icon: "💐" },
-                  { label: "Other", icon: "✏️" }
+                  { label: "Wedding", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22V10a8 8 0 0 1 16 0v12M2 22h20M12 2v2" /></svg> },
+                  { label: "Anniversary", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg> },
+                  { label: "Milestone Celebration", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" /><circle cx="12" cy="12" r="3" /></svg> },
+                  { label: "Urgent Apology / Last-Minute", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2M13 18h.01" /><path d="M12 2v2M12 20v2" /></svg> },
+                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> }
                 ].map(opt => (
                   <div 
                     key={opt.label} 
                     className={`option-card ${data.occasion === opt.label ? "selected" : ""}`}
-                    onClick={() => handleSelect("occasion", opt.label)}
+                    onClick={() => {
+                      handleSelect("occasion", opt.label);
+                      if (opt.label !== "Other") {
+                        setStep(3);
+                      }
+                    }}
                   >
                     <span className="option-icon">{opt.icon}</span>
                     <span className="option-label">{opt.label}</span>
@@ -281,25 +293,27 @@ export default function GiftConciergeFlow() {
               </div>
 
               {data.occasion === "Other" && (
-                <div className="custom-input-group animate-fade-in-up">
-                  <label className="custom-input-label">Specify Occasion</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. Mehendi Ceremony, Birthday, Baby Shower" 
-                    className="custom-text-input"
-                    value={data.occasionCustom}
-                    onChange={(e) => handleSelect("occasionCustom", e.target.value)}
-                  />
+                <div className="animate-fade-in-up" style={{ marginTop: "24px" }}>
+                  <div className="custom-input-group">
+                    <label className="custom-input-label">Specify Occasion</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Mehendi Ceremony, Birthday, Baby Shower" 
+                      className="custom-text-input"
+                      value={data.occasionCustom}
+                      onChange={(e) => handleSelect("occasionCustom", e.target.value)}
+                    />
+                  </div>
+                  <button 
+                    className="gift-concierge-action-btn" 
+                    disabled={!isStepValid()} 
+                    onClick={handleNext}
+                    style={{ marginTop: "20px" }}
+                  >
+                    Continue
+                  </button>
                 </div>
               )}
-
-              <button 
-                className="gift-concierge-action-btn" 
-                disabled={!isStepValid()} 
-                onClick={handleNext}
-              >
-                Continue
-              </button>
             </div>
           )}
 
@@ -311,15 +325,20 @@ export default function GiftConciergeFlow() {
               
               <div className="options-grid">
                 {[
-                  { label: "Traditional Silk", icon: "🧵" },
-                  { label: "Modern Minimalist", icon: "💎" },
-                  { label: "Heavily Embroidered", icon: "✨" },
-                  { label: "Other", icon: "✏️" }
+                  { label: "Traditional Silk", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="4" rx="6" ry="2" /><ellipse cx="12" cy="20" rx="6" ry="2" /><path d="M6 4v16M18 4v16M12 6v12M9 9h6M9 12h6M9 15h6" /></svg> },
+                  { label: "Modern Minimalist", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12l4 6-10 12L2 9z" /></svg> },
+                  { label: "Heavily Embroidered", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v18M3 12h18M12 3l9 9-9 9-9-9 9-9zM12 7.5L16.5 12 12 16.5 7.5 12 12 7.5z" /></svg> },
+                  { label: "Other", icon: <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> }
                 ].map(opt => (
                   <div 
                     key={opt.label} 
                     className={`option-card ${data.style === opt.label ? "selected" : ""}`}
-                    onClick={() => handleSelect("style", opt.label)}
+                    onClick={() => {
+                      handleSelect("style", opt.label);
+                      if (opt.label !== "Other") {
+                        setStep(4);
+                      }
+                    }}
                   >
                     <span className="option-icon">{opt.icon}</span>
                     <span className="option-label">{opt.label}</span>
@@ -328,25 +347,27 @@ export default function GiftConciergeFlow() {
               </div>
 
               {data.style === "Other" && (
-                <div className="custom-input-group animate-fade-in-up">
-                  <label className="custom-input-label">Specify Style Details</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. Pastel floral organza, Indo-western fusion" 
-                    className="custom-text-input"
-                    value={data.styleCustom}
-                    onChange={(e) => handleSelect("styleCustom", e.target.value)}
-                  />
+                <div className="animate-fade-in-up" style={{ marginTop: "24px" }}>
+                  <div className="custom-input-group">
+                    <label className="custom-input-label">Specify Style Details</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Pastel floral organza, Indo-western fusion" 
+                      className="custom-text-input"
+                      value={data.styleCustom}
+                      onChange={(e) => handleSelect("styleCustom", e.target.value)}
+                    />
+                  </div>
+                  <button 
+                    className="gift-concierge-action-btn" 
+                    disabled={!isStepValid()} 
+                    onClick={handleNext}
+                    style={{ marginTop: "20px" }}
+                  >
+                    Continue
+                  </button>
                 </div>
               )}
-
-              <button 
-                className="gift-concierge-action-btn" 
-                disabled={!isStepValid()} 
-                onClick={handleNext}
-              >
-                Continue
-              </button>
             </div>
           )}
 
@@ -384,7 +405,11 @@ export default function GiftConciergeFlow() {
                         <div 
                           key={sz} 
                           className={`option-card ${data.size === sz ? "selected" : ""}`}
-                          onClick={(e) => { e.stopPropagation(); handleSelect("size", sz); }}
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            handleSelect("size", sz); 
+                            setStep(5);
+                          }}
                           style={{ padding: "10px 4px", fontSize: "12px" }}
                         >
                           {sz}
@@ -419,39 +444,41 @@ export default function GiftConciergeFlow() {
                   </p>
 
                   {data.sizingType === "contact" && (
-                    <div className="contact-fields-grid animate-fade-in-up" style={{ marginTop: "16px" }} onClick={(e) => e.stopPropagation()}>
-                      <div className="custom-input-group">
-                        <label className="custom-input-label">Recipient's Name</label>
-                        <input 
-                          type="text" 
-                          placeholder="Recipient Name" 
-                          className="custom-text-input"
-                          value={data.recipientName}
-                          onChange={(e) => handleSelect("recipientName", e.target.value)}
-                        />
+                    <div className="animate-fade-in-up" style={{ marginTop: "16px" }}>
+                      <div className="contact-fields-grid" onClick={(e) => e.stopPropagation()}>
+                        <div className="custom-input-group">
+                          <label className="custom-input-label">Recipient's Name</label>
+                          <input 
+                            type="text" 
+                            placeholder="Recipient Name" 
+                            className="custom-text-input"
+                            value={data.recipientName}
+                            onChange={(e) => handleSelect("recipientName", e.target.value)}
+                          />
+                        </div>
+                        <div className="custom-input-group">
+                          <label className="custom-input-label">Recipient's Contact (Phone)</label>
+                          <input 
+                            type="text" 
+                            placeholder="Recipient Phone Number" 
+                            className="custom-text-input"
+                            value={data.recipientPhone}
+                            onChange={(e) => handleSelect("recipientPhone", e.target.value)}
+                          />
+                        </div>
                       </div>
-                      <div className="custom-input-group">
-                        <label className="custom-input-label">Recipient's Contact (Phone)</label>
-                        <input 
-                          type="text" 
-                          placeholder="Recipient Phone Number" 
-                          className="custom-text-input"
-                          value={data.recipientPhone}
-                          onChange={(e) => handleSelect("recipientPhone", e.target.value)}
-                        />
-                      </div>
+                      <button 
+                        className="gift-concierge-action-btn" 
+                        disabled={!isStepValid()} 
+                        onClick={handleNext}
+                        style={{ marginTop: "20px" }}
+                      >
+                        Continue
+                      </button>
                     </div>
                   )}
                 </div>
               </div>
-
-              <button 
-                className="gift-concierge-action-btn" 
-                disabled={!isStepValid()} 
-                onClick={handleNext}
-              >
-                Continue
-              </button>
             </div>
           )}
 
