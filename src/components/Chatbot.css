@@ -66,8 +66,8 @@
   animation-duration: 1.2s;
 }
 
-.chatbot-toggle.open svg {
-  color: #fff;
+.chatbot-toggle.open {
+  display: none !important;
 }
 
 .chatbot-toggle .orb-glow {
