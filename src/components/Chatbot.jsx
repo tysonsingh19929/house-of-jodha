@@ -277,7 +277,7 @@ const Chatbot = () => {
   const header = getHeaderContent();
 
   return (
-    <div className="chatbot-container" ref={containerRef}>
+    <div className={`chatbot-container ${isOpen ? 'active-window' : ''}`} ref={containerRef}>
       <style>{`
         .chatbot-toggle {
           overflow: visible !important;
