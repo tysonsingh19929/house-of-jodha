@@ -99,18 +99,21 @@
 /* ── Chat window ── */
 .chatbot-window {
   position: absolute;
-  bottom: 60px;
+  bottom: 70px;
   right: 0;
-  width: 350px;
-  height: 520px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  width: 440px;
+  height: 680px;
+  max-height: calc(100vh - 120px);
+  background: #0b090f; /* Deep dark luxurious background */
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: slideUpFade 0.3s ease forwards;
-  border: 1px solid rgba(212,175,55,0.25);
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .animate-fade-in-up {
@@ -209,7 +212,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #FAFAFA;
+  background: rgba(11, 9, 15, 0.4);
 }
 
 .message-wrapper {
@@ -241,54 +244,54 @@
 }
 
 .message-bubble.model {
-  background: white;
-  color: #333;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
   border-bottom-left-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  border: 1px solid #EEE;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .message-bubble.user {
-  background: #D4AF37;
+  background: linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%);
   color: white;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 2px 5px rgba(212,175,55,0.2);
+  box-shadow: 0 2px 8px rgba(212,175,55,0.3);
 }
 
 /* ── Input area ── */
 .chatbot-input-area {
   display: flex;
   padding: 12px;
-  background: white;
-  border-top: 1px solid #EEE;
+  background: #131118;
+  border-top: 1.5px solid rgba(212, 175, 55, 0.25);
   gap: 8px;
 }
 
 .chatbot-input-area input {
   flex: 1;
   padding: 10px 14px;
-  border: 1px solid #E0E0E0;
+  border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 20px;
   outline: none;
   font-size: 13px;
   font-family: inherit;
   transition: border-color 0.2s;
-  background: #FAFAFA;
+  background: rgba(255, 255, 255, 0.05);
   /* Force visible text — overrides any global dark-mode or reset */
-  color: #222 !important;
-  -webkit-text-fill-color: #222 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
   caret-color: #D4AF37;
 }
 
 .chatbot-input-area input::placeholder {
-  color: #aaa;
-  -webkit-text-fill-color: #aaa;
+  color: rgba(255, 255, 255, 0.35);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.35);
   opacity: 1;
 }
 
 .chatbot-input-area input:focus {
   border-color: #D4AF37;
-  background: white;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .chatbot-input-area input:disabled {
@@ -341,9 +344,113 @@
 @media (max-width: 480px) {
   .chatbot-window {
     width: calc(100vw - 24px);
-    height: 75vh;
-    max-height: calc(100dvh - 100px);
-    bottom: 56px;
-    right: -4px;
+    height: 80vh;
+    max-height: calc(100dvh - 120px);
+    bottom: 64px;
+    right: -10px;
+    border-radius: 20px;
   }
+}
+
+/* ── Custom Scrollbar for Chatbot Messages ── */
+.chatbot-messages::-webkit-scrollbar,
+.gifting-step-scroll::-webkit-scrollbar,
+.concierge-menu-content::-webkit-scrollbar {
+  width: 6px;
+}
+.chatbot-messages::-webkit-scrollbar-track,
+.gifting-step-scroll::-webkit-scrollbar-track,
+.concierge-menu-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+.chatbot-messages::-webkit-scrollbar-thumb,
+.gifting-step-scroll::-webkit-scrollbar-thumb,
+.concierge-menu-content::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.25);
+  border-radius: 3px;
+}
+.chatbot-messages::-webkit-scrollbar-thumb:hover,
+.gifting-step-scroll::-webkit-scrollbar-thumb:hover,
+.concierge-menu-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* ── Luxury Gifting Curation Selectors ── */
+.chatbot-gifting-option {
+  padding: 12px 16px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+  font-weight: 600;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-gifting-option:hover {
+  background: rgba(212, 175, 55, 0.05);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+}
+
+.chatbot-gifting-option.selected {
+  border: 1.5px solid #D4AF37;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(19, 17, 24, 0.65) 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+}
+
+.chatbot-gifting-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(212, 175, 55, 0.25);
+  outline: none;
+  font-size: 12px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff !important;
+  caret-color: #D4AF37;
+  transition: all 0.25s ease;
+}
+
+.chatbot-gifting-input:focus {
+  border-color: #D4AF37;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+.chatbot-gifting-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.chatbot-gifting-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: #D4AF37;
+  color: #121019;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+}
+
+.chatbot-gifting-btn:hover:not(:disabled) {
+  background: #f5c43d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.35);
+}
+
+.chatbot-gifting-btn:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.35);
+  cursor: not-allowed;
+  box-shadow: none;
 }

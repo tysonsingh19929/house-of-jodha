@@ -90,17 +90,6 @@ const Chatbot = () => {
     return () => clearTimeout(timer);
   }, [isOpen, hasGreeted]);
 
-  useEffect(() => {
-    // Auto-open chatbot ONCE per session when the site loads
-    const hasAutoOpened = sessionStorage.getItem('chatbot_auto_opened') === 'true';
-    if (!hasAutoOpened) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        sessionStorage.setItem('chatbot_auto_opened', 'true');
-      }, 1500); // Auto-opens 1.5 seconds after page load
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   useEffect(() => {
     if (showGreeting) {
@@ -321,11 +310,11 @@ const Chatbot = () => {
           bottom: calc(100% + 20px);
           right: 0;
           width: 270px;
-          background: #fff;
-          border: 1px solid rgba(212, 175, 55, 0.4);
+          background: #0b090f;
+          border: 1px solid rgba(212, 175, 55, 0.55);
           border-radius: 16px 16px 4px 16px;
           padding: 16px 20px;
-          box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+          box-shadow: 0 12px 35px rgba(0,0,0,0.45), 0 0 20px rgba(212, 175, 55, 0.12);
           animation: popInGreeting 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           z-index: 101;
           cursor: pointer;
@@ -333,6 +322,7 @@ const Chatbot = () => {
         }
         .ishani-greeting-bubble:hover {
           transform: translateY(-2px);
+          border-color: #D4AF37;
         }
         .ishani-greeting-bubble::after {
           content: '';
@@ -341,9 +331,9 @@ const Chatbot = () => {
           right: 22px;
           width: 14px;
           height: 14px;
-          background: #fff;
-          border-right: 1px solid rgba(212, 175, 55, 0.4);
-          border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+          background: #0b090f;
+          border-right: 1px solid rgba(212, 175, 55, 0.55);
+          border-bottom: 1px solid rgba(212, 175, 55, 0.55);
           transform: rotate(45deg);
         }
         .close-greeting {
@@ -353,20 +343,26 @@ const Chatbot = () => {
           background: none;
           border: none;
           font-size: 16px;
-          color: #999;
+          color: #888;
           cursor: pointer;
           line-height: 1;
           padding: 4px;
           transition: color 0.2s;
         }
-        .close-greeting:hover { color: #1a1a1a; }
+        .close-greeting:hover { color: #D4AF37; }
         .greeting-content strong {
           display: block;
-          color: #1a1a1a;
+          color: #D4AF37;
           margin-bottom: 6px;
           font-family: 'Cormorant Garamond', serif;
           font-size: 18px;
           font-weight: 700;
+        }
+        .greeting-content p {
+          margin: 0;
+          color: rgba(255, 255, 255, 0.85);
+          font-size: 13px;
+          line-height: 1.5;
         }
         .greeting-content p {
           margin: 0;
@@ -449,47 +445,51 @@ const Chatbot = () => {
           {/* VIEW: MENU */}
           {view === 'menu' && (
             <>
-              <div className="concierge-menu-content animate-fade-in-up" style={{ padding: '20px 20px 10px 20px', display: 'flex', flexDirection: 'column', gap: '14px', overflowY: 'auto', flex: 1, backgroundColor: 'rgba(250, 250, 250, 0.4)' }}>
-                <div style={{ textAlign: 'center', marginBottom: '4px' }}>
-                  <h3 style={{ margin: '0', fontFamily: "'Cormorant Garamond', serif", fontSize: '22px', fontWeight: '700', color: '#1a1a1a', letterSpacing: '0.5px' }}>
+              <div className="concierge-menu-content animate-fade-in-up" style={{ padding: '24px 24px 16px 24px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', flex: 1, backgroundColor: 'rgba(11, 9, 15, 0.45)' }}>
+                <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                  <h3 style={{ margin: '0', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: '700', color: '#fff', letterSpacing: '0.5px' }}>
                     The Sringar Suite
                   </h3>
-                  <span style={{ fontSize: '10px', color: '#AA8A2A', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+                  <span style={{ fontSize: '10px', color: '#D4AF37', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '4px', display: 'inline-block' }}>
                     Private Concierge & Styling
                   </span>
                 </div>
 
-                <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#555', textAlign: 'center', lineHeight: '1.6', fontStyle: 'italic', fontFamily: "'DM Sans', sans-serif" }}>
+                <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: 'rgba(255, 255, 255, 0.75)', textAlign: 'center', lineHeight: '1.6', fontStyle: 'italic', fontFamily: "'DM Sans', sans-serif" }}>
                   "Namaste! Welcome to your styling suite. Let us discover your next ensemble or craft an exquisite gift together."
                 </p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                   
                   {/* Card 1: AI Stylist Chat */}
                   <div 
                     className="concierge-menu-card" 
                     onClick={() => setView('chat')}
                     style={{
-                      padding: '14px 16px',
-                      background: '#fff',
-                      border: '1.5px solid #eaeaea',
-                      borderRadius: '12px',
+                      padding: '16px 20px',
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid rgba(212, 175, 55, 0.18)',
+                      borderRadius: '14px',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px'
+                      gap: '16px'
                     }}
                   >
-                    <div style={{ fontSize: '24px', background: '#fdf8ee', width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>💬</div>
+                    <div style={{ background: 'rgba(212, 175, 55, 0.08)', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </div>
                     <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: '700', color: '#111', fontFamily: "'DM Sans', sans-serif" }}>
+                      <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: '700', color: '#fff', fontFamily: "'DM Sans', sans-serif" }}>
                         AI Stylist & Sizing Chat
                       </h4>
-                      <p style={{ margin: '0', fontSize: '11px', color: '#777', lineHeight: '1.3' }}>
+                      <p style={{ margin: '0', fontSize: '11px', color: 'rgba(255, 255, 255, 0.45)', lineHeight: '1.3' }}>
                         Inquire about sizes, jewelry pairings, and customization details.
                       </p>
                     </div>
-                    <div style={{ color: '#D4AF37', fontSize: '14px', fontWeight: 'bold' }}>→</div>
+                    <div style={{ color: '#D4AF37', fontSize: '16px', fontWeight: 'bold' }}>→</div>
                   </div>
 
                   {/* Card 2: Gift curator */}
@@ -497,54 +497,67 @@ const Chatbot = () => {
                     className="concierge-menu-card" 
                     onClick={() => { setView('gifting'); setStep(1); }}
                     style={{
-                      padding: '14px 16px',
-                      background: '#fff',
-                      border: '1.5px solid #eaeaea',
-                      borderRadius: '12px',
+                      padding: '16px 20px',
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid rgba(212, 175, 55, 0.18)',
+                      borderRadius: '14px',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px'
+                      gap: '16px'
                     }}
                   >
-                    <div style={{ fontSize: '24px', background: '#fdf8ee', width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎁</div>
+                    <div style={{ background: 'rgba(212, 175, 55, 0.08)', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 12 20 22 4 22 4 12" />
+                        <rect x="2" y="7" width="20" height="5" />
+                        <line x1="12" y1="22" x2="12" y2="7" />
+                        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+                      </svg>
+                    </div>
                     <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: '700', color: '#111', fontFamily: "'DM Sans', sans-serif" }}>
+                      <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: '700', color: '#fff', fontFamily: "'DM Sans', sans-serif" }}>
                         Bespoke Gift Curator
                       </h4>
-                      <p style={{ margin: '0', fontSize: '11px', color: '#777', lineHeight: '1.3' }}>
+                      <p style={{ margin: '0', fontSize: '11px', color: 'rgba(255, 255, 255, 0.45)', lineHeight: '1.3' }}>
                         Guided 5-step questionnaire to select the perfect outfit for a loved one.
                       </p>
                     </div>
-                    <div style={{ color: '#D4AF37', fontSize: '14px', fontWeight: 'bold' }}>→</div>
+                    <div style={{ color: '#D4AF37', fontSize: '16px', fontWeight: 'bold' }}>→</div>
                   </div>
 
-                  {/* Card 3: Emergency Concierge FAB equivalent */}
+                  {/* Card 3: Emergency Concierge */}
                   <div 
                     className="concierge-menu-card" 
                     onClick={handleEmergencyConciergeClick}
                     style={{
-                      padding: '14px 16px',
+                      padding: '16px 20px',
                       background: 'linear-gradient(135deg, #064e3b 0%, #022c22 100%)',
                       border: '1.5px solid #D4AF37',
-                      borderRadius: '12px',
+                      borderRadius: '14px',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      boxShadow: '0 4px 12px rgba(6, 78, 59, 0.15)'
+                      gap: '16px',
+                      boxShadow: '0 4px 12px rgba(6, 78, 59, 0.25)'
                     }}
                   >
-                    <div style={{ fontSize: '24px', background: 'rgba(212,175,55,0.1)', width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🚨</div>
+                    <div style={{ background: 'rgba(212,175,55,0.15)', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                      </svg>
+                    </div>
                     <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 2px', fontSize: '13px', fontWeight: '700', color: '#D4AF37', fontFamily: "'DM Sans', sans-serif" }}>
+                      <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: '700', color: '#D4AF37', fontFamily: "'DM Sans', sans-serif" }}>
                         Emergency Concierge (24-48h)
                       </h4>
                       <p style={{ margin: '0', fontSize: '11px', color: '#faecd1', lineHeight: '1.3' }}>
                         Stressed or facing a tight deadline? Direct WhatsApp style consultation.
                       </p>
                     </div>
-                    <div style={{ color: '#D4AF37', fontSize: '14px', fontWeight: 'bold' }}>→</div>
+                    <div style={{ color: '#D4AF37', fontSize: '16px', fontWeight: 'bold' }}>→</div>
                   </div>
 
                 </div>
@@ -559,7 +572,7 @@ const Chatbot = () => {
                   setView('chat');
                   handleSendMessage(e);
                 }}
-                style={{ borderTop: '1px solid #EEE', background: 'white' }}
+                style={{ borderTop: '1.5px solid rgba(212, 175, 55, 0.2)', background: '#131118' }}
               >
                 <input
                   type="text"
@@ -580,7 +593,7 @@ const Chatbot = () => {
           {/* VIEW: CHAT */}
           {view === 'chat' && (
             <>
-              <div className="chatbot-messages" style={{ flex: 1, padding: '14px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', background: '#FAFAFA' }}>
+              <div className="chatbot-messages" style={{ flex: 1, padding: '14px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', background: 'rgba(11, 9, 15, 0.6)' }}>
                 {messages.map((message, index) => (
                   <div key={index} className={`message-wrapper ${message.role}`}>
                     {message.role === 'model' && (
@@ -624,15 +637,15 @@ const Chatbot = () => {
 
           {/* VIEW: GIFT CURATOR */}
           {view === 'gifting' && (
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', backgroundColor: '#FAFAFA' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', backgroundColor: '#0b090f', color: '#fff' }}>
               
               {/* Progress bar */}
-              <div className="gift-concierge-progress-wrapper" style={{ padding: "12px 16px", borderBottom: "1px solid #eee", background: "#fff" }}>
-                <div className="gift-concierge-progress-text" style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#AA8A2A", fontWeight: "700", letterSpacing: '0.5px' }}>
+              <div className="gift-concierge-progress-wrapper" style={{ padding: "12px 16px", borderBottom: "1px solid rgba(212, 175, 55, 0.2)", background: "#131118" }}>
+                <div className="gift-concierge-progress-text" style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#D4AF37", fontWeight: "700", letterSpacing: '0.5px' }}>
                   <span>GIFT SELECTOR</span>
                   <span>Step {step} of 5</span>
                 </div>
-                <div className="gift-concierge-progress-bar" style={{ height: "4px", background: "#f0f0f0", borderRadius: "2px", overflow: "hidden", marginTop: "6px" }}>
+                <div className="gift-concierge-progress-bar" style={{ height: "4px", background: "rgba(255, 255, 255, 0.08)", borderRadius: "2px", overflow: "hidden", marginTop: "6px" }}>
                   <div className="gift-concierge-progress-fill" style={{ height: "100%", background: "linear-gradient(90deg, #D4AF37, #AA8A2A)", borderRadius: "2px", width: `${(step / 5) * 100}%`, transition: "width 0.3s ease" }} />
                 </div>
               </div>
@@ -643,7 +656,7 @@ const Chatbot = () => {
                 {/* STEP 1: Recipient Relationship */}
                 {step === 1 && (
                   <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#111', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
+                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#fff', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
                       Who is the luxury gift for?
                     </h3>
                     <p style={{ margin: '0 8px 10px 0', fontSize: '11px', color: '#777' }}>
@@ -660,20 +673,7 @@ const Chatbot = () => {
                               setStep(2);
                             }
                           }}
-                          style={{
-                            padding: '12px 16px',
-                            border: giftingData.recipient === rel ? '2px solid #D4AF37' : '1px solid #eaeaea',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            background: giftingData.recipient === rel ? '#fdf8ee' : '#fff',
-                            fontWeight: '600',
-                            fontSize: '13px',
-                            color: '#333',
-                            transition: 'all 0.2s',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                          }}
+                          className={`chatbot-gifting-option ${giftingData.recipient === rel ? 'selected' : ''}`}
                         >
                           <span>{rel}</span>
                           {giftingData.recipient === rel && <span style={{ color: '#D4AF37' }}>✓</span>}
@@ -682,28 +682,18 @@ const Chatbot = () => {
                     </div>
 
                     {giftingData.recipient === "Other" && (
-                      <div className="animate-fade-in-up" style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div className="animate-fade-in-up" style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <input
                           type="text"
                           placeholder="e.g. Sister, Daughter, Daughter-in-law"
                           value={giftingData.recipientCustom}
                           onChange={(e) => handleSelect("recipientCustom", e.target.value)}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none', fontSize: '12px', boxSizing: 'border-box' }}
+                          className="chatbot-gifting-input"
                         />
                         <button
                           disabled={!isStepValid()}
                           onClick={handleNext}
-                          style={{
-                            marginTop: '6px',
-                            padding: '10px',
-                            background: isStepValid() ? '#1a1a1a' : '#ccc',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '8px',
-                            fontWeight: '700',
-                            fontSize: '12px',
-                            cursor: isStepValid() ? 'pointer' : 'not-allowed'
-                          }}
+                          className="chatbot-gifting-btn"
                         >
                           Continue
                         </button>
@@ -715,10 +705,10 @@ const Chatbot = () => {
                 {/* STEP 2: Occasion */}
                 {step === 2 && (
                   <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#111', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
+                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#fff', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
                       What is the occasion?
                     </h3>
-                    <p style={{ margin: '0', fontSize: '11px', color: '#777' }}>
+                    <p style={{ margin: '0', fontSize: '11px', color: '#aaa' }}>
                       Curations align with the event style standard.
                     </p>
 
@@ -732,20 +722,7 @@ const Chatbot = () => {
                               setStep(3);
                             }
                           }}
-                          style={{
-                            padding: '12px 16px',
-                            border: giftingData.occasion === occ ? '2px solid #D4AF37' : '1px solid #eaeaea',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            background: giftingData.occasion === occ ? '#fdf8ee' : '#fff',
-                            fontWeight: '600',
-                            fontSize: '13px',
-                            color: '#333',
-                            transition: 'all 0.2s',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                          }}
+                          className={`chatbot-gifting-option ${giftingData.occasion === occ ? 'selected' : ''}`}
                         >
                           <span>{occ}</span>
                           {giftingData.occasion === occ && <span style={{ color: '#D4AF37' }}>✓</span>}
@@ -760,22 +737,13 @@ const Chatbot = () => {
                           placeholder="e.g. Birthday, Diwali, Roka ceremony"
                           value={giftingData.occasionCustom}
                           onChange={(e) => handleSelect("occasionCustom", e.target.value)}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none', fontSize: '12px', boxSizing: 'border-box' }}
+                          className="chatbot-gifting-input"
                         />
                         <button
                           disabled={!isStepValid()}
                           onClick={handleNext}
-                          style={{
-                            marginTop: '6px',
-                            padding: '10px',
-                            background: isStepValid() ? '#1a1a1a' : '#ccc',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '8px',
-                            fontWeight: '700',
-                            fontSize: '12px',
-                            cursor: isStepValid() ? 'pointer' : 'not-allowed'
-                          }}
+                          className="chatbot-gifting-btn"
+                          style={{ marginTop: '8px' }}
                         >
                           Continue
                         </button>
@@ -787,10 +755,10 @@ const Chatbot = () => {
                 {/* STEP 3: Style Preference */}
                 {step === 3 && (
                   <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#111', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
+                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#fff', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
                       What is their style preference?
                     </h3>
-                    <p style={{ margin: '0', fontSize: '11px', color: '#777' }}>
+                    <p style={{ margin: '0', fontSize: '11px', color: '#aaa' }}>
                       Narrow down structural silhouettes and embroideries.
                     </p>
 
@@ -804,20 +772,7 @@ const Chatbot = () => {
                               setStep(4);
                             }
                           }}
-                          style={{
-                            padding: '12px 16px',
-                            border: giftingData.style === st ? '2px solid #D4AF37' : '1px solid #eaeaea',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            background: giftingData.style === st ? '#fdf8ee' : '#fff',
-                            fontWeight: '600',
-                            fontSize: '13px',
-                            color: '#333',
-                            transition: 'all 0.2s',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                          }}
+                          className={`chatbot-gifting-option ${giftingData.style === st ? 'selected' : ''}`}
                         >
                           <span>{st}</span>
                           {giftingData.style === st && <span style={{ color: '#D4AF37' }}>✓</span>}
@@ -826,28 +781,18 @@ const Chatbot = () => {
                     </div>
 
                     {giftingData.style === "Other" && (
-                      <div className="animate-fade-in-up" style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <div className="animate-fade-in-up" style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <input
                           type="text"
                           placeholder="e.g. Georgette prints, mirror work, pastels"
                           value={giftingData.styleCustom}
                           onChange={(e) => handleSelect("styleCustom", e.target.value)}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none', fontSize: '12px', boxSizing: 'border-box' }}
+                          className="chatbot-gifting-input"
                         />
                         <button
                           disabled={!isStepValid()}
                           onClick={handleNext}
-                          style={{
-                            marginTop: '6px',
-                            padding: '10px',
-                            background: isStepValid() ? '#1a1a1a' : '#ccc',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '8px',
-                            fontWeight: '700',
-                            fontSize: '12px',
-                            cursor: isStepValid() ? 'pointer' : 'not-allowed'
-                          }}
+                          className="chatbot-gifting-btn"
                         >
                           Continue
                         </button>
@@ -862,27 +807,21 @@ const Chatbot = () => {
                     <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#111', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
                       Sizing curation
                     </h3>
-                    <p style={{ margin: '0', fontSize: '11px', color: '#777' }}>
+                    <p style={{ margin: '0', fontSize: '11px', color: '#aaa' }}>
                       Choose how standard sizing will be selected.
                     </p>
 
                     {/* Sizing Radio 1 */}
                     <div 
                       onClick={() => handleSelect("sizingType", "known")}
-                      style={{
-                        padding: "12px",
-                        border: giftingData.sizingType === "known" ? "2px solid #D4AF37" : "1.5px solid #eaeaea",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        background: giftingData.sizingType === "known" ? "#fdf8ee" : "#fff",
-                        transition: 'all 0.2s'
-                      }}
+                      className={`chatbot-gifting-option ${giftingData.sizingType === "known" ? "selected" : ""}`}
+                      style={{ display: "block", textAlign: "left" }}
                     >
-                      <div style={{ fontWeight: "700", fontSize: "13px", color: "#111", display: 'flex', justifyContent: 'space-between' }}>
+                      <div style={{ fontWeight: "700", fontSize: "13px", color: "#fff", display: 'flex', justifyContent: 'space-between' }}>
                         <span>I know their size</span>
                         <input type="radio" checked={giftingData.sizingType === 'known'} readOnly style={{ accentColor: '#D4AF37' }} />
                       </div>
-                      <div style={{ fontSize: "11px", color: "#666", marginTop: "4px", lineHeight: '1.3' }}>Select standard size (XS, S, M, L, XL, XXL).</div>
+                      <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.6)", marginTop: "4px", lineHeight: '1.3' }}>Select standard size (XS, S, M, L, XL, XXL).</div>
                     </div>
 
                     {giftingData.sizingType === "known" && (
@@ -894,10 +833,10 @@ const Chatbot = () => {
                             onClick={() => handleSelect("size", sz)}
                             style={{
                               padding: "8px 0",
-                              border: giftingData.size === sz ? "2px solid #111" : "1.5px solid #eee",
+                              border: giftingData.size === sz ? "2px solid #D4AF37" : "1.5px solid rgba(255,255,255,0.1)",
                               borderRadius: "6px",
-                              background: giftingData.size === sz ? "#111" : "#fff",
-                              color: giftingData.size === sz ? "#fff" : "#333",
+                              background: giftingData.size === sz ? "#D4AF37" : "rgba(255,255,255,0.03)",
+                              color: giftingData.size === sz ? "#121019" : "#fff",
                               fontWeight: "700",
                               fontSize: "11px",
                               cursor: "pointer",
@@ -913,20 +852,14 @@ const Chatbot = () => {
                     {/* Sizing Radio 2 */}
                     <div 
                       onClick={() => handleSelect("sizingType", "contact")}
-                      style={{
-                        padding: "12px",
-                        border: giftingData.sizingType === "contact" ? "2px solid #D4AF37" : "1.5px solid #eaeaea",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        background: giftingData.sizingType === "contact" ? "#fdf8ee" : "#fff",
-                        transition: 'all 0.2s'
-                      }}
+                      className={`chatbot-gifting-option ${giftingData.sizingType === "contact" ? "selected" : ""}`}
+                      style={{ display: "block", textAlign: "left" }}
                     >
-                      <div style={{ fontWeight: "700", fontSize: "13px", color: "#111", display: 'flex', justifyContent: 'space-between' }}>
+                      <div style={{ fontWeight: "700", fontSize: "13px", color: "#fff", display: 'flex', justifyContent: 'space-between' }}>
                         <span>Stylist should contact them</span>
                         <input type="radio" checked={giftingData.sizingType === 'contact'} readOnly style={{ accentColor: '#D4AF37' }} />
                       </div>
-                      <div style={{ fontSize: "11px", color: "#666", marginTop: "4px", lineHeight: '1.3' }}>We will contact the recipient discreetly to verify measurements.</div>
+                      <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.6)", marginTop: "4px", lineHeight: '1.3' }}>We will contact the recipient discreetly to verify measurements.</div>
                     </div>
 
                     {giftingData.sizingType === "contact" && (
@@ -936,14 +869,14 @@ const Chatbot = () => {
                           placeholder="Recipient Full Name"
                           value={giftingData.recipientName}
                           onChange={(e) => handleSelect("recipientName", e.target.value)}
-                          style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #ddd", outline: "none", fontSize: "12px", boxSizing: 'border-box' }}
+                          className="chatbot-gifting-input"
                         />
                         <input
                           type="text"
                           placeholder="Recipient WhatsApp / Phone"
                           value={giftingData.recipientPhone}
                           onChange={(e) => handleSelect("recipientPhone", e.target.value)}
-                          style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #ddd", outline: "none", fontSize: "12px", boxSizing: 'border-box' }}
+                          className="chatbot-gifting-input"
                         />
                       </div>
                     )}
@@ -951,18 +884,7 @@ const Chatbot = () => {
                     <button
                       disabled={!isStepValid()}
                       onClick={handleNext}
-                      style={{
-                        marginTop: "8px",
-                        padding: "12px",
-                        background: isStepValid() ? "#1a1a1a" : "#ccc",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "8px",
-                        cursor: isStepValid() ? "pointer" : "not-allowed",
-                        fontWeight: "700",
-                        fontSize: "12px",
-                        transition: 'background 0.2s'
-                      }}
+                      className="chatbot-gifting-btn"
                     >
                       Continue
                     </button>
@@ -971,52 +893,45 @@ const Chatbot = () => {
 
                 {/* STEP 5: Sender details and submit */}
                 {step === 5 && (
-                  <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#111', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
+                  <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+                    <h3 style={{ margin: '0 0 2px', fontSize: '16px', color: '#fff', fontFamily: "'Cormorant Garamond', serif", fontWeight: '700' }}>
                       Sender Details
                     </h3>
-                    <p style={{ margin: '0', fontSize: '11px', color: '#777' }}>
+                    <p style={{ margin: '0', fontSize: '11px', color: '#aaa' }}>
                       Stylist will consult options directly under your name reference.
                     </p>
 
                     <div>
-                      <label style={{ fontSize: "10px", fontWeight: "700", color: "#555", display: "block", marginBottom: "4px", textTransform: 'uppercase' }}>Your Full Name</label>
+                      <label style={{ fontSize: "10px", fontWeight: "700", color: "rgba(255,255,255,0.6)", display: "block", marginBottom: "4px", textTransform: 'uppercase' }}>Your Full Name</label>
                       <input
                         type="text"
                         placeholder="e.g. Tyson Singh"
                         value={giftingData.senderName}
                         onChange={(e) => handleSelect("senderName", e.target.value)}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #ddd", outline: "none", fontSize: "12px", boxSizing: 'border-box' }}
+                        className="chatbot-gifting-input"
                       />
                     </div>
 
                     <div>
-                      <label style={{ fontSize: "10px", fontWeight: "700", color: "#555", display: "block", marginBottom: "4px", textTransform: 'uppercase' }}>Your Phone Number (Optional)</label>
+                      <label style={{ fontSize: "10px", fontWeight: "700", color: "rgba(255,255,255,0.6)", display: "block", marginBottom: "4px", textTransform: 'uppercase' }}>Your Phone Number (Optional)</label>
                       <input
                         type="text"
                         placeholder="e.g. +91 99999 99999"
                         value={giftingData.senderPhone}
                         onChange={(e) => handleSelect("senderPhone", e.target.value)}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #ddd", outline: "none", fontSize: "12px", boxSizing: 'border-box' }}
+                        className="chatbot-gifting-input"
                       />
                     </div>
 
                     <button
                       disabled={!isStepValid()}
                       onClick={handleGiftingSubmit}
+                      className="chatbot-gifting-btn"
                       style={{
-                        marginTop: "12px",
                         padding: "14px",
-                        background: isStepValid() ? "linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%)" : "#ccc",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "8px",
-                        cursor: isStepValid() ? "pointer" : "not-allowed",
-                        fontWeight: "700",
                         fontSize: "13px",
                         letterSpacing: "0.5px",
-                        boxShadow: isStepValid() ? "0 4px 12px rgba(212,175,55,0.3)" : "none",
-                        transition: 'all 0.25s'
+                        marginTop: "12px"
                       }}
                     >
                       CURATE MY LUXURY GIFT

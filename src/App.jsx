@@ -31,6 +31,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import Chatbot from "./components/Chatbot";
+import GiftConciergeFlow from "./components/GiftConciergeFlow";
 import { lazy, Suspense } from "react";
 import SellerStorefront from "./pages/SellerStorefront";
 
@@ -180,6 +181,7 @@ function HomePage({
       <FAQSection />
       <About />
       <Footer />
+      <GiftConciergeFlow />
     </div>
   );
 }
