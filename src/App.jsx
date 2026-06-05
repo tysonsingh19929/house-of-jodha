@@ -34,6 +34,7 @@ import Chatbot from "./components/Chatbot";
 import GiftConciergeFlow from "./components/GiftConciergeFlow";
 import { lazy, Suspense } from "react";
 import SellerStorefront from "./pages/SellerStorefront";
+import { api } from "./services/api";
 
 function TrustBanner() {
   const isMobile = window.innerWidth <= 768;
@@ -210,6 +211,41 @@ function App() {
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    if (subdomain) {
+      api.getSellerStore(subdomain).then(storeData => {
+        if (storeData && storeData.branding) {
+          const root = document.documentElement;
+          const branding = storeData.branding;
+          if (branding.primaryColor) {
+            root.style.setProperty('--text-h', branding.primaryColor);
+            root.style.setProperty('--accent-dark', branding.primaryColor);
+          }
+          if (branding.accentColor) {
+            root.style.setProperty('--accent', branding.accentColor);
+          }
+          if (branding.lightBg) {
+            root.style.setProperty('--bg', branding.lightBg);
+          }
+          
+          if (branding.faviconUrl) {
+            let favicon = document.querySelector('link[rel="icon"]');
+            if (favicon) {
+              favicon.href = branding.faviconUrl;
+            } else {
+              favicon = document.createElement('link');
+              favicon.rel = 'icon';
+              favicon.href = branding.faviconUrl;
+              document.head.appendChild(favicon);
+            }
+          }
+        }
+      }).catch(err => {
+        console.error("Failed to load seller branding for subdomain:", err);
+      });
+    }
+  }, [subdomain]);
 
   useEffect(() => {
     const host = window.location.hostname;

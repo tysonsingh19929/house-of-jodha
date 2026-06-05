@@ -25,8 +25,8 @@ body {
   --code-bg: #f4f3ec;
   --accent: #D4AF37;
   --accent-dark: #2C4F3E;
-  --accent-bg: rgba(212, 175, 55, 0.08);
-  --accent-border: rgba(212, 175, 55, 0.3);
+  --accent-bg: color-mix(in srgb, var(--accent) 8%, transparent);
+  --accent-border: color-mix(in srgb, var(--accent) 30%, transparent);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -58,8 +58,8 @@ body {
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #D4AF37;
-    --accent-bg: rgba(212, 175, 55, 0.12);
-    --accent-border: rgba(212, 175, 55, 0.4);
+    --accent-bg: color-mix(in srgb, var(--accent) 12%, transparent);
+    --accent-border: color-mix(in srgb, var(--accent) 40%, transparent);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;

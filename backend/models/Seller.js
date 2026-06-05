@@ -34,6 +34,15 @@ const sellerSchema = new mongoose.Schema({
   state: String,
   zipCode: String,
   country: String,
+  branding: {
+    primaryColor: { type: String, default: '#B8448D' },
+    accentColor: { type: String, default: '#D4AF37' },
+    darkBg: { type: String, default: '#0b090f' },
+    lightBg: { type: String, default: '#fafafa' },
+    logoUrl: String,
+    bannerUrl: String,
+    faviconUrl: String
+  },
   status: {
     type: String,
     enum: ['pending', 'active', 'suspended'],

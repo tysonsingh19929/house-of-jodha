@@ -64,6 +64,25 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isForRent: {
+    type: Boolean,
+    default: false
+  },
+  isForSale: {
+    type: Boolean,
+    default: true
+  },
+  rentalRates: {
+    threeDay: Number,
+    sevenDay: Number,
+    tenDay: Number
+  },
+  securityDeposit: Number,
+  rentedDates: [{
+    startDate: Date,
+    endDate: Date,
+    orderId: String
+  }],
   sellerId: {
     type: String,
     required: true
