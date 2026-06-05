@@ -173,6 +173,57 @@ export default function AdminDashboard() {
     }));
   };
 
+  const compressAndSetBrandingAsset = (key, file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let maxWidth = 1200;
+        let maxHeight = 1200;
+        if (key === 'logoUrl') { maxWidth = 600; maxHeight = 300; }
+        else if (key === 'faviconUrl') { maxWidth = 128; maxHeight = 128; }
+        else if (key === 'banners') { maxWidth = 1600; maxHeight = 1000; }
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+        } else {
+          if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataUrl = canvas.toDataURL("image/webp", 0.75);
+        
+        if (key === 'banners') {
+          setSellerProfile(prev => {
+            const currentBannerUrls = prev.branding?.bannerUrls || [];
+            const newBannerUrls = [...currentBannerUrls, compressedDataUrl];
+            return {
+              ...prev,
+              branding: {
+                ...(prev.branding || {}),
+                bannerUrls: newBannerUrls,
+                bannerUrl: newBannerUrls[0] || ""
+              }
+            };
+          });
+        } else {
+          handleBrandingChange(key, compressedDataUrl);
+        }
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
   const saveSellerProfile = async () => {
     try {
       setIsSavingProfile(true);
@@ -1073,10 +1124,10 @@ export default function AdminDashboard() {
 
         {/* SETTINGS TAB */}
         {activeTab === "settings" && (
-          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "600px" }}>
+          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "600px", width: "100%", boxSizing: "border-box" }}>
             <h1 style={{ margin: "0 0 32px", fontSize: "28px", color: "#0f172a" }}>Account Settings</h1>
 
-            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: "32px", marginBottom: "24px" }}>
+            <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: isMobile ? "20px 16px" : "32px", marginBottom: "24px", boxSizing: "border-box" }}>
               <h3 style={{ margin: "0 0 20px", color: "#0f172a" }}>Profile Information</h3>
               <div style={{ display: "grid", gap: "16px" }}>
                 <div>
@@ -1159,18 +1210,185 @@ export default function AdminDashboard() {
                         </div>
 
                         <div>
-                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Logo URL</label>
-                          <input type="text" value={sellerProfile.branding?.logoUrl || ""} onChange={e => handleBrandingChange("logoUrl", e.target.value)} placeholder="https://example.com/logo.png" style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Logo</label>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            {sellerProfile.branding?.logoUrl && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                <img src={sellerProfile.branding.logoUrl} alt="Logo Preview" style={{ height: "40px", objectFit: "contain", border: "1px solid #cbd5e1", borderRadius: "6px", padding: "4px", backgroundColor: "#f8fafc" }} />
+                                <button 
+                                  type="button" 
+                                  onClick={() => handleBrandingChange("logoUrl", "")} 
+                                  style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontSize: "12px", padding: 0 }}
+                                >
+                                  Remove Logo
+                                </button>
+                              </div>
+                            )}
+                            <div style={{ display: "flex", gap: "8px", flexDirection: isMobile ? "column" : "row" }}>
+                              <input 
+                                type="text" 
+                                value={sellerProfile.branding?.logoUrl || ""} 
+                                onChange={e => handleBrandingChange("logoUrl", e.target.value)} 
+                                placeholder="Logo Image URL" 
+                                style={{ flex: 1, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} 
+                              />
+                              <label style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 16px", backgroundColor: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: "8px", cursor: "pointer", fontSize: "13px", color: "#475569", fontWeight: "600", whiteSpace: "nowrap" }}>
+                                <input 
+                                  type="file" 
+                                  accept="image/*" 
+                                  style={{ display: "none" }} 
+                                  onChange={e => {
+                                    if (e.target.files?.[0]) compressAndSetBrandingAsset('logoUrl', e.target.files[0]);
+                                  }}
+                                />
+                                Upload File
+                              </label>
+                            </div>
+                          </div>
                         </div>
 
                         <div>
-                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Banner URL</label>
-                          <input type="text" value={sellerProfile.branding?.bannerUrl || ""} onChange={e => handleBrandingChange("bannerUrl", e.target.value)} placeholder="https://example.com/banner.png" style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Favicon</label>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            {sellerProfile.branding?.faviconUrl && (
+                              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                <img src={sellerProfile.branding.faviconUrl} alt="Favicon Preview" style={{ width: "24px", height: "24px", objectFit: "contain", border: "1px solid #cbd5e1", borderRadius: "4px", padding: "2px", backgroundColor: "#f8fafc" }} />
+                                <button 
+                                  type="button" 
+                                  onClick={() => handleBrandingChange("faviconUrl", "")} 
+                                  style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontSize: "12px", padding: 0 }}
+                                >
+                                  Remove Favicon
+                                </button>
+                              </div>
+                            )}
+                            <div style={{ display: "flex", gap: "8px", flexDirection: isMobile ? "column" : "row" }}>
+                              <input 
+                                type="text" 
+                                value={sellerProfile.branding?.faviconUrl || ""} 
+                                onChange={e => handleBrandingChange("faviconUrl", e.target.value)} 
+                                placeholder="Favicon Image URL" 
+                                style={{ flex: 1, padding: "10px 12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} 
+                              />
+                              <label style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 16px", backgroundColor: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: "8px", cursor: "pointer", fontSize: "13px", color: "#475569", fontWeight: "600", whiteSpace: "nowrap" }}>
+                                <input 
+                                  type="file" 
+                                  accept="image/*" 
+                                  style={{ display: "none" }} 
+                                  onChange={e => {
+                                    if (e.target.files?.[0]) compressAndSetBrandingAsset('faviconUrl', e.target.files[0]);
+                                  }}
+                                />
+                                Upload File
+                              </label>
+                            </div>
+                          </div>
                         </div>
 
-                        <div>
-                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Favicon URL</label>
-                          <input type="text" value={sellerProfile.branding?.faviconUrl || ""} onChange={e => handleBrandingChange("faviconUrl", e.target.value)} placeholder="https://example.com/favicon.ico" style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                        <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: "20px", marginTop: "10px" }}>
+                          <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Storefront Hero Banners (Slideshow)</label>
+                          
+                          {/* Banner list */}
+                          {((sellerProfile.branding?.bannerUrls && sellerProfile.branding.bannerUrls.length > 0)
+                            ? sellerProfile.branding.bannerUrls
+                            : (sellerProfile.branding?.bannerUrl ? [sellerProfile.branding.bannerUrl] : [])
+                          ).length === 0 ? (
+                            <div style={{ padding: "16px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px dashed #cbd5e1", color: "#64748b", fontSize: "13px", marginBottom: "16px" }}>
+                              No banners uploaded yet. Add at least one banner below.
+                            </div>
+                          ) : (
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "12px", marginBottom: "16px" }}>
+                              {((sellerProfile.branding?.bannerUrls && sellerProfile.branding.bannerUrls.length > 0)
+                                ? sellerProfile.branding.bannerUrls
+                                : (sellerProfile.branding?.bannerUrl ? [sellerProfile.branding.bannerUrl] : [])
+                              ).map((url, idx) => (
+                                <div key={idx} style={{ position: "relative", border: "1px solid #e2e8f0", borderRadius: "8px", overflow: "hidden", backgroundColor: "#f8fafc", aspectRatio: "16/9" }}>
+                                  <img src={url} alt={`Banner ${idx + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const currentBanners = (sellerProfile.branding?.bannerUrls && sellerProfile.branding.bannerUrls.length > 0)
+                                        ? [...sellerProfile.branding.bannerUrls]
+                                        : (sellerProfile.branding?.bannerUrl ? [sellerProfile.branding.bannerUrl] : []);
+                                      const updatedBanners = currentBanners.filter((_, i) => i !== idx);
+                                      setSellerProfile(prev => ({
+                                        ...prev,
+                                        branding: {
+                                          ...(prev.branding || {}),
+                                          bannerUrls: updatedBanners,
+                                          bannerUrl: updatedBanners[0] || ""
+                                        }
+                                      }));
+                                    }}
+                                    style={{ position: "absolute", top: "4px", right: "4px", backgroundColor: "rgba(239, 68, 68, 0.9)", color: "#fff", border: "none", borderRadius: "4px", width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
+                                    title="Remove Banner"
+                                  >
+                                    &times;
+                                  </button>
+                                  <div style={{ position: "absolute", bottom: "4px", left: "4px", backgroundColor: "rgba(15, 23, 42, 0.75)", color: "#fff", padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: "600" }}>
+                                    Slide {idx + 1}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Add Banner Controls */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "10px", backgroundColor: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                            <div>
+                              <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "6px" }}>Option A: Upload Banner File</span>
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={e => {
+                                  if (e.target.files?.[0]) {
+                                    compressAndSetBrandingAsset('banners', e.target.files[0]);
+                                    e.target.value = "";
+                                  }
+                                }} 
+                                style={{ fontSize: "12px" }}
+                              />
+                            </div>
+                            
+                            <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "8px" }}>
+                              <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "6px" }}>Option B: Add Banner Image URL</span>
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <input 
+                                  type="text" 
+                                  placeholder="https://example.com/slide.png" 
+                                  id="new-banner-url-input"
+                                  style={{ flex: 1, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px" }} 
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const input = document.getElementById("new-banner-url-input");
+                                    const val = input ? input.value.trim() : "";
+                                    if (val) {
+                                      setSellerProfile(prev => {
+                                        const currentBanners = (prev.branding?.bannerUrls && prev.branding.bannerUrls.length > 0)
+                                          ? prev.branding.bannerUrls
+                                          : (prev.branding?.bannerUrl ? [prev.branding.bannerUrl] : []);
+                                        const updatedBanners = [...currentBanners, val];
+                                        return {
+                                          ...prev,
+                                          branding: {
+                                            ...(prev.branding || {}),
+                                            bannerUrls: updatedBanners,
+                                            bannerUrl: updatedBanners[0] || ""
+                                          }
+                                        };
+                                      });
+                                      if (input) input.value = "";
+                                    }
+                                  }}
+                                  style={{ padding: "8px 16px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "6px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}
+                                >
+                                  Add URL
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                       </div>

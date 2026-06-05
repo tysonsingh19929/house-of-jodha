@@ -41,6 +41,7 @@ const sellerSchema = new mongoose.Schema({
     lightBg: { type: String, default: '#fafafa' },
     logoUrl: String,
     bannerUrl: String,
+    bannerUrls: { type: [String], default: [] },
     faviconUrl: String
   },
   status: {

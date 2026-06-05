@@ -11,6 +11,20 @@ export default function SellerStorefront({ subdomain, cartCount, onCartClick }) 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const banners = seller?.branding?.bannerUrls && seller.branding.bannerUrls.length > 0
+    ? seller.branding.bannerUrls
+    : (seller?.branding?.bannerUrl ? [seller.branding.bannerUrl] : []);
+
+  useEffect(() => {
+    if (banners.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentSlide(prev => (prev + 1) % banners.length);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [banners]);
 
   useEffect(() => {
     const fetchStoreData = async () => {
@@ -53,12 +67,88 @@ export default function SellerStorefront({ subdomain, cartCount, onCartClick }) 
       <Navbar cartCount={cartCount} onCartClick={onCartClick} />
 
       <div style={{ flex: 1, padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
-        {/* Storefront Banner */}
-        <div style={{ background: "#0a0f0d", backgroundImage: "radial-gradient(circle at 50% 0%, #1e3a29 0%, #0a0f0d 60%)", borderRadius: "24px", padding: "60px 40px", textAlign: "center", color: "#fff", marginBottom: "40px", boxShadow: "0 20px 40px rgba(0,0,0,0.1)", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: "-100px", left: "-50px", width: "300px", height: "300px", background: "#D4AF37", filter: "blur(100px)", opacity: "0.2", borderRadius: "50%" }} />
-          <h1 style={{ fontSize: "42px", margin: "0 0 12px 0", position: "relative", zIndex: 1 }}>{seller.businessName}</h1>
-          <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.7)", margin: 0, position: "relative", zIndex: 1 }}>Curated by {seller.name}</p>
-        </div>
+        {/* Storefront Hero Banner Carousel */}
+        {banners.length > 0 ? (
+          <div style={{ position: "relative", height: isMobile ? "240px" : "360px", borderRadius: "24px", overflow: "hidden", marginBottom: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+            {banners.map((url, idx) => (
+              <div 
+                key={idx}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: idx === currentSlide ? 1 : 0,
+                  transition: "opacity 0.8s ease-in-out",
+                  zIndex: idx === currentSlide ? 1 : 0
+                }}
+              >
+                <img 
+                  src={url} 
+                  alt={`${seller.businessName} Banner ${idx + 1}`} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
+              </div>
+            ))}
+            
+            {/* Dark Premium Gradient Overlay with Content */}
+            <div style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              top: 0,
+              background: "linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.3) 60%, rgba(15, 23, 42, 0.4) 100%)",
+              zIndex: 2,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              color: "#fff",
+              padding: "20px"
+            }}>
+              {seller.branding?.logoUrl && (
+                <img src={seller.branding.logoUrl} alt="Logo" style={{ height: isMobile ? "40px" : "60px", marginBottom: "16px", objectFit: "contain", borderRadius: "8px" }} />
+              )}
+              <h1 style={{ fontSize: isMobile ? "32px" : "48px", margin: "0 0 8px 0", fontWeight: "700", textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>
+                {seller.businessName}
+              </h1>
+              <p style={{ fontSize: isMobile ? "14px" : "18px", color: "rgba(255,255,255,0.85)", margin: 0 }}>
+                Curated by {seller.name}
+              </p>
+            </div>
+            
+            {/* Indicator Dots */}
+            {banners.length > 1 && (
+              <div style={{ position: "absolute", bottom: "16px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "8px", zIndex: 10 }}>
+                {banners.map((_, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    style={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      backgroundColor: idx === currentSlide ? "#fff" : "rgba(255,255,255,0.4)",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Default Gradient Banner */
+          <div style={{ background: "#0a0f0d", backgroundImage: "radial-gradient(circle at 50% 0%, #1e3a29 0%, #0a0f0d 60%)", borderRadius: "24px", padding: "60px 40px", textAlign: "center", color: "#fff", marginBottom: "40px", boxShadow: "0 20px 40px rgba(0,0,0,0.1)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: "-100px", left: "-50px", width: "300px", height: "300px", background: "#D4AF37", filter: "blur(100px)", opacity: "0.2", borderRadius: "50%" }} />
+            <h1 style={{ fontSize: "42px", margin: "0 0 12px 0", position: "relative", zIndex: 1 }}>{seller.businessName}</h1>
+            <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.7)", margin: 0, position: "relative", zIndex: 1 }}>Curated by {seller.name}</p>
+          </div>
+        )}
 
         {/* Products Grid */}
         <h2 style={{ fontSize: "24px", color: "#1a1a1a", marginBottom: "24px" }}>Exclusive Collection</h2>

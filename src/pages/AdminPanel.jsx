@@ -23,6 +23,8 @@ export default function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [sellerFilter, setSellerFilter] = useState("All");
+  const [sellerSearch, setSellerSearch] = useState("");
+  const [sellerStatusFilter, setSellerStatusFilter] = useState("All");
   const [productSearch, setProductSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchWrapperRef = useRef(null);
@@ -299,6 +301,54 @@ export default function AdminPanel() {
     } catch (error) {
       alert("Error updating password");
     }
+  };
+
+  const compressAndSetModalBrandingAsset = (key, file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let maxWidth = 1200;
+        let maxHeight = 1200;
+        if (key === 'logoUrl') { maxWidth = 600; maxHeight = 300; }
+        else if (key === 'faviconUrl') { maxWidth = 128; maxHeight = 128; }
+        else if (key === 'banners') { maxWidth = 1600; maxHeight = 1000; }
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+        } else {
+          if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataUrl = canvas.toDataURL("image/webp", 0.75);
+        
+        if (key === 'banners') {
+          setBrandingModal(prev => {
+            const currentBanners = prev.bannerUrls || [];
+            const newBanners = [...currentBanners, compressedDataUrl];
+            return {
+              ...prev,
+              bannerUrls: newBanners,
+              bannerUrl: newBanners[0] || ""
+            };
+          });
+        } else {
+          setBrandingModal(prev => ({ ...prev, [key]: compressedDataUrl }));
+        }
+      };
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleUpdateSellerBranding = async (e) => {
@@ -702,112 +752,256 @@ export default function AdminPanel() {
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <h1 style={{ margin: "0 0 24px", fontSize: "28px", color: "#0f172a" }}>Seller Verification</h1>
 
+            {/* Sellers Summary Stats Cards */}
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
+              <div style={{ backgroundColor: "#fff", padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                <span style={{ fontSize: "12px", color: "#64748b", fontWeight: "600", display: "block" }}>Total Boutiques</span>
+                <strong style={{ fontSize: "20px", color: "#0f172a", fontWeight: "700" }}>{sellers.length}</strong>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                <span style={{ fontSize: "12px", color: "#64748b", fontWeight: "600", display: "block" }}>Active Storefronts</span>
+                <strong style={{ fontSize: "20px", color: "#059669", fontWeight: "700" }}>{sellers.filter(s => s.status === 'active').length}</strong>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                <span style={{ fontSize: "12px", color: "#64748b", fontWeight: "600", display: "block" }}>Pending Approval</span>
+                <strong style={{ fontSize: "20px", color: "#d97706", fontWeight: "700" }}>{sellers.filter(s => s.status === 'pending').length}</strong>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                <span style={{ fontSize: "12px", color: "#64748b", fontWeight: "600", display: "block" }}>Suspended Storefronts</span>
+                <strong style={{ fontSize: "20px", color: "#dc2626", fontWeight: "700" }}>{sellers.filter(s => s.status === 'suspended').length}</strong>
+              </div>
+            </div>
+
+            {/* Filter and Search Bar */}
+            <div style={{ display: "flex", gap: "12px", flexDirection: isMobile ? "column" : "row", marginBottom: "20px", alignItems: "center", width: "100%", boxSizing: "border-box" }}>
+              <div style={{ flex: 1, width: "100%" }}>
+                <input
+                  type="text"
+                  placeholder="Search sellers by name, business, or email..."
+                  value={sellerSearch}
+                  onChange={(e) => setSellerSearch(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px", outline: "none", boxSizing: "border-box" }}
+                />
+              </div>
+              <div style={{ width: isMobile ? "100%" : "200px", display: "flex", alignItems: "center", gap: "8px" }}>
+                <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b", whiteSpace: "nowrap" }}>Status:</label>
+                <select
+                  value={sellerStatusFilter}
+                  onChange={(e) => setSellerStatusFilter(e.target.value)}
+                  style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px", outline: "none" }}
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="pending">Pending</option>
+                  <option value="suspended">Suspended</option>
+                </select>
+              </div>
+            </div>
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {sellers.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No sellers found.</div>
-              ) : (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1000px" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Business / Contact</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Rental & License</th>
-                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Sales & Fees</th>
-                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Domain</th>
-                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
-                        <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sellers.map((s) => {
-                        const financials = getSellerFinancials(s._id);
-                        const isOverdue = s.rentDueDate && new Date(s.rentDueDate) < new Date();
-                        const rentDueDateStr = s.rentDueDate ? new Date(s.rentDueDate).toLocaleDateString() : "N/A";
-                        
-                        return (
-                          <tr key={s._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                            <td style={{ padding: "16px 24px" }}>
-                              <div style={{ color: "#0f172a", fontWeight: "600" }}>{s.businessName || s.name || "N/A"}{s.role === "admin" && " (Admin)"}</div>
-                              <div style={{ fontSize: "12px", color: "#64748b" }}>{s.email} • {s.productsCount || 0} Products</div>
-                            </td>
-                            <td style={{ padding: "16px 24px", fontSize: "13px", color: "#334155" }}>
-                              {s.role === 'admin' ? (
-                                <span style={{ color: "#94a3b8" }}>N/A (Platform Owner)</span>
-                              ) : (
-                                <>
-                                  <div>Rent: <strong>₹{(s.rentAmount !== undefined ? s.rentAmount : 5000).toLocaleString()}</strong>/mo</div>
-                                  <div style={{ color: isOverdue ? "#ef4444" : "#64748b", fontSize: "12px", marginTop: "4px" }}>
-                                    Due: {rentDueDateStr} {isOverdue && <span style={{ fontWeight: "700" }}>(OVERDUE)</span>}
-                                  </div>
-                                </>
-                              )}
-                            </td>
-                            <td style={{ padding: "16px 24px", fontSize: "13px", color: "#334155", textAlign: "center" }}>
-                              {s.role === 'admin' ? (
-                                <span style={{ color: "#94a3b8" }}>N/A</span>
-                              ) : (
-                                <>
-                                  <div>Sales: <strong>₹{financials.grossSales.toLocaleString()}</strong></div>
-                                  <div style={{ fontSize: "12px", color: "#059669", marginTop: "4px" }}>
-                                    Fee ({s.commissionPercentage !== undefined ? s.commissionPercentage : 10}%): <strong>₹{financials.commissionEarned.toLocaleString()}</strong>
-                                  </div>
-                                </>
-                              )}
-                            </td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>
-                              {s.slug ? (
-                                <a href={`${window.location.protocol}//${s.slug}.${window.location.host.replace(/^www\./, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: "#3b82f6", textDecoration: "underline", fontSize: "13px", fontWeight: "500" }}>Visit Store ↗</a>
-                              ) : (
-                                <span style={{ color: "#94a3b8", fontSize: "13px" }}>N/A</span>
-                              )}
-                            </td>
-                            <td style={{ padding: "16px 24px", textAlign: "center" }}>
-                              <span style={{ padding: "4px 10px", borderRadius: "100px", fontSize: "12px", border: "1px solid", fontWeight: "600", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
+              ) : (() => {
+                const filteredSellers = sellers.filter(s => {
+                  const matchesSearch = 
+                    (s.name || "").toLowerCase().includes(sellerSearch.toLowerCase()) ||
+                    (s.businessName || "").toLowerCase().includes(sellerSearch.toLowerCase()) ||
+                    (s.email || "").toLowerCase().includes(sellerSearch.toLowerCase());
+                  const matchesStatus = sellerStatusFilter === "All" || s.status === sellerStatusFilter;
+                  return matchesSearch && matchesStatus;
+                });
+                if (filteredSellers.length === 0) {
+                  return <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No sellers match your search criteria.</div>;
+                }
+                return isMobile ? (
+                  /* Mobile Card Layout */
+                  <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {filteredSellers.map((s) => {
+                      const financials = getSellerFinancials(s._id);
+                      const isOverdue = s.rentDueDate && new Date(s.rentDueDate) < new Date();
+                      const rentDueDateStr = s.rentDueDate ? new Date(s.rentDueDate).toLocaleDateString() : "N/A";
+                      
+                      return (
+                        <div key={s._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px", backgroundColor: "#f8fafc" }}>
+                          <div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                              <strong style={{ color: "#0f172a", fontSize: "15px" }}>{s.businessName || s.name || "N/A"}{s.role === "admin" && " (Admin)"}</strong>
+                              <span style={{ padding: "2px 8px", borderRadius: "100px", fontSize: "11px", fontWeight: "600", border: "1px solid", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
                                 {s.status || "Pending"}
                               </span>
-                            </td>
-                            <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                              {s.role !== "admin" && (
-                                <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                                  {s.status !== "active" && (
-                                    <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Approve</button>
-                                  )}
-                                  {s.status === "active" && (
-                                    <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
-                                  )}
-                                  <button onClick={() => setBrandingModal({
-                                    isOpen: true,
-                                    sellerId: s._id,
-                                    name: s.name || "",
-                                    businessName: s.businessName || "",
-                                    slug: s.slug || "",
-                                    email: s.email || "",
-                                    phone: s.phone || "",
-                                    status: s.status || "pending",
-                                    primaryColor: s.branding?.primaryColor || "#B8448D",
-                                    accentColor: s.branding?.accentColor || "#D4AF37",
-                                    darkBg: s.branding?.darkBg || "#0b090f",
-                                    lightBg: s.branding?.lightBg || "#fafafa",
-                                    logoUrl: s.branding?.logoUrl || "",
-                                    bannerUrl: s.branding?.bannerUrl || "",
-                                    faviconUrl: s.branding?.faviconUrl || "",
-                                    rentAmount: s.rentAmount !== undefined ? s.rentAmount : 5000,
-                                    commissionPercentage: s.commissionPercentage !== undefined ? s.commissionPercentage : 10,
-                                    rentDueDate: s.rentDueDate ? new Date(s.rentDueDate).toISOString().split('T')[0] : "",
-                                    billingHistory: s.billingHistory || []
-                                  })} style={{ padding: "6px 12px", backgroundColor: "#b8448d", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🎨 Configure</button>
-                                  <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ padding: "6px 12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🔑 Password</button>
-                                  <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
-                                </div>
+                            </div>
+                            <span style={{ fontSize: "12px", color: "#64748b" }}>{s.email}</span>
+                          </div>
+
+                          {s.role !== 'admin' && (
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "12px", borderTop: "1px solid #e2e8f0", paddingTop: "12px", color: "#334155" }}>
+                              <div>
+                                <span style={{ color: "#64748b", display: "block" }}>Rental Fee</span>
+                                <strong>₹{(s.rentAmount !== undefined ? s.rentAmount : 5000).toLocaleString()}/mo</strong>
+                                <span style={{ color: isOverdue ? "#ef4444" : "#64748b", display: "block", fontSize: "11px", marginTop: "2px" }}>
+                                  Due: {rentDueDateStr} {isOverdue && "(OVERDUE)"}
+                                </span>
+                              </div>
+                              <div>
+                                <span style={{ color: "#64748b", display: "block" }}>Sales & Commission</span>
+                                <strong>Sales: ₹{financials.grossSales.toLocaleString()}</strong>
+                                <span style={{ color: "#059669", display: "block", fontSize: "11px", marginTop: "2px" }}>
+                                  Fee ({s.commissionPercentage !== undefined ? s.commissionPercentage : 10}%): ₹{financials.commissionEarned.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {s.slug && (
+                            <div style={{ fontSize: "12px", marginTop: "4px" }}>
+                              <a href={`${window.location.protocol}//${s.slug}.${window.location.host.replace(/^www\./, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: "#3b82f6", textDecoration: "underline", fontWeight: "500" }}>Visit Storefront ↗</a>
+                            </div>
+                          )}
+
+                          {s.role !== "admin" && (
+                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
+                              {s.status !== "active" && (
+                                <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ flex: 1, minWidth: "75px", padding: "8px 6px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "600", textAlign: "center" }}>Approve</button>
                               )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                              {s.status === "active" && (
+                                <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ flex: 1, minWidth: "75px", padding: "8px 6px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "600", textAlign: "center" }}>Suspend</button>
+                              )}
+                              <button onClick={() => setBrandingModal({
+                                isOpen: true,
+                                sellerId: s._id,
+                                name: s.name || "",
+                                businessName: s.businessName || "",
+                                slug: s.slug || "",
+                                email: s.email || "",
+                                phone: s.phone || "",
+                                status: s.status || "pending",
+                                primaryColor: s.branding?.primaryColor || "#B8448D",
+                                accentColor: s.branding?.accentColor || "#D4AF37",
+                                darkBg: s.branding?.darkBg || "#0b090f",
+                                lightBg: s.branding?.lightBg || "#fafafa",
+                                logoUrl: s.branding?.logoUrl || "",
+                                bannerUrl: s.branding?.bannerUrl || "",
+                                bannerUrls: s.branding?.bannerUrls || [],
+                                faviconUrl: s.branding?.faviconUrl || "",
+                                rentAmount: s.rentAmount !== undefined ? s.rentAmount : 5000,
+                                commissionPercentage: s.commissionPercentage !== undefined ? s.commissionPercentage : 10,
+                                rentDueDate: s.rentDueDate ? new Date(s.rentDueDate).toISOString().split('T')[0] : "",
+                                billingHistory: s.billingHistory || []
+                              })} style={{ flex: 1, minWidth: "75px", padding: "8px 6px", backgroundColor: "#b8448d", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "600", textAlign: "center" }}>🎨 Config</button>
+                              <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ flex: 1, minWidth: "75px", padding: "8px 6px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "600", textAlign: "center" }}>🔑 Pwd</button>
+                              <button onClick={() => handleDeleteSeller(s._id)} style={{ flex: 1, minWidth: "75px", padding: "8px 6px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "11px", fontWeight: "600", textAlign: "center" }}>Delete</button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Desktop Table Layout */
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1000px" }}>
+                      <thead>
+                        <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Business / Contact</th>
+                          <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Rental & License</th>
+                          <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Sales & Fees</th>
+                          <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Domain</th>
+                          <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                          <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredSellers.map((s) => {
+                          const financials = getSellerFinancials(s._id);
+                          const isOverdue = s.rentDueDate && new Date(s.rentDueDate) < new Date();
+                          const rentDueDateStr = s.rentDueDate ? new Date(s.rentDueDate).toLocaleDateString() : "N/A";
+                          
+                          return (
+                            <tr key={s._id} style={{ borderBottom: "1px solid #f1f5f9", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}>
+                              <td style={{ padding: "16px 24px" }}>
+                                <div style={{ color: "#0f172a", fontWeight: "600" }}>{s.businessName || s.name || "N/A"}{s.role === "admin" && " (Admin)"}</div>
+                                <div style={{ fontSize: "12px", color: "#64748b" }}>{s.email} • {s.productsCount || 0} Products</div>
+                              </td>
+                              <td style={{ padding: "16px 24px", fontSize: "13px", color: "#334155" }}>
+                                {s.role === 'admin' ? (
+                                  <span style={{ color: "#94a3b8" }}>N/A (Platform Owner)</span>
+                                ) : (
+                                  <>
+                                    <div>Rent: <strong>₹{(s.rentAmount !== undefined ? s.rentAmount : 5000).toLocaleString()}</strong>/mo</div>
+                                    <div style={{ color: isOverdue ? "#ef4444" : "#64748b", fontSize: "12px", marginTop: "4px" }}>
+                                      Due: {rentDueDateStr} {isOverdue && <span style={{ fontWeight: "700" }}>(OVERDUE)</span>}
+                                    </div>
+                                  </>
+                                )}
+                              </td>
+                              <td style={{ padding: "16px 24px", fontSize: "13px", color: "#334155", textAlign: "center" }}>
+                                {s.role === 'admin' ? (
+                                  <span style={{ color: "#94a3b8" }}>N/A</span>
+                                ) : (
+                                  <>
+                                    <div>Sales: <strong>₹{financials.grossSales.toLocaleString()}</strong></div>
+                                    <div style={{ fontSize: "12px", color: "#059669", marginTop: "4px" }}>
+                                      Fee ({s.commissionPercentage !== undefined ? s.commissionPercentage : 10}%): <strong>₹{financials.commissionEarned.toLocaleString()}</strong>
+                                    </div>
+                                  </>
+                                )}
+                              </td>
+                              <td style={{ padding: "16px 24px", textAlign: "center" }}>
+                                {s.slug ? (
+                                  <a href={`${window.location.protocol}//${s.slug}.${window.location.host.replace(/^www\./, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: "#3b82f6", textDecoration: "underline", fontSize: "13px", fontWeight: "500" }}>Visit Store ↗</a>
+                                ) : (
+                                  <span style={{ color: "#94a3b8", fontSize: "13px" }}>N/A</span>
+                                )}
+                              </td>
+                              <td style={{ padding: "16px 24px", textAlign: "center" }}>
+                                <span style={{ padding: "4px 10px", borderRadius: "100px", fontSize: "12px", border: "1px solid", fontWeight: "600", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
+                                  {s.status || "Pending"}
+                                </span>
+                              </td>
+                              <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                                {s.role !== "admin" && (
+                                  <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                    {s.status !== "active" && (
+                                      <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Approve</button>
+                                    )}
+                                    {s.status === "active" && (
+                                      <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
+                                    )}
+                                    <button onClick={() => setBrandingModal({
+                                      isOpen: true,
+                                      sellerId: s._id,
+                                      name: s.name || "",
+                                      businessName: s.businessName || "",
+                                      slug: s.slug || "",
+                                      email: s.email || "",
+                                      phone: s.phone || "",
+                                      status: s.status || "pending",
+                                      primaryColor: s.branding?.primaryColor || "#B8448D",
+                                      accentColor: s.branding?.accentColor || "#D4AF37",
+                                      darkBg: s.branding?.darkBg || "#0b090f",
+                                      lightBg: s.branding?.lightBg || "#fafafa",
+                                      logoUrl: s.branding?.logoUrl || "",
+                                      bannerUrl: s.branding?.bannerUrl || "",
+                                      bannerUrls: s.branding?.bannerUrls || [],
+                                      faviconUrl: s.branding?.faviconUrl || "",
+                                      rentAmount: s.rentAmount !== undefined ? s.rentAmount : 5000,
+                                      commissionPercentage: s.commissionPercentage !== undefined ? s.commissionPercentage : 10,
+                                      rentDueDate: s.rentDueDate ? new Date(s.rentDueDate).toISOString().split('T')[0] : "",
+                                      billingHistory: s.billingHistory || []
+                                    })} style={{ padding: "6px 12px", backgroundColor: "#b8448d", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🎨 Configure</button>
+                                    <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ padding: "6px 12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🔑 Password</button>
+                                    <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}
@@ -1097,12 +1291,12 @@ export default function AdminPanel() {
               <button onClick={() => setBrandingModal(prev => ({ ...prev, isOpen: false }))} style={{ background: "none", border: "none", fontSize: "24px", color: "#94a3b8", cursor: "pointer", padding: "4px" }}>&times;</button>
             </div>
             
-            <div style={{ padding: "28px" }}>
+            <div style={{ padding: isMobile ? "16px" : "28px" }}>
               <form onSubmit={handleUpdateSellerBranding} style={{ display: "grid", gap: "18px" }}>
                 
                 {/* Section 1: Basic Info */}
                 <h4 style={{ margin: "0 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Boutique Profile Info</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Contact Name *</label>
                     <input type="text" value={brandingModal.name} onChange={e => setBrandingModal({ ...brandingModal, name: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
@@ -1113,7 +1307,7 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Subdomain Slug *</label>
                     <input type="text" value={brandingModal.slug} onChange={e => setBrandingModal({ ...brandingModal, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
@@ -1128,7 +1322,7 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Phone Number *</label>
                     <input type="text" value={brandingModal.phone} onChange={e => setBrandingModal({ ...brandingModal, phone: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
@@ -1141,7 +1335,7 @@ export default function AdminPanel() {
 
                 {/* Section 2: Colors */}
                 <h4 style={{ margin: "10px 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Branding Colors</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: "12px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "6px", fontSize: "11px", fontWeight: "600", color: "#475569" }}>Primary</label>
                     <div style={{ display: "flex", gap: "4px" }}>
@@ -1174,24 +1368,183 @@ export default function AdminPanel() {
 
                 {/* Section 3: Brand Assets */}
                 <h4 style={{ margin: "10px 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Brand Visual Assets</h4>
-                <div style={{ display: "grid", gap: "12px" }}>
+                <div style={{ display: "grid", gap: "16px" }}>
                   <div>
-                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Logo URL</label>
-                    <input type="text" value={brandingModal.logoUrl} onChange={e => setBrandingModal({ ...brandingModal, logoUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/logo.png" />
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Logo</label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {brandingModal.logoUrl && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <img src={brandingModal.logoUrl} alt="Logo Preview" style={{ height: "40px", objectFit: "contain", border: "1px solid #cbd5e1", borderRadius: "6px", padding: "4px", backgroundColor: "#f8fafc" }} />
+                          <button 
+                            type="button" 
+                            onClick={() => setBrandingModal(prev => ({ ...prev, logoUrl: "" }))} 
+                            style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontSize: "12px", padding: 0 }}
+                          >
+                            Remove Logo
+                          </button>
+                        </div>
+                      )}
+                      <div style={{ display: "flex", gap: "8px", flexDirection: isMobile ? "column" : "row" }}>
+                        <input 
+                          type="text" 
+                          value={brandingModal.logoUrl || ""} 
+                          onChange={e => setBrandingModal(prev => ({ ...prev, logoUrl: e.target.value }))} 
+                          placeholder="Logo Image URL" 
+                          style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} 
+                        />
+                        <label style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 16px", backgroundColor: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: "8px", cursor: "pointer", fontSize: "13px", color: "#475569", fontWeight: "600", whiteSpace: "nowrap" }}>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            style={{ display: "none" }} 
+                            onChange={e => {
+                              if (e.target.files?.[0]) compressAndSetModalBrandingAsset('logoUrl', e.target.files[0]);
+                            }}
+                          />
+                          Upload File
+                        </label>
+                      </div>
+                    </div>
                   </div>
+
                   <div>
-                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Banner URL</label>
-                    <input type="text" value={brandingModal.bannerUrl} onChange={e => setBrandingModal({ ...brandingModal, bannerUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/banner.png" />
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Favicon</label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {brandingModal.faviconUrl && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <img src={brandingModal.faviconUrl} alt="Favicon Preview" style={{ width: "24px", height: "24px", objectFit: "contain", border: "1px solid #cbd5e1", borderRadius: "4px", padding: "2px", backgroundColor: "#f8fafc" }} />
+                          <button 
+                            type="button" 
+                            onClick={() => setBrandingModal(prev => ({ ...prev, faviconUrl: "" }))} 
+                            style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontSize: "12px", padding: 0 }}
+                          >
+                            Remove Favicon
+                          </button>
+                        </div>
+                      )}
+                      <div style={{ display: "flex", gap: "8px", flexDirection: isMobile ? "column" : "row" }}>
+                        <input 
+                          type="text" 
+                          value={brandingModal.faviconUrl || ""} 
+                          onChange={e => setBrandingModal(prev => ({ ...prev, faviconUrl: e.target.value }))} 
+                          placeholder="Favicon Image URL" 
+                          style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} 
+                        />
+                        <label style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 16px", backgroundColor: "#f8fafc", border: "1px dashed #cbd5e1", borderRadius: "8px", cursor: "pointer", fontSize: "13px", color: "#475569", fontWeight: "600", whiteSpace: "nowrap" }}>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            style={{ display: "none" }} 
+                            onChange={e => {
+                              if (e.target.files?.[0]) compressAndSetModalBrandingAsset('faviconUrl', e.target.files[0]);
+                            }}
+                          />
+                          Upload File
+                        </label>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Favicon URL</label>
-                    <input type="text" value={brandingModal.faviconUrl} onChange={e => setBrandingModal({ ...brandingModal, faviconUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/favicon.ico" />
+
+                  <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: "16px" }}>
+                    <label style={{ display: "block", marginBottom: "8px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Storefront Banners (Slideshow)</label>
+                    
+                    {/* Banners List */}
+                    {((brandingModal.bannerUrls && brandingModal.bannerUrls.length > 0)
+                      ? brandingModal.bannerUrls
+                      : (brandingModal.bannerUrl ? [brandingModal.bannerUrl] : [])
+                    ).length === 0 ? (
+                      <div style={{ padding: "12px", textAlign: "center", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px dashed #cbd5e1", color: "#64748b", fontSize: "12px", marginBottom: "12px" }}>
+                        No banners uploaded yet.
+                      </div>
+                    ) : (
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: "8px", marginBottom: "12px" }}>
+                        {((brandingModal.bannerUrls && brandingModal.bannerUrls.length > 0)
+                          ? brandingModal.bannerUrls
+                          : (brandingModal.bannerUrl ? [brandingModal.bannerUrl] : [])
+                        ).map((url, idx) => (
+                          <div key={idx} style={{ position: "relative", border: "1px solid #e2e8f0", borderRadius: "6px", overflow: "hidden", backgroundColor: "#f8fafc", aspectRatio: "16/9" }}>
+                            <img src={url} alt={`Banner ${idx + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const currentBanners = (brandingModal.bannerUrls && brandingModal.bannerUrls.length > 0)
+                                  ? [...brandingModal.bannerUrls]
+                                  : (brandingModal.bannerUrl ? [brandingModal.bannerUrl] : []);
+                                const updatedBanners = currentBanners.filter((_, i) => i !== idx);
+                                setBrandingModal(prev => ({
+                                  ...prev,
+                                  bannerUrls: updatedBanners,
+                                  bannerUrl: updatedBanners[0] || ""
+                                }));
+                              }}
+                              style={{ position: "absolute", top: "2px", right: "2px", backgroundColor: "rgba(239, 68, 68, 0.9)", color: "#fff", border: "none", borderRadius: "4px", width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "10px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add Banner Controls */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px", backgroundColor: "#f8fafc", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                      <div>
+                        <span style={{ fontSize: "11px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "4px" }}>Option A: Upload Banner File</span>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={e => {
+                            if (e.target.files?.[0]) {
+                              compressAndSetModalBrandingAsset('banners', e.target.files[0]);
+                              e.target.value = "";
+                            }
+                          }} 
+                          style={{ fontSize: "11px" }}
+                        />
+                      </div>
+                      
+                      <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "6px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: "600", color: "#475569", display: "block", marginBottom: "4px" }}>Option B: Add Banner Image URL</span>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <input 
+                            type="text" 
+                            placeholder="https://example.com/slide.png" 
+                            id="modal-new-banner-url-input"
+                            style={{ flex: 1, padding: "6px 10px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "12px" }} 
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const input = document.getElementById("modal-new-banner-url-input");
+                              const val = input ? input.value.trim() : "";
+                              if (val) {
+                                setBrandingModal(prev => {
+                                  const currentBanners = (prev.bannerUrls && prev.bannerUrls.length > 0)
+                                    ? prev.bannerUrls
+                                    : (prev.bannerUrl ? [prev.bannerUrl] : []);
+                                  const updatedBanners = [...currentBanners, val];
+                                  return {
+                                    ...prev,
+                                    bannerUrls: updatedBanners,
+                                    bannerUrl: updatedBanners[0] || ""
+                                  };
+                                });
+                                if (input) input.value = "";
+                              }
+                            }}
+                            style={{ padding: "6px 12px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "6px", fontSize: "12px", fontWeight: "600", cursor: "pointer" }}
+                          >
+                            Add URL
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Section 4: Rental & Licensing Config */}
                 <h4 style={{ margin: "10px 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Website Rental & Sales Commission</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
                   <div>
                     <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Monthly Rent Amount (₹) *</label>
                     <input type="number" value={brandingModal.rentAmount} onChange={e => setBrandingModal({ ...brandingModal, rentAmount: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
