@@ -73,8 +73,12 @@ export default function Checkout({ cartOpen, setCartOpen, cartItems, removeFromC
 
     try {
       // Create the order payload for the backend
+      const firstItem = groupedItems[0];
+      const orderSellerId = firstItem ? (firstItem.sellerId || "admin") : "admin";
+
       const orderData = {
         userId: currentUser.id || currentUser._id,
+        sellerId: orderSellerId,
         items: groupedItems.map(item => ({
           productId: item.id || item._id,
           name: item.name,

@@ -120,10 +120,20 @@ router.put('/:id/status', async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
-    const seller = await Seller.findByIdAndUpdate(req.params.id, { status }, { new: true }).select('-password');
+    const seller = await Seller.findById(req.params.id);
     if (!seller) return res.status(404).json({ message: 'Seller not found' });
 
-    res.json(seller);
+    seller.status = status;
+    if (status === 'active' && !seller.rentDueDate) {
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 30);
+      seller.rentDueDate = dueDate;
+    }
+
+    await seller.save();
+    const cleanSeller = seller.toObject();
+    delete cleanSeller.password;
+    res.json(cleanSeller);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -188,6 +198,50 @@ router.put('/:id', async (req, res) => {
     }
 
     const seller = await Seller.findByIdAndUpdate(req.params.id, updatePayload, { new: true });
+    res.json(seller);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Pay rent (simulated checkout)
+router.post('/:id/pay-rent', async (req, res) => {
+  try {
+    const seller = await Seller.findById(req.params.id);
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+    const { amountPaid, planName, transactionId } = req.body;
+    
+    // Extend due date by 30 days.
+    // If rentDueDate is in the future, add 30 days to it. Otherwise, add 30 days to today.
+    let currentDueDate = seller.rentDueDate ? new Date(seller.rentDueDate) : new Date();
+    const today = new Date();
+    if (currentDueDate < today) {
+      currentDueDate = new Date();
+    }
+    currentDueDate.setDate(currentDueDate.getDate() + 30);
+
+    const billingEntry = {
+      paymentDate: new Date(),
+      amountPaid: Number(amountPaid),
+      planName: planName || seller.rentPlan || 'Basic E-commerce',
+      status: 'success',
+      nextDueDate: currentDueDate,
+      transactionId: transactionId || `TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+    };
+
+    seller.billingHistory = seller.billingHistory || [];
+    seller.billingHistory.push(billingEntry);
+    seller.rentDueDate = currentDueDate;
+    
+    // Automatically re-activate if it was suspended
+    if (seller.status === 'suspended') {
+      seller.status = 'active';
+    }
+
+    seller.updatedAt = new Date();
+    await seller.save();
+    
     res.json(seller);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -48,6 +48,27 @@ const sellerSchema = new mongoose.Schema({
     enum: ['pending', 'active', 'suspended'],
     default: 'pending'
   },
+  rentAmount: {
+    type: Number,
+    default: 5000
+  },
+  commissionPercentage: {
+    type: Number,
+    default: 10
+  },
+  rentDueDate: {
+    type: Date
+  },
+  billingHistory: [
+    {
+      paymentDate: Date,
+      amountPaid: Number,
+      planName: String,
+      status: String,
+      nextDueDate: Date,
+      transactionId: String
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now

@@ -48,6 +48,10 @@ export default function AdminDashboard() {
     businessName: "",
     phone: "",
     email: "",
+    rentAmount: 5000,
+    commissionPercentage: 10,
+    rentDueDate: "",
+    billingHistory: [],
     branding: {
       primaryColor: "#B8448D",
       accentColor: "#D4AF37",
@@ -58,6 +62,9 @@ export default function AdminDashboard() {
       faviconUrl: ""
     }
   });
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({ method: "card", cardNumber: "", cardExpiry: "", cardCVV: "", upiId: "" });
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [countryCode, setCountryCode] = useState("+91");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara", "Necklaces", "Earrings", "Rings", "Bracelets", "Bridal Sets"];
@@ -131,6 +138,10 @@ export default function AdminDashboard() {
           businessName: data.businessName || "",
           phone: pNum,
           email: data.email || "",
+          rentAmount: data.rentAmount !== undefined ? data.rentAmount : 5000,
+          commissionPercentage: data.commissionPercentage !== undefined ? data.commissionPercentage : 10,
+          rentDueDate: data.rentDueDate || "",
+          billingHistory: data.billingHistory || [],
           branding: data.branding || {
             primaryColor: "#B8448D",
             accentColor: "#D4AF37",
@@ -183,6 +194,51 @@ export default function AdminDashboard() {
       alert("Error updating profile: " + error.message);
     } finally {
       setIsSavingProfile(false);
+    }
+  };
+
+  const handlePayRent = async (e) => {
+    e.preventDefault();
+    try {
+      setIsProcessingPayment(true);
+      const payload = {
+        amountPaid: sellerProfile.rentAmount || 5000,
+        planName: "White-Label Boutique Storefront",
+        transactionId: `TXN-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+      };
+      
+      if (paymentForm.method === "card") {
+        if (!paymentForm.cardNumber || !paymentForm.cardExpiry || !paymentForm.cardCVV) {
+          alert("Please fill all card details");
+          setIsProcessingPayment(false);
+          return;
+        }
+      } else {
+        if (!paymentForm.upiId) {
+          alert("Please enter a UPI ID");
+          setIsProcessingPayment(false);
+          return;
+        }
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const response = await fetch(`${API_BASE_URL}/sellers/${sellerId}/pay-rent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error("Failed to process rent payment");
+      
+      alert("Rent renewal payment processed successfully! Your subscription has been extended by 30 days.");
+      setShowPaymentModal(false);
+      setPaymentForm({ method: "card", cardNumber: "", cardExpiry: "", cardCVV: "", upiId: "" });
+      fetchSellerProfile();
+    } catch (error) {
+      alert("Payment failed: " + error.message);
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -484,6 +540,8 @@ export default function AdminDashboard() {
   const totalValue = products.reduce((sum, p) => sum + (p.price * (parseInt(p.stock) || 0)), 0);
   const totalOrders = orders.length;
   const totalSales = orders.reduce((sum, o) => sum + (o.totalAmount || o.total || 0), 0);
+  const totalCommissions = orders.reduce((sum, o) => sum + (o.commissionAmount || 0), 0);
+  const netRevenue = totalSales - totalCommissions;
 
   const isJewelleryCategory = (cat) => ['Necklaces', 'Earrings', 'Rings', 'Bracelets', 'Bridal Sets'].includes(cat);
   const getAvailableSizes = (cat) => {
@@ -532,8 +590,9 @@ export default function AdminDashboard() {
             { id: "products", icon: <PackageIcon />, label: "My Products" },
             { id: "add_product", icon: <PlusCircleIcon />, label: "Add Product" },
             { id: "orders", icon: <OrdersIcon />, label: "Orders" },
+            !isSuperAdmin && { id: "billing", icon: <DollarSignIcon />, label: "Billing & Rent" },
             { id: "settings", icon: <SettingsIcon />, label: "Settings" }
-          ].map(item => (
+          ].filter(Boolean).map(item => (
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
@@ -580,46 +639,60 @@ export default function AdminDashboard() {
             <p style={{ color: "#64748b", marginBottom: "32px" }}>Here's what's happening with your store today.</p>
 
             {/* Stat Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px", marginBottom: "40px" }}>
-              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
-                <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "40px" }}>
+              <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", backgroundColor: "#eff6ff", color: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <PackageIcon />
                 </div>
                 <div>
-                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Total Products</p>
-                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>{totalProducts}</h3>
+                  <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#64748b", fontWeight: "500" }}>Total Products</p>
+                  <h3 style={{ margin: 0, fontSize: "22px", color: "#0f172a", fontWeight: "700" }}>{totalProducts}</h3>
                 </div>
               </div>
 
-              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
-                <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#f0fdf4", color: "#22c55e", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <DollarSignIcon />
-                </div>
-                <div>
-                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Inventory Value</p>
-                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>₹{totalValue.toLocaleString('en-IN')}</h3>
-                </div>
-              </div>
-
-              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
-                <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#fffbeb", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", backgroundColor: "#fffbeb", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <OrdersIcon />
                 </div>
                 <div>
-                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Total Orders</p>
-                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>{totalOrders}</h3>
+                  <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#64748b", fontWeight: "500" }}>Total Orders</p>
+                  <h3 style={{ margin: 0, fontSize: "22px", color: "#0f172a", fontWeight: "700" }}>{totalOrders}</h3>
                 </div>
               </div>
 
-              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "20px" }}>
-                <div style={{ width: "60px", height: "60px", borderRadius: "12px", backgroundColor: "#fef2f2", color: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "12px", backgroundColor: "#f0fdf4", color: "#22c55e", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <ActivityIcon />
                 </div>
                 <div>
-                  <p style={{ margin: "0 0 4px", fontSize: "14px", color: "#64748b", fontWeight: "500" }}>Total Sales</p>
-                  <h3 style={{ margin: 0, fontSize: "28px", color: "#0f172a" }}>₹{totalSales.toLocaleString('en-IN')}</h3>
+                  <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#64748b", fontWeight: "500" }}>Gross Sales</p>
+                  <h3 style={{ margin: 0, fontSize: "22px", color: "#0f172a", fontWeight: "700" }}>₹{totalSales.toLocaleString('en-IN')}</h3>
                 </div>
               </div>
+
+              {!isSuperAdmin && (
+                <>
+                  <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "16px" }}>
+                    <div style={{ width: "48px", height: "48px", borderRadius: "12px", backgroundColor: "#fef2f2", color: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /><circle cx="12" cy="12" r="10" strokeDasharray="4 4" /></svg>
+                    </div>
+                    <div>
+                      <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#64748b", fontWeight: "500" }}>Commissions Paid</p>
+                      <h3 style={{ margin: 0, fontSize: "22px", color: "#0f172a", fontWeight: "700" }}>₹{totalCommissions.toLocaleString('en-IN')}</h3>
+                    </div>
+                  </div>
+
+                  <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", gap: "16px" }}>
+                    <div style={{ width: "48px", height: "48px", borderRadius: "12px", backgroundColor: "#f5f3ff", color: "#8b5cf6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <DollarSignIcon />
+                    </div>
+                    <div>
+                      <p style={{ margin: "0 0 4px", fontSize: "13px", color: "#64748b", fontWeight: "500" }}>Net Revenue</p>
+                      <h3 style={{ margin: 0, fontSize: "22px", color: "#8b5cf6", fontWeight: "700" }}>₹{netRevenue.toLocaleString('en-IN')}</h3>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Recent Products Summary */}
@@ -1114,7 +1187,290 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* BILLING & RENT TAB */}
+        {activeTab === "billing" && !isSuperAdmin && (
+          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "900px" }}>
+            <h1 style={{ margin: "0 0 8px", fontSize: "28px", color: "#0f172a" }}>Billing & Subscription Rent</h1>
+            <p style={{ color: "#64748b", marginBottom: "32px" }}>Manage your storefront rental renewal, invoices, and platform licensing details.</p>
+
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr", gap: "32px", marginBottom: "40px" }}>
+              {/* Subscription Status Card */}
+              <div style={{ backgroundColor: "#fff", padding: "32px", borderRadius: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0" }}>
+                <h3 style={{ margin: "0 0 24px 0", fontSize: "18px", color: "#0f172a", fontWeight: "600" }}>Store License Status</h3>
+                
+                <div style={{ display: "flex", gap: "24px", alignItems: "center", flexWrap: "wrap", marginBottom: "32px" }}>
+                  <div style={{ 
+                    padding: "16px 24px", 
+                    borderRadius: "16px", 
+                    backgroundColor: new Date(sellerProfile.rentDueDate) > new Date() ? "#ecfdf5" : "#fef2f2", 
+                    border: `1px solid ${new Date(sellerProfile.rentDueDate) > new Date() ? "#a7f3d0" : "#fecaca"}`,
+                    color: new Date(sellerProfile.rentDueDate) > new Date() ? "#047857" : "#b91c1c"
+                  }}>
+                    <span style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", display: "block", marginBottom: "4px" }}>LICENSE STATUS</span>
+                    <span style={{ fontSize: "20px", fontWeight: "800" }}>
+                      {new Date(sellerProfile.rentDueDate) > new Date() ? "ACTIVE" : "EXPIRED / SUSPENDED"}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span style={{ fontSize: "13px", color: "#64748b", display: "block" }}>Subdomain Storefront Plan</span>
+                    <strong style={{ fontSize: "16px", color: "#0f172a" }}>White-Label Boutique Storefront</strong>
+                  </div>
+
+                  <div>
+                    <span style={{ fontSize: "13px", color: "#64748b", display: "block" }}>Platform Sales Fee</span>
+                    <strong style={{ fontSize: "16px", color: "#0f172a" }}>{sellerProfile.commissionPercentage}% on Sales</strong>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", borderTop: "1px solid #f1f5f9", paddingTop: "24px", marginBottom: "32px" }}>
+                  <div>
+                    <span style={{ fontSize: "13px", color: "#64748b", display: "block" }}>Monthly Subscription Fee</span>
+                    <strong style={{ fontSize: "24px", color: "#0f172a", fontWeight: "700" }}>₹{sellerProfile.rentAmount?.toLocaleString('en-IN') || "5,000"}</strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: "13px", color: "#64748b", display: "block" }}>Next Due Date</span>
+                    <strong style={{ fontSize: "18px", color: new Date(sellerProfile.rentDueDate) > new Date() ? "#0f172a" : "#ef4444", fontWeight: "700" }}>
+                      {sellerProfile.rentDueDate ? new Date(sellerProfile.rentDueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : "N/A"}
+                    </strong>
+                    <span style={{ fontSize: "12px", display: "block", color: new Date(sellerProfile.rentDueDate) > new Date() ? "#059669" : "#dc2626", marginTop: "4px", fontWeight: "500" }}>
+                      {(() => {
+                        if (!sellerProfile.rentDueDate) return "";
+                        const diff = new Date(sellerProfile.rentDueDate) - new Date();
+                        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                        return days > 0 ? `${days} days remaining` : `Rent overdue by ${Math.abs(days)} days`;
+                      })()}
+                    </span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setShowPaymentModal(true)}
+                  style={{
+                    padding: "14px 28px",
+                    backgroundColor: "#0f172a",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => e.target.style.backgroundColor = "#1e293b"}
+                  onMouseLeave={e => e.target.style.backgroundColor = "#0f172a"}
+                >
+                  Pay Rent / Renew Subscription
+                </button>
+              </div>
+
+              {/* Quick Info Box */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", padding: "24px", borderRadius: "20px" }}>
+                  <h4 style={{ margin: "0 0 12px 0", color: "#1e40af", fontSize: "15px", fontWeight: "600" }}>Subscription Details</h4>
+                  <p style={{ margin: 0, fontSize: "13px", color: "#1e3a8a", lineHeight: "1.6" }}>
+                    Your subscription covers full hosting, technical maintenance, SSL certificate support, custom branding parameters, and access to our platform analytics engine. Keep your balance paid to avoid subdomain suspension.
+                  </p>
+                </div>
+                
+                <div style={{ backgroundColor: "#fffbeb", border: "1px solid #fde68a", padding: "24px", borderRadius: "20px" }}>
+                  <h4 style={{ margin: "0 0 12px 0", color: "#92400e", fontSize: "15px", fontWeight: "600" }}>Need Custom Plan?</h4>
+                  <p style={{ margin: 0, fontSize: "13px", color: "#78350f", lineHeight: "1.6" }}>
+                    If you require a custom plan, bandwidth adjustments, or sales fee negotiations, please reach out to the Platform Owner via email.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Invoicing Table */}
+            <div style={{ backgroundColor: "#fff", borderRadius: "20px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
+              <div style={{ padding: "20px 28px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ margin: 0, fontSize: "16px", color: "#0f172a", fontWeight: "600" }}>Payment History & Invoices</h3>
+              </div>
+              
+              {!sellerProfile.billingHistory || sellerProfile.billingHistory.length === 0 ? (
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>
+                  No payment records found. Payments you make will be logged here.
+                </div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "12px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Payment Date</th>
+                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "12px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Description</th>
+                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "12px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Reference ID</th>
+                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "12px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Amount</th>
+                        <th style={{ padding: "14px 24px", textAlign: "right", fontSize: "12px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sellerProfile.billingHistory.map((inv, idx) => (
+                        <tr key={idx} style={{ borderBottom: "1px solid #e2e8f0" }}>
+                          <td style={{ padding: "14px 24px", color: "#0f172a", fontSize: "14px" }}>
+                            {new Date(inv.paymentDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </td>
+                          <td style={{ padding: "14px 24px", color: "#475569", fontSize: "14px", fontWeight: "500" }}>{inv.planName || "Rental Renewal"}</td>
+                          <td style={{ padding: "14px 24px", color: "#3b82f6", fontSize: "13px", fontFamily: "monospace" }}>{inv.transactionId}</td>
+                          <td style={{ padding: "14px 24px", color: "#0f172a", fontSize: "14px", fontWeight: "600" }}>₹{inv.amountPaid?.toLocaleString('en-IN')}</td>
+                          <td style={{ padding: "14px 24px", textAlign: "right" }}>
+                            <span style={{ 
+                              padding: "4px 10px", 
+                              backgroundColor: inv.status === 'success' ? "#dcfce7" : "#fee2e2", 
+                              color: inv.status === 'success' ? "#166534" : "#991b1b",
+                              borderRadius: "100px", 
+                              fontSize: "12px", 
+                              fontWeight: "600" 
+                            }}>
+                              {inv.status === 'success' ? 'Paid' : 'Failed'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
       </main>
+
+      {/* MOCK RENTAL PAYMENT MODAL */}
+      {showPaymentModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ backgroundColor: "#fff", borderRadius: "20px", width: "100%", maxWidth: "480px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)", overflow: "hidden", animation: "slideUp 0.3s ease" }}>
+            <div style={{ padding: "20px 28px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 style={{ margin: 0, fontSize: "18px", color: "#0f172a", fontWeight: "600" }}>Settle Renewal Balance</h2>
+              <button onClick={() => setShowPaymentModal(false)} style={{ background: "none", border: "none", fontSize: "24px", color: "#94a3b8", cursor: "pointer", padding: "4px" }}>&times;</button>
+            </div>
+
+            <form onSubmit={handlePayRent} style={{ padding: "28px" }}>
+              <div style={{ backgroundColor: "#f8fafc", padding: "16px", borderRadius: "12px", border: "1px solid #e2e8f0", marginBottom: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <span style={{ fontSize: "13px", color: "#64748b", display: "block" }}>Amount Due Now</span>
+                  <strong style={{ fontSize: "20px", color: "#0f172a", fontWeight: "700" }}>₹{sellerProfile.rentAmount?.toLocaleString('en-IN') || "5,000"}</strong>
+                </div>
+                <span style={{ padding: "6px 12px", backgroundColor: "#e0f2fe", color: "#0369a1", borderRadius: "20px", fontSize: "12px", fontWeight: "600" }}>30 Days Extension</span>
+              </div>
+
+              {/* Payment Method Selector */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Select Payment Method</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <button 
+                    type="button"
+                    onClick={() => setPaymentForm(prev => ({ ...prev, method: "card" }))}
+                    style={{
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: paymentForm.method === "card" ? "2px solid #0f172a" : "1px solid #cbd5e1",
+                      backgroundColor: paymentForm.method === "card" ? "#f8fafc" : "#fff",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      color: "#0f172a"
+                    }}
+                  >
+                    💳 Card
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setPaymentForm(prev => ({ ...prev, method: "upi" }))}
+                    style={{
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: paymentForm.method === "upi" ? "2px solid #0f172a" : "1px solid #cbd5e1",
+                      backgroundColor: paymentForm.method === "upi" ? "#f8fafc" : "#fff",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      color: "#0f172a"
+                    }}
+                  >
+                    ⚡ UPI ID
+                  </button>
+                </div>
+              </div>
+
+              {/* Form Input Fields */}
+              {paymentForm.method === "card" ? (
+                <div style={{ display: "grid", gap: "16px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Card Number</label>
+                    <input 
+                      type="text" 
+                      placeholder="4111 2222 3333 4444" 
+                      value={paymentForm.cardNumber} 
+                      onChange={e => setPaymentForm({ ...paymentForm, cardNumber: e.target.value })}
+                      style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+                      required
+                    />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Expiry Date</label>
+                      <input 
+                        type="text" 
+                        placeholder="MM/YY" 
+                        value={paymentForm.cardExpiry} 
+                        onChange={e => setPaymentForm({ ...paymentForm, cardExpiry: e.target.value })}
+                        style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>CVV</label>
+                      <input 
+                        type="password" 
+                        placeholder="123" 
+                        value={paymentForm.cardCVV} 
+                        onChange={e => setPaymentForm({ ...paymentForm, cardCVV: e.target.value })}
+                        style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Virtual Payment Address (VPA)</label>
+                  <input 
+                    type="text" 
+                    placeholder="boutique@ybl" 
+                    value={paymentForm.upiId} 
+                    onChange={e => setPaymentForm({ ...paymentForm, upiId: e.target.value })}
+                    style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+                    required
+                  />
+                </div>
+              )}
+
+              <button 
+                type="submit" 
+                disabled={isProcessingPayment} 
+                style={{ 
+                  width: "100%", 
+                  padding: "14px", 
+                  backgroundColor: isProcessingPayment ? "#64748b" : "#10b981", 
+                  color: "#fff", 
+                  border: "none", 
+                  borderRadius: "10px", 
+                  fontWeight: "700", 
+                  fontSize: "15px", 
+                  cursor: isProcessingPayment ? "not-allowed" : "pointer",
+                  marginTop: "24px",
+                  transition: "background-color 0.2s"
+                }}
+                onMouseEnter={e => !isProcessingPayment && (e.target.style.backgroundColor = "#059669")}
+                onMouseLeave={e => !isProcessingPayment && (e.target.style.backgroundColor = "#10b981")}
+              >
+                {isProcessingPayment ? "Validating & Renewing..." : `Authorize Payment of ₹${(sellerProfile.rentAmount || 5000).toLocaleString('en-IN')}`}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* EDIT MODAL */}
       {editingId && editFormData && (

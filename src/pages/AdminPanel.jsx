@@ -44,7 +44,11 @@ export default function AdminPanel() {
     lightBg: "#fafafa",
     logoUrl: "",
     bannerUrl: "",
-    faviconUrl: ""
+    faviconUrl: "",
+    rentAmount: 5000,
+    commissionPercentage: 10,
+    rentDueDate: "",
+    billingHistory: []
   });
 
   useEffect(() => {
@@ -307,6 +311,9 @@ export default function AdminPanel() {
         email: brandingModal.email,
         phone: brandingModal.phone,
         status: brandingModal.status,
+        rentAmount: Number(brandingModal.rentAmount),
+        commissionPercentage: Number(brandingModal.commissionPercentage),
+        rentDueDate: brandingModal.rentDueDate ? new Date(brandingModal.rentDueDate) : null,
         branding: {
           primaryColor: brandingModal.primaryColor,
           accentColor: brandingModal.accentColor,
@@ -340,7 +347,15 @@ export default function AdminPanel() {
     totalOrders: orders.length,
     totalUsers: users.length,
     totalSellers: sellers.length,
-    totalRevenue: orders.reduce((sum, order) => sum + (order.total || 0), 0)
+    totalRevenue: orders.reduce((sum, order) => sum + (order.totalAmount || order.total || 0), 0),
+    totalCommissions: orders.reduce((sum, order) => sum + (order.commissionAmount || 0), 0)
+  };
+
+  const getSellerFinancials = (sellerId) => {
+    const sellerOrders = orders.filter(o => o.sellerId === sellerId);
+    const grossSales = sellerOrders.reduce((sum, o) => sum + (o.totalAmount || o.total || 0), 0);
+    const commissionEarned = sellerOrders.reduce((sum, o) => sum + (o.commissionAmount || 0), 0);
+    return { grossSales, commissionEarned };
   };
 
   const searchSuggestions = Array.from(new Set(products.flatMap(p => [p.name, p.category])))
@@ -409,6 +424,10 @@ export default function AdminPanel() {
               <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #facc15" }}>
                 <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Revenue</p>
                 <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>₹{stats.totalRevenue.toLocaleString()}</h3>
+              </div>
+              <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #ec4899" }}>
+                <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Commission Revenue</p>
+                <h3 style={{ margin: 0, fontSize: "32px", color: "#0f172a", fontWeight: "700" }}>₹{stats.totalCommissions.toLocaleString()}</h3>
               </div>
               <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", borderTop: "4px solid #3b82f6" }}>
                 <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "14px", fontWeight: "600" }}>Total Products</p>
@@ -685,71 +704,106 @@ export default function AdminPanel() {
 
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {sellers.length === 0 ? (
-                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No registered sellers.</div>
+                <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>No sellers found.</div>
               ) : (
                 <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "1000px" }}>
                     <thead>
-                      <tr style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: "#f8fafc" }}>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Boutique Name</th>
-                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Email</th>
-                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Products</th>
-                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Storefront</th>
+                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Business / Contact</th>
+                        <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Rental & License</th>
+                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Sales & Fees</th>
+                        <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Domain</th>
                         <th style={{ padding: "16px 24px", textAlign: "center", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Status</th>
                         <th style={{ padding: "16px 24px", textAlign: "right", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase" }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {sellers.map((s) => (
-                        <tr key={s._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                          <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>{s.businessName || s.name || "N/A"}{s.role === "admin" && " (Admin)"}</td>
-                          <td style={{ padding: "16px 24px", color: "#64748b" }}>{s.email}</td>
-                          <td style={{ padding: "16px 24px", color: "#334155", textAlign: "center", fontWeight: "600" }}>{s.productsCount || 0}</td>
-                          <td style={{ padding: "16px 24px", textAlign: "center" }}>
-                            {s.slug ? (
-                              <a href={`${window.location.protocol}//${s.slug}.${window.location.host.replace(/^www\./, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: "#3b82f6", textDecoration: "underline", fontSize: "13px", fontWeight: "500" }}>Visit Store ↗</a>
-                            ) : (
-                              <span style={{ color: "#94a3b8", fontSize: "13px" }}>N/A</span>
-                            )}
-                          </td>
-                          <td style={{ padding: "16px 24px", textAlign: "center" }}>
-                            <span style={{ padding: "4px 10px", borderRadius: "100px", fontSize: "12px", border: "1px solid", fontWeight: "600", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
-                              {s.status || "Pending"}
-                            </span>
-                          </td>
-                          <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                            {s.role !== "admin" && (
-                              <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                                {s.status !== "active" && (
-                                  <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Approve</button>
-                                )}
-                                {s.status === "active" && (
-                                  <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
-                                )}
-                                <button onClick={() => setBrandingModal({
-                                  isOpen: true,
-                                  sellerId: s._id,
-                                  name: s.name || "",
-                                  businessName: s.businessName || "",
-                                  slug: s.slug || "",
-                                  email: s.email || "",
-                                  phone: s.phone || "",
-                                  status: s.status || "pending",
-                                  primaryColor: s.branding?.primaryColor || "#B8448D",
-                                  accentColor: s.branding?.accentColor || "#D4AF37",
-                                  darkBg: s.branding?.darkBg || "#0b090f",
-                                  lightBg: s.branding?.lightBg || "#fafafa",
-                                  logoUrl: s.branding?.logoUrl || "",
-                                  bannerUrl: s.branding?.bannerUrl || "",
-                                  faviconUrl: s.branding?.faviconUrl || ""
-                                })} style={{ padding: "6px 12px", backgroundColor: "#b8448d", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🎨 Configure</button>
-                                <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ padding: "6px 12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🔑 Password</button>
-                                <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                      {sellers.map((s) => {
+                        const financials = getSellerFinancials(s._id);
+                        const isOverdue = s.rentDueDate && new Date(s.rentDueDate) < new Date();
+                        const rentDueDateStr = s.rentDueDate ? new Date(s.rentDueDate).toLocaleDateString() : "N/A";
+                        
+                        return (
+                          <tr key={s._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                            <td style={{ padding: "16px 24px" }}>
+                              <div style={{ color: "#0f172a", fontWeight: "600" }}>{s.businessName || s.name || "N/A"}{s.role === "admin" && " (Admin)"}</div>
+                              <div style={{ fontSize: "12px", color: "#64748b" }}>{s.email} • {s.productsCount || 0} Products</div>
+                            </td>
+                            <td style={{ padding: "16px 24px", fontSize: "13px", color: "#334155" }}>
+                              {s.role === 'admin' ? (
+                                <span style={{ color: "#94a3b8" }}>N/A (Platform Owner)</span>
+                              ) : (
+                                <>
+                                  <div>Rent: <strong>₹{(s.rentAmount !== undefined ? s.rentAmount : 5000).toLocaleString()}</strong>/mo</div>
+                                  <div style={{ color: isOverdue ? "#ef4444" : "#64748b", fontSize: "12px", marginTop: "4px" }}>
+                                    Due: {rentDueDateStr} {isOverdue && <span style={{ fontWeight: "700" }}>(OVERDUE)</span>}
+                                  </div>
+                                </>
+                              )}
+                            </td>
+                            <td style={{ padding: "16px 24px", fontSize: "13px", color: "#334155", textAlign: "center" }}>
+                              {s.role === 'admin' ? (
+                                <span style={{ color: "#94a3b8" }}>N/A</span>
+                              ) : (
+                                <>
+                                  <div>Sales: <strong>₹{financials.grossSales.toLocaleString()}</strong></div>
+                                  <div style={{ fontSize: "12px", color: "#059669", marginTop: "4px" }}>
+                                    Fee ({s.commissionPercentage !== undefined ? s.commissionPercentage : 10}%): <strong>₹{financials.commissionEarned.toLocaleString()}</strong>
+                                  </div>
+                                </>
+                              )}
+                            </td>
+                            <td style={{ padding: "16px 24px", textAlign: "center" }}>
+                              {s.slug ? (
+                                <a href={`${window.location.protocol}//${s.slug}.${window.location.host.replace(/^www\./, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: "#3b82f6", textDecoration: "underline", fontSize: "13px", fontWeight: "500" }}>Visit Store ↗</a>
+                              ) : (
+                                <span style={{ color: "#94a3b8", fontSize: "13px" }}>N/A</span>
+                              )}
+                            </td>
+                            <td style={{ padding: "16px 24px", textAlign: "center" }}>
+                              <span style={{ padding: "4px 10px", borderRadius: "100px", fontSize: "12px", border: "1px solid", fontWeight: "600", background: s.status === "active" ? "#ecfdf5" : s.status === "suspended" ? "#fef2f2" : "#fffbeb", color: s.status === "active" ? "#059669" : s.status === "suspended" ? "#dc2626" : "#d97706", borderColor: s.status === "active" ? "#6ee7b7" : s.status === "suspended" ? "#fca5a5" : "#fde68a" }}>
+                                {s.status || "Pending"}
+                              </span>
+                            </td>
+                            <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                              {s.role !== "admin" && (
+                                <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                  {s.status !== "active" && (
+                                    <button onClick={() => handleUpdateSellerStatus(s._id, "active")} style={{ padding: "6px 12px", backgroundColor: "#10b981", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Approve</button>
+                                  )}
+                                  {s.status === "active" && (
+                                    <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
+                                  )}
+                                  <button onClick={() => setBrandingModal({
+                                    isOpen: true,
+                                    sellerId: s._id,
+                                    name: s.name || "",
+                                    businessName: s.businessName || "",
+                                    slug: s.slug || "",
+                                    email: s.email || "",
+                                    phone: s.phone || "",
+                                    status: s.status || "pending",
+                                    primaryColor: s.branding?.primaryColor || "#B8448D",
+                                    accentColor: s.branding?.accentColor || "#D4AF37",
+                                    darkBg: s.branding?.darkBg || "#0b090f",
+                                    lightBg: s.branding?.lightBg || "#fafafa",
+                                    logoUrl: s.branding?.logoUrl || "",
+                                    bannerUrl: s.branding?.bannerUrl || "",
+                                    faviconUrl: s.branding?.faviconUrl || "",
+                                    rentAmount: s.rentAmount !== undefined ? s.rentAmount : 5000,
+                                    commissionPercentage: s.commissionPercentage !== undefined ? s.commissionPercentage : 10,
+                                    rentDueDate: s.rentDueDate ? new Date(s.rentDueDate).toISOString().split('T')[0] : "",
+                                    billingHistory: s.billingHistory || []
+                                  })} style={{ padding: "6px 12px", backgroundColor: "#b8448d", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🎨 Configure</button>
+                                  <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ padding: "6px 12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🔑 Password</button>
+                                  <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -1134,6 +1188,49 @@ export default function AdminPanel() {
                     <input type="text" value={brandingModal.faviconUrl} onChange={e => setBrandingModal({ ...brandingModal, faviconUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/favicon.ico" />
                   </div>
                 </div>
+
+                {/* Section 4: Rental & Licensing Config */}
+                <h4 style={{ margin: "10px 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Website Rental & Sales Commission</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Monthly Rent Amount (₹) *</label>
+                    <input type="number" value={brandingModal.rentAmount} onChange={e => setBrandingModal({ ...brandingModal, rentAmount: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Sales Commission Rate (%) *</label>
+                    <input type="number" min="0" max="100" value={brandingModal.commissionPercentage} onChange={e => setBrandingModal({ ...brandingModal, commissionPercentage: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Rent Renewal Due Date *</label>
+                  <input type="date" value={brandingModal.rentDueDate} onChange={e => setBrandingModal({ ...brandingModal, rentDueDate: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                </div>
+
+                {brandingModal.billingHistory && brandingModal.billingHistory.length > 0 && (
+                  <div>
+                    <label style={{ display: "block", marginBottom: "8px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Rent Invoicing & Payment History</label>
+                    <div style={{ maxHeight: "150px", overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                        <thead>
+                          <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", position: "sticky", top: 0 }}>
+                            <th style={{ padding: "8px", textAlign: "left" }}>Date</th>
+                            <th style={{ padding: "8px", textAlign: "left" }}>Amount</th>
+                            <th style={{ padding: "8px", textAlign: "left" }}>Ref Code</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {brandingModal.billingHistory.map((h, i) => (
+                            <tr key={i} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                              <td style={{ padding: "8px" }}>{new Date(h.paymentDate).toLocaleDateString()}</td>
+                              <td style={{ padding: "8px", fontWeight: "600" }}>₹{h.amountPaid}</td>
+                              <td style={{ padding: "8px", fontFamily: "monospace", color: "#64748b" }}>{h.transactionId}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
 
                 <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
                   <button type="submit" style={{ flex: 1, padding: "12px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer" }}>Save Configuration</button>

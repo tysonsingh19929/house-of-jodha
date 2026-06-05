@@ -6,6 +6,19 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  sellerId: {
+    type: String,
+    required: true,
+    default: 'admin'
+  },
+  commissionPercentage: {
+    type: Number,
+    default: 0
+  },
+  commissionAmount: {
+    type: Number,
+    default: 0
+  },
   items: [
     {
       productId: mongoose.Schema.Types.ObjectId,

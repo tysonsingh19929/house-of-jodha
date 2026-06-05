@@ -375,8 +375,10 @@ function App() {
     );
   }
 
+  const isRentOverdue = activeSeller && activeSeller.rentDueDate && new Date(activeSeller.rentDueDate) < new Date();
+
   // Under Maintenance / Suspension Guard for rental storefronts
-  if (subdomain && activeSeller && (activeSeller.status === 'suspended' || activeSeller.status === 'pending')) {
+  if (subdomain && activeSeller && (activeSeller.status === 'suspended' || activeSeller.status === 'pending' || isRentOverdue)) {
     const isPending = activeSeller.status === 'pending';
     const primary = activeSeller.branding?.primaryColor || '#B8448D';
     const accent = activeSeller.branding?.accentColor || '#D4AF37';
@@ -421,7 +423,7 @@ function App() {
           </div>
           
           <h1 style={{ fontSize: "28px", margin: "0 0 16px 0", color: "#fff", fontWeight: "600", letterSpacing: "0.5px" }}>
-            {isPending ? "Storefront Setup In Progress" : "Store Under Maintenance"}
+            {isRentOverdue ? "Storefront Subscription Suspended" : (isPending ? "Storefront Setup In Progress" : "Store Under Maintenance")}
           </h1>
           
           <p style={{ 
@@ -431,9 +433,11 @@ function App() {
             fontFamily: "'Inter', sans-serif", 
             margin: "0 0 28px 0" 
           }}>
-            {isPending 
-              ? `Namaste! ${businessName} is currently preparing their storefront and catalog. We will be live with our luxury collections shortly.` 
-              : `Namaste. ${businessName}'s storefront is temporarily inactive. Please contact support or check back later.`}
+            {isRentOverdue 
+              ? "Namaste. This boutique storefront is temporarily inactive due to pending administrative renewals. Please log in to your Seller Panel to pay the balance."
+              : (isPending 
+                  ? `Namaste! ${businessName} is currently preparing their storefront and catalog. We will be live with our luxury collections shortly.` 
+                  : `Namaste. ${businessName}'s storefront is temporarily inactive. Please contact support or check back later.`)}
           </p>
           
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "'Inter', sans-serif" }}>
