@@ -206,6 +206,8 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail.jsx"));
 
 function App() {
   const [subdomain, setSubdomain] = useState(null);
+  const [activeSeller, setActiveSeller] = useState(null);
+  const [storeLoading, setStoreLoading] = useState(true);
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [wishlistOpen, setWishlistOpen] = useState(false);
@@ -214,36 +216,44 @@ function App() {
 
   useEffect(() => {
     if (subdomain) {
+      setStoreLoading(true);
       api.getSellerStore(subdomain).then(storeData => {
-        if (storeData && storeData.branding) {
-          const root = document.documentElement;
-          const branding = storeData.branding;
-          if (branding.primaryColor) {
-            root.style.setProperty('--text-h', branding.primaryColor);
-            root.style.setProperty('--accent-dark', branding.primaryColor);
-          }
-          if (branding.accentColor) {
-            root.style.setProperty('--accent', branding.accentColor);
-          }
-          if (branding.lightBg) {
-            root.style.setProperty('--bg', branding.lightBg);
-          }
-          
-          if (branding.faviconUrl) {
-            let favicon = document.querySelector('link[rel="icon"]');
-            if (favicon) {
-              favicon.href = branding.faviconUrl;
-            } else {
-              favicon = document.createElement('link');
-              favicon.rel = 'icon';
-              favicon.href = branding.faviconUrl;
-              document.head.appendChild(favicon);
+        if (storeData) {
+          setActiveSeller(storeData);
+          if (storeData.branding) {
+            const root = document.documentElement;
+            const branding = storeData.branding;
+            if (branding.primaryColor) {
+              root.style.setProperty('--text-h', branding.primaryColor);
+              root.style.setProperty('--accent-dark', branding.primaryColor);
+            }
+            if (branding.accentColor) {
+              root.style.setProperty('--accent', branding.accentColor);
+            }
+            if (branding.lightBg) {
+              root.style.setProperty('--bg', branding.lightBg);
+            }
+            
+            if (branding.faviconUrl) {
+              let favicon = document.querySelector('link[rel="icon"]');
+              if (favicon) {
+                favicon.href = branding.faviconUrl;
+              } else {
+                favicon = document.createElement('link');
+                favicon.rel = 'icon';
+                favicon.href = branding.faviconUrl;
+                document.head.appendChild(favicon);
+              }
             }
           }
         }
+        setStoreLoading(false);
       }).catch(err => {
         console.error("Failed to load seller branding for subdomain:", err);
+        setStoreLoading(false);
       });
+    } else {
+      setStoreLoading(false);
     }
   }, [subdomain]);
 
@@ -351,6 +361,132 @@ function App() {
 
   const cartCount = cartItems.length;
   const wishlistCount = wishlistItems.length;
+
+  // Loading spinner while resolving seller storefront profile
+  if (subdomain && storeLoading) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#0b090f", color: "#fff", fontFamily: "sans-serif" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: "40px", height: "40px", border: "3px solid rgba(212,175,55,0.1)", borderTopColor: "#D4AF37", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }} />
+          <h3 style={{ margin: 0, fontSize: "16px", color: "#D4AF37", fontWeight: "600", letterSpacing: "1px" }}>LOADING STOREFRONT...</h3>
+        </div>
+        <style dangerouslySetInnerHTML={{__html: `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}} />
+      </div>
+    );
+  }
+
+  // Under Maintenance / Suspension Guard for rental storefronts
+  if (subdomain && activeSeller && (activeSeller.status === 'suspended' || activeSeller.status === 'pending')) {
+    const isPending = activeSeller.status === 'pending';
+    const primary = activeSeller.branding?.primaryColor || '#B8448D';
+    const accent = activeSeller.branding?.accentColor || '#D4AF37';
+    const darkBg = activeSeller.branding?.darkBg || '#0b090f';
+    const businessName = activeSeller.businessName || activeSeller.name || 'Boutique Store';
+    
+    return (
+      <div style={{ 
+        minHeight: "100vh", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center", 
+        justifyContent: "center", 
+        backgroundColor: darkBg, 
+        color: "#fff", 
+        fontFamily: "'Cormorant Garamond', serif",
+        padding: "40px 20px",
+        boxSizing: "border-box",
+        textAlign: "center"
+      }}>
+        <div style={{
+          maxWidth: "500px",
+          backgroundColor: "rgba(255, 255, 255, 0.02)",
+          border: `1px solid rgba(212, 175, 55, 0.25)`,
+          borderRadius: "20px",
+          padding: "40px 30px",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
+          backdropFilter: "blur(12px)"
+        }}>
+          {activeSeller.branding?.logoUrl ? (
+            <img src={activeSeller.branding.logoUrl} alt={businessName} style={{ height: "64px", marginBottom: "20px", objectFit: "contain" }} />
+          ) : (
+            <div style={{ fontSize: "28px", color: accent, fontWeight: "700", letterSpacing: "1.5px", marginBottom: "20px" }}>
+              {businessName}
+            </div>
+          )}
+          
+          <div style={{ display: "inline-flex", padding: "12px", borderRadius: "50%", backgroundColor: "rgba(212,175,55,0.08)", color: accent, marginBottom: "20px" }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </div>
+          
+          <h1 style={{ fontSize: "28px", margin: "0 0 16px 0", color: "#fff", fontWeight: "600", letterSpacing: "0.5px" }}>
+            {isPending ? "Storefront Setup In Progress" : "Store Under Maintenance"}
+          </h1>
+          
+          <p style={{ 
+            fontSize: "14px", 
+            color: "rgba(255,255,255,0.75)", 
+            lineHeight: "1.6", 
+            fontFamily: "'Inter', sans-serif", 
+            margin: "0 0 28px 0" 
+          }}>
+            {isPending 
+              ? `Namaste! ${businessName} is currently preparing their storefront and catalog. We will be live with our luxury collections shortly.` 
+              : `Namaste. ${businessName}'s storefront is temporarily inactive. Please contact support or check back later.`}
+          </p>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "'Inter', sans-serif" }}>
+            {activeSeller.phone && (
+              <a 
+                href={`https://wa.me/${activeSeller.phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  backgroundColor: accent,
+                  color: "#000",
+                  fontWeight: "700",
+                  fontSize: "14px",
+                  textDecoration: "none"
+                }}
+              >
+                Inquire on WhatsApp ↗
+              </a>
+            )}
+            
+            {activeSeller.email && (
+              <a 
+                href={`mailto:${activeSeller.email}`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#fff",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  textDecoration: "none"
+                }}
+              >
+                Email Boutique Support
+              </a>
+            )}
+          </div>
+        </div>
+        
+        <div style={{ marginTop: "24px", fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.3)" }}>
+          Powered by Jodha White-Label Rentals
+        </div>
+      </div>
+    );
+  }
 
   // If accessed via a seller subdomain, render the isolated Storefront Router
   if (subdomain) {

@@ -56,6 +56,8 @@ const Chatbot = () => {
     recipientPhone: ""
   });
 
+  const [sellerName, setSellerName] = useState("The Sringar House");
+  const [sellerPhone, setSellerPhone] = useState("9967670497");
   const [messages, setMessages] = useState([
     { role: 'model', text: 'Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. How can I help you pick the perfect outfit today, love?' }
   ]);
@@ -65,6 +67,41 @@ const Chatbot = () => {
   const [hasGreeted, setHasGreeted] = useState(() => {
     return sessionStorage.getItem('ishani_greeted') === 'true';
   });
+
+  useEffect(() => {
+    const host = window.location.hostname;
+    const isIpAddress = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(host);
+    let sub = null;
+    if (!isIpAddress && host !== 'localhost') {
+      if (host.endsWith('vercel.app')) {
+        const parts = host.split('.');
+        if (parts.length >= 4 && parts[0] !== 'www') sub = parts[0];
+      } else {
+        const parts = host.split('.');
+        if (parts.length >= 3 && parts[0] !== 'www') sub = parts[0];
+        else if (parts.length === 2 && parts[1] === 'localhost') sub = parts[0];
+      }
+    }
+    
+    if (sub) {
+      fetch(`${API_BASE_URL}/sellers/store/${sub}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data) {
+            if (data.businessName) {
+              setSellerName(data.businessName);
+              setMessages([
+                { role: 'model', text: `Namaste! Welcome to ${data.businessName}. I am Ishani, your Senior Fashion Consultant. How can I help you pick the perfect outfit today, love?` }
+              ]);
+            }
+            if (data.phone) {
+              setSellerPhone(data.phone);
+            }
+          }
+        })
+        .catch(err => console.error("Error loading seller in chatbot:", err));
+    }
+  }, []);
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -181,8 +218,8 @@ const Chatbot = () => {
 
   // Emergency Concierge WhatsApp Handover handler
   const handleEmergencyConciergeClick = () => {
-    const greetingText = `Namaste. Welcome to The Sringar House Private Concierge. I am your personal stylist today. Take a deep breath—we have you fully covered.\n\nLet's get this sorted for you immediately. Could you share:\n\nWhat is the occasion or deadline?\nDo you have a sense of their style (or a photo of them)?\n\nI will personally hand-pick 3 exclusive ensembles from our vault, share photos with you, and coordinate premium white-glove delivery to their doorstep.`;
-    const phoneNumber = "9967670497"; // Private Concierge WhatsApp
+    const greetingText = `Namaste. Welcome to the ${sellerName} Private Concierge. I am your personal stylist today. Take a deep breath—we have you fully covered.\n\nLet's get this sorted for you immediately. Could you share:\n\nWhat is the occasion or deadline?\nDo you have a sense of their style (or a photo of them)?\n\nI will personally hand-pick 3 exclusive ensembles from our vault, share photos with you, and coordinate premium white-glove delivery to their doorstep.`;
+    const phoneNumber = sellerPhone; // Private Concierge WhatsApp
     const encodedMessage = encodeURIComponent(greetingText);
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank");
   };
@@ -237,9 +274,9 @@ const Chatbot = () => {
       sizingText = `Contact Recipient for Sizing\n   *Recipient Name:* ${giftingData.recipientName}\n   *Recipient Phone:* ${giftingData.recipientPhone}`;
     }
 
-    const message = `*✨ THE SRINGAR HOUSE - GIFT CONCIERGE INQUIRY ✨*\n\nHello! I would like to consult with a gifting expert. Here are my preferences:\n\n👤 *Gift For:* ${recipientText}\n🎉 *Occasion:* ${occasionText}\n🎨 *Style Preference:* ${styleText}\n📏 *Sizing Selection:* ${sizingText}\n\n*Sender Details:*\n✍️ *Name:* ${giftingData.senderName}\n📞 *Phone:* ${giftingData.senderPhone || "Not provided"}\n\nPlease guide me with the best curated options!`;
+    const message = `*✨ ${sellerName.toUpperCase()} - GIFT CONCIERGE INQUIRY ✨*\n\nHello! I would like to consult with a gifting expert. Here are my preferences:\n\n👤 *Gift For:* ${recipientText}\n🎉 *Occasion:* ${occasionText}\n🎨 *Style Preference:* ${styleText}\n📏 *Sizing Selection:* ${sizingText}\n\n*Sender Details:*\n✍️ *Name:* ${giftingData.senderName}\n📞 *Phone:* ${giftingData.senderPhone || "Not provided"}\n\nPlease guide me with the best curated options!`;
 
-    const phoneNumber = "9967670497"; // Consultant WhatsApp
+    const phoneNumber = sellerPhone; // Consultant WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     
@@ -267,7 +304,7 @@ const Chatbot = () => {
       };
     }
     return {
-      title: "The Sringar Suite",
+      title: sellerName,
       subtitle: "Private Concierge Suite",
       avatar: ISHANI_AVATAR,
       showBack: false
@@ -392,7 +429,7 @@ const Chatbot = () => {
           </button>
           <div className="greeting-content">
             <strong>Namaste! 🙏</strong>
-            <p>Welcome to The Sringar Suite. I am Ishani. Click here for styling curations and concierge assistance.</p>
+            <p>Welcome to {sellerName}. I am Ishani. Click here for styling curations and concierge assistance.</p>
           </div>
         </div>
       )}
@@ -448,7 +485,7 @@ const Chatbot = () => {
               <div className="concierge-menu-content animate-fade-in-up" style={{ padding: '24px 24px 16px 24px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', flex: 1, backgroundColor: 'rgba(11, 9, 15, 0.45)' }}>
                 <div style={{ textAlign: 'center', marginBottom: '8px' }}>
                   <h3 style={{ margin: '0', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: '700', color: '#fff', letterSpacing: '0.5px' }}>
-                    The Sringar Suite
+                    {sellerName}
                   </h3>
                   <span style={{ fontSize: '10px', color: '#D4AF37', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '4px', display: 'inline-block' }}>
                     Private Concierge & Styling

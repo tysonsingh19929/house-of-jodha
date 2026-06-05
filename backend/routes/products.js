@@ -1,7 +1,20 @@
 import express from 'express';
 import Product from '../models/Product.js';
+import Seller from '../models/Seller.js';
 
 const router = express.Router();
+
+// Helper to get active product filter (excludes products of pending/suspended sellers)
+const getActiveFilter = async () => {
+  try {
+    const inactiveSellers = await Seller.find({ status: { $in: ['pending', 'suspended'] } }).select('_id');
+    const inactiveIds = inactiveSellers.map(s => s._id.toString());
+    return { sellerId: { $nin: inactiveIds } };
+  } catch (error) {
+    console.error("Error generating active seller filter:", error);
+    return {};
+  }
+};
 
 // This is your data "blueprint"
 const productsData = [
@@ -19,7 +32,8 @@ const productsData = [
 // 1. GET ALL PRODUCTS
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find().sort({ _id: -1 });
+    const filter = await getActiveFilter();
+    const products = await Product.find(filter).sort({ _id: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -30,7 +44,9 @@ router.get('/', async (req, res) => {
 router.get('/occasion/:occasionName', async (req, res) => {
   try {
     const { occasionName } = req.params;
+    const filter = await getActiveFilter();
     const products = await Product.find({ 
+      ...filter,
       occasion: { $regex: new RegExp(occasionName, "i") } 
     }).sort({ _id: -1 });
     res.json(products);
@@ -46,8 +62,10 @@ router.get('/search', async (req, res) => {
     if (!q) return res.json([]);
     
     // Search across name, category, color, material, description, and occasions array
+    const filter = await getActiveFilter();
     const regex = new RegExp(q, "i");
     const products = await Product.find({
+      ...filter,
       $or: [
         { name: regex },
         { category: regex },
@@ -86,6 +104,15 @@ router.get('/:id', async (req, res) => {
     }
 
     if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    // Verify if the seller is active
+    if (product.sellerId && product.sellerId !== 'admin') {
+      const seller = await Seller.findById(product.sellerId);
+      if (seller && (seller.status === 'suspended' || seller.status === 'pending')) {
+        return res.status(403).json({ message: 'This store is currently under maintenance.' });
+      }
+    }
+
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -95,6 +122,13 @@ router.get('/:id', async (req, res) => {
 // GET BY SELLER ID
 router.get('/seller/:sellerId', async (req, res) => {
   try {
+    // If the requested seller storefront is suspended or pending, block product listing
+    if (req.params.sellerId !== 'admin') {
+      const seller = await Seller.findById(req.params.sellerId);
+      if (seller && (seller.status === 'suspended' || seller.status === 'pending')) {
+        return res.status(403).json({ message: 'This store is currently under maintenance.' });
+      }
+    }
     const products = await Product.find({ sellerId: req.params.sellerId }).sort({ _id: -1 });
     res.json(products);
   } catch (error) {

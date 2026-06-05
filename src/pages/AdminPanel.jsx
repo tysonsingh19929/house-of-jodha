@@ -29,6 +29,23 @@ export default function AdminPanel() {
   const [heroSlides, setHeroSlides] = useState([]);
   const [occasionBanners, setOccasionBanners] = useState([]);
   const [passwordModal, setPasswordModal] = useState({ isOpen: false, sellerId: null, newPassword: "", show: false });
+  const [brandingModal, setBrandingModal] = useState({
+    isOpen: false,
+    sellerId: null,
+    name: "",
+    businessName: "",
+    slug: "",
+    email: "",
+    phone: "",
+    status: "pending",
+    primaryColor: "#B8448D",
+    accentColor: "#D4AF37",
+    darkBg: "#0b090f",
+    lightBg: "#fafafa",
+    logoUrl: "",
+    bannerUrl: "",
+    faviconUrl: ""
+  });
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -277,6 +294,44 @@ export default function AdminPanel() {
       }
     } catch (error) {
       alert("Error updating password");
+    }
+  };
+
+  const handleUpdateSellerBranding = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        name: brandingModal.name,
+        businessName: brandingModal.businessName,
+        slug: brandingModal.slug,
+        email: brandingModal.email,
+        phone: brandingModal.phone,
+        status: brandingModal.status,
+        branding: {
+          primaryColor: brandingModal.primaryColor,
+          accentColor: brandingModal.accentColor,
+          darkBg: brandingModal.darkBg,
+          lightBg: brandingModal.lightBg,
+          logoUrl: brandingModal.logoUrl,
+          bannerUrl: brandingModal.bannerUrl,
+          faviconUrl: brandingModal.faviconUrl
+        }
+      };
+      const res = await fetch(`${API_BASE_URL}/sellers/${brandingModal.sellerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        fetchSellers();
+        setBrandingModal(prev => ({ ...prev, isOpen: false }));
+        alert("Boutique branding configuration saved successfully!");
+      } else {
+        const err = await res.json();
+        alert("Error saving branding: " + err.message);
+      }
+    } catch (error) {
+      alert("Error updating branding: " + error.message);
     }
   };
 
@@ -671,6 +726,23 @@ export default function AdminPanel() {
                                 {s.status === "active" && (
                                   <button onClick={() => handleUpdateSellerStatus(s._id, "suspended")} style={{ padding: "6px 12px", backgroundColor: "#f59e0b", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Suspend</button>
                                 )}
+                                <button onClick={() => setBrandingModal({
+                                  isOpen: true,
+                                  sellerId: s._id,
+                                  name: s.name || "",
+                                  businessName: s.businessName || "",
+                                  slug: s.slug || "",
+                                  email: s.email || "",
+                                  phone: s.phone || "",
+                                  status: s.status || "pending",
+                                  primaryColor: s.branding?.primaryColor || "#B8448D",
+                                  accentColor: s.branding?.accentColor || "#D4AF37",
+                                  darkBg: s.branding?.darkBg || "#0b090f",
+                                  lightBg: s.branding?.lightBg || "#fafafa",
+                                  logoUrl: s.branding?.logoUrl || "",
+                                  bannerUrl: s.branding?.bannerUrl || "",
+                                  faviconUrl: s.branding?.faviconUrl || ""
+                                })} style={{ padding: "6px 12px", backgroundColor: "#b8448d", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🎨 Configure</button>
                                 <button onClick={() => setPasswordModal({ isOpen: true, sellerId: s._id, newPassword: s.password || "", show: false })} style={{ padding: "6px 12px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>🔑 Password</button>
                                 <button onClick={() => handleDeleteSeller(s._id)} style={{ padding: "6px 12px", backgroundColor: "#ef4444", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Delete</button>
                               </div>
@@ -958,6 +1030,117 @@ export default function AdminPanel() {
                 <button type="button" onClick={() => setEditingProduct(null)} style={{ flex: 1, padding: "12px", backgroundColor: "#f1f5f9", color: "#475569", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* BRANDING CONFIGURATION MODAL */}
+      {brandingModal.isOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ backgroundColor: "#fff", borderRadius: "20px", width: "100%", maxWidth: "600px", maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)", animation: "slideUp 0.3s ease" }}>
+            <div style={{ padding: "20px 28px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, backgroundColor: "#fff", zIndex: 10 }}>
+              <h2 style={{ margin: 0, fontSize: "18px", color: "#0f172a" }}>Configure Boutique</h2>
+              <button onClick={() => setBrandingModal(prev => ({ ...prev, isOpen: false }))} style={{ background: "none", border: "none", fontSize: "24px", color: "#94a3b8", cursor: "pointer", padding: "4px" }}>&times;</button>
+            </div>
+            
+            <div style={{ padding: "28px" }}>
+              <form onSubmit={handleUpdateSellerBranding} style={{ display: "grid", gap: "18px" }}>
+                
+                {/* Section 1: Basic Info */}
+                <h4 style={{ margin: "0 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Boutique Profile Info</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Contact Name *</label>
+                    <input type="text" value={brandingModal.name} onChange={e => setBrandingModal({ ...brandingModal, name: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Business Name *</label>
+                    <input type="text" value={brandingModal.businessName} onChange={e => setBrandingModal({ ...brandingModal, businessName: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Subdomain Slug *</label>
+                    <input type="text" value={brandingModal.slug} onChange={e => setBrandingModal({ ...brandingModal, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Status *</label>
+                    <select value={brandingModal.status} onChange={e => setBrandingModal({ ...brandingModal, status: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required>
+                      <option value="pending">Pending</option>
+                      <option value="active">Active</option>
+                      <option value="suspended">Suspended</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Phone Number *</label>
+                    <input type="text" value={brandingModal.phone} onChange={e => setBrandingModal({ ...brandingModal, phone: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Email Address *</label>
+                    <input type="email" value={brandingModal.email} onChange={e => setBrandingModal({ ...brandingModal, email: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} required />
+                  </div>
+                </div>
+
+                {/* Section 2: Colors */}
+                <h4 style={{ margin: "10px 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Branding Colors</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "11px", fontWeight: "600", color: "#475569" }}>Primary</label>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      <input type="color" value={brandingModal.primaryColor} onChange={e => setBrandingModal({ ...brandingModal, primaryColor: e.target.value })} style={{ width: "32px", height: "32px", padding: 0, border: "none", cursor: "pointer", borderRadius: "4px" }} />
+                      <input type="text" value={brandingModal.primaryColor} onChange={e => setBrandingModal({ ...brandingModal, primaryColor: e.target.value })} style={{ flex: 1, minWidth: 0, padding: "4px", fontSize: "11px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "11px", fontWeight: "600", color: "#475569" }}>Accent</label>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      <input type="color" value={brandingModal.accentColor} onChange={e => setBrandingModal({ ...brandingModal, accentColor: e.target.value })} style={{ width: "32px", height: "32px", padding: 0, border: "none", cursor: "pointer", borderRadius: "4px" }} />
+                      <input type="text" value={brandingModal.accentColor} onChange={e => setBrandingModal({ ...brandingModal, accentColor: e.target.value })} style={{ flex: 1, minWidth: 0, padding: "4px", fontSize: "11px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "11px", fontWeight: "600", color: "#475569" }}>Dark BG</label>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      <input type="color" value={brandingModal.darkBg} onChange={e => setBrandingModal({ ...brandingModal, darkBg: e.target.value })} style={{ width: "32px", height: "32px", padding: 0, border: "none", cursor: "pointer", borderRadius: "4px" }} />
+                      <input type="text" value={brandingModal.darkBg} onChange={e => setBrandingModal({ ...brandingModal, darkBg: e.target.value })} style={{ flex: 1, minWidth: 0, padding: "4px", fontSize: "11px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "11px", fontWeight: "600", color: "#475569" }}>Light BG</label>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      <input type="color" value={brandingModal.lightBg} onChange={e => setBrandingModal({ ...brandingModal, lightBg: e.target.value })} style={{ width: "32px", height: "32px", padding: 0, border: "none", cursor: "pointer", borderRadius: "4px" }} />
+                      <input type="text" value={brandingModal.lightBg} onChange={e => setBrandingModal({ ...brandingModal, lightBg: e.target.value })} style={{ flex: 1, minWidth: 0, padding: "4px", fontSize: "11px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 3: Brand Assets */}
+                <h4 style={{ margin: "10px 0 4px", fontSize: "14px", color: "#475569", borderBottom: "1px solid #f1f5f9", paddingBottom: "6px" }}>Brand Visual Assets</h4>
+                <div style={{ display: "grid", gap: "12px" }}>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Logo URL</label>
+                    <input type="text" value={brandingModal.logoUrl} onChange={e => setBrandingModal({ ...brandingModal, logoUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/logo.png" />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Banner URL</label>
+                    <input type="text" value={brandingModal.bannerUrl} onChange={e => setBrandingModal({ ...brandingModal, bannerUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/banner.png" />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", marginBottom: "6px", fontSize: "12px", fontWeight: "600", color: "#475569" }}>Favicon URL</label>
+                    <input type="text" value={brandingModal.faviconUrl} onChange={e => setBrandingModal({ ...brandingModal, faviconUrl: e.target.value })} style={{ width: "100%", padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }} placeholder="https://example.com/favicon.ico" />
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
+                  <button type="submit" style={{ flex: 1, padding: "12px", backgroundColor: "#1e293b", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer" }}>Save Configuration</button>
+                  <button type="button" onClick={() => setBrandingModal(prev => ({ ...prev, isOpen: false }))} style={{ flex: 1, padding: "12px", backgroundColor: "#f1f5f9", color: "#475569", border: "none", borderRadius: "8px", fontWeight: "600", fontSize: "14px", cursor: "pointer" }}>Cancel</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

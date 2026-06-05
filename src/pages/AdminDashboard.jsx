@@ -43,7 +43,21 @@ export default function AdminDashboard() {
   const [editFormData, setEditFormData] = useState(null);
   const [editImagePreviews, setEditImagePreviews] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
-  const [sellerProfile, setSellerProfile] = useState({ name: "", businessName: "", phone: "", email: "" });
+  const [sellerProfile, setSellerProfile] = useState({
+    name: "",
+    businessName: "",
+    phone: "",
+    email: "",
+    branding: {
+      primaryColor: "#B8448D",
+      accentColor: "#D4AF37",
+      darkBg: "#0b090f",
+      lightBg: "#fafafa",
+      logoUrl: "",
+      bannerUrl: "",
+      faviconUrl: ""
+    }
+  });
   const [countryCode, setCountryCode] = useState("+91");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const categories = ["Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Gharara", "Sharara", "Necklaces", "Earrings", "Rings", "Bracelets", "Bridal Sets"];
@@ -116,7 +130,16 @@ export default function AdminDashboard() {
           name: data.name || "",
           businessName: data.businessName || "",
           phone: pNum,
-          email: data.email || ""
+          email: data.email || "",
+          branding: data.branding || {
+            primaryColor: "#B8448D",
+            accentColor: "#D4AF37",
+            darkBg: "#0b090f",
+            lightBg: "#fafafa",
+            logoUrl: "",
+            bannerUrl: "",
+            faviconUrl: ""
+          }
         });
       }
     } catch (error) {
@@ -127,6 +150,16 @@ export default function AdminDashboard() {
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setSellerProfile(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBrandingChange = (key, value) => {
+    setSellerProfile(prev => ({
+      ...prev,
+      branding: {
+        ...(prev.branding || {}),
+        [key]: value
+      }
+    }));
   };
 
   const saveSellerProfile = async () => {
@@ -1013,7 +1046,63 @@ export default function AdminDashboard() {
                         <input type="tel" name="phone" value={sellerProfile.phone} onChange={handleProfileChange} style={{ flex: 1, padding: "12px 16px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
                       </div>
                     </div>
-                    <div style={{ marginTop: "16px" }}>
+                    {/* Branding Colors Customization Section */}
+                    <div style={{ marginTop: "32px", borderTop: "1px solid #e2e8f0", paddingTop: "24px" }}>
+                      <h3 style={{ margin: "0 0 20px", color: "#0f172a", fontSize: "16px", fontWeight: "700" }}>Storefront Branding Config</h3>
+                      <div style={{ display: "grid", gap: "16px" }}>
+                        
+                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Primary Brand Color</label>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <input type="color" value={sellerProfile.branding?.primaryColor || "#B8448D"} onChange={e => handleBrandingChange("primaryColor", e.target.value)} style={{ width: "40px", height: "40px", padding: 0, border: "none", cursor: "pointer", borderRadius: "8px" }} />
+                              <input type="text" value={sellerProfile.branding?.primaryColor || "#B8448D"} onChange={e => handleBrandingChange("primaryColor", e.target.value)} style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                            </div>
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Accent Color (Gold etc)</label>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <input type="color" value={sellerProfile.branding?.accentColor || "#D4AF37"} onChange={e => handleBrandingChange("accentColor", e.target.value)} style={{ width: "40px", height: "40px", padding: 0, border: "none", cursor: "pointer", borderRadius: "8px" }} />
+                              <input type="text" value={sellerProfile.branding?.accentColor || "#D4AF37"} onChange={e => handleBrandingChange("accentColor", e.target.value)} style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Dark Background (Chatbot/Panel)</label>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <input type="color" value={sellerProfile.branding?.darkBg || "#0b090f"} onChange={e => handleBrandingChange("darkBg", e.target.value)} style={{ width: "40px", height: "40px", padding: 0, border: "none", cursor: "pointer", borderRadius: "8px" }} />
+                              <input type="text" value={sellerProfile.branding?.darkBg || "#0b090f"} onChange={e => handleBrandingChange("darkBg", e.target.value)} style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                            </div>
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "6px", fontSize: "13px", fontWeight: "600", color: "#475569" }}>Light Background (Body)</label>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <input type="color" value={sellerProfile.branding?.lightBg || "#fafafa"} onChange={e => handleBrandingChange("lightBg", e.target.value)} style={{ width: "40px", height: "40px", padding: 0, border: "none", cursor: "pointer", borderRadius: "8px" }} />
+                              <input type="text" value={sellerProfile.branding?.lightBg || "#fafafa"} onChange={e => handleBrandingChange("lightBg", e.target.value)} style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Logo URL</label>
+                          <input type="text" value={sellerProfile.branding?.logoUrl || ""} onChange={e => handleBrandingChange("logoUrl", e.target.value)} placeholder="https://example.com/logo.png" style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Banner URL</label>
+                          <input type="text" value={sellerProfile.branding?.bannerUrl || ""} onChange={e => handleBrandingChange("bannerUrl", e.target.value)} placeholder="https://example.com/banner.png" style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Favicon URL</label>
+                          <input type="text" value={sellerProfile.branding?.faviconUrl || ""} onChange={e => handleBrandingChange("faviconUrl", e.target.value)} placeholder="https://example.com/favicon.ico" style={{ width: "100%", padding: "12px 16px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "14px" }} />
+                        </div>
+
+                      </div>
+                    </div>
+                    <div style={{ marginTop: "24px" }}>
                       <button onClick={saveSellerProfile} disabled={isSavingProfile} style={{ padding: "12px 24px", backgroundColor: isSavingProfile ? "#64748b" : "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSavingProfile ? "not-allowed" : "pointer", transition: "background-color 0.2s" }}>
                         {isSavingProfile ? "Saving..." : "Save Changes"}
                       </button>
