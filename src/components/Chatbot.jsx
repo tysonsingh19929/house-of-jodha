@@ -37,7 +37,7 @@ const ISHANI_AVATAR = "https://images.unsplash.com/photo-1580489944761-15a19d654
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [view, setView] = useState('menu'); // 'menu', 'chat', 'gifting'
+  const [view, setView] = useState('chat'); // Default to 'chat' view for a clean entry point
   const [step, setStep] = useState(1); // 1: Recipient, 2: Occasion, 3: Style, 4: Sizing, 5: Sender details
   
   // Gifting questionnaire state
@@ -224,7 +224,7 @@ const Chatbot = () => {
 
   const handleBack = () => {
     if (step === 1) {
-      setView('menu');
+      setView('chat'); // Go back to main chat view instead of menu
     } else {
       setStep(prev => prev - 1);
     }
@@ -270,7 +270,7 @@ const Chatbot = () => {
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     
     window.open(whatsappUrl, "_blank");
-    setView('menu');
+    setView('chat'); // Redirect back to chat view instead of menu
     setIsOpen(false);
   };
 
@@ -468,155 +468,7 @@ const Chatbot = () => {
             </button>
           </div>
 
-          {/* VIEW: MENU */}
-          {view === 'menu' && (
-            <>
-              <div className="concierge-menu-content animate-fade-in-up" style={{ padding: '24px 24px 16px 24px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', flex: 1, backgroundColor: 'rgba(11, 9, 15, 0.45)' }}>
-                <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-                  <h3 style={{ margin: '0', fontFamily: "'Cormorant Garamond', serif", fontSize: '24px', fontWeight: '700', color: '#fff', letterSpacing: '0.5px' }}>
-                    {sellerName}
-                  </h3>
-                  <span style={{ fontSize: '10px', color: '#D4AF37', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: '4px', display: 'inline-block' }}>
-                    Private Concierge & Styling
-                  </span>
-                </div>
-
-                <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: 'rgba(255, 255, 255, 0.75)', textAlign: 'center', lineHeight: '1.6', fontStyle: 'italic', fontFamily: "'DM Sans', sans-serif" }}>
-                  "Namaste! Welcome to your styling suite. Let us discover your next ensemble or craft an exquisite gift together."
-                </p>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                  
-                  {/* Card 1: AI Stylist Chat */}
-                  <div 
-                    className="concierge-menu-card" 
-                    onClick={() => setView('chat')}
-                    style={{
-                      padding: '16px 20px',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(212, 175, 55, 0.18)',
-                      borderRadius: '14px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px'
-                    }}
-                  >
-                    <div style={{ background: 'rgba(212, 175, 55, 0.08)', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: '700', color: '#fff', fontFamily: "'DM Sans', sans-serif" }}>
-                        AI Stylist & Sizing Chat
-                      </h4>
-                      <p style={{ margin: '0', fontSize: '11px', color: 'rgba(255, 255, 255, 0.45)', lineHeight: '1.3' }}>
-                        Inquire about sizes, jewelry pairings, and customization details.
-                      </p>
-                    </div>
-                    <div style={{ color: '#D4AF37', fontSize: '16px', fontWeight: 'bold' }}>→</div>
-                  </div>
-
-                  {/* Card 2: Gift curator */}
-                  <div 
-                    className="concierge-menu-card" 
-                    onClick={() => { setView('gifting'); setStep(1); }}
-                    style={{
-                      padding: '16px 20px',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(212, 175, 55, 0.18)',
-                      borderRadius: '14px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px'
-                    }}
-                  >
-                    <div style={{ background: 'rgba(212, 175, 55, 0.08)', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 12 20 22 4 22 4 12" />
-                        <rect x="2" y="7" width="20" height="5" />
-                        <line x1="12" y1="22" x2="12" y2="7" />
-                        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
-                      </svg>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: '700', color: '#fff', fontFamily: "'DM Sans', sans-serif" }}>
-                        Bespoke Gift Curator
-                      </h4>
-                      <p style={{ margin: '0', fontSize: '11px', color: 'rgba(255, 255, 255, 0.45)', lineHeight: '1.3' }}>
-                        Guided 5-step questionnaire to select the perfect outfit for a loved one.
-                      </p>
-                    </div>
-                    <div style={{ color: '#D4AF37', fontSize: '16px', fontWeight: 'bold' }}>→</div>
-                  </div>
-
-                  {/* Card 3: Emergency Concierge */}
-                  <div 
-                    className="concierge-menu-card" 
-                    onClick={handleEmergencyConciergeClick}
-                    style={{
-                      padding: '16px 20px',
-                      background: 'linear-gradient(135deg, #064e3b 0%, #022c22 100%)',
-                      border: '1.5px solid #D4AF37',
-                      borderRadius: '14px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px',
-                      boxShadow: '0 4px 12px rgba(6, 78, 59, 0.25)'
-                    }}
-                  >
-                    <div style={{ background: 'rgba(212,175,55,0.15)', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                      </svg>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: '700', color: '#D4AF37', fontFamily: "'DM Sans', sans-serif" }}>
-                        Emergency Concierge (24-48h)
-                      </h4>
-                      <p style={{ margin: '0', fontSize: '11px', color: '#faecd1', lineHeight: '1.3' }}>
-                        Stressed or facing a tight deadline? Direct WhatsApp style consultation.
-                      </p>
-                    </div>
-                    <div style={{ color: '#D4AF37', fontSize: '16px', fontWeight: 'bold' }}>→</div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Fast-start AI chat input at the bottom of the menu */}
-              <form 
-                className="chatbot-input-area" 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!inputMessage.trim()) return;
-                  setView('chat');
-                  handleSendMessage(e);
-                }}
-                style={{ borderTop: '1.5px solid rgba(212, 175, 55, 0.2)', background: '#131118' }}
-              >
-                <input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Ask Ishani anything to start chat..."
-                  autoComplete="off"
-                />
-                <button type="submit" disabled={!inputMessage.trim()}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-                  </svg>
-                </button>
-              </form>
-            </>
-          )}
-
-          {/* VIEW: CHAT */}
+          {/* VIEW: CHAT (Default, Clutter-Free Interface) */}
           {view === 'chat' && (
             <>
               <div className="chatbot-messages" style={{ flex: 1, padding: '14px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', background: 'rgba(11, 9, 15, 0.6)' }}>
@@ -658,6 +510,76 @@ const Chatbot = () => {
                   </svg>
                 </button>
               </form>
+
+              {/* Clutter-Free Small Option Links Below Chat Input */}
+              <div style={{
+                padding: '8px 12px 12px',
+                textAlign: 'center',
+                background: '#131118',
+                borderTop: '1.5px solid rgba(212, 175, 55, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                fontSize: '11px',
+                letterSpacing: '0.3px'
+              }}>
+                <button
+                  onClick={() => { setView('gifting'); setStep(1); }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#D4AF37',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    fontFamily: "'DM Sans', sans-serif",
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'rgba(212, 175, 55, 0.08)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'none';
+                    e.currentTarget.style.transform = 'none';
+                  }}
+                >
+                  🎁 Bespoke Gift Curator
+                </button>
+                <span style={{ color: 'rgba(255, 255, 255, 0.15)', fontSize: '10px' }}>|</span>
+                <button
+                  onClick={handleEmergencyConciergeClick}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#10b981',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    fontFamily: "'DM Sans', sans-serif",
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'rgba(16, 185, 129, 0.08)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'none';
+                    e.currentTarget.style.transform = 'none';
+                  }}
+                >
+                  🟢 Emergency Concierge (WhatsApp)
+                </button>
+              </div>
             </>
           )}
 
