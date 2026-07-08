@@ -301,11 +301,11 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
                           setMenuOpen(false);
                           if (item.action === "gift-concierge") {
                             if (window.location.pathname === "/") {
-                              window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: true } }));
+                              window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: false } }));
                             } else {
                               navigate("/");
                               setTimeout(() => {
-                                window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: true } }));
+                                window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: false } }));
                               }, 500);
                             }
                           } else if (item.path.startsWith("/#")) {

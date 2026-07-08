@@ -47,11 +47,11 @@ export default function Footer() {
 
   const handleGiftConciergeClick = () => {
     if (window.location.pathname === "/") {
-      window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: true } }));
+      window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: false } }));
     } else {
       navigate("/");
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: true } }));
+        window.dispatchEvent(new CustomEvent('open-gift-concierge', { detail: { direct: false } }));
       }, 500);
     }
   };

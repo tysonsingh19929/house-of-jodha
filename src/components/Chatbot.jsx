@@ -154,18 +154,7 @@ const Chatbot = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  // Listen to custom global events to open the concierge suite directly into gifting mode
-  useEffect(() => {
-    const handleOpenEvent = () => {
-      setIsOpen(true);
-      setView('gifting');
-      setStep(1);
-    };
-    window.addEventListener("open-gift-concierge", handleOpenEvent);
-    return () => {
-      window.removeEventListener("open-gift-concierge", handleOpenEvent);
-    };
-  }, []);
+
 
   const handleSendMessage = async (e) => {
     e.preventDefault();

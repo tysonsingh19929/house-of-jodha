@@ -20,30 +20,10 @@ export default function GiftConciergeFlow() {
   });
 
   useEffect(() => {
-    // Check if user has already made a choice in this session
-    const choice = sessionStorage.getItem("gift_concierge_choice");
-    if (!choice) {
-      // Auto-open after a small delay on homepage
-      const timer = setTimeout(() => {
-        if (window.location.pathname === "/") {
-          setIsOpen(true);
-          setStep(0);
-        }
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  useEffect(() => {
     // Listen to custom global events to open the concierge
-    const handleOpenEvent = (e) => {
+    const handleOpenEvent = () => {
       setIsOpen(true);
-      // If triggered explicitly, skip the bifurcated splash and start the questionnaire directly (step 1)
-      if (e.detail?.direct) {
-        setStep(1);
-      } else {
-        setStep(0);
-      }
+      setStep(0); // Always start at step 0 (welcome splash) when explicitly opened
     };
 
     window.addEventListener("open-gift-concierge", handleOpenEvent);
