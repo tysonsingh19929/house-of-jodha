@@ -36,9 +36,9 @@ export default function Footer() {
 
   const handleSocialClick = (platform) => {
     const urls = {
-      "Facebook": "https://facebook.com/thesringarhouse",
+      "Facebook": "https://facebook.com/msretail",
       "Instagram": "https://www.instagram.com/thesringaarhouse?igsh=MW5hc3RmdDR5d3p6cw==",
-      "Twitter": "https://twitter.com/thesringarhouse"
+      "Twitter": "https://twitter.com/msretail"
     };
     if (urls[platform]) {
       window.open(urls[platform], "_blank");
@@ -73,7 +73,7 @@ export default function Footer() {
       }}>
         <div>
           <h4 style={{ fontFamily: "'Cormorant Garamond', serif", marginBottom: isMobile ? "16px" : "24px", fontSize: isMobile ? "24px" : "28px", fontWeight: "700", color: "#D4AF37", letterSpacing: "1px" }}>
-            The Sringar House
+            MS Retail
           </h4>
           <p style={{ fontSize: isMobile ? "13px" : "14px", lineHeight: "1.8", color: "rgba(255,255,255,0.7)", margin: "0" }}>
             Exquisite Indian ethnic wear designed for the modern woman. Handpicked, carefully curated, and tailored to perfection.
@@ -114,7 +114,7 @@ export default function Footer() {
         <div>
           <h4 style={{ marginBottom: isMobile ? "15px" : "24px", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase" }}>Contact</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
-            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📧 support@thesringarhouse.com</li>
+            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📧 support@msretail.in</li>
             <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📞 +91 9967670497</li>
             <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "16px" : "24px", color: "#fff" }}>Follow us:</li>
             <li style={{ marginTop: "8px", fontSize: isMobile ? "14px" : "18px" }}>
@@ -133,9 +133,9 @@ export default function Footer() {
         fontSize: isMobile ? "11px" : "13px",
         color: "rgba(255,255,255,0.5)"
       }}>
-        <p style={{ margin: "0 0 8px 0", color: "#D4AF37", letterSpacing: "1px" }}>✨ SALE UP TO 50% OFF EVERYTHING | PLUS 5% OFF | USE CODE SRINGAR5 ✨</p>
+        <p style={{ margin: "0 0 8px 0", color: "#D4AF37", letterSpacing: "1px" }}>✨ SALE UP TO 50% OFF EVERYTHING | PLUS 5% OFF | USE CODE MSRETAIL5 ✨</p>
         <p style={{ margin: "0" }}>
-          © 2026 The Sringar House. All rights reserved. | Perfect Tailoring, Delivered at Doorsteps
+          © 2026 MS Retail. All rights reserved. | Perfect Tailoring, Delivered at Doorsteps
         </p>
       </div>
     </div>

@@ -18,7 +18,7 @@ async function assignProductsToDemoSeller() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: demoSellerName,
-        email: "demo1@houseofjodha.com",
+        email: "demo1@msretail.in",
         password: "securepassword123",
         businessName: "Demo Outlet",
         phone: demoPhone
@@ -32,7 +32,7 @@ async function assignProductsToDemoSeller() {
       console.log("Demo Seller 1 already exists. Fetching their ID...");
       const sellersRes = await fetch(`${API_BASE_URL}/sellers`);
       const sellers = await sellersRes.json();
-      const existingDemo = sellers.find(s => s.email === "demo1@houseofjodha.com");
+      const existingDemo = sellers.find(s => s.email === "demo1@msretail.in");
       
       if (!existingDemo) {
         throw new Error("Could not find the Demo Seller ID.");

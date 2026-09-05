@@ -24,11 +24,11 @@ async function migrateAll() {
             category: p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1).toLowerCase() : 'Lehenga',
             price: p.price || 1000,
             originalPrice: p.originalPrice || ((p.price || 1000) * 1.2),
-            description: p.description || 'Premium design from The Sringar House.',
+            description: p.description || 'Premium design from MS Retail.',
             image: p.image || '/images/placeholder.jpg',
             stock: p.stock || 5,
             sellerId: '507f1f77bcf86cd799439011',
-            sellerName: 'The Sringar House Master',
+            sellerName: 'MS Retail Master',
             occasions: p.occasions || (p.occasion ? [p.occasion] : [])
         }));
 

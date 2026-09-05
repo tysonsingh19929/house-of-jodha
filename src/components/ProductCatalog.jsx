@@ -22,7 +22,7 @@ const ProductCard = ({ product, onAddToCart, onRemoveProduct, addedProducts, han
         )}
       </div>
       <div style={{ padding: "16px", display: "flex", flexDirection: "column", flex: 1 }}>
-        <h3 style={{ fontSize: "11px", color: "#888", margin: "0 0 4px 0", textTransform: "uppercase", letterSpacing: "0.5px" }}>{product.sellerName || "The Sringar House"}</h3>
+        <h3 style={{ fontSize: "11px", color: "#888", margin: "0 0 4px 0", textTransform: "uppercase", letterSpacing: "0.5px" }}>{product.sellerName || "MS Retail"}</h3>
         <p style={{ margin: "0 0 8px 0", fontSize: "14px", fontWeight: "600", color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", cursor: "pointer" }} onClick={() => navigate(`/product/${product._id || product.id}`)}>{product.name}</p>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
           <span style={{ fontWeight: "700", color: "#1a1a1a", fontSize: "16px" }}>₹{product.price?.toLocaleString()}</span>
@@ -738,7 +738,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                           </button>
                         </div>
                         <div className="m-info" onClick={() => navigate(`/product/${product.id}`)}>
-                          <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
+                          <h3 className="m-brand">{product.sellerName || "MS Retail"}</h3>
                           <p className="m-title">{product.name}</p>
                           <div className="m-price-row">
                             <span className="m-price">Rs. {product.price?.toLocaleString('en-IN')}</span>

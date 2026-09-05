@@ -647,8 +647,8 @@ export default function ProductDetail({
 
   useEffect(() => {
     if (product) {
-      const title = `${product.name} | The Sringar House`;
-      const description = product.description ? product.description.replace(/(<([^>]+)>)/gi, "") : `Buy ${product.name} online at The Sringar House. Explore our luxury collection.`;
+      const title = `${product.name} | MS Retail`;
+      const description = product.description ? product.description.replace(/(<([^>]+)>)/gi, "") : `Buy ${product.name} online at MS Retail. Explore our luxury collection.`;
       const imageUrl = product.image;
 
       document.title = title;

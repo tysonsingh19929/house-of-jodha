@@ -221,7 +221,7 @@ export default function AdminPanel() {
         originalPrice: parseInt(formData.originalPrice || formData.price, 10),
         occasions: formData.occasions ? formData.occasions.split(',').map(s => s.trim()) : [],
         sellerId: "admin",
-        sellerName: "The Sringar House"
+        sellerName: "MS Retail"
       };
       const res = await fetch(`${API_BASE_URL}/products`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (res.ok) {
@@ -498,7 +498,7 @@ export default function AdminPanel() {
                 Master Control Center
               </h2>
               <p style={{ color: "#64748b", lineHeight: "1.6", margin: 0 }}>
-                You have full operational access to The Sringar House. Manage external sellers, verify their product listings, track financial metrics, and monitor user accounts. Utilize the sidebar to navigate the master administrative portals.
+                You have full operational access to MS Retail. Manage external sellers, verify their product listings, track financial metrics, and monitor user accounts. Utilize the sidebar to navigate the master administrative portals.
               </p>
             </div>
           </div>
@@ -587,7 +587,7 @@ export default function AdminPanel() {
                       <label style={{ fontSize: "13px", fontWeight: "600", color: "#64748b", whiteSpace: "nowrap" }}>Filter by Seller:</label>
                       <select value={sellerFilter} onChange={e => setSellerFilter(e.target.value)} style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "13px", outline: "none", flex: 1 }}>
                         <option value="All">All Products</option>
-                        <option value="admin">The Sringar House (Admin)</option>
+                        <option value="admin">MS Retail (Admin)</option>
                         {sellers.filter(s => s.role !== 'admin').map(s => (
                           <option key={s._id} value={s._id}>{s.businessName || s.name}</option>
                         ))}
@@ -607,7 +607,7 @@ export default function AdminPanel() {
                           <img src={p.image} alt={p.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name}</p>
-                            <p style={{ margin: "0 0 8px", fontSize: "12px", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Seller: {p.sellerName || "The Sringar House"}</p>
+                            <p style={{ margin: "0 0 8px", fontSize: "12px", color: "#64748b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Seller: {p.sellerName || "MS Retail"}</p>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                               <span style={{ fontSize: "12px", color: "#475569", padding: "4px 10px", backgroundColor: "#f1f5f9", borderRadius: "100px", fontWeight: "500" }}>{p.category}</span>
                               <span style={{ fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>₹{p.price}</span>
@@ -649,7 +649,7 @@ export default function AdminPanel() {
                             <td style={{ padding: "16px 24px" }}>
                               <span style={{ padding: "4px 10px", backgroundColor: "#f1f5f9", color: "#475569", borderRadius: "100px", fontSize: "12px", fontWeight: "500" }}>{p.category}</span>
                             </td>
-                            <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "The Sringar House"}</td>
+                            <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>{p.sellerName || "MS Retail"}</td>
                             <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "600" }}>₹{p.price}</td>
                             <td style={{ padding: "16px 24px", textAlign: "right" }}>
                               <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>

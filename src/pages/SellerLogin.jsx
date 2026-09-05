@@ -142,7 +142,7 @@ export default function SellerLogin() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Ex: boutique@sringarhouse.com"
+              placeholder="Ex: boutique@msretail.in"
               required
               className="auth-input"
               autoFocus
@@ -179,7 +179,7 @@ export default function SellerLogin() {
         </form>
 
         <div style={{ textAlign: "center", marginTop: "32px", fontSize: "14px", color: "rgba(255,255,255,0.6)" }}>
-          New to The Sringar House?{" "}
+          New to MS Retail?{" "}
           <Link to="/seller-signup" className="auth-link">Apply to Sell</Link>
         </div>
 

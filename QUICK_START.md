@@ -1,4 +1,4 @@
-# The Sringar House - Quick Start Guide
+# MS Retail - Quick Start Guide
 
 ## 🚀 Fastest Way to Get Running (5 minutes)
 
@@ -146,7 +146,7 @@ For issues or questions, check:
 
 ## 🎉 You're All Set!
 
-Your The Sringar House e-commerce platform is ready. Visit:
+Your MS Retail e-commerce platform is ready. Visit:
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:5000/api/health
 

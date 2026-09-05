@@ -33,7 +33,7 @@ export default function AdminLogin() {
       setLoading(true);
       // For demo: Simple hardcoded admin credentials
       // In production, this should be a backend call
-      if (email === "admin@sringarhouse.com" && password === "admin123") {
+      if (email === "admin@msretail.in" && password === "admin123") {
         localStorage.setItem("admin_token", "admin_" + Date.now());
         localStorage.setItem("admin_email", email);
         navigate("/admin", { replace: true });
@@ -124,7 +124,7 @@ export default function AdminLogin() {
     <div style={containerStyle}>
       <div style={cardStyle}>
         <h1 style={titleStyle}>🔐 Admin Login</h1>
-        <p style={subtitleStyle}>The Sringar House Admin Panel</p>
+        <p style={subtitleStyle}>MS Retail Admin Panel</p>
 
         {error && <div style={errorStyle}>{error}</div>}
 

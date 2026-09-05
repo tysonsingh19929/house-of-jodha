@@ -23,6 +23,9 @@ const PORT = process.env.PORT || 5002;
 // Middleware
 app.use(cors({
   origin: [
+    'https://msretail.in',
+    'https://www.msretail.in',
+    /^https?:\/\/([a-z0-9-]+\.)?msretail\.in$/,
     'https://house-of-jodha.vercel.app',
     'https://thesringarhouse.com',
     'https://www.thesringarhouse.com',

@@ -30,7 +30,7 @@ export default function PromoSection() {
           letterSpacing: "0.5px",
           color: "rgba(255,255,255,0.8)"
         }}>
-          SALE UP TO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <span style={{ color: "#D4AF37", fontWeight: "700", padding: "2px 8px", background: "rgba(212,175,55,0.1)", borderRadius: "4px", marginLeft: "4px" }}>SRINGAR5</span>
+          SALE UP TO 50% OFF EVERYTHING | PLUS 5% OFF WITH CODE <span style={{ color: "#D4AF37", fontWeight: "700", padding: "2px 8px", background: "rgba(212,175,55,0.1)", borderRadius: "4px", marginLeft: "4px" }}>MSRETAIL5</span>
         </p>
       </div>
     </div>

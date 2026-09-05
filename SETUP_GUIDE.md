@@ -1,4 +1,4 @@
-# House of Jodha - Full E-Commerce Website
+# MS Retail - Full E-Commerce Website
 
 ## Complete Setup Guide
 

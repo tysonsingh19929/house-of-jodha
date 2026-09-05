@@ -39,7 +39,7 @@ export default function About() {
         {/* Right Column - Elegant Text */}
         <div style={{ fontSize: isMobile ? "14px" : "15px", lineHeight: "1.9", color: "#666" }}>
           <p style={{ marginBottom: "24px" }}>
-            <strong style={{ color: "#1a1a1a" }}>The Sringar House</strong> intends to dress up fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses. From traditional Saris, Anarkali Suits, Salwar Kameez, Lehengas, Shararas to modern Indo-Western fusion wear, we have it all available for our lovely ladies.
+            <strong style={{ color: "#1a1a1a" }}>MS Retail</strong> intends to dress up fashionistas and discerning clients in the latest, trendiest, and beautiful Indian dresses. From traditional Saris, Anarkali Suits, Salwar Kameez, Lehengas, Shararas to modern Indo-Western fusion wear, we have it all available for our lovely ladies.
           </p>
 
           <p style={{ marginBottom: "32px" }}>

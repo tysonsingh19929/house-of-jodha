@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function EmergencyConcierge() {
   const handleConciergeClick = () => {
-    const greetingText = `Namaste. Welcome to The Sringar House Private Concierge. I am your personal stylist today. Take a deep breath—we have you fully covered.\n\nLet's get this sorted for you immediately. Could you share:\n\nWhat is the occasion or deadline?\nDo you have a sense of their style (or a photo of them)?\n\nI will personally hand-pick 3 exclusive ensembles from our vault, share photos with you, and coordinate premium white-glove delivery to their doorstep.`;
+    const greetingText = `Namaste. Welcome to MS Retail Private Concierge. I am your personal stylist today. Take a deep breath—we have you fully covered.\n\nLet's get this sorted for you immediately. Could you share:\n\nWhat is the occasion or deadline?\nDo you have a sense of their style (or a photo of them)?\n\nI will personally hand-pick 3 exclusive ensembles from our vault, share photos with you, and coordinate premium white-glove delivery to their doorstep.`;
 
     const phoneNumber = "9967670497"; // Private Concierge WhatsApp
     const encodedMessage = encodeURIComponent(greetingText);

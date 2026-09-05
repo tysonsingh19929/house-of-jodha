@@ -91,7 +91,7 @@ export default function GiftConciergeFlow() {
       sizingText = `Contact Recipient for Sizing\n   *Recipient Name:* ${data.recipientName}\n   *Recipient Phone:* ${data.recipientPhone}`;
     }
 
-    const message = `*✨ THE SRINGAR HOUSE - GIFT CONCIERGE INQUIRY ✨*\n\nHello! I would like to consult with a gifting expert. Here are my preferences:\n\n👤 *Gift For:* ${recipientText}\n🎉 *Occasion:* ${occasionText}\n🎨 *Style Preference:* ${styleText}\n📏 *Sizing Selection:* ${sizingText}\n\n*Sender Details:*\n✍️ *Name:* ${data.senderName}\n📞 *Phone:* ${data.senderPhone || "Not provided"}\n\nPlease guide me with the best curated options!`;
+    const message = `*✨ MS RETAIL - GIFT CONCIERGE INQUIRY ✨*\n\nHello! I would like to consult with a gifting expert. Here are my preferences:\n\n👤 *Gift For:* ${recipientText}\n🎉 *Occasion:* ${occasionText}\n🎨 *Style Preference:* ${styleText}\n📏 *Sizing Selection:* ${sizingText}\n\n*Sender Details:*\n✍️ *Name:* ${data.senderName}\n📞 *Phone:* ${data.senderPhone || "Not provided"}\n\nPlease guide me with the best curated options!`;
 
     const phoneNumber = "9967670497"; // Consultant WhatsApp
     const encodedMessage = encodeURIComponent(message);
@@ -157,7 +157,7 @@ export default function GiftConciergeFlow() {
           {step === 0 && (
             <div className="animate-fade-in-up">
               <h2 className="gift-concierge-title" style={{ textAlign: "center", fontSize: "32px", marginBottom: "12px" }}>
-                Welcome to The Sringar House
+                Welcome to MS Retail
               </h2>
               <p className="gift-concierge-subtitle" style={{ textAlign: "center", marginBottom: "28px" }}>
                 Select your luxury shopping experience today

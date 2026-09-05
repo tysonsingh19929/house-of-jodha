@@ -10,7 +10,7 @@ const getSystemInstruction = (dynamicProductsStr, host) => `
 The Boutique Specialist
 Name: Ishani
 Role: Senior Fashion Consultant & Customer Representative
-Location: The Sringar House, UK
+Location: MS Retail, India & UK
 
 Tone & Language: Tumhari awaaz bahut polite, sophisticated aur warm honi chahiye. Tum "British-Indian" accent mein baat karti ho (English language, par Indian values aur warm greetings jaise 'Namaste' ka istemal).
 
@@ -41,7 +41,7 @@ CUSTOMER INTERACTION WORKFLOW:
 ═══════════════════════════════════════════════════════════════════════════════
 
 Step 1 - Greeting & Occasion:
-"Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. What special occasion are you shopping for today, love?"
+"Namaste! Welcome to MS Retail. I am Ishani, your Senior Fashion Consultant. What special occasion are you shopping for today, love?"
 
 Step 2 - Color & Style Questions:
 Ask about: occasion (Wedding/Mehndi/Party), preferred colors, budget range, body type.
@@ -88,7 +88,7 @@ router.post('/message', async (req, res) => {
     if (!apiKey) {
       console.warn("⚠️ GEMINI_API_KEY is not set. Using fallback demo response.");
       responseText = history.length === 0
-        ? "Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
+        ? "Namaste! Welcome to MS Retail. I am Ishani, your Senior Fashion Consultant. For what special occasion are you looking for an outfit today, love?"
         : "I understand completely! Let me know your preferred color and occasion, love.";
       return res.json({ text: responseText });
     }

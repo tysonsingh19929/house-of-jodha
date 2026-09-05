@@ -57,7 +57,7 @@ export default function Cart({ items, onRemove, onClose }) {
     const cartUrlParam = encodeURIComponent(JSON.stringify(minimalItems));
     const cartLink = `${window.location.origin}${window.location.pathname}?cart=${cartUrlParam}`;
 
-    const message = `*✨ THE SRINGAR HOUSE - PRIVATE CONSULTATION & HANDOVER ✨*\n\nHello! I would like to coordinate a private styling consultation and white-glove handover. Here are my order details:\n\n📦 *Items in Cart:*\n${itemsList}\n\n💰 *Total Order Value:* ₹${total.toLocaleString('en-IN')}\n\n🔗 *Cart Session Link:* ${cartLink}\n\nPlease connect me with a luxury concierge consultant.`;
+    const message = `*✨ MS RETAIL - PRIVATE CONSULTATION & HANDOVER ✨*\n\nHello! I would like to coordinate a private styling consultation and white-glove handover. Here are my order details:\n\n📦 *Items in Cart:*\n${itemsList}\n\n💰 *Total Order Value:* ₹${total.toLocaleString('en-IN')}\n\n🔗 *Cart Session Link:* ${cartLink}\n\nPlease connect me with a luxury concierge consultant.`;
 
     const phoneNumber = "9967670497"; // Consultant WhatsApp
     const encodedMessage = encodeURIComponent(message);

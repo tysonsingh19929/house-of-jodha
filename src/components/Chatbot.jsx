@@ -56,10 +56,10 @@ const Chatbot = () => {
     recipientPhone: ""
   });
 
-  const [sellerName, setSellerName] = useState("The Sringar House");
+  const [sellerName, setSellerName] = useState("MS Retail");
   const [sellerPhone, setSellerPhone] = useState("9967670497");
   const [messages, setMessages] = useState([
-    { role: 'model', text: 'Namaste! Welcome to The Sringar House. I am Ishani, your Senior Fashion Consultant. How can I help you pick the perfect outfit today, love?' }
+    { role: 'model', text: 'Namaste! Welcome to MS Retail. I am Ishani, your Senior Fashion Consultant. How can I help you pick the perfect outfit today, love?' }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);

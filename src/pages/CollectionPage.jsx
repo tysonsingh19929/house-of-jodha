@@ -189,15 +189,15 @@ export default function CollectionPage({
   }, [occasionKey]);
 
   useEffect(() => {
-    document.title = `${d.name} Collection | The Sringar House`;
+    document.title = `${d.name} Collection | MS Retail`;
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
-    const description = d.description ? `${d.description} Shop the exclusive ${d.name} collection at The Sringar House.` : `Explore the exclusive ${d.name} collection at The Sringar House.`;
+    const description = d.description ? `${d.description} Shop the exclusive ${d.name} collection at MS Retail.` : `Explore the exclusive ${d.name} collection at MS Retail.`;
     metaDesc.content = description;
 
     // Open Graph / Social Media meta tags
     const ogTags = {
-      "og:title": `${d.name} Collection | The Sringar House`,
+      "og:title": `${d.name} Collection | MS Retail`,
       "og:description": description,
       "og:image": "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp", // A default high-quality image
       "og:url": window.location.href,
@@ -709,7 +709,7 @@ export default function CollectionPage({
                         </button>
                       </div>
                       <div className="m-info" onClick={() => navigate(`/product/${product.id}`)}>
-                        <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
+                        <h3 className="m-brand">{product.sellerName || "MS Retail"}</h3>
                         <p className="m-title">{product.name}</p>
                         <div className="m-price-row">
                           <span className="m-price">Rs. {product.price?.toLocaleString('en-IN')}</span>

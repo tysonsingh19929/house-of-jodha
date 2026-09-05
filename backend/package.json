@@ -1,7 +1,7 @@
 {
-  "name": "house-of-jodha-backend",
+  "name": "ms-retail-backend",
   "version": "1.0.0",
-  "description": "Express backend for House of Jodha e-commerce",
+  "description": "Express backend for MS Retail e-commerce",
   "main": "server.js",
   "type": "module",
   "scripts": {

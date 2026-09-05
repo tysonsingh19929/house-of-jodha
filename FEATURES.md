@@ -1,4 +1,4 @@
-# The Sringar House - Enhanced Features ✨
+# MS Retail - Enhanced Features ✨
 
 ## Recent Updates
 
@@ -15,7 +15,7 @@
 
 ### 1. **Promotional Banner Section**
 - Eye-catching gradient background (Purple theme)
-- Special offer display: "50% OFF + 5% with code SRINGAR5"
+- Special offer display: "50% OFF + 5% with code MSRETAIL5"
 - Call-to-action button with hover effects
 - Location: Top of website (after navbar)
 
@@ -56,7 +56,7 @@
 
 ### 6. **Enhanced Footer**
 - Reorganized into 5 main sections:
-  - **House of Jodha**: Brand description
+  - **MS Retail**: Brand description
   - **Shopping**: New Arrivals, Best Sellers, View All, Sale
   - **Collection**: Quick links to product categories
   - **Policies**: Privacy, Shipping, Returns, T&C
@@ -128,7 +128,7 @@ App/
 
 ## 📊 Feature Comparison
 
-| Feature | Like A Diva | The Sringar House |
+| Feature | Like A Diva | MS Retail |
 |---------|------------|-----------------|
 | Products | ✓ | ✓ |
 | Filter by Category | ✓ | ✓ |
@@ -193,4 +193,4 @@ All components are ready to connect to the Express backend:
 
 ---
 
-**Your The Sringar House website is now feature-complete and ready for deployment!** 🎉
+**Your MS Retail website is now feature-complete and ready for deployment!** 🎉

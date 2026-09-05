@@ -1,4 +1,4 @@
-# House of Jodha - Backend Setup Guide
+# MS Retail - Backend Setup Guide
 
 ## Prerequisites
 - Node.js (v16+)

@@ -46,7 +46,7 @@ export default function Features() {
         fontWeight: "600",
         position: "relative",
       }}>
-        The Sringar <span style={{ color: "#D4AF37", fontStyle: "italic" }}>Standard</span>
+        The MS Retail <span style={{ color: "#D4AF37", fontStyle: "italic" }}>Standard</span>
       </h2>
 
       <div style={{

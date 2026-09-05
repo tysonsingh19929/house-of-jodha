@@ -162,7 +162,7 @@ export default function SellerSignup() {
                 type="text"
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
-                placeholder="Ex. Sringar Apparel"
+                placeholder="Ex. MS Apparel"
                 required
                 className="auth-input"
               />
@@ -202,7 +202,7 @@ export default function SellerSignup() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Ex: boutique@sringarhouse.com"
+              placeholder="Ex: boutique@msretail.in"
               required
               className="auth-input"
             />

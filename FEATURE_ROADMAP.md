@@ -1,4 +1,4 @@
-# 🚀 House of Jodha - Features Roadmap (Priority-Wise)
+# 🚀 MS Retail - Features Roadmap (Priority-Wise)
 
 ## ✅ CURRENT FEATURES (Already Implemented)
 - ✅ Product Catalog with categories

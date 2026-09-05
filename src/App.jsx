@@ -120,20 +120,20 @@ function HomePage({
   handleCartClick, handleWishlistClick
 }) {
   useEffect(() => {
-    document.title = "The Sringar House | Luxury Indian Ethnic Wear & Fine Jewellery";
+    document.title = "MS Retail | Luxury Indian Ethnic Wear & Fine Jewellery";
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
-    const description = "Discover exquisite Indian ethnic wear, lehengas, sarees, and fine jewellery at The Sringar House. Shop premium, bespoke, and handcrafted outfits.";
+    const description = "Discover exquisite Indian ethnic wear, lehengas, sarees, and fine jewellery at MS Retail. Shop premium, bespoke, and handcrafted outfits.";
     metaDesc.content = description;
 
     // Open Graph / Social Media meta tags
     const ogTags = {
-      "og:title": "The Sringar House | Luxury Indian Ethnic Wear & Fine Jewellery",
+      "og:title": "MS Retail | Luxury Indian Ethnic Wear & Fine Jewellery",
       "og:description": description,
       "og:image": "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp",
       "og:url": window.location.origin,
       "og:type": "website",
-      "og:site_name": "The Sringar House"
+      "og:site_name": "MS Retail"
     };
 
     Object.keys(ogTags).forEach(property => {
@@ -486,7 +486,7 @@ function App() {
         </div>
         
         <div style={{ marginTop: "24px", fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.3)" }}>
-          Powered by Jodha White-Label Rentals
+          Powered by MS Retail White-Label Rentals
         </div>
       </div>
     );

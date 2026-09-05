@@ -645,7 +645,7 @@ export default function SearchResults({
                               </button>
                             </div>
                             <div className="m-info" onClick={() => navigate(`/product/${product.id}`)}>
-                              <h3 className="m-brand">{product.sellerName || "The Sringar House"}</h3>
+                              <h3 className="m-brand">{product.sellerName || "MS Retail"}</h3>
                               <p className="m-title">{product.name}</p>
                               <div className="m-price-row">
                                 <span className="m-price">Rs. {product.price.toLocaleString('en-IN')}</span>

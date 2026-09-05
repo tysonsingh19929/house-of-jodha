@@ -18,7 +18,7 @@ export default function PoliciesPage({
     privacy: {
       title: "Privacy Policy",
       lastUpdated: "April 2026",
-      intro: "At The Sringar House, we value your privacy. This policy outlines how we handle your data:",
+      intro: "At MS Retail, we value your privacy. This policy outlines how we handle your data:",
       sections: [
         { subtitle: "Information Collection", text: "We collect your name, contact details, and shipping address when you place an order or chat with Ishani, our AI assistant." },
         { subtitle: "Use of Data", text: "Your data is used solely to process orders, provide fashion consultations, and improve your shopping experience." },
@@ -49,13 +49,13 @@ export default function PoliciesPage({
     },
     terms: {
       title: "Terms & Conditions",
-      tagline: "Welcome to The Sringar House",
-      intro: "By using thesringarhouse.com, you agree to the following:",
+      tagline: "Welcome to MS Retail",
+      intro: "By using msretail.in, you agree to the following:",
       sections: [
         { subtitle: "Product Accuracy", text: "We strive to show the most accurate colors of our fabrics. However, due to digital screen variations, slight color differences may occur." },
         { subtitle: "Pricing", text: "All prices listed are in INR and include applicable GST." },
         { subtitle: "Order Cancellation", text: "Orders can be cancelled within 24 hours of placement. Post-dispatch cancellations are not permitted." },
-        { subtitle: "Intellectual Property", text: "All designs, images, and content on this site are the property of The Sringar House." },
+        { subtitle: "Intellectual Property", text: "All designs, images, and content on this site are the property of MS Retail." },
         { subtitle: "Jurisdiction", text: "Any legal disputes are subject to the courts of Thane/Mumbai." }
       ]
     }

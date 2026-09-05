@@ -230,7 +230,7 @@ export default function Navbar({ cartCount = 0, onCartClick, wishlistCount = 0, 
               whiteSpace: "nowrap",
             }}
           >
-            THE SRINGAR HOUSE
+            MS RETAIL
           </span>
         </div>
 
