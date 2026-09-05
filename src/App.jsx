@@ -130,7 +130,7 @@ function HomePage({
     const ogTags = {
       "og:title": "MS Retail | Luxury Indian Ethnic Wear & Fine Jewellery",
       "og:description": description,
-      "og:image": "https://images.pexels.com/photos/12730873/pexels-photo-12730873.jpeg?auto=compress&w=1200&format=webp",
+      "og:image": `${window.location.origin}/social-preview.jpg`,
       "og:url": window.location.origin,
       "og:type": "website",
       "og:site_name": "MS Retail"
