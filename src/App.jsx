@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import ScrollToTop from "./components/ScrollToTop";
 import { initializeProductsInStorage } from "./utils/initializeProducts";
 import Navbar from "./components/Navbar";
@@ -520,6 +521,7 @@ function App() {
           <Route path="*" element={<div style={{ textAlign: "center", padding: "100px" }}><h2>Page Not Found</h2><a href={`http://${window.location.hostname.replace(`${subdomain}.`, '')}`}>Return to Main Marketplace</a></div>} />
         </Routes>
         <FloatingWidgets />
+        <SpeedInsights />
       </BrowserRouter>
     );
   }
@@ -778,6 +780,7 @@ function App() {
         />
       </Routes>
       <FloatingWidgets />
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
