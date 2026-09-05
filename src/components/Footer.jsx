@@ -115,7 +115,7 @@ export default function Footer() {
           <h4 style={{ marginBottom: isMobile ? "15px" : "24px", fontSize: "15px", fontWeight: "600", letterSpacing: "0.5px", textTransform: "uppercase" }}>Contact</h4>
           <ul style={{ listStyle: "none", padding: "0", margin: "0" }}>
             <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📧 support@msretail.in</li>
-            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📞 +91 9967670497</li>
+            <li style={{ marginBottom: "8px", fontSize: isMobile ? "13px" : "14px", color: "rgba(255,255,255,0.7)" }}>📞 +91 8268827027</li>
             <li style={{ fontSize: isMobile ? "13px" : "14px", marginTop: isMobile ? "16px" : "24px", color: "#fff" }}>Follow us:</li>
             <li style={{ marginTop: "8px", fontSize: isMobile ? "14px" : "18px" }}>
               <a onClick={() => handleSocialClick("Facebook")} style={{ color: "#D4AF37", marginRight: isMobile ? "12px" : "16px", textDecoration: "none", cursor: "pointer", transition: "opacity 0.2s" }} onMouseEnter={e => e.target.style.opacity = 0.7} onMouseLeave={e => e.target.style.opacity = 1}>f</a>

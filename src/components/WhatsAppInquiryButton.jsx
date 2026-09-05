@@ -6,7 +6,7 @@ export default function WhatsAppInquiryButton({
   buttonStyle = {},
   tooltipText = "Tap for full product info",
   tooltipDuration = 4000,
-  phoneNumber = "9967670497",
+  phoneNumber = "+918268827027",
   onClick,
   ...props
 }) {
@@ -44,8 +44,13 @@ export default function WhatsAppInquiryButton({
       return;
     }
 
+    const cleanPhone = String(phoneNumber).replace(/[^0-9]/g, "");
+    const finalPhone = cleanPhone.startsWith("91") && cleanPhone.length === 12
+      ? cleanPhone
+      : (cleanPhone.length === 10 ? "91" + cleanPhone : cleanPhone);
+
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank");
+    window.open(`https://wa.me/${finalPhone}?text=${encodedMessage}`, "_blank");
   };
 
   const handleMouseEnter = (e) => {

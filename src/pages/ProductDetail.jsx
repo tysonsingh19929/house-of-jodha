@@ -1107,7 +1107,7 @@ export default function ProductDetail({
           <WhatsAppInquiryButton
             message={`Hi! I'm interested in: ${product.name} — ₹${product.price}. Size: ${selectedSize}`}
             buttonStyle={{ width: "100%", padding: "12px 24px", marginTop: "0" }}
-            phoneNumber={sellerPhone || "9967670497"}
+            phoneNumber={sellerPhone || "+918268827027"}
           />
 
           {/* Trust badges */}

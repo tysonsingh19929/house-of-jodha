@@ -760,7 +760,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                           )}
                           <WhatsAppInquiryButton
                             message={`Hi! I'm interested in this product: ${product.name} - ₹${product.price}. Can you provide more details?`}
-                            phoneNumber={sellersMap[product.sellerId] || "9967670497"}
+                            phoneNumber={sellersMap[product.sellerId] || "+918268827027"}
                             buttonStyle={{ width: "100%", padding: isMobile ? "8px" : "10px", borderRadius: "6px", fontSize: isMobile ? "11px" : "13px", background: "#fff", color: "#282c3f", border: "1px solid #eaeaea", fontWeight: "700", boxShadow: "none", marginTop: isMobile ? "4px" : "0" }}
                           />
                         </div>

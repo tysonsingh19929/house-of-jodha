@@ -7,7 +7,7 @@ async function assignProductsToDemoSeller() {
     console.log("1. Registering 'Demo Seller 1'...");
     
     // Default dummy number is exactly the one hardcoded previously
-    const demoPhone = "919967670497"; 
+    const demoPhone = "918268827027"; 
     
     // Register Demo Seller
     let demoSellerId;

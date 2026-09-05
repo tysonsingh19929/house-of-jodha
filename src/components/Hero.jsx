@@ -126,7 +126,7 @@ export default function Hero() {
   };
 
   const handleWhatsAppInquiry = () => {
-    const phoneNumber = "9967670497";
+    const phoneNumber = "918268827027";
     const currentSlide = carouselSlides[current];
     const message = `Hello! I'm interested in the ${currentSlide.label} featured on your website. Could you please provide more details?`;
     const encodedMessage = encodeURIComponent(message);

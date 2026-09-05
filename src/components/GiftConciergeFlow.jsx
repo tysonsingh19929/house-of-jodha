@@ -93,7 +93,7 @@ export default function GiftConciergeFlow() {
 
     const message = `*✨ MS RETAIL - GIFT CONCIERGE INQUIRY ✨*\n\nHello! I would like to consult with a gifting expert. Here are my preferences:\n\n👤 *Gift For:* ${recipientText}\n🎉 *Occasion:* ${occasionText}\n🎨 *Style Preference:* ${styleText}\n📏 *Sizing Selection:* ${sizingText}\n\n*Sender Details:*\n✍️ *Name:* ${data.senderName}\n📞 *Phone:* ${data.senderPhone || "Not provided"}\n\nPlease guide me with the best curated options!`;
 
-    const phoneNumber = "9967670497"; // Consultant WhatsApp
+    const phoneNumber = "918268827027"; // Consultant WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     
