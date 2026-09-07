@@ -67,6 +67,13 @@ const Chatbot = () => {
   const [hasGreeted, setHasGreeted] = useState(() => {
     return sessionStorage.getItem('ishani_greeted') === 'true';
   });
+  const [isVibrating, setIsVibrating] = useState(true);
+
+  // Vibrate the toggle button once whenever the page loads, to draw the eye to it
+  useEffect(() => {
+    const vibrateTimer = setTimeout(() => setIsVibrating(false), 1000);
+    return () => clearTimeout(vibrateTimer);
+  }, []);
 
   useEffect(() => {
     const host = window.location.hostname;
@@ -331,6 +338,21 @@ const Chatbot = () => {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
+        .chatbot-toggle.vibrating {
+          animation: vibrateShake 0.9s ease-in-out;
+        }
+        @keyframes vibrateShake {
+          0%, 100% { transform: translateX(0) rotate(0deg); }
+          10% { transform: translateX(-5px) rotate(-6deg); }
+          20% { transform: translateX(5px) rotate(6deg); }
+          30% { transform: translateX(-5px) rotate(-6deg); }
+          40% { transform: translateX(5px) rotate(6deg); }
+          50% { transform: translateX(-4px) rotate(-4deg); }
+          60% { transform: translateX(4px) rotate(4deg); }
+          70% { transform: translateX(-3px) rotate(-2deg); }
+          80% { transform: translateX(3px) rotate(2deg); }
+          90% { transform: translateX(-1px) rotate(0deg); }
+        }
         .ishani-greeting-bubble {
           position: absolute;
           bottom: calc(100% + 20px);
@@ -424,7 +446,7 @@ const Chatbot = () => {
       )}
 
       <button
-        className={`chatbot-toggle ${isOpen ? 'open' : ''}`}
+        className={`chatbot-toggle ${isOpen ? 'open' : ''} ${isVibrating ? 'vibrating' : ''}`}
         onClick={toggleChat}
         aria-label="Toggle Concierge Suite"
       >

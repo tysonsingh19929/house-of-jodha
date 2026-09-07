@@ -307,33 +307,42 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         .myntra-radio:checked { background-color: #B8860B; border-color: #B8860B; }
         .myntra-radio:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         
+        .quick-filter-bar { display: flex; gap: 10px; overflow-x: auto; padding: 2px 24px 20px; margin: 0 auto; max-width: 1400px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .quick-filter-bar::-webkit-scrollbar { display: none; }
+        .qf-chip { flex-shrink: 0; padding: 9px 20px; border-radius: 999px; border: 1px solid #e6dcb9; background: #fff; color: #7a6323; font-size: 13px; font-weight: 600; font-family: 'Assistant', sans-serif; cursor: pointer; transition: all 0.25s ease; white-space: nowrap; }
+        .qf-chip:hover { border-color: #D4AF37; color: #B8860B; background: #fdf8ee; }
+        .qf-chip.active { background: linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%); border-color: transparent; color: #fff; box-shadow: 0 6px 16px rgba(212,175,55,0.3); }
+
         .myntra-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 20px; width: 100%; box-sizing: border-box; }
         .m-card-wrapper { position: relative; min-width: 0; width: 100%; display: flex; }
-        .m-card { position: relative; background: #fff; transition: box-shadow 0.2s ease, transform 0.2s ease; cursor: pointer; display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%; overflow: hidden; border-radius: 12px; border: 1px solid #f0f0f0; }
-        .m-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-4px); z-index: 10; }
+        .m-card { position: relative; background: #fff; transition: border-color 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; height: 100%; min-width: 0; width: 100%; overflow: hidden; border-radius: 4px; border: 1px solid #ececec; }
+        .m-card:hover { border-color: #D4AF37; box-shadow: 0 10px 28px rgba(20,16,8,0.08); z-index: 10; }
         .m-img-wrap { position: relative; width: 100%; aspect-ratio: 3/4; background: #f5f5f6; overflow: hidden; }
-        .m-img { width: 100%; height: 100%; object-fit: cover; }
-        .m-rating { position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); font-size: 11px; font-weight: 700; padding: 4px 6px; border-radius: 4px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .m-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .m-card:hover .m-img { transform: scale(1.06); }
+        .m-ribbon { position: absolute; top: 12px; left: 12px; background: #1a1a1a; color: #D4AF37; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; padding: 5px 10px; border-radius: 2px; z-index: 2; pointer-events: none; }
+        .m-rating { position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); font-size: 11px; font-weight: 700; padding: 4px 6px; border-radius: 4px; display: flex; align-items: center; gap: 4px; z-index: 2; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .m-wish { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background: #fff; border: 1px solid #eaeaea; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #666; opacity: 0; transition: all 0.2s ease; z-index: 3; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .m-card:hover .m-wish { opacity: 1; }
         .m-wish:hover { background: #E91E63; color: #fff; border-color: #E91E63; }
         .m-wish.active { color: #E91E63; opacity: 1; border-color: #E91E63; background: #fff; }
         .m-wish.active:hover { background: #E91E63; color: #fff; }
         
-        .m-info { padding: 12px; background: #fff; min-width: 0; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; }
-        .m-brand { font-size: 14px; font-weight: 700; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1a1a1a; }
-        .m-title { font-size: 13px; color: #666; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; flex: 1; white-space: normal; }
+        .m-info { padding: 14px 14px 10px; background: #fff; min-width: 0; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; flex: 1; }
+        .m-brand { font-size: 10.5px; font-weight: 700; margin: 0 0 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #B8860B; text-transform: uppercase; letter-spacing: 0.6px; }
+        .m-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: #1a1a1a; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35; flex: 1; white-space: normal; }
         .m-price-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-top: auto; }
-        .m-price { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+        .m-price { font-size: 16px; font-weight: 700; color: #1a1a1a; }
         .m-orig { font-size: 12px; color: #999; text-decoration: line-through; }
         .m-disc { font-size: 11px; font-weight: 700; color: #B8860B; padding: 2px 6px; background: #fdf8ee; border-radius: 4px; }
         
-        .m-actions { display: none; background: #fff; padding: 0 12px 12px; min-width: 0; box-sizing: border-box; margin-top: auto; }
+        .m-actions { display: none; background: #fff; padding: 0 14px 14px; min-width: 0; box-sizing: border-box; margin-top: auto; }
         .m-card:hover .m-actions { display: block; }
-        .m-btn { width: 100%; padding: 10px; background: #fff; color: #1a1a1a; border: 1px solid #1a1a1a; border-radius: 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .m-btn:hover { border-color: #B8860B; background: #B8860B; color: #fff; }
+        .m-btn { width: 100%; padding: 11px; background: #1a1a1a; color: #fff; border: 1px solid #1a1a1a; border-radius: 3px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; transition: all 0.25s ease; display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .m-btn:hover { background: linear-gradient(135deg, #D4AF37 0%, #AA8A2A 100%); border-color: #D4AF37; }
         .m-qty-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .m-qty-btn { flex: 1; padding: 8px; background: #f5f5f6; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 6px; color: #1a1a1a; }
+        .m-qty-btn { flex: 1; padding: 8px; background: #faf6ea; border: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 3px; color: #1a1a1a; transition: background 0.2s ease; }
+        .m-qty-btn:hover { background: #f3e9cd; }
         .m-qty-num { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #282c3f; }
         
         .m-mobile-action-bar { display: none; }
@@ -353,25 +362,29 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
           .myntra-main { padding-left: 0; padding-top: 0; width: 100%; }
           .myntra-topbar { padding: 0 16px 12px; flex-direction: column; align-items: flex-start; gap: 10px; display: none; }
           .myntra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; padding: 0 12px 70px; width: 100%; box-sizing: border-box; }
+          .quick-filter-bar { padding: 2px 12px 16px; gap: 8px; }
+          .qf-chip { padding: 8px 16px; font-size: 12px; }
           
-          .m-card { border-radius: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: none; }
-          .m-card:hover { transform: none; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+          .m-card { border-radius: 6px; border: 1px solid #ececec; box-shadow: none; transition: none; }
+          .m-card:hover { box-shadow: none; border-color: #ececec; }
+          .m-card:hover .m-img { transform: none; }
           .m-actions { display: block; padding: 0 10px 10px; margin-top: 0; border: none; box-shadow: none; position: static; }
           .m-wish { opacity: 1; border: none; background: rgba(255,255,255,0.85); width: 28px; height: 28px; top: 8px; right: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
           .m-wish svg { width: 14px; height: 14px; }
           .m-rating { font-size: 10px; padding: 3px 5px; bottom: 8px; left: 8px; }
+          .m-ribbon { font-size: 9px; padding: 4px 8px; top: 8px; left: 8px; }
           
           .m-info { padding: 10px 10px 8px; flex: 1; display: flex; flex-direction: column; }
-          .m-brand { font-size: 12px; margin-bottom: 2px; }
-          .m-title { font-size: 11px; margin-bottom: 8px; line-height: 1.3; }
+          .m-brand { font-size: 10px; margin-bottom: 3px; }
+          .m-title { font-size: 13px; margin-bottom: 8px; line-height: 1.3; }
           .m-price-row { gap: 4px; margin-top: auto; }
           .m-price { font-size: 13px; }
           .m-orig { font-size: 11px; }
           .m-disc { font-size: 10px; padding: 1px 4px; background: #fdf8ee; color: #B8860B; border-radius: 4px; display: inline-block; }
           
-          .m-btn { font-size: 11px; padding: 8px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #eaeaea; }
+          .m-btn { font-size: 11px; padding: 9px; border-radius: 3px; margin-bottom: 6px; }
           .m-qty-row { margin-bottom: 6px; gap: 4px; }
-          .m-qty-btn { padding: 6px; font-size: 14px; border-radius: 6px; }
+          .m-qty-btn { padding: 6px; font-size: 14px; border-radius: 3px; }
           .m-qty-num { font-size: 13px; }
           
           .m-mobile-action-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 10001; height: 50px; border-top: 1px solid #eaeaec; }
@@ -506,6 +519,23 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
         <p style={{ color: "#666", fontSize: isMobile ? "14px" : "16px", margin: 0 }}>
           Handpicked pieces for every occasion
         </p>
+      </div>
+
+      {/* Quick Filter Chips — everything one tap away, no drawer needed */}
+      <div className="quick-filter-bar">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            type="button"
+            className={`qf-chip ${selectedCategory === cat ? 'active' : ''}`}
+            onClick={() => {
+              handleCategoryChange(cat);
+              setSearchParams(cat === "All" ? {} : { category: cat });
+            }}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
 
       {/* MOBILE ACTION BAR */}
@@ -722,6 +752,9 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
                       <div className="m-card">
                         <div className="m-img-wrap" onClick={() => navigate(`/product/${product.id}`)}>
                           <img src={product.image} alt={product.name} className="m-img" loading="lazy" />
+                          {discount > 0 && (
+                            <div className="m-ribbon">{discount}% OFF</div>
+                          )}
                           {discount > 0 && (
                             <div className="m-rating">
                               4.{Math.floor(Math.random() * 6) + 3} <svg width="12" height="12" viewBox="0 0 24 24" fill="#00897b" stroke="#00897b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg> | {Math.floor(Math.random() * 300) + 20}
