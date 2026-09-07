@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { products as staticProducts } from "../data/products.js";
+import AddProductWizard from "../components/AddProductWizard";
 
 // Icons (Lucide React style SVGs)
 const HomeIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
@@ -912,169 +913,11 @@ export default function AdminDashboard() {
 
         {/* ADD PRODUCT TAB */}
         {activeTab === "add_product" && (
-          <div style={{ animation: "fadeIn 0.3s ease", maxWidth: "800px" }}>
-            <h1 style={{ margin: "0 0 32px", fontSize: "28px", color: "#0f172a" }}>Add New Product</h1>
-
-            <form onSubmit={handleSubmit} style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", padding: isMobile ? "20px" : "32px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Name *</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleChange} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none", transition: "border-color 0.2s" }} onFocus={e => e.target.style.borderColor = "#3b82f6"} onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Category *</label>
-                  <select name="category" value={formData.category} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }}>
-                    {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Stock Quantity</label>
-                  <input type="number" name="stock" value={formData.stock} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Sale Price (₹) *</label>
-                  <input type="number" name="price" value={formData.price} onChange={handleChange} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Original Price (₹) *</label>
-                  <input type="number" name="originalPrice" value={formData.originalPrice} onChange={handleChange} required style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
-                </div>
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Occasions (Comma Separated)</label>
-                  <input type="text" placeholder="Cocktail, Sangeet" name="occasions" value={formData.occasions} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
-                </div>
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Colors (Comma Separated)</label>
-                  <input type="text" placeholder="Red, Rose Gold, Midnight Blue" name="colors" value={formData.colors || ""} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
-                </div>
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Available Sizes</label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                    {getAvailableSizes(formData.category).map(size => {
-                      const isSelected = (formData.sizes || []).includes(size);
-                      return (
-                        <button type="button" key={size} onClick={() => toggleSize(size, false)} style={{ padding: "6px 12px", border: isSelected ? "2px solid #0f172a" : "1px solid #cbd5e1", borderRadius: "6px", backgroundColor: isSelected ? "#0f172a" : "#fff", color: isSelected ? "#fff" : "#475569", fontWeight: "600", cursor: "pointer", outline: "none" }}>{size}</button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div>
-                  <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Video / Instagram Reel URL</label>
-                  <input type="text" placeholder="https://www.instagram.com/reel/..." name="videoUrl" value={formData.videoUrl || ""} onChange={handleChange} style={{ width: "100%", padding: "12px 16px", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "15px", color: "#0f172a", outline: "none" }} />
-                </div>
-              </div>
-
-              <div style={{ marginBottom: "32px" }}>
-                <label style={{ display: "block", marginBottom: "12px", fontSize: "14px", fontWeight: "600", color: "#334155" }}>Product Images *</label>
-
-                <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
-                  <input type="text" placeholder="Add image by URL instead of uploading" value={imageUrlInput} onChange={e => setImageUrlInput(e.target.value)} style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }} />
-                  <button type="button" onClick={() => handleAddImageUrl(false)} style={{ padding: "10px 16px", backgroundColor: "#0f172a", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>Add URL</button>
-                </div>
-
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
-                  {imagePreviews.map((src, index) => {
-                    const isVideo = src.includes("instagram.com") || src.match(/\.(mp4|webm|ogg)$/i) || src.includes("youtube.com") || src.includes("youtu.be");
-                    return (
-                      <div key={index} style={{ position: "relative" }}>
-                        {isVideo ? (
-                          <div style={{ width: "120px", height: "120px", borderRadius: "12px", border: "2px solid #e2e8f0", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", fontSize: "12px", fontWeight: "600", textAlign: "center", padding: "8px" }}>Video/Reel Added</div>
-                        ) : (
-                          <img src={src} alt="Preview" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "12px", border: "2px solid #e2e8f0" }} />
-                        )}
-                        <button type="button" onClick={() => {
-                          const newPreviews = [...imagePreviews]; newPreviews.splice(index, 1);
-                          const newImages = [...formData.images]; newImages.splice(index, 1);
-                          setImagePreviews(newPreviews); setFormData(prev => ({ ...prev, images: newImages }));
-                        }} style={{ position: "absolute", top: "-8px", right: "-8px", width: "24px", height: "24px", borderRadius: "50%", backgroundColor: "#ef4444", color: "#fff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "bold", padding: 0 }}>&times;</button>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px", backgroundColor: "#f8fafc", border: "2px dashed #cbd5e1", borderRadius: "12px", cursor: "pointer", transition: "all 0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = "#94a3b8"} onMouseLeave={e => e.currentTarget.style.borderColor = "#cbd5e1"}>
-                  <input type="file" accept="image/*" multiple onChange={handleImageUpload} style={{ display: "none" }} />
-                  <div style={{ color: "#94a3b8", marginBottom: "12px" }}><PlusCircleIcon /></div>
-                  <span style={{ fontSize: "15px", fontWeight: "600", color: "#475569" }}>Click to upload images</span>
-                  <span style={{ fontSize: "13px", color: "#94a3b8", marginTop: "4px" }}>JPG, PNG or WEBP (You can select multiple)</span>
-                </label>
-              </div>
-
-              <div style={{ padding: "24px", backgroundColor: "#f8fafc", borderRadius: "12px", marginBottom: "24px", border: "1px solid #e2e8f0" }}>
-                <h4 style={{ margin: "0 0 16px 0", color: "#334155", fontSize: "16px" }}>Extended Product Details</h4>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Material / Fabric</label>
-                    <input type="text" name="material" value={formData.material || ""} onChange={handleChange} placeholder="e.g. Pure Tissue Silk" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Care Instructions</label>
-                    <input type="text" name="care" value={formData.care || ""} onChange={handleChange} placeholder="e.g. Dry Clean Only" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Embroidery/Details</label>
-                    <input type="text" name="embroidery" value={formData.embroidery || ""} onChange={handleChange} placeholder="e.g. Zardosi Handwork" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Max Standard Bust Size</label>
-                    <input type="text" name="maxBustSize" value={formData.maxBustSize || ""} onChange={handleChange} placeholder="e.g. 42 inches" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
-                  </div>
-                </div>
-
-                {!isJewelleryCategory(formData.category) ? (
-                  <>
-                    <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Component Breakdown (Fabric)</h5>
-                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "12px" }}>
-                      <input type="text" name="fabricTop" value={formData.fabricTop || ""} onChange={handleChange} placeholder="Top / Kurta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="fabricBottom" value={formData.fabricBottom || ""} onChange={handleChange} placeholder="Bottom / Skirt Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="fabricDupatta" value={formData.fabricDupatta || ""} onChange={handleChange} placeholder="Dupatta Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="fabricBlouse" value={formData.fabricBlouse || ""} onChange={handleChange} placeholder="Blouse Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="fabricSaree" value={formData.fabricSaree || ""} onChange={handleChange} placeholder="Saree Details" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Jewellery Attributes</h5>
-                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px" }}>
-                      <input type="text" name="metalType" value={formData.metalType || ""} onChange={handleChange} placeholder="Metal (e.g. Gold, Sterling Silver)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="gemstones" value={formData.gemstones || ""} onChange={handleChange} placeholder="Gemstones (e.g. Kundan, Polki)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="plating" value={formData.plating || ""} onChange={handleChange} placeholder="Plating (e.g. 18K Rose Gold)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                      <input type="text" name="weight" value={formData.weight || ""} onChange={handleChange} placeholder="Weight (e.g. 15g)" style={{ padding: "10px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none" }} />
-                    </div>
-                  </>
-                )}
-
-                <h5 style={{ margin: "24px 0 12px 0", color: "#475569", fontSize: "14px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>Shipping & Delivery</h5>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Delivery Type</label>
-                    <input type="text" name="deliveryType" value={formData.deliveryType || ""} onChange={handleChange} placeholder="e.g. Made to measure" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "13px", color: "#475569", fontWeight: "600" }}>Delivery Time</label>
-                    <input type="text" name="deliveryDays" value={formData.deliveryDays || ""} onChange={handleChange} placeholder="e.g. 5-6 weeks" style={{ padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }} />
-                  </div>
-                </div>
-                <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <input type="checkbox" id="freeShipping" name="freeShipping" checked={formData.freeShipping || false} onChange={handleChange} style={{ width: "16px", height: "16px", cursor: "pointer" }} />
-                  <label htmlFor="freeShipping" style={{ fontSize: "14px", color: "#475569", cursor: "pointer", fontWeight: "500" }}>Offer Free Shipping</label>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button type="submit" disabled={isSaving} style={{ padding: "12px 24px", backgroundColor: isSaving ? "#64748b" : "#0f172a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "15px", fontWeight: "600", cursor: isSaving ? "not-allowed" : "pointer", transition: "background-color 0.2s" }} onMouseEnter={e => !isSaving && (e.target.style.backgroundColor = "#1e293b")} onMouseLeave={e => !isSaving && (e.target.style.backgroundColor = "#0f172a")}>
-                  {isSaving ? "Publishing..." : "Publish Product"}
-                </button>
-              </div>
-            </form>
+          <div style={{ animation: "fadeIn 0.3s ease", marginBottom: "32px" }}>
+            <AddProductWizard API_BASE_URL={API_BASE_URL} fetchProducts={fetchProducts} sellerId={sellerId} sellerName={sellerName} isSuperAdmin={isSuperAdmin} />
           </div>
         )}
 
-        {/* ORDERS TAB */}
         {activeTab === "orders" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>

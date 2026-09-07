@@ -10,6 +10,7 @@ import orderRoutes from './routes/orders.js';
 import userRoutes from './routes/users.js';
 import sellerRoutes from './routes/sellers.js';
 import chatRoutes from './routes/chat.js';
+import bulkUploadRoutes from './routes/bulkUpload.js';
 import { seedSellers, seedProducts } from './seed.js';
 
 dotenv.config();
@@ -69,6 +70,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/bulk-upload', bulkUploadRoutes);
 
 // Health checks
 app.get('/api/health', (req, res) => {
