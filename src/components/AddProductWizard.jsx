@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import * as xlsx from 'xlsx'; // for bulk upload
+
 
 export default function AddProductWizard({ API_BASE_URL, fetchProducts, sellerId, sellerName, isSuperAdmin }) {
   const [mode, setMode] = useState("single"); // 'single' or 'bulk'
