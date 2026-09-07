@@ -78,13 +78,7 @@ app.get('/api/health', (req, res) => {
 });
 app.get('/api/chat/health', (req, res) => res.status(200).send('Always Awake!'));
 
-// Serve frontend static files in production
-const frontendBuildPath = path.join(__dirname, '../dist');
-app.use(express.static(frontendBuildPath));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendBuildPath, 'index.html'));
-});
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
