@@ -190,9 +190,9 @@ export default function AddProductWizard({ API_BASE_URL, fetchProducts, sellerId
       <div style={{ padding: "24px" }}>
         {mode === "bulk" ? (
           <div style={{ textAlign: "center", padding: "40px 20px" }}>
-            <h3 style={{ fontSize: "20px", color: "#0f172a", margin: "0 0 16px 0" }}>Upload Myntra/Flipkart Listing File</h3>
+            <h3 style={{ fontSize: "20px", color: "#0f172a", margin: "0 0 16px 0" }}>Upload Bulk Catalog (Excel/CSV)</h3>
             <p style={{ color: "#64748b", marginBottom: "24px", maxWidth: "600px", margin: "0 auto 24px", lineHeight: "1.5" }}>
-              Save hundreds of hours by directly uploading your standard Flipkart or Ajio listing template. The system will automatically parse parent items, variants, and dynamic attributes.
+              Save time by uploading your standard product listing template. The system will automatically map parent products, SKUs, and dynamic attributes.
             </p>
             
             <div style={{ border: "2px dashed #cbd5e1", borderRadius: "12px", padding: "40px", backgroundColor: "#f8fafc", maxWidth: "500px", margin: "0 auto", marginBottom: "24px" }}>
