@@ -146,6 +146,13 @@ export default function AddProductWizard({ API_BASE_URL, fetchProducts, sellerId
     fData.append("sellerId", sellerId || "admin");
     fData.append("sellerName", sellerName || "MS Retail");
     
+    // Append bulk images if any
+    if (images && images.length > 0 && mode === "bulk") {
+       images.forEach(imgFile => {
+          fData.append("bulkImages", imgFile);
+       });
+    }
+    
     try {
       setBulkProgress("Uploading and processing file...");
       const res = await fetch(`${API_BASE_URL}/bulk-upload`, {
@@ -195,15 +202,34 @@ export default function AddProductWizard({ API_BASE_URL, fetchProducts, sellerId
               Save time by uploading your standard product listing template. The system will automatically map parent products, SKUs, and dynamic attributes.
             </p>
             
-            <div style={{ border: "2px dashed #cbd5e1", borderRadius: "12px", padding: "40px", backgroundColor: "#f8fafc", maxWidth: "500px", margin: "0 auto", marginBottom: "24px" }}>
-              <input 
-                type="file" 
-                ref={fileInputRef}
-                accept=".xlsx, .xls, .csv" 
-                onChange={(e) => setBulkFile(e.target.files[0])} 
-                style={{ marginBottom: "16px" }}
-              />
-              {bulkFile && <p style={{ color: "#10b981", fontWeight: "600", marginTop: "16px" }}>Selected: {bulkFile.name}</p>}
+            <div style={{ border: "2px dashed #cbd5e1", borderRadius: "12px", padding: "40px", backgroundColor: "#f8fafc", maxWidth: "500px", margin: "0 auto", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px", alignItems: "center" }}>
+              <div style={{ width: "100%", textAlign: "left" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#0f172a" }}>1. Select Catalog File (Excel/CSV) *</label>
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  accept=".xlsx, .xls, .csv" 
+                  onChange={(e) => setBulkFile(e.target.files[0])} 
+                  style={{ width: "100%" }}
+                />
+                {bulkFile && <p style={{ color: "#10b981", fontWeight: "600", margin: "8px 0 0 0", fontSize: "13px" }}>Selected: {bulkFile.name}</p>}
+              </div>
+
+              <div style={{ width: "100%", textAlign: "left", marginTop: "12px", paddingTop: "16px", borderTop: "1px solid #e2e8f0" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#0f172a" }}>2. Select Images Folder (Optional)</label>
+                <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 12px 0" }}>If images aren't in the Excel links, select all images here. The system will auto-match them using SKU ID (e.g. SKU123-1.jpg).</p>
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*"
+                  onChange={(e) => {
+                     // Store selected images in state for upload
+                     setImages(Array.from(e.target.files));
+                  }} 
+                  style={{ width: "100%" }}
+                />
+                {images.length > 0 && mode === "bulk" && <p style={{ color: "#10b981", fontWeight: "600", margin: "8px 0 0 0", fontSize: "13px" }}>Selected {images.length} images for auto-matching</p>}
+              </div>
             </div>
 
             <button 

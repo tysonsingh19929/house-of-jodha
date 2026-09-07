@@ -6,10 +6,23 @@ import Product from '../models/Product.js';
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/', upload.single('file'), async (req, res) => {
+router.post('/', upload.any(), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+    const fileObj = req.files && req.files.find(f => f.fieldname === 'file');
+    if (!fileObj) {
+      return res.status(400).json({ message: 'No spreadsheet file uploaded' });
+    }
+    
+    // Convert bulkImages to base64 mapped by originalname (without extension)
+    const imageMap = {};
+    if (req.files) {
+      req.files.forEach(f => {
+        if (f.fieldname === 'bulkImages') {
+          const name = f.originalname.split('.')[0].toLowerCase();
+          const b64 = `data:${f.mimetype};base64,${f.buffer.toString('base64')}`;
+          imageMap[name] = b64;
+        }
+      });
     }
 
     const { sellerId, sellerName } = req.body;
@@ -18,7 +31,7 @@ router.post('/', upload.single('file'), async (req, res) => {
     }
 
     // Read the file buffer using xlsx
-    const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+    const workbook = xlsx.read(fileObj.buffer, { type: 'buffer' });
     
     // Find the relevant sheet. Try to find one named 'apparel_set' or fallback to the first sheet if it exists
     let sheetName = workbook.SheetNames.find(n => n === 'apparel_set' || n.includes('default'));
@@ -67,6 +80,8 @@ router.post('/', upload.single('file'), async (req, res) => {
       const groupID = groupColIdx >= 0 ? row[groupColIdx] : null;
       const sku = skuColIdx >= 0 ? row[skuColIdx] : `SKU-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       
+      const str_sku = String(sku).toLowerCase();
+      const str_group = String(groupID || '').toLowerCase();
       const parentId = groupID || sku; // If no Group ID, treat as individual product
 
       if (!productsMap[parentId]) {
@@ -76,7 +91,7 @@ router.post('/', upload.single('file'), async (req, res) => {
           description: descColIdx >= 0 ? row[descColIdx] : '',
           price: priceColIdx >= 0 ? Number(row[priceColIdx]) || 0 : 0,
           originalPrice: mrpColIdx >= 0 ? Number(row[mrpColIdx]) || 0 : 0,
-          image: imgColIdx >= 0 ? row[imgColIdx] : '',
+          image: imgColIdx >= 0 && row[imgColIdx] ? row[imgColIdx] : (imageMap[str_sku] || imageMap[str_group] || ''),
           images: [],
           stock: 0,
           sellerId,
@@ -99,6 +114,18 @@ router.post('/', upload.single('file'), async (req, res) => {
             }
           }
         });
+        
+        // Find all images matching SKU or Group ID
+        const matchedImages = [];
+        Object.keys(imageMap).forEach(imgName => {
+           if (imgName.includes(str_sku) || (str_group && imgName.includes(str_group))) {
+              matchedImages.push(imageMap[imgName]);
+           }
+        });
+        if (!productsMap[parentId].image && matchedImages.length > 0) {
+           productsMap[parentId].image = matchedImages[0];
+        }
+        productsMap[parentId].images = matchedImages;
       }
 
       // Add to variants
