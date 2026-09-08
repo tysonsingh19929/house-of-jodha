@@ -233,8 +233,20 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
     }
   };
 
-  const categories = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Jewellery", "Gharara", "Sharara"];
   const isJewelleryCat = (cat) => ['Necklaces', 'Earrings', 'Rings', 'Bracelets', 'Bridal Sets', 'Jewellery'].includes(cat);
+
+  const categories = useMemo(() => {
+    const base = ["All", "Lehenga", "Saree", "Anarkali", "Salwar Kameez", "Jewellery", "Gharara", "Sharara"];
+    if (!allProducts || !Array.isArray(allProducts)) return base;
+    const found = Array.from(new Set(allProducts.map(p => p.category).filter(Boolean)));
+    found.forEach(cat => {
+      const formatted = cat.trim().charAt(0).toUpperCase() + cat.trim().slice(1);
+      if (!base.some(b => b.toLowerCase() === formatted.toLowerCase()) && !isJewelleryCat(formatted)) {
+        base.push(formatted);
+      }
+    });
+    return base;
+  }, [allProducts]);
 
   const filteredProducts = useMemo(() => {
     let res = selectedCategory === "All"
@@ -247,7 +259,7 @@ export default function ProductCatalog({ onAddToCart, onRemoveProduct, addToWish
       })
       : selectedCategory === "Jewellery"
         ? allProducts.filter(p => isJewelleryCat(p.category))
-        : allProducts.filter(p => p.category === selectedCategory);
+        : allProducts.filter(p => p.category?.toLowerCase() === selectedCategory.toLowerCase());
 
     if (priceFilter === 'under-5000') res = res.filter(p => p.price < 5000);
     else if (priceFilter === '5000-10000') res = res.filter(p => p.price >= 5000 && p.price <= 10000);
