@@ -26,11 +26,54 @@ export default function AdminDashboard() {
   }, []);
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, products, add_product, orders, settings
   const [products, setProducts] = useState([]);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [productSearch, setProductSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchWrapperRef = useRef(null);
+
+  const toggleSelectProduct = (id) => {
+    setSelectedProductIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    const visibleIds = filteredProducts.map(p => p._id);
+    const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedProductIds.includes(id));
+    if (allSelected) {
+      setSelectedProductIds(prev => prev.filter(id => !visibleIds.includes(id)));
+    } else {
+      setSelectedProductIds(prev => Array.from(new Set([...prev, ...visibleIds])));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedProductIds.length === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedProductIds.length} selected products?`)) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/products/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productIds: selectedProductIds })
+      });
+      if (!response.ok) {
+        for (const id of selectedProductIds) {
+          await fetch(`${API_BASE_URL}/products/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sellerId, isSuperAdmin })
+          });
+        }
+      }
+      alert(`Successfully deleted ${selectedProductIds.length} products!`);
+      setSelectedProductIds([]);
+      fetchProducts();
+    } catch (error) {
+      alert("Error deleting products: " + error.message);
+    }
+  };
   const [formData, setFormData] = useState({
     name: "", price: "", originalPrice: "", category: "Lehenga", image: "", images: [], description: "", stock: "", occasions: "", videoUrl: "",
     material: "", care: "", embroidery: "", deliveryType: "", deliveryDays: "", maxBustSize: "", freeShipping: false,
@@ -811,6 +854,45 @@ export default function AdminDashboard() {
               )}
             </div>
 
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px", padding: "12px 16px", backgroundColor: selectedProductIds.length > 0 ? "#fefce8" : "#f8fafc", borderRadius: "10px", border: "1px solid " + (selectedProductIds.length > 0 ? "#fef08a" : "#e2e8f0"), transition: "all 0.2s" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontSize: "14px", fontWeight: "600", color: "#334155" }}>
+                <input
+                  type="checkbox"
+                  checked={filteredProducts.length > 0 && filteredProducts.every(p => selectedProductIds.includes(p._id))}
+                  onChange={toggleSelectAll}
+                  style={{ width: "18px", height: "18px", accentColor: "#facc15", cursor: "pointer" }}
+                />
+                Select All ({filteredProducts.length})
+              </label>
+
+              {selectedProductIds.length > 0 && (
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "600", color: "#854d0e" }}>
+                    ✓ {selectedProductIds.length} selected
+                  </span>
+                  <button
+                    onClick={handleBulkDelete}
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "#ef4444",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      boxShadow: "0 2px 6px rgba(239, 68, 68, 0.25)"
+                    }}
+                  >
+                    🗑️ Delete Selected ({selectedProductIds.length})
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div style={{ backgroundColor: "#fff", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
               {loading ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>Loading products...</div>
@@ -819,8 +901,14 @@ export default function AdminDashboard() {
                   isMobile ? (
                     <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
                       {filteredProducts.map(product => (
-                        <div key={product._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px", backgroundColor: "#f8fafc" }}>
-                          <div style={{ display: "flex", gap: "12px" }}>
+                        <div key={product._id} style={{ display: "flex", flexDirection: "column", gap: "12px", border: "1px solid " + (selectedProductIds.includes(product._id) ? "#facc15" : "#e2e8f0"), borderRadius: "12px", padding: "16px", backgroundColor: selectedProductIds.includes(product._id) ? "#fefce8" : "#f8fafc", transition: "all 0.2s" }}>
+                          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                            <input
+                              type="checkbox"
+                              checked={selectedProductIds.includes(product._id)}
+                              onChange={() => toggleSelectProduct(product._id)}
+                              style={{ width: "20px", height: "20px", accentColor: "#facc15", cursor: "pointer", flexShrink: 0 }}
+                            />
                             <img src={product.image} alt={product.name} style={{ width: "60px", height: "60px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <p style={{ margin: "0 0 4px", fontWeight: "600", color: "#0f172a", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</p>
@@ -856,6 +944,14 @@ export default function AdminDashboard() {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                       <thead>
                         <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                          <th style={{ width: "40px", padding: "16px 12px 16px 24px" }}>
+                            <input
+                              type="checkbox"
+                              checked={filteredProducts.length > 0 && filteredProducts.every(p => selectedProductIds.includes(p._id))}
+                              onChange={toggleSelectAll}
+                              style={{ width: "18px", height: "18px", accentColor: "#facc15", cursor: "pointer" }}
+                            />
+                          </th>
                           <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Product</th>
                           <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Category</th>
                           <th style={{ padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Price</th>
@@ -864,7 +960,15 @@ export default function AdminDashboard() {
                       </thead>
                       <tbody>
                         {filteredProducts.map(product => (
-                          <tr key={product._id} style={{ borderBottom: "1px solid #e2e8f0", transition: "background-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "#fff"}>
+                          <tr key={product._id} style={{ borderBottom: "1px solid #e2e8f0", backgroundColor: selectedProductIds.includes(product._id) ? "#fefce8" : "transparent", transition: "background-color 0.2s" }} onMouseEnter={e => !selectedProductIds.includes(product._id) && (e.currentTarget.style.backgroundColor = "#f8fafc")} onMouseLeave={e => !selectedProductIds.includes(product._id) && (e.currentTarget.style.backgroundColor = "transparent")}>
+                            <td style={{ width: "40px", padding: "16px 12px 16px 24px" }}>
+                              <input
+                                type="checkbox"
+                                checked={selectedProductIds.includes(product._id)}
+                                onChange={() => toggleSelectProduct(product._id)}
+                                style={{ width: "18px", height: "18px", accentColor: "#facc15", cursor: "pointer" }}
+                              />
+                            </td>
                             <td style={{ padding: "16px 24px", display: "flex", alignItems: "center", gap: "16px" }}>
                               <img src={product.image} alt={product.name} style={{ width: "48px", height: "48px", borderRadius: "8px", objectFit: "cover", border: "1px solid #e2e8f0" }} />
                               <div>

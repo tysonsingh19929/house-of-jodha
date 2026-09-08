@@ -158,6 +158,20 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// BULK DELETE PRODUCTS
+router.post('/bulk-delete', async (req, res) => {
+  try {
+    const { productIds } = req.body;
+    if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
+      return res.status(400).json({ message: 'No product IDs provided' });
+    }
+    const result = await Product.deleteMany({ _id: { $in: productIds } });
+    res.json({ message: 'Products deleted successfully', count: result.deletedCount });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // DELETE PRODUCT
 router.delete('/:id', async (req, res) => {
   try {
